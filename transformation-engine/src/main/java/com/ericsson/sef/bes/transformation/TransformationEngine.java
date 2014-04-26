@@ -1,4 +1,4 @@
-package com.ericsson.sm.core.object.transformation;
+package com.ericsson.sef.bes.transformation;
 
 import java.util.List;
 
