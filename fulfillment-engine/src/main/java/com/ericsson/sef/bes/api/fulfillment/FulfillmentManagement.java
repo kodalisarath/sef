@@ -1,4 +1,4 @@
-package com.ericsson.sm.api.fulfillment;
+package com.ericsson.sef.bes.api.fulfillment;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;

@@ -1,5 +1,5 @@
 
-package com.ericsson.sm.api.fulfillment;
+package com.ericsson.sef.bes.api.fulfillment;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
