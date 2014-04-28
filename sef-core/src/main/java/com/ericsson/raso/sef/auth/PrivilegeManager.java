@@ -1,31 +1,160 @@
 package com.ericsson.raso.sef.auth;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple;
 import com.ericsson.raso.sef.auth.permissions.Permission;
 import com.ericsson.raso.sef.auth.permissions.Privilege;
+import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
 import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.*;
 
 public class PrivilegeManager {
 	
-	Map<AuthorizationPrinciple, Privilege> privileges = new HashMap<AuthorizationPrinciple, Privilege>();
+	private String privilegesStoreLocation = null;
+	private Map<AuthorizationPrinciple, Privilege> privileges = null;
 	
-	public PrivilegeManager(String privilegesStoreLocation) {
-		if (storeExists(privilegesStoreLocation)) {
-			if (!loadFromStore(privilegesStoreLocation))
+	private SecureSerializationHelper ssh = null;
+	
+	
+	public PrivilegeManager(String storeLocation) {
+		ssh = new SecureSerializationHelper();
+		
+		this.privilegesStoreLocation = storeLocation;
+		if (ssh.fileExists(storeLocation)) {
+			try {
+				this.privileges = (Map<AuthorizationPrinciple, Privilege>) ssh.fetchFromFile(storeLocation);
+				if (this.privileges == null)
 					loadDefaults();
-			//TODO: Logger
-		} else
-			loadDefaults();
+			} catch (FrameworkException e) {
+				loadDefaults();
+			}
+		}			
 	}
+	
+	public PrivilegeManager() {
+		//TODO: fetch the store location from config, once the config services is ready....
+		
+		if (ssh.fileExists(this.privilegesStoreLocation)) {
+			try {
+				this.privileges = (Map<AuthorizationPrinciple, Privilege>) ssh.fetchFromFile(this.privilegesStoreLocation);
+				if (this.privileges == null)
+					loadDefaults();
+			} catch (FrameworkException e) {
+				loadDefaults();
+			}
+		}			
+	}
+	
+	public boolean createPermission(Privilege privilege) throws AuthAdminException {
+		if (this.privileges == null) 
+			this.privileges = new HashMap<AuthorizationPrinciple, Privilege>();
+		
+		if (this.privileges.containsKey(privilege.getName()))
+			throw new AuthAdminException("Duplicate Privilege [" + privilege + "] cannot be created.");
+		
+		System.out.println("Adding Pemission: " + privilege);
+		this.privileges.put(privilege.getName(), privilege);
+		
+			
+		try {
+			this.ssh.persistToFile(this.privilegesStoreLocation, (Serializable) this.privileges);
+			return true;
+		} catch (FrameworkException e) {
+			return false;
+		}
+	}
+	
+	public Privilege readPermission(AuthorizationPrinciple principle) throws AuthAdminException {
+		if (principle == null)
+			throw new AuthAdminException("Specified Privilege was null");
+			
+		if (this.privileges.containsKey(principle)) {
+			return this.privileges.get(principle);
+		}
+		
+		throw new AuthAdminException("Specified Privilege [" + principle + "] cannot be found.");
+	}
+	
+	public Privilege readPermission(String principle) throws AuthAdminException {
+		if (principle == null)
+			throw new AuthAdminException("Specified Privilege was null");
+		
+		try {
+			AuthorizationPrinciple key = AuthorizationPrinciple.valueOf(principle);
+			if (this.privileges.containsKey(key))
+				return this.privileges.get(key);
+			else
+				throw new AuthAdminException("Specified Privilege [" + principle + "] cannot be found.");
+		} catch (IllegalArgumentException e) {
+			throw new AuthAdminException("Specified Privilege was not defined/ created yet");
+		}
+		
+			
+	}
+	
+	public boolean updatePermission (Privilege privilege) throws AuthAdminException {
+		if (this.privileges == null) {
+			throw new AuthAdminException("Specified Privilege [" + privilege + "] cannot be found to update.");
+		}
+		
+		if (!this.privileges.containsKey(privilege.getName()))
+			throw new AuthAdminException("Specified Privilege [" + privilege + "] cannot be found to update.");
+		
+		this.privileges.put(privilege.getName(), privilege);
 
+		try {
+			this.ssh.persistToFile(this.privilegesStoreLocation, (Serializable) this.privileges);
+			return true;
+		} catch (FrameworkException e) {
+			return false;
+		}
+	}
+	
+	public boolean deletePermission (Privilege privilege) throws AuthAdminException {
+		if (this.privileges == null) {
+			throw new AuthAdminException("Specified Privilege [" + privilege + "] cannot be found to delete.");
+		}
+		
+		
+		boolean isNotFound = true;
+		Iterator<Privilege> privileges = this.privileges.values().iterator();
+		while (privileges.hasNext()) {
+			Privilege fromStore = privileges.next();
+			if (fromStore.contains(privilege)) {
+				isNotFound = false;
+				fromStore.removeImplied(privilege);
+			}
+		}
+		
+		this.privileges.remove(privilege.getName());
+		
+		if (isNotFound)
+			throw new AuthAdminException("Specified Privilege [" + privilege + "] cannot be found to delete.");
+	
+		try {
+			this.ssh.persistToFile(this.privilegesStoreLocation, (Serializable) this.privileges);
+			return true;
+		} catch (FrameworkException e) {
+			return false;
+		}
+	}
+	
+	
 	private void loadDefaults() {
 		
 		// Entity Access Permissions - Broad Use-Case Classification to support ENTITY & INGRESS Controls)
@@ -214,14 +343,14 @@ public class PrivilegeManager {
 		
 
 		this.privileges.put(DOMAIN_PARTNER_ALL, partnerAdmin);
-		this.privileges.put(DOMAIN_PARTNER_META, partnerAdmin);
-		this.privileges.put(DOMAIN_PARTNER_LIFECYCLE, partnerAdmin);
-		this.privileges.put(DOMAIN_PARTNER_SUBSCRIPTIONS_ALL, partnerAdmin);
-		this.privileges.put(DOMAIN_PARTNER_SUBSCRIPTIONS_SELF, partnerAdmin);
-		this.privileges.put(DOMAIN_PARTNER_PRODUCTS_ALL, partnerAdmin);
-		this.privileges.put(DOMAIN_PARTNER_PRODUCTS_SELF, partnerAdmin);
-		this.privileges.put(DOMAIN_PARTNER_SETTLEMENT_ALL, partnerAdmin);
-		this.privileges.put(DOMAIN_PARTNER_SETTLEMENT_SELF, partnerAdmin);
+		this.privileges.put(DOMAIN_PARTNER_META, partnerMeta);
+		this.privileges.put(DOMAIN_PARTNER_LIFECYCLE, partnerLifeCycle);
+		this.privileges.put(DOMAIN_PARTNER_SUBSCRIPTIONS_ALL, partnerSubscriptionsAll);
+		this.privileges.put(DOMAIN_PARTNER_SUBSCRIPTIONS_SELF, partnerSubscriptionsSelf);
+		this.privileges.put(DOMAIN_PARTNER_PRODUCTS_ALL, partnerProductsAll);
+		this.privileges.put(DOMAIN_PARTNER_PRODUCTS_SELF, partnerProductsSelf);
+		this.privileges.put(DOMAIN_PARTNER_SETTLEMENT_ALL, partnerSettelementAll);
+		this.privileges.put(DOMAIN_PARTNER_SETTLEMENT_SELF, partnerSettlementSelf);
 		
 
 		this.privileges.put(DOMAIN_USER_ALL, userAdmin);
@@ -234,44 +363,29 @@ public class PrivilegeManager {
 		this.privileges.put(SERVICE_CTXT_PRIMITIVE, serviceCtxtPrimitive);
 		this.privileges.put(SERVICE_CTXT_PARAMETER, serviceCtxtParameter);
 		
-		
-		
-	}
-
-	private boolean loadFromStore(String privilegesStoreLocation) {
+		// persist the entities
 		try {
-			FileInputStream fisStore = new FileInputStream(privilegesStoreLocation);
-			ObjectInputStream oisStore = new ObjectInputStream(fisStore);
-			this.privileges = (HashMap<AuthorizationPrinciple, Privilege>) oisStore.readObject();
-			
-			oisStore.close();
-			fisStore.close();
-			oisStore = null;
-			fisStore = null;
-			
-			return true;
-		} catch (FileNotFoundException e) {
-			// TODO Logger
-			return false;
-		} catch (IOException e) {
-			// TODO Logger
-			return false;
-		} catch (ClassNotFoundException e) {
-			// TODO Logger
-			return false;
+			this.ssh.persistToFile(this.privilegesStoreLocation, (Serializable) this.privileges);
+			return;
+		} catch (FrameworkException e) {
+			return;
 		}
 		
 	}
 
-	private boolean storeExists(String privilegesStoreLocation) {
-		try {
-			new FileInputStream(privilegesStoreLocation).close();;
-		} catch (FileNotFoundException e) {
-			return false;
-		} catch (IOException e) {
-			return false;
+	
+	@Override
+	public String toString() {
+		String privilegeDump = "<PrivilegeStore>";
+		
+		Iterator<Privilege> privileges = this.privileges.values().iterator();
+		while (privileges.hasNext()) {
+			Privilege fromStore = privileges.next();
+			privilegeDump += fromStore.toString();
 		}
-		return true;
+		privilegeDump += "</PrivilegeStore>";
+		
+		return privilegeDump;
 	}
 
 }
