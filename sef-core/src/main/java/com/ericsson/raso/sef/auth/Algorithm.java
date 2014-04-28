@@ -5,11 +5,8 @@ public enum Algorithm {
 	BASIC,
 	DIGEST_MD5,
 	DIGEST_SHA1,
-	HVAC;
+	HVAC,
+	DES;
 	
-	public String encode(String payload) {
-		
-		return null;
-	}
-
+	
 }
