@@ -1,6 +1,8 @@
 package com.ericsson.raso.sef.auth.permissions;
 
-public enum AuthorizationPrinciple {
+import java.io.Serializable;
+
+public enum AuthorizationPrinciple implements Serializable {
 	ACCESS_ALL,
 	ACCESS_READ_ONLY,
 	ACCESS_CREATE_NEW,

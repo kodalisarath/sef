@@ -1,13 +1,15 @@
 package com.ericsson.raso.sef.auth.permissions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ericsson.raso.sef.auth.AuthAdminException;
+public class Permission implements Privilege, Serializable {
 
-public class Permission implements Privilege {
 
+	private static final long serialVersionUID = -6643567321985656767L;
+	
 	private AuthorizationPrinciple			name				= null;
 	private String			referenceInIdentity	= null;
 	private List<Privilege>	impliedPermissions	= null;
@@ -83,6 +85,14 @@ public class Permission implements Privilege {
 	public String getReferenceInIdentity() {
 		return this.referenceInIdentity;
 	}
+
+	@Override
+	public String toString() {
+		return "<Permission name=\"" + name + "\" referenceInIdentity=\""
+				+ referenceInIdentity + "\"> <impliedPermissions>"
+				+ impliedPermissions + "</impliedPermissions></Permission>";
+	}
+	
 	
 	
 }
