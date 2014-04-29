@@ -12,9 +12,13 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
 
-public class CloudAwareService {
+public class CloudAwareClusterService {
 
 	private HazelcastInstance instance;
+	
+	public CloudAwareClusterService() {
+		
+	}
 	
 	public void start() {
 		String configHome = System.getenv("CLUSTER_CONFIG");
