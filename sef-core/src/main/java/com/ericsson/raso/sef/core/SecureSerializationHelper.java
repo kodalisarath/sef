@@ -161,17 +161,22 @@ public class SecureSerializationHelper {
 			byte[] encryptionKey = (byte[]) ois.readObject();
 			byte[] initialVector = (byte[]) ois.readObject();
 
+			//TODO: Troubleshooting code
+			System.out.println("encryptionKey: " + this.printByteArray(encryptionKey));
+			System.out.println("initializationVector: " + this.printByteArray(initialVector));
+			//TODO: end of troubleshooting code
+			
 			this.key = encryptionKey;
 
-			Cipher decrypt = Cipher.getInstance("DES/CFB8/NoPadding");
-			decrypt.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "DES"),
+			this.decryptionCipher = Cipher.getInstance("DES/CFB8/NoPadding");
+			this.decryptionCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key, "DES"),
 					new IvParameterSpec(initialVector));
-			this.decryptionCipher = decrypt;
+			System.out.println("decrypt cipher initialized from file...");
 
-			Cipher encrypt = Cipher.getInstance("DES/CFB8/NoPadding");
-			decrypt.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "DES"),
+			this.encryptionCipher = Cipher.getInstance("DES/CFB8/NoPadding");
+			this.encryptionCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key, "DES"),
 					new IvParameterSpec(initialVector));
-			this.encryptionCipher = encrypt;
+			System.out.println("encrypt cipher initialized from file...");
 
 		} catch (FileNotFoundException e) {
 			// TODO Logger - unable to get the algorithm... quite rare
@@ -195,27 +200,27 @@ public class SecureSerializationHelper {
 			// TODO Logger - unable to get the algorithm... quite rare
 			System.out.println("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		}
-		System.out.println("loadKey Failed!!");
+		System.out.println("loadKey successful!!");
 	}
 
 	private void createKeyFile() {
 		System.out.println("Creating Key File...");
 		try {
 			SecretKeySpec sks = new SecretKeySpec(key, "DES");
-			Cipher encrypt = Cipher.getInstance("DES/CFB8/NoPadding");
-			encrypt.init(Cipher.ENCRYPT_MODE, sks);
-			this.encryptionCipher = encrypt;
+			this.encryptionCipher = Cipher.getInstance("DES/CFB8/NoPadding");
+			this.encryptionCipher.init(Cipher.ENCRYPT_MODE, sks);
+			System.out.println("encrypt cipher initialized new...");
 
-			Cipher decrypt = Cipher.getInstance("DES/CFB8/NoPadding");
-			decrypt.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "DES"),
-					new IvParameterSpec(encrypt.getIV()));
-			this.decryptionCipher = decrypt;
+			this.decryptionCipher = Cipher.getInstance("DES/CFB8/NoPadding");
+			this.decryptionCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "DES"),
+					new IvParameterSpec(this.encryptionCipher.getIV()));
+			System.out.println("decrypt cipher initialized new...");
 
 			FileOutputStream fos = new FileOutputStream(this.keyFileLocation);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 
 			oos.writeObject(key);
-			oos.writeObject(encrypt.getIV());
+			oos.writeObject(this.encryptionCipher.getIV());
 
 			oos.close();
 			fos.close();
@@ -246,6 +251,14 @@ public class SecureSerializationHelper {
 			System.out.println("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		}
 		System.out.println("keyFile created!!");
+	}
+	
+	private static String printByteArray(byte[] payload) {
+		String text = "{";
+		for (byte octet: payload) {
+			text += Byte.toString(octet) + ", ";
+		}
+		return text += "}";
 	}
 
 }
