@@ -6,4 +6,9 @@ public class OtpCredential implements Credential {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public Type getCredentialType() {
+		return Type.PIN_OTP;
+	}
+
 }
