@@ -8,7 +8,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-public class ConfigService {
+public class ConfigService implements IConfig {
 	
 	 Config conf=null;
 
@@ -63,7 +63,7 @@ public class ConfigService {
 		return null;
 	}
 	
-	public  ArrayList <Property> getProperties(Section section) {
+	public  List <Property> getProperties(Section section) {
 		ArrayList<Property> propertyList = section.getProperty();
 		return propertyList;
 		
