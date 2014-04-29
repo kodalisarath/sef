@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT config (section+)>
+<!ELEMENT section (property+)>
+<!ATTLIST section
+	id ID #REQUIRED
+	description CDATA #REQUIRED
+>
+<!ELEMENT property EMPTY>
+<!ATTLIST property
+	key CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
