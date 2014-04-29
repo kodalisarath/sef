@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 import com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple;
 
-@Target (ElementType.FIELD)
+@Target ({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention (RetentionPolicy.RUNTIME)
 @Repeatable(Authorizations.class)
 public @interface AuthorizeIfAllowedFor {
