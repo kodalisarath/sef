@@ -18,6 +18,8 @@
 		<slf4j-version>1.7.7</slf4j-version>
 		<cxf-version>2.6.0</cxf-version>
 		<camel-version>2.10.0</camel-version>
+		<mybatis-version>2.10.0</mybatis-version>
+		<mybatis-spring-version>1.2.2</mybatis-spring-version>
 	</properties>
 
 	<dependencies>
@@ -102,6 +104,30 @@
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.4</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-dbcp</artifactId>
+            <version>7.0.50</version>
+         </dependency>
+		
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-mybatis</artifactId>
+			<version>${mybatis-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis-spring-version}</version>
 		</dependency>
 	</dependencies>
 	<build>

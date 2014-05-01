@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ericsson.sm.core.db.mapper.SubscriberMapper">
+
+	<resultMap id="SequenceResult" type="SmSequence">
+		<result property="seq" column="seq" />
+		<result property="rand" column="rand" />
+	</resultMap>
+	
+	<resultMap id="SubscriberResult" type="Subscriber">
+		<id property="userId" column="user_id" />
+		<result property="msisdn" column="msisdn" />
+		<result property="contractState" column="contract_state" />
+		<result property="pin" column="pin"/>
+		<result property="email" column="email"/>
+		<result property="imsi" column="imsi"/>
+		<result property="imeiSv" column="imei_sv"/>
+		<result property="paymentType" column="payment_type"/>
+		<result property="paymentResponsible" column="payment_responsible"/>
+		<result property="paymentParent" column="payment_parent"/>
+		<result property="billCycleDay" column="bill_cycle_day"/>
+		<result property="dateOfBirth" column="date_of_birth"/>
+		<result property="gender" column="gender"/>
+		<result property="prefferedLanguage" column="preffered_language"/>
+		<result property="registrationDate" column="registration_date"/>
+		<result property="activeDate" column="active_date"/>
+		<result property="ratePlan" column="rate_plan"/>
+		<result property="customerSegment" column="customer_segment"/>
+		<result property="lastModified" column="last_modified"/>
+		<result property="created" column="created"/>
+		<result property="deleted" column="deleted"/>
+	</resultMap>
+
+	<resultMap id="SubscriberMetaResult" type="SubscriberMeta">
+		<id property="userId" column="user_id" />
+		<result property="key" column="attribute_name" />
+		<result property="value" column="attribute_value" />
+		<result property="lastModified" column="last_modified"/>
+		<result property="created" column="created"/>
+	</resultMap>
+	
+	<resultMap id="SubscriberHistoryResult" type="SubscriberHistory">
+		<id property="userId" column="user_id" />
+		<result property="eventTimestamp" column="event_timestamp" jdbcType="TIMESTAMP"/>
+		<result property="attributeName" column="attribute_name" />
+		<result property="attributeOldValue" column="attribute_old_value" />
+		<result property="attributeNewValue" column="attribute_new_value" />
+	</resultMap>
+	
+	<select id="userSequence" resultMap="SequenceResult" parameterType="String">
+		select user_id_sequence.nextval as seq, #{rand} as rand from dual
+	</select>
+	
+	<insert id="createSubscriber" parameterType="Subscriber">
+		insert into subscriber (user_id,msisdn,created,deleted)
+		values
+		(#{userId},#{msisdn},#{created jdbcType=TIMESTAMP}, 0)
+	</insert>
+
+	<update id="deleteSubscriber" parameterType="String">
+		update subscriber set deleted = #{userId}
+		where user_id = #{userId}
+	</update>
+	
+	<select id="getSubscriber" resultMap="SubscriberResult" parameterType="String">
+		select s.user_id, s.msisdn, s.contract_state, s.pin, s.email, s.imsi, s.imei_sv, s.gender, s.active_date, s.rate_plan, s.customer_segment, s.last_modified, s.created, s.deleted
+		from subscriber s
+		where msisdn = #{msisdn} and deleted = 0
+	</select>
+	
+	<select id="getSubscriberByUserId" resultMap="SubscriberResult" parameterType="String">
+		select s.user_id, s.msisdn, s.contract_state, s.pin, s.email, s.imsi, s.imei_sv, s.gender, s.active_date, s.rate_plan, s.customer_segment, s.last_modified, s.created, s.deleted
+		from subscriber s
+		where s.user_id = #{userId} and deleted = 0
+	</select>
+
+	<update id="updateSubscriber" parameterType="Subscriber">
+		update subscriber 
+		<set>
+			contract_state=#{contractState jdbcType=VARCHAR},
+			customer_id=#{customerId jdbcType=VARCHAR},
+			contract_id=#{contractId jdbcType=VARCHAR},
+			msisdn=#{msisdn jdbcType=VARCHAR},
+			email=#{email jdbcType=VARCHAR},
+			imsi=#{imsi jdbcType=VARCHAR},
+			imei_sv=#{imeiSv jdbcType=VARCHAR},
+			payment_type=#{paymentType jdbcType=VARCHAR},
+			payment_responsible=#{paymentResponsible jdbcType=VARCHAR},
+			bill_cycle_day=#{billCycleDay jdbcType=VARCHAR},
+			date_of_birth=#{dateOfBirth jdbcType=TIMESTAMP},
+			gender=#{gender jdbcType=VARCHAR},
+			preferred_language=#{prefferedLanguage jdbcType=VARCHAR},
+			registration_date=#{registrationDate jdbcType=TIMESTAMP},
+			last_modified=#{lastModified jdbcType=TIMESTAMP},
+			active_date=#{activeDate jdbcType=TIMESTAMP},
+			rate_plan=#{ratePlan jdbcType=VARCHAR}
+		</set>
+		where user_id = #{userId}
+	</update>
+
+	<select id="getSubscriberMetas" resultMap="SubscriberMetaResult" parameterType="map">
+		select s.user_id, s.attribute_value, s.attribute_name, s.created, s.last_modified
+		from
+		subscriber_meta s
+		where user_id = #{userId}
+		and lower(attribute_name) in 
+		<foreach item="item" index="index" collection="keys" open="(" separator="," close=")">
+			lower(#{item})
+		</foreach>
+	</select>
+	
+	<select id="getAllSubscriberMetas" resultMap="SubscriberMetaResult" parameterType="String">
+		select s.user_id, s.attribute_value, s.attribute_name, s.created, s.last_modified
+		from
+		subscriber_meta s
+		where user_id = #{userId}
+	</select>
+	
+	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta">
+		insert into subscriber_meta (user_id, attribute_name, attribute_value, last_modified)
+		values
+		(#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
+	</insert>
+
+	<update id="updateSubscriberMeta" parameterType="SubscriberMeta">
+		update subscriber_meta set attribute_value = #{value jdbcType=VARCHAR}, last_modified=#{lastModified}
+		where user_id = #{userId}
+		and attribute_name = #{key}
+	</update>
+	
+	<insert id="insertSubscriberHistory" parameterType="SubscriberHistory">
+		insert into subscriber_history (user_id,event_timestamp, attribute_name, attribute_old_value, attribute_new_value)
+		values
+		(#{userId}, #{eventTimestamp}, #{attributeName}, #{attributeOldValue jdbcType=VARCHAR}, #{attributeNewValue jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="getSubscriberHistory" resultMap="SubscriberHistoryResult" parameterType="map">
+		select s.user_id,s.event_timestamp, s.attribute_name, s.attribute_old_value, s.attribute_new_value
+		from
+		subscriber_history s
+		where user_id = #{userId}
+		and attribute_name in 
+		<foreach item="item" index="index" collection="keys" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+	<insert id="bulkInsertSubscriberMeta" parameterType="java.util.List">
+		insert all
+        <foreach collection="list" item="item" separator="" index="index">
+        	into subscriber_meta (user_id, attribute_name, attribute_value, created) values (#{item.userId}, #{item.key}, #{item.value}, #{item.created}) LOG ERRORS REJECT LIMIT UNLIMITED
+        	
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+    
+    <insert id="bulkInsertSubscriber" parameterType="java.util.List">
+    	insert all
+        <foreach collection="list" item="item" separator="" index="index">
+        	into subscriber (user_id,msisdn,contract_state,customer_segment, created, deleted) values (#{item.userId},#{item.msisdn},#{item.contractState jdbcType=VARCHAR},#{item.customerSegment jdbcType=VARCHAR},#{item.created jdbcType=TIMESTAMP}, 0) LOG ERRORS REJECT LIMIT UNLIMITED
+        	
+        </foreach>
+        SELECT * FROM dual
+	</insert>
+</mapper>

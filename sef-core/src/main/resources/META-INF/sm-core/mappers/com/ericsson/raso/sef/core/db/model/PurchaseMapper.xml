@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+
+<mapper namespace="com.ericsson.sm.core.db.mapper.PurchaseMapper">
+
+	<resultMap id="SequenceResult" type="SmSequence">
+		<result property="seq" column="seq" />
+		<result property="rand" column="rand" />
+	</resultMap>
+
+	<resultMap id="PurchaseResult" type="Purchase">
+		<id property="eventId" column="event_id" />
+		<id property="purchaseId" column="purchase_id" />
+		<result property="purchaseType" column="purchase_type" />
+		<result property="productId" column="product_id" />
+		<result property="productDescription" column="product_description" />
+		<result property="price" column="price" />
+		<result property="vatPrice" column="vat_price" />
+		<result property="currencyCode" column="currency_code" />
+		<result property="vatCode" column="vat_code" />
+		<result property="purchaseCreated" column="purchase_created" />
+		<result property="recurrence" column="recurrence" />
+		<result property="recurrentPurchaseId" column="recurrent_purchase_id" />
+		<result property="recurrentProductId" column="recurrent_product_id" />
+		<result property="purchaseState" column="purchase_state" />
+		<result property="chargedUserId" column="charged_user_id" />
+		<result property="expiryTime" column="expiry_date" />
+		<result property="gift" column="gift" />
+	</resultMap>
+
+	<resultMap id="PurchaseMetaResult" type="PurchaseMeta">
+		<id property="eventId" column="event_id" />
+		<id property="purchaseId" column="purchase_id" />
+		<id property="key" column="meta_key" />
+		<result property="value" column="meta_value" />
+		<result property="transactionId" column="transaction_id" />
+	</resultMap>
+	
+	
+	<select id="purchaseSequence" resultMap="SequenceResult" parameterType="String">
+		select purchase_sequence.nextval as seq, #{rand} as rand from dual
+	</select>
+		
+	
+	<insert id="createPurchase" parameterType="Purchase">
+		insert into purchase (event_id,purchase_id,purchase_type,product_id,product_description,price,vat_price,currency_code,vat_code,purchase_created,recurrence,recurrent_purchase_id,recurrent_product_id,purchase_state,gift,charged_user_id, expiry_date)
+		values
+		(#{eventId jdbcType=VARCHAR},
+		#{purchaseId jdbcType=VARCHAR},
+		#{purchaseType jdbcType=VARCHAR},
+		#{productId jdbcType=VARCHAR},
+		#{productDescription jdbcType=VARCHAR},
+		#{price jdbcType=VARCHAR},
+		#{vatPrice jdbcType=VARCHAR},
+		#{currencyCode jdbcType=VARCHAR},
+		#{vatCode jdbcType=VARCHAR},
+		#{purchaseCreated jdbcType=TIMESTAMP},
+		#{recurrence jdbcType=VARCHAR},		
+		#{recurrentPurchaseId jdbcType=VARCHAR},
+		#{recurrentProductId jdbcType=VARCHAR},
+		#{purchaseState jdbcType=VARCHAR},
+		#{gift jdbcType=VARCHAR},
+		#{chargedUserId jdbcType=VARCHAR},
+		#{expiryTime jdbcType=TIMESTAMP})
+	</insert>
+
+	<delete id="deletePurchase" parameterType="String">
+		delete from purchase where purchase_id = #{purchaseId}
+	</delete>
+	
+	<delete id="deletePurchaseMeta" parameterType="String">
+		delete from purchase_meta where purchase_id = #{purchaseId}
+	</delete>
+	
+	<select id="getPurchase" resultMap="PurchaseResult" parameterType="String">
+		select p.event_id, p.purchase_id, p.purchase_type, p.product_id, p.product_description, p.price, p.vat_price, p.currency_code, p.vat_code, p.purchase_created, p.recurrence, p.recurrent_purchase_id, p.recurrent_product_id, p.purchase_state,p.charged_user_id, p.gift, p.expiry_date
+		from purchase p
+		where purchase_id = #{purchaseId}
+	</select>
+	
+	<select id="getUserPurchase" resultMap="PurchaseResult" parameterType="map">
+		select p.event_id, p.purchase_id, p.purchase_type, p.product_id, p.product_description, p.price, p.vat_price, p.currency_code, p.vat_code, p.purchase_created, p.recurrence, p.recurrent_purchase_id, p.recurrent_product_id, p.purchase_state,p.charged_user_id, p.gift, p.expiry_date 
+		from purchase p inner join commerce_trail c on (c.event_id = p.event_id)
+		where c.user_id = #{userId} and  p.expiry_date &gt; systimestamp and p.product_id = #{product_id}
+	</select>
+	
+	<select id="getPurchaseByEventId" resultMap="PurchaseResult" parameterType="String">
+		select p.event_id, p.purchase_id, p.purchase_type, p.product_id, p.product_description, p.price, p.vat_price, p.currency_code, p.vat_code, p.purchase_created, p.recurrence, p.recurrent_purchase_id, p.recurrent_product_id, p.purchase_state,p.charged_user_id, p.gift, p.expiry_date
+		from purchase p
+		where event_id = #{eventId}
+	</select>
+
+	<select id="getPurchaseMetas" resultMap="PurchaseMetaResult" parameterType="map">
+		select pm.event_id, pm.purchase_id, pm.transaction_id, pm.meta_key, pm.meta_value
+		from
+		purchase_meta pm
+		where purchase_id = #{purchaseId}
+		and meta_key in 
+		<foreach item="item" index="index" collection="keys" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+	<insert id="insertPurchaseMeta" parameterType="PurchaseMeta">
+		insert into purchase_meta (event_id, purchase_id, meta_key, meta_value, transaction_id)
+		values
+		(#{eventId jdbcType=VARCHAR}, 
+		#{purchaseId jdbcType=VARCHAR}, 
+		#{key jdbcType=VARCHAR}, 
+		#{value jdbcType=VARCHAR}, 
+		#{transactionId jdbcType=VARCHAR})
+	</insert>
+</mapper>

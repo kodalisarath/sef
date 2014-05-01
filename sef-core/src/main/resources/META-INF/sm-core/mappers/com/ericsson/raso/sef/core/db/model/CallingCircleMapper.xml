@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ericsson.sm.core.db.mapper.CallingCircleMapper">
+
+	<resultMap type="CallingCircle" id="CallingCircleResult">
+		<result column="ID" property="id"></result>
+		<result column="APARTY" property="aparty"></result>
+		<result column="BPARTY" property="bparty"></result>
+		<result column="PRODUCT_ID" property="iLProductId"></result>
+		<result column="RELATIONSHIP" property="relationship"></result>
+		<result column="PURCHASE_REFERENCE" property="purchaseReference"></result>
+		<result column="EXPIRY_TIME" property="expiryTime"></result>
+		<result column="CREATION_TIME" property="creationTime"></result>
+		<result column="DELETED" property="deleted"></result>
+	</resultMap>
+	
+	<resultMap id="SequenceResult" type="SmSequence">
+		<result property="seq" column="seq" />
+		<result property="rand" column="rand" />
+	</resultMap>
+	
+	<insert id="createCallingCircle" parameterType="CallingCircle">
+		insert into
+		CALLINGCIRCLE
+		(id,aparty,bparty,product_id,relationship,purchase_reference,expiry_time,creation_time,deleted)
+		values
+		(#{id},
+		#{aparty jdbcType=VARCHAR},
+		#{bparty jdbcType=VARCHAR},
+		#{iLProductId jdbcType=VARCHAR},
+		#{relationship jdbcType=VARCHAR},
+		#{purchaseReference jdbcType=VARCHAR},
+		#{expiryTime jdbcType=TIMESTAMP},
+		#{creationTime jdbcType=TIMESTAMP},0)
+	</insert>
+
+	<select id="callingCircleSequence" resultMap="SequenceResult" parameterType="String">
+		select calling_circle_sequence.nextval as seq, #{rand} as rand from dual
+	</select>
+	
+	<select id="findIdenticalCircles" resultMap="CallingCircleResult" parameterType="CallingCircle">
+		select c.*
+		from callingcircle c
+		where deleted = 0
+		 <if test="iLProductId != null">
+			and product_id=#{iLProductId jdbcType=VARCHAR}
+		 </if>
+		 <if test="aparty != null">
+			and aparty = #{aparty jdbcType=VARCHAR} 
+		 </if>
+		  <if test="bparty != null">
+			and bparty=#{bparty jdbcType=VARCHAR} 
+		  </if>
+		  <if test="relationship != null">
+			and relationship=#{relationship jdbcType=VARCHAR} 
+		  </if>
+		   <if test="id != 0">
+			and id=#{id} 
+		  </if>
+	</select>
+	
+	<select id="findAllMemberMemberCircles" resultMap="CallingCircleResult" parameterType="CallingCircle">
+		select c.*
+		from callingcircle c
+		where aparty = #{aparty jdbcType=VARCHAR} 
+			and bparty=#{bparty jdbcType=VARCHAR} 
+			and relationship='MEMBER_MEMBER' 
+			and product_id=#{iLProductId jdbcType=VARCHAR}
+			and deleted = 0
+		union
+		select c.*
+		from callingcircle c
+		where aparty = #{bparty jdbcType=VARCHAR} 
+			and bparty=#{aparty jdbcType=VARCHAR} 
+			and relationship='MEMBER_MEMBER' 
+			and product_id=#{iLProductId jdbcType=VARCHAR}
+			and deleted = 0
+	</select>
+
+	<update id="updateCallingCircle" parameterType="CallingCircle">
+		update callingcircle c 
+		set c.expiry_time=#{expiryTime jdbcType=TIMESTAMP},
+		    c.purchase_reference=#{purchaseReference jdbcType=VARCHAR}
+		where c.id = #{id} and deleted = 0
+	</update>
+
+	<update id="removeCallingCircle" parameterType="long">
+		update callingcircle set deleted = #{id}
+		where id = #{id}
+	</update>
+
+</mapper>

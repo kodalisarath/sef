@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ericsson.sm.core.db.mapper.QuartzMapper">
+
+	<insert id="bulkInsertJobDetails" parameterType="java.util.List">
+		insert all
+        <foreach collection="list" item="item" separator="" index="index">
+        	into QRTZ_JOB_DETAILS (SCHED_NAME, JOB_NAME, JOB_GROUP, JOB_CLASS_NAME, IS_DURABLE, IS_NONCONCURRENT, IS_UPDATE_DATA, REQUESTS_RECOVERY, JOB_DATA) values('activation-scheduler', #{item.jobName},'DEFAULT', #{item.jobClassName}, 0,0,0,0, #{item.jobData}) LOG ERRORS REJECT LIMIT UNLIMITED
+            into QRTZ_TRIGGERS (SCHED_NAME, TRIGGER_NAME, TRIGGER_GROUP, JOB_NAME, JOB_GROUP, NEXT_FIRE_TIME, PREV_FIRE_TIME, PRIORITY, TRIGGER_STATE, TRIGGER_TYPE, START_TIME, END_TIME, MISFIRE_INSTR) values('activation-scheduler', #{item.triggerName}, 'DEFAULT',#{item.jobName},'DEFAULT', #{item.nextFireTime}, -1, 5, 'WAITING','SIMPLE', #{item.startTime}, 0, 0) LOG ERRORS REJECT LIMIT UNLIMITED
+       		into QRTZ_SIMPLE_TRIGGERS (SCHED_NAME, TRIGGER_NAME, TRIGGER_GROUP, REPEAT_COUNT, REPEAT_INTERVAL, TIMES_TRIGGERED) values ('activation-scheduler', #{item.triggerName}, 'DEFAULT', 0, 0, 0) LOG ERRORS REJECT LIMIT UNLIMITED
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+</mapper>

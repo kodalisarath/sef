@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+	  <setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	
+	<typeAliases>
+		
+		<typeAlias alias="RolePermissionMappingDto" type="com.ericsson.sm.core.db.model.RolePermissionMappingDto"/>
+		<typeAlias alias="RoleAssignDto" type="com.ericsson.sm.core.db.model.RoleAssignDto" />
+		<typeAlias alias="Role" type="com.ericsson.sm.core.db.model.Role" />
+		<typeAlias alias="Permission" type="com.ericsson.sm.core.db.model.Permission" />
+		<typeAlias alias="Subscriber" type="com.ericsson.sm.core.db.model.Subscriber" />
+		<typeAlias alias="SubscriberMeta" type="com.ericsson.sm.core.db.model.SubscriberMeta" />
+		<typeAlias alias="SubscriberHistory" type="com.ericsson.sm.core.db.model.SubscriberHistory" />
+		<typeAlias alias="ProviderSLARequest" type="com.ericsson.sm.core.db.model.ProviderSLARequest" />
+		<typeAlias alias="Purchase" type="com.ericsson.sm.core.db.model.Purchase" />
+		<typeAlias alias="PurchaseMeta" type="com.ericsson.sm.core.db.model.PurchaseMeta" />
+		<typeAlias alias="CommerceTrail" type="com.ericsson.sm.core.db.model.CommerceTrail" />
+		<typeAlias alias="Ticket" type="com.ericsson.sm.core.db.model.Ticket" />
+		<typeAlias alias="TicketMeta" type="com.ericsson.sm.core.db.model.TicketMeta" />
+		<typeAlias alias="TicketUsage" type="com.ericsson.sm.core.db.model.TicketUsage" />
+		<typeAlias alias="TicketUsageMeta" type="com.ericsson.sm.core.db.model.TicketUsageMeta" />
+		<typeAlias alias="ScheduledRequest" type="com.ericsson.sm.core.db.model.ScheduledRequest"/>
+		<typeAlias alias="ScheduledRequestMeta" type="com.ericsson.sm.core.db.model.ScheduledRequestMeta" />
+		<typeAlias alias="SmSequence" type="com.ericsson.sm.core.db.model.SmSequence" />
+
+		<typeAlias alias="Provider" type="com.ericsson.sm.core.db.model.Provider" />
+		<typeAlias alias="ProviderMeta" type="com.ericsson.sm.core.db.model.ProviderMeta" />
+		<typeAlias alias="Agreement" type="com.ericsson.sm.core.db.model.Agreement" />
+		<typeAlias alias="AgreementMeta" type="com.ericsson.sm.core.db.model.AgreementMeta" />
+		<typeAlias alias="AgreementDto" type="com.ericsson.sm.core.db.model.AgreementDto" />
+
+		<typeAlias alias="CallingCircle" type="com.ericsson.sm.core.db.model.CallingCircle" />
+		<typeAlias alias="JobDetail" type="com.ericsson.sm.core.db.model.JobDetail" />
+
+	</typeAliases>
+
+	<typeHandlers>
+		<typeHandler javaType="org.joda.time.DateTime" handler="com.ericsson.sm.core.db.typehandler.DateTimeTypeHandler" />
+		<typeHandler javaType="com.ericsson.sm.core.db.model.ContractState" handler="com.ericsson.sm.core.db.typehandler.ContractStateTypeHandler" />
+		<typeHandler javaType="com.ericsson.sm.core.db.model.CurrencyCode" handler="com.ericsson.sm.core.db.typehandler.CurrencyCodeTypeHandler" />
+		<typeHandler javaType="com.ericsson.sm.core.db.model.PurchaseType" handler="com.ericsson.sm.core.db.typehandler.PurchaseTypeTypeHandler" />
+		<typeHandler javaType="com.ericsson.sm.core.db.model.PurchaseState" handler="com.ericsson.sm.core.db.typehandler.PurchaseStateTypeHandler" />
+		<typeHandler javaType="com.ericsson.sm.core.db.model.SubscriptionLifeCycleEvent" handler="com.ericsson.sm.core.db.typehandler.SubscriptionLifeCycleEventHandler" />
+		<typeHandler javaType="com.ericsson.sm.core.db.model.ScheduledRequestStatus" handler="com.ericsson.sm.core.db.typehandler.ScheduledRequestStatusTypeHandler" />
+	</typeHandlers>
+	
+	
+</configuration>

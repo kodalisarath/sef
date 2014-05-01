@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.ericsson.sm.core.db.mapper.TicketUsageMapper">
+
+	<resultMap id="TicketUsageResult" type="TicketUsage">
+		<id property="ticketUsageId" column="ticket_usage_id" />
+		<result property="ticketId" column="ticket_id" />
+		<result property="eventId" column="event_id" />
+		<result property="descriptionEn" column="descriptionn_en" />
+		<result property="created" column="created" />
+		<result property="consumedUnits" column="consumed_units" />
+	</resultMap>
+
+	<resultMap id="TicketUsageMetaResult" type="TicketUsageMeta">
+		<id property="ticketUsageId" column="ticket_usage_id" />
+		<id property="key" column="meta_key" />
+		<result property="value" column="meta_value" />
+	</resultMap>
+	
+	<insert id="createTicketUsage" parameterType="TicketUsage">
+		insert into ticket_usage (ticket_id,event_id,description_en,created,consumed_units)
+		values
+		(#{ticketId jdbcType=VARCHAR}, #{eventId jdbcType=VARCHAR}, #{descriptionEn jdbcType=VARCHAR}, #{created jdbcType=TIMESTAMP}, #{consumedUnits jdbcType=VARCHAR})
+	</insert>
+
+	<delete id="deleteTicketUsage" parameterType="String">
+		delete from ticket_usage where ticket_usage_id = #{ticketUsageId}
+	</delete>
+	
+	<delete id="deleteTicketUsageMeta" parameterType="String">
+		delete from ticket_usage_meta where ticket_usage_id = #{ticketUsageId}
+	</delete>
+	
+	<select id="getTicketUsage" resultMap="TicketUsageResult" parameterType="String">
+		select t.ticket_usage_id, t.ticket_id, t.event_id, t.description_en, t.created, t.consumed_units
+		from ticket_usage t
+		where ticket_usage_id = #{ticketUsageId}
+	</select>
+	
+	<update id="updateTicketUsage" parameterType="TicketUsage">
+		update ticket_usage 
+		<set>
+		<if test="ticketUsageId != null">ticket_usage_id=#{ticketUsageId jdbcType=VARCHAR},</if>
+		<if test="eventId != null">event_id=#{eventId jdbcType=VARCHAR},</if>
+		<if test="ticketId != null">ticket_id=#{ticket_id jdbcType=VARCHAR},</if>
+		<if test="descriptionEn != null">description_en=#{descriptionEn jdbcType=VARCHAR},</if>
+		<if test="created != null"> created=#{created jdbcType=TIMESTAMP},</if>
+		<if test="consumedUnits != null"> consumed_units=#{consumedUnits jdbcType=VARCHAR},</if>
+		</set>
+		where ticket_usage_id = #{ticketUsageId}
+	</update>
+
+	<select id="getTicketUsageMetas" resultMap="TicketUsageMetaResult" parameterType="map">
+		select tm.ticket_usage_id, tm.meta_key, tm.meta_value
+		from
+		ticket_usage_meta tm
+		where ticket_usage_id = #{ticketUsageId}
+		and meta_key in 
+		<foreach item="item" index="index" collection="keys" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+
+	<insert id="insertTicketUsageMeta" parameterType="TicketUsageMeta">
+		insert into ticket_usage_meta (ticket_usage_id, meta_key, meta_value)
+		values
+		(#{ticketUsageId jdbcType=VARCHAR}, #{key jdbcType=VARCHAR}, #{value jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateTicketUsageMeta" parameterType="TicketUsageMeta">
+		update ticket_usage_meta
+		<set>
+		<if test="value != null">meta_value=#{value jdbcType=VARCHAR},</if>
+		</set>
+		where ticket_usage_id = #{ticketUsageId}
+		and meta_key = #{key}
+		
+	</update>
+	
+</mapper>
+        
