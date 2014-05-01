@@ -16,7 +16,7 @@
 		</join>
 	</network>
 
-	<map name="throttle-counter-store">
+	<map name="sla.mgmt.store">
 		<backup-count>1</backup-count>
 		<time-to-live-seconds>1200</time-to-live-seconds>
 		<max-idle-seconds>0</max-idle-seconds>
