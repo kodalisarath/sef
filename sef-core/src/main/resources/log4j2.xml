@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="sef-bes.production" status="all" strict="false">
+
+	<Properties>
+		<Property name="solution">SMART SEF IL - TNT Swap</Property>
+	</Properties>
+
+	<ThresholdFilter level="ALL" onMatch="NEUTRAL" onMismatch="DENY" />
+
+	<Appenders>
+		<Appender name="Alarm" type="Snmp">
+	
+
+	 <!--
+        This appender sends SNMPv2 traps to a given SNMP listener
+
+        Note on trap OID: The RASO CAC department has its own OID branch within the Ericsson
+        Enterprise SNMP branch.
+
+        Each application must have it own unique OID. Such an OID 
+        can be requested from the RASO CAC responsible (Sathya Narayanan S).
+
+        Each application must also create a MIB file that defines the OID and describes the 
+        trap. This MIB file can be loaded by the OSS management system. Templates for this 
+        MIB file are available from the "Process Description and OID Allocation SNMP SINL 
+        Branch" document available from the "Process Baseline/Overview" document . Or ask 
+        the SNMP responsible.
+
+        In this configuration file, the unique OID must be set for the following parameter
+        names: "ApplicationTrapOID", "ErrorCodeOID", "ErrorDescriptionOID", "SeverityOID", 
+        "TimestampOID" and "AdditionalTextOID". For these parameters, replace the "x" in 
+        the OID value with the correct value.
+
+        OID: 1.3.6.1.4.1.193  - Ericsson 
+             .255             - RASO CAC
+             .2               - applications
+             .x               - application
+             .0.1             - trap
+             
+       Each deployment must secure its own Application ID and update the position indicated
+       by 'x' above. Fix the OID parameters below for - applicationTrapOid, errorCodeOid,
+       errorDescriptionOid, severityOid, timestampOid, additionalTextOid.   
+       
+       Using 'useClearanceFor' parameter, the logger will be  clearance aware, only one 1 
+       trap will be send per errocode until the error code will be cleared.
+       
+       The parameter takes a comma seperated list of errorcodes (like "1101,1201,1202") or "all" or "none"
+           
+
+    -->
+			<managementHost>NMS_SERVER_IP </managementHost>
+			<managementPort>NMS_SERVER_PORT</managementPort>
+			<communityString>Ericsson/RASO/CAC</communityString>
+			<timestampFormat>yyyy-MM-dd HH:mm:ss</timestampFormat>
+			<useClearanceFor>all</useClearanceFor>
+			
+			<nodeNameOid>1.3.6.1.2.1.1.5.0</nodeNameOid>
+			<nodeName>HOSTNAME_OF_HOST/GUEST/ZONE/VM</nodeName>
+			
+			<nodeLocationOid>1.3.6.1.2.1.1.6.0</nodeLocationOid>
+			<nodeLocation>IP/DNS_ADDRESS_OF_NODE/HOST/GUEST/ZONE/VM</nodeLocation>
+			
+			<applicationTrapOid>1.3.6.1.4.1.193.255.2.1.0.1</applicationTrapOid>
+			<severityOid>1.3.6.1.4.1.193.255.2.1.1.1</severityOid>
+			<timestampOid>1.3.6.1.4.1.193.255.2.1.1.2</timestampOid>
+			<errorCodeOid>1.3.6.1.4.1.193.255.2.1.1.3</errorCodeOid>
+			<errorDescriptionOid>1.3.6.1.4.1.193.255.2.1.1.4</errorDescriptionOid>
+			<additionalTextOid>1.3.6.1.4.1.193.255.2.1.1.5</additionalTextOid>
+			<stackTraceOid>1.3.6.1.4.1.193.255.2.1.1.6</stackTraceOid>
+			
+			
+			<Layout Pattern="(%F:%M:%L) - %m%n" Type="PatternLayout">
+				<Pattern>(%F:%M:%L) - %m%n</Pattern>
+			</Layout>
+
+			<Filters>
+				<Filter level="DEBUG" marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" type="MarkerFilter" />
+			</Filters>
+		</Appender>
+		
+		<Appender name="Application" type="RollingFile" fileName="C:\\Projects\\app.log" filePattern="app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+			<Layout Pattern="%d %p %C{1.} [%t] %m%n" Type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+
+			<DefaultRolloverStrategy max="20" />
+
+			<Filters>
+				<Filter minLevel="DEBUG" maxLevel="ERROR" marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" type="RangeFilter" />
+			</Filters>
+		</Appender>
+		
+		<Appender name="StackTrace" type="RollingFile" fileName="C:\\Projects\\trace.log" filePattern="trace-%d{yyyy-MM-dd-HH}-%i.log.gz">
+			<Layout Pattern="%d %p %C{1.} [%t] %m%n" Type="PatternLayout">
+				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			</Layout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+			<Filters>
+				<Filter level="TRACE" onMatch="ACCEPT" onMismatch="DENY" type="AtomicFilter" />
+			</Filters>
+		</Appender>
+		
+		<Appender name="EDR" type="RollingFile" fileName="logs/sef-bes.edr" filePattern="logs/edr-%d{yyyy-MM-dd-HH}.edr.gz">
+			<Layout Pattern="%d{yyyyMMddHHmmss.SSS},%m%n" Type="PatternLayout">
+				<Pattern>%d{yyyyMMddHHmmss.SSS},%m%n</Pattern>
+			</Layout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+			<Filters>
+				<Filter level="TRACE" onMatch="ACCEPT" onMismatch="DENY" type="AtomicFilter" />
+			</Filters>
+		</Appender>
+	</Appenders>
+
+	<Loggers>
+		<Logger additivity="false" level="FATAL" name="NMS">
+			<Filters>
+				<Filter level="FATAL" marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" type="MarkerFilter" />
+			</Filters>
+			<AppenderRef ref="Alarm">Alarm</AppenderRef>
+		</Logger>
+		
+		<Logger additivity="false" level="ALL" name="File">
+			<Filters>
+				<Filter level="FATAL" marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" type="MarkerFilter" />
+			</Filters>
+			<AppenderRef ref="Application">Application</AppenderRef>
+			<AppenderRef ref="StackTrace">StackTrace</AppenderRef>
+			<AppenderRef ref="EDR">EDR</AppenderRef>
+			
+		</Logger>
+		
+		
+		<Root level="info">
+			<AppenderRef ref="Application">Application</AppenderRef>
+		</Root>
+	</Loggers>
+</Configuration>
