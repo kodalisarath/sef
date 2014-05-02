@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.core.db.mapper;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.ericsson.raso.sef.core.db.model.Agreement;
 import com.ericsson.raso.sef.core.db.model.AgreementDto;
@@ -32,6 +33,6 @@ public interface AgreementMapper {
 
 	public Collection<AgreementMeta> getAllAgreementMetas();
 	
-	public String getProviderSla(String providerId);
+	public String getProviderSla(Map<String, String> map);
 	
 }

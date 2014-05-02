@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.core.db.service;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.ericsson.raso.sef.core.db.model.Agreement;
 import com.ericsson.raso.sef.core.db.model.AgreementDto;
@@ -54,5 +55,5 @@ public interface UserManagementService {
 	 
 	public Provider getProviderLoginCount(String providerId);
 	
-	public String getProviderSla(String providerId);
+	public String getProviderSla(Map<String, String> map);
 }

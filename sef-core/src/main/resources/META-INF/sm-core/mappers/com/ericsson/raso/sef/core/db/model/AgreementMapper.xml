@@ -45,10 +45,10 @@
 		where m.agreement_id = a.agreement_id
 	</select>
 	
-	<select id="getProviderSla" resultType="String" parameterType="String">
+	<select id="getProviderSla" resultType="map" parameterType="String">
 		select m.VALUE sla 
 		from agreement a,agreement_meta m 
-		where a.PROVIDER_ID = #{providerId} and  m.agreement_id = a.agreement_id  
+		where a.PROVIDER_ID = #{providerId} and  m.agreement_id = a.agreement_id  and m.meta = #{slaMeta}
 	</select>
 	
 	<select id="getAllAgreements" resultMap="AllAgreementResult">

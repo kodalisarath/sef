@@ -3,6 +3,7 @@ package com.ericsson.raso.sef.core.db.service.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
@@ -170,7 +171,7 @@ public class UserManagemetServiceImpl implements UserManagementService {
 	}
 
 	@Override
-	public String getProviderSla(String providerId) {
-		return agreementMapper.getProviderSla(providerId);
+	public String getProviderSla(Map<String, String> map) {
+		return agreementMapper.getProviderSla(map);
 	}
 }
