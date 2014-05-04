@@ -11,7 +11,8 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 public class Watergate implements IWatergate {
 
 	private CloudAwareCluster cluster;
-	private final String SlaManagementStore = "sla.mgmt.store";
+	private static final String SlaManagementStore = "sla.mgmt.store";
+	private static final String SYSTEM = "SYSTEM";
 	private Sla systemSla = null;
 	
 	public Watergate(CloudAwareCluster cluster) {
@@ -54,7 +55,7 @@ public class Watergate implements IWatergate {
 			// Check counter expired or never created
 			if (counter != null) {
 				if (counter.isStillActive()) {
-					//Check if counter still under allowed limit
+					//Check if counter is still under allowed limit
 					hasLimit = counter.hasLimit();
 				} else {
 					counter.reset();
@@ -81,14 +82,13 @@ public class Watergate implements IWatergate {
 
 	private Sla getSystemSla() throws FrameworkException {
 		SecureSerializationHelper fileSerializer = new SecureSerializationHelper();
-		//TODO: Add location resolution for System SLA file
-		Sla sla = (Sla) fileSerializer.fetchFromFile("");
-		return null;
+		Sla sla = (Sla) fileSerializer.fetchFromFile(getLicenseFileLocation());
+		return sla;
 	}
 	
 	private Sla getUserSla(String userId,String operationName) throws FrameworkException {
 		
-		if(userId.equalsIgnoreCase("SYSTEM")) {
+		if(userId.equalsIgnoreCase(SYSTEM)) {
 			if(systemSla == null) {
 			systemSla = getSystemSla();
 			}
@@ -111,5 +111,11 @@ public class Watergate implements IWatergate {
 			}
 		}
 		return sla;
+	}
+	
+	private String getLicenseFileLocation() {
+		String location = null;
+		//TODO: Add location resolution for System SLA file
+		return location;
 	}
 }

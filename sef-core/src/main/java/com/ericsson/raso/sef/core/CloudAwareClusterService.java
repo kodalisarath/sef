@@ -15,13 +15,14 @@ import com.hazelcast.core.IAtomicLong;
 public class CloudAwareClusterService {
 
 	private HazelcastInstance instance;
+	private static final String CONFIG_HOME = "CONFIG_HOME";
 	
 	public CloudAwareClusterService() {
 		
 	}
 	
 	public void start() {
-		String configHome = System.getenv("CLUSTER_CONFIG");
+		String configHome = System.getenv(CONFIG_HOME);
 		try {
 			FileInputStream fis = new FileInputStream(configHome + "hazelcast.xml");
 			Config config = new XmlConfigBuilder(fis).build();
