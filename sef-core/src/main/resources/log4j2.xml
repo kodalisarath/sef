@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration name="sef-bes.production" status="all" strict="false">
+<Configuration name="sef-bes.production" status="all" strict="true">
 
 	<Properties>
 		<Property name="solution">SMART SEF IL - TNT Swap</Property>
