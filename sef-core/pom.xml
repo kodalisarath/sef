@@ -2,134 +2,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
 	<groupId>com.ericsson.sef</groupId>
-	<artifactId>sef-core</artifactId>
+	<artifactId>sef</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>sef-core</artifactId>
 	<packaging>bundle</packaging>
 
 	<name>sef-core</name>
-	<url>http://maven.apache.org</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<wss4j.version>1.5.6</wss4j.version>
-		<hazelcast.version>3.2</hazelcast.version>
-		<log4j-version>2.0-rc1</log4j-version>
-		<slf4j-version>1.7.7</slf4j-version>
-		<cxf-version>2.6.0</cxf-version>
-		<camel-version>2.10.0</camel-version>
-		<mybatis-version>2.10.0</mybatis-version>
-		<mybatis-spring-version>1.2.2</mybatis-spring-version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${log4j-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j-version}</version>
-		</dependency>
-		
-		<dependency>
-    		<groupId>org.apache.logging.log4j</groupId>
-    		<artifactId>log4j-slf4j-impl</artifactId>
-    		<version>2.0-rc1</version>
-  		</dependency>
-		
-		<dependency>
-			<groupId>org.snmp4j</groupId>
-			<artifactId>snmp4j</artifactId>
-			<version>2.2.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-core</artifactId>
-			<version>${camel-version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-spring</artifactId>
-			<version>${camel-version}</version>
-		</dependency>
-        
-        <dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http-jetty</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-ws-security</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-bindings-soap</artifactId>
-			<version>${cxf-version}</version>
-		</dependency>    
-            
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast</artifactId>
-			<version>${hazelcast.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast-client</artifactId>
-			<version>${hazelcast.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.4</version>
-		</dependency>
-		
-		<dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-dbcp</artifactId>
-            <version>7.0.50</version>
-         </dependency>
-		
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-mybatis</artifactId>
-			<version>${mybatis-version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis-spring</artifactId>
-			<version>${mybatis-spring-version}</version>
-		</dependency>
-	</dependencies>
+	
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<plugins>
