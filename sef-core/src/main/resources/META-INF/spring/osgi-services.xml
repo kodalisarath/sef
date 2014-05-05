@@ -8,13 +8,11 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-    <bean name=
 
-        class=
 
 	<osgi:service id="IConfigService" ref=""
         interface="com.javaworld.sample.osgi.spring.contact.IConfig">
     </osgi:service>
 
-    </bean>
+</beans>
 

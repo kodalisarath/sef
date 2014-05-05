@@ -11,9 +11,7 @@
    
    <bean name="configservice"
    
-   	class = "com.ericsson.raso.sef.core.config.ConfigService"
+   	class = "com.ericsson.raso.sef.core.config.ConfigService"/>
    	
    	
-</bean>
-
 </beans>
