@@ -6,6 +6,8 @@ import com.ericsson.raso.sef.auth.Group;
 import com.ericsson.raso.sef.auth.User;
 import com.ericsson.raso.sef.auth.permissions.Privilege;
 
+//TODO: Refactor (rename) this interface to indicate User Management Service (IUserAdmin)
+
 public interface AuthService {
 	
 	public User fetchIdentity(String name);
