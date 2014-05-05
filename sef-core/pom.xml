@@ -21,6 +21,12 @@
 		<mybatis-version>2.10.0</mybatis-version>
 		<mybatis-spring-version>1.2.2</mybatis-spring-version>
 		<spring-version>3.1.4.RELEASE</spring-version>
+		<osgi-export-package>
+		com.ericsson.raso.sef.core,
+		com.ericsson.raso.sef.auth.*,
+		com.ericsson.raso.sef.core.config,
+		com.ericsson.raso.sef.logging
+		</osgi-export-package>
 	</properties>
 
 	<dependencies>
@@ -160,6 +166,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
+						<Export-Package>${osgi-export-package}</Export-Package>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
