@@ -5,13 +5,13 @@ import java.io.Serializable;
 import com.ericsson.raso.sef.ruleengine.ExternDataUnitTask;
 
 
-public final class FetchRequestContextTask extends ExternDataUnitTask<RequestContext> implements Serializable {
+public final class FetchRequestContextTask extends ExternDataUnitTask<ReqContext> implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	private String requestId;
 	
-	private RequestContext requestContext;
+	private ReqContext requestContext;
 	
 	public FetchRequestContextTask() {
 	}
@@ -21,7 +21,7 @@ public final class FetchRequestContextTask extends ExternDataUnitTask<RequestCon
 	}
 
 	@Override
-    public RequestContext execute() throws FrameworkException {
+    public ReqContext execute() throws FrameworkException {
     	//TODO: update when Distributed Cache Services is available...... requestContext = new DistributedRequestContext(requestId);
         return requestContext;
     }

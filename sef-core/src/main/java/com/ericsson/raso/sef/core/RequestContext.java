@@ -1,11 +1,46 @@
 package com.ericsson.raso.sef.core;
 
-public interface RequestContext {
-	
-	<T> T get(String key);
+import java.util.Map;
 
-	<T> void put(String key, T value);
+import com.ericsson.raso.sef.auth.Actor;
+
+public class RequestContext {
 	
-	<T> void putTransient(String key, T value);
+	private Actor actor = null;
+	private String interfaceName = null;
+	private String primitive = null;
+	private Map<String, Object> requestParameters = null;
+	private Map<String, Object> inProcess = null;
+	
+	public Actor getActor() {
+		return actor;
+	}
+	public void setActor(Actor actor) {
+		this.actor = actor;
+	}
+	public String getInterfaceName() {
+		return interfaceName;
+	}
+	public void setInterfaceName(String interfaceName) {
+		this.interfaceName = interfaceName;
+	}
+	public String getPrimitive() {
+		return primitive;
+	}
+	public void setPrimitive(String primitive) {
+		this.primitive = primitive;
+	}
+	public Map<String, Object> getRequestParameters() {
+		return requestParameters;
+	}
+	public void setRequestParameters(Map<String, Object> requestParameters) {
+		this.requestParameters = requestParameters;
+	}
+	public Map<String, Object> getInProcess() {
+		return inProcess;
+	}
+	public void setInProcess(Map<String, Object> inProcess) {
+		this.inProcess = inProcess;
+	}
 
 }

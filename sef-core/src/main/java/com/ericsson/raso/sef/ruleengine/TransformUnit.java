@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.ericsson.raso.sef.core.FetchRequestContextTask;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.core.RequestContext;
+import com.ericsson.raso.sef.core.ReqContext;
 
 
 public final class TransformUnit implements Serializable {
@@ -42,7 +42,7 @@ public final class TransformUnit implements Serializable {
 		Object result = null;
 		try {
 			result = this.transform.apply(operand);
-			RequestContext requestContext = new FetchRequestContextTask().execute();
+			ReqContext requestContext = new FetchRequestContextTask().execute();
 			requestContext.putTransient(transformVariable, result);
 		} catch (TransformFailedException e) {
 			return false;
