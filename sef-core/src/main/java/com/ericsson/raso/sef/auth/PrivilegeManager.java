@@ -1,29 +1,20 @@
 package com.ericsson.raso.sef.auth;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.*;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple;
 import com.ericsson.raso.sef.auth.permissions.Permission;
 import com.ericsson.raso.sef.auth.permissions.Privilege;
+import com.ericsson.raso.sef.auth.service.IPrivilegeManager;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
-import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.*;
-
-public class PrivilegeManager {
+public class PrivilegeManager implements IPrivilegeManager {
 	
 	private String privilegesStoreLocation = null;
 	private Map<AuthorizationPrinciple, Privilege> privileges = null;
@@ -60,6 +51,10 @@ public class PrivilegeManager {
 		}			
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IPrivilegeManager#createPermission(com.ericsson.raso.sef.auth.permissions.Privilege)
+	 */
+	@Override
 	public boolean createPermission(Privilege privilege) throws AuthAdminException {
 		if (this.privileges == null) 
 			this.privileges = new HashMap<AuthorizationPrinciple, Privilege>();
@@ -79,6 +74,10 @@ public class PrivilegeManager {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IPrivilegeManager#readPermission(com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple)
+	 */
+	@Override
 	public Privilege readPermission(AuthorizationPrinciple principle) throws AuthAdminException {
 		if (principle == null)
 			throw new AuthAdminException("Specified Privilege was null");
@@ -90,6 +89,10 @@ public class PrivilegeManager {
 		throw new AuthAdminException("Specified Privilege [" + principle + "] cannot be found.");
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IPrivilegeManager#readPermission(java.lang.String)
+	 */
+	@Override
 	public Privilege readPermission(String principle) throws AuthAdminException {
 		if (principle == null)
 			throw new AuthAdminException("Specified Privilege was null");
@@ -107,6 +110,10 @@ public class PrivilegeManager {
 			
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IPrivilegeManager#updatePermission(com.ericsson.raso.sef.auth.permissions.Privilege)
+	 */
+	@Override
 	public boolean updatePermission (Privilege privilege) throws AuthAdminException {
 		if (this.privileges == null) {
 			throw new AuthAdminException("Specified Privilege [" + privilege + "] cannot be found to update.");
@@ -125,6 +132,10 @@ public class PrivilegeManager {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IPrivilegeManager#deletePermission(com.ericsson.raso.sef.auth.permissions.Privilege)
+	 */
+	@Override
 	public boolean deletePermission (Privilege privilege) throws AuthAdminException {
 		if (this.privileges == null) {
 			throw new AuthAdminException("Specified Privilege [" + privilege + "] cannot be found to delete.");

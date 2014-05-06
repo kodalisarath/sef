@@ -5,14 +5,13 @@ import java.lang.reflect.Proxy;
 
 import com.ericsson.raso.sef.auth.Authorizations;
 import com.ericsson.raso.sef.auth.AuthorizeIfAllowedFor;
+import com.ericsson.raso.sef.auth.service.AuthorizationProxy;
 
 public class AnnotationTest {
 
 	public static void main(String[] args) {
 		try {
-			ServiceContext pojo = new AnnotatedPojo();
-			AuthorizeMethod authorizeMethod = new AuthorizeMethod(pojo);
-			pojo = (ServiceContext) Proxy.newProxyInstance(AuthorizeMethod.class.getClassLoader(), AnnotatedPojo.class.getInterfaces(), authorizeMethod);
+			ServiceContext pojo = (ServiceContext) AuthorizationProxy.getInstance(new AnnotatedPojo(), ServiceContext.class);
 			System.out.println("Attempting annotations test....");
 
 			

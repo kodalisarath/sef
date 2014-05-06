@@ -186,4 +186,8 @@ public class Actor implements Serializable {
 		
 		return true;
 	}
+
+	public String getName() {
+		return name;
+	}
 }

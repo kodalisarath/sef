@@ -22,10 +22,7 @@ public class AnnotatedPojo implements ServiceContext {
 	@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_META, referenceValueInIdentity = "age")
 	public int		age		= 33;
 
-	@AuthorizeIfAllowedFor(permission = ACCESS_UPDATE, referenceValueInIdentity = "")
-	@AuthorizeIfAllowedFor(permission = SERVICE_CTXT_PRIMITIVE, referenceValueInIdentity = "")
-	public void testAnnotation(
-			@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_META, referenceValueInIdentity = "name") String name) {
+	public void testAnnotation(String name) {
 		this.name = name;
 		System.out.println("method executed successfully!!");
 	}

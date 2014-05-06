@@ -1,12 +1,17 @@
 package com.ericsson.raso.sef.auth;
 
+import com.ericsson.raso.sef.auth.service.IUserStore;
 import com.ericsson.raso.sef.core.FrameworkException;
 
-public class UserStore {
+public class UserStore implements IUserStore {
 	//TODO: implement the persistence with DB.
 
 
 
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IUserStore#createActor(com.ericsson.raso.sef.auth.Actor)
+	 */
+	@Override
 	public boolean createActor(Actor actor) throws FrameworkException {
 		//TODO: implement the following logic when DB layer is ready...
 		/*
@@ -19,6 +24,10 @@ public class UserStore {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IUserStore#updateActor(com.ericsson.raso.sef.auth.Actor)
+	 */
+	@Override
 	public boolean updateActor(Actor actor) throws FrameworkException {
 		//TODO: implement the following logic when DB layer is ready....
 		/*
@@ -32,6 +41,10 @@ public class UserStore {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IUserStore#deleteActor(com.ericsson.raso.sef.auth.Actor)
+	 */
+	@Override
 	public boolean deleteActor(Actor actor) throws FrameworkException {
 		//TODO: implement the following logic when DB layer is ready....
 		/*
@@ -45,7 +58,24 @@ public class UserStore {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.auth.IUserStore#readActor(java.lang.String)
+	 */
+	@Override
 	public Actor readActor(String actorName) throws FrameworkException {
+		//TODO: implement the following logic when DB layer is ready....
+		/*
+		 * 1. Query the DB Schema with the name of Actor and NOT the name of Identity/User.
+		 * 2. Ensure all the Identities are packed in POJO returned.
+		 * 3. Ensure all the Groups are packed in POJO returned.
+		 * 4. Ensure all the Privileges are packed in the POJO... Think of how you will do this since the privileges master is in serialized form and if you store all privileges in DB, you need to validate using the master!!
+		 */
+		
+		return null;
+	}
+
+	@Override
+	public String fetchReferenceMeta(String actorName, String metaName) throws FrameworkException {
 		//TODO: implement the following logic when DB layer is ready....
 		/*
 		 * 1. Query the DB Schema with the name of Actor and NOT the name of Identity/User.

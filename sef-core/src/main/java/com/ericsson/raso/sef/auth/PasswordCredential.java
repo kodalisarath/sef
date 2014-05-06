@@ -10,18 +10,27 @@ import com.ericsson.raso.sef.core.SecureSerializationHelper;
 public class PasswordCredential implements Credential {
 
 	private String		simplePassword	= null;
+	private byte[]		cipheredPassword = null;
 	private Algorithm	algorithm		= Algorithm.UNDEF;
+	
+	public PasswordCredential() {
+	}
+
+	public PasswordCredential(Algorithm algorithm) {
+		this.algorithm = algorithm;
+	}
 
 	public String getClearPassword() {
 		return this.simplePassword;
 	}
 
 	public byte[] getCipheredPassword() {
-		return null;
+		return this.cipheredPassword;
 	}
 
-	public void setPassword(String clearPassword) {
+	public void setPassword(String clearPassword) throws FrameworkException {
 		this.simplePassword = clearPassword;
+		this.cipheredPassword = this.encryptPassword(clearPassword);
 	}
 
 	@Override
