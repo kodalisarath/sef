@@ -5,25 +5,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Ruleset implements Action, Serializable {
+public class Rule implements Action, Serializable {
 	private static final long serialVersionUID = -6748802525923878678L;
 
 	private String name = null;
 	private LogicType logicGate = LogicType.AND;
 	private List<Action> ruleset = new ArrayList<Action>();
 
-	public Ruleset() { }
+	public Rule() { }
 
-	public Ruleset(String name) {
+	public Rule(String name) {
 		this.name = name;
 	}
 
-	public Ruleset(String name, ArrayList<Action> ruleset) {
+	public Rule(String name, ArrayList<Action> ruleset) {
 		this.name = name;
 		this.ruleset = ruleset;
 	}
 
-	public Ruleset(String name, LogicType logicGate, List<Action> ruleset) {
+	public Rule(String name, LogicType logicGate, List<Action> ruleset) {
 		this.name = name;
 		this.logicGate = logicGate;
 		this.ruleset = ruleset;
@@ -106,7 +106,7 @@ public class Ruleset implements Action, Serializable {
 			return true;
 		if (this.getClass() != obj.getClass())
 			return false;
-		Ruleset other = (Ruleset) obj;
+		Rule other = (Rule) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -122,7 +122,7 @@ public class Ruleset implements Action, Serializable {
 
 	@Override
 	public String toString() {
-		String toString = "Ruleset [name=" + name + ", rules=(";
+		String toString = "Rule [name=" + name + ", rules=(";
 		Iterator<Action> rules = this.ruleset.iterator();
 		while (rules.hasNext()) {
 			toString += rules.next().toString();
