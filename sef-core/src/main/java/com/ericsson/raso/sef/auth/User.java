@@ -1,9 +1,12 @@
 package com.ericsson.raso.sef.auth;
 
-public class User extends Identity {
-	
-	private Credential credential = null;
 
+
+public class User extends Identity {
+	private static final long serialVersionUID = 8710713213301954026L;
+
+	private Credential credential = null;
+	
 	public User(String name) {
 		super(name);
 	}
@@ -22,8 +25,4 @@ public class User extends Identity {
 		this.credential = credential;
 	}
 	
-	
-
-	
-
 }

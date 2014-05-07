@@ -3,6 +3,8 @@ package com.ericsson.raso.sef.auth;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.ericsson.raso.sef.auth.permissions.Privilege;
 
@@ -33,10 +35,12 @@ import com.ericsson.raso.sef.auth.permissions.Privilege;
  *
  */
 public abstract class Identity implements Serializable {
-	
+	private static final long serialVersionUID = 3580831121768547937L;
+
 	private String name = null;
 	private List<Privilege> privileges = null;
-	
+	private Map<String, Object> metas = null;
+
 	public Identity(String name) {
 		this.name = name;
 	}
@@ -71,7 +75,35 @@ public abstract class Identity implements Serializable {
 		this.name = name;
 	}
 	
+	public void addMeta(String metaName, Object value) throws AuthAdminException {
+		if (this.metas == null)
+			this.metas = new TreeMap<String, Object>();
+		
+		if (this.metas.containsKey(metaName))
+			throw new AuthAdminException("Duplicate Meta: " + metaName + " = " + value);
+		
+		this.metas.put(metaName, value);
+	}
 	
+	public void removeMeta(String metaName) throws AuthAdminException {
+		if (this.metas == null)
+			throw new AuthAdminException("Invalid Meta: " + metaName);
+		
+		if (!this.metas.containsKey(metaName))
+			throw new AuthAdminException("Invalid Meta: " + metaName);
+		
+		this.metas.remove(metaName);
+	}
+	
+	public Object getMeta(String metaName) {
+		return this.metas.get(metaName);
+	}
+	
+	public Map<String, Object> getMetas() {
+		return this.metas;
+	}
+	
+
 	
 
 }
