@@ -1,9 +1,9 @@
 package com.ericsson.raso.sef.auth;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.ericsson.raso.sef.auth.permissions.Privilege;
 
@@ -35,11 +35,13 @@ import com.ericsson.raso.sef.auth.permissions.Privilege;
  *
  */
 public class Actor implements Serializable {
-	
+	private static final long serialVersionUID = 2938904023241999441L;
+
 	private String name = null;
 	private Map<String, User> identities = null;
-	private Map<String, Group> memberships = new HashMap<String, Group>();
-	
+	private Map<String, Group> memberships = new TreeMap<String, Group>();
+	private Map<String, Object> metas = null;
+
 	public Actor(String name) {
 		this.name = name;
 	}
@@ -99,7 +101,7 @@ public class Actor implements Serializable {
 	
 	public boolean addIdentity(User userIdentity) throws AuthAdminException {
 		if (this.identities == null) {
-			this.identities = new HashMap<String, User>();
+			this.identities = new TreeMap<String, User>();
 		}
 		
 		if (this.identities.containsKey(userIdentity.getName())) {
@@ -160,7 +162,7 @@ public class Actor implements Serializable {
 			return false;
 		
 		if (this.memberships == null)
-			this.memberships = new HashMap<String, Group>();
+			this.memberships = new TreeMap<String, Group>();
 		
 		if (!this.memberships.containsKey(group.getName()))
 			this.memberships.put(group.getName(), group);
@@ -190,4 +192,33 @@ public class Actor implements Serializable {
 	public String getName() {
 		return name;
 	}
+	
+	public void addMeta(String metaName, Object value) throws AuthAdminException {
+		if (this.metas == null)
+			this.metas = new TreeMap<String, Object>();
+		
+		if (this.metas.containsKey(metaName))
+			throw new AuthAdminException("Duplicate Meta: " + metaName + " = " + value);
+		
+		this.metas.put(metaName, value);
+	}
+	
+	public void removeMeta(String metaName) throws AuthAdminException {
+		if (this.metas == null)
+			throw new AuthAdminException("Invalid Meta: " + metaName);
+		
+		if (!this.metas.containsKey(metaName))
+			throw new AuthAdminException("Invalid Meta: " + metaName);
+		
+		this.metas.remove(metaName);
+	}
+	
+	public Object getMeta(String metaName) {
+		return this.metas.get(metaName);
+	}
+	
+	public Map<String, Object> getMetas() {
+		return this.metas;
+	}
+	
 }

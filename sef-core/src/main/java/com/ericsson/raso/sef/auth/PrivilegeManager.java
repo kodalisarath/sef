@@ -1,11 +1,59 @@
 package com.ericsson.raso.sef.auth;
 
-import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.*;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.ACCESS_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.ACCESS_CREATE_NEW;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.ACCESS_DELETE;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.ACCESS_READ_ONLY;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.ACCESS_UPDATE;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_LIFECYCLE;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_META;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_PRODUCTS_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_PRODUCTS_SELF;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_SETTLEMENT_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_SETTLEMENT_SELF;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_SUBSCRIPTIONS_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PARTNER_SUBSCRIPTIONS_SELF;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PRODUCT_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PRODUCT_BUSINESS_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PRODUCT_BUSINESS_OWN;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PRODUCT_PRICE_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PRODUCT_PRICE_OWN;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PRODUCT_TECHNICAL_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_PRODUCT_TECHNICAL_OWN;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SERVICE_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SERVICE_BUSINESS_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SERVICE_BUSINESS_OWN;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SERVICE_COST_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SERVICE_COST_OWN;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SERVICE_FULFILLMENT;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SERVICE_TECHNICAL_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SERVICE_TECHNICAL_OWN;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIBER_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIBER_LIFE_CYCLE;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIBER_MARKET_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIBER_MARKET_OWN;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIBER_META;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIBER_MVNO_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIBER_MVNO_OWN;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIBER_WORKFLOW;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIPTION_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIPTION_LIFECYCLE;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_SUBSCRIPTION_META;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_USER_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_USER_GROUP;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_USER_PRIVILEGES;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.DOMAIN_USER_USER;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.SERVICE_CTXT_ALL;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.SERVICE_CTXT_INTERFACE;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.SERVICE_CTXT_PARAMETER;
+import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.SERVICE_CTXT_PRIMITIVE;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple;
 import com.ericsson.raso.sef.auth.permissions.Permission;
@@ -38,6 +86,8 @@ public class PrivilegeManager implements IPrivilegeManager {
 	}
 	
 	public PrivilegeManager() {
+		ssh = new SecureSerializationHelper();
+		
 		//TODO: fetch the store location from config, once the config services is ready....
 		
 		if (ssh.fileExists(this.privilegesStoreLocation)) {
@@ -57,7 +107,7 @@ public class PrivilegeManager implements IPrivilegeManager {
 	@Override
 	public boolean createPermission(Privilege privilege) throws AuthAdminException {
 		if (this.privileges == null) 
-			this.privileges = new HashMap<AuthorizationPrinciple, Privilege>();
+			this.privileges = new TreeMap<AuthorizationPrinciple, Privilege>();
 		
 		if (this.privileges.containsKey(privilege.getName()))
 			throw new AuthAdminException("Duplicate Privilege [" + privilege + "] cannot be created.");
@@ -305,7 +355,7 @@ public class PrivilegeManager implements IPrivilegeManager {
 				
 		// Load up the store with defaults....
 		if (this.privileges == null)
-			this.privileges = new HashMap<AuthorizationPrinciple, Privilege>();
+			this.privileges = new TreeMap<AuthorizationPrinciple, Privilege>();
 		
 		this.privileges.put(ACCESS_READ_ONLY, readOnly);
 		this.privileges.put(ACCESS_CREATE_NEW, create);

@@ -1,7 +1,7 @@
 package com.ericsson.raso.sef.watergate;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.ericsson.raso.sef.core.CloudAwareCluster;
 import com.ericsson.raso.sef.core.FrameworkException;
@@ -97,7 +97,7 @@ public class Watergate implements IWatergate {
 		
 		Sla sla = null;
 		String slaMeta = userId + operationName;
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new TreeMap<String, String>();
 		map.put("providerId", userId);
 		map.put("slaMeta", slaMeta);
 		

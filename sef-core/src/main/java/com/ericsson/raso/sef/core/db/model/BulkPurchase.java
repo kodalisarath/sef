@@ -1,10 +1,10 @@
 package com.ericsson.raso.sef.core.db.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
-public class BulkPurchase extends HashMap<String, Object> {
+public class BulkPurchase extends TreeMap<String, Object> {
 	
 	private static final long serialVersionUID = 1L;
 

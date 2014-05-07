@@ -5,11 +5,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.joda.time.DateTime;
 
 public class Subscriber {
-	
+
 	public static final List<String> metaKeys;
 
 	public static final String MSISDN = "MSISDN";
@@ -39,7 +40,7 @@ public class Subscriber {
 	public static final String bValidFrom = "bValidFrom";
 	public static final String bInvalidFrom = "bInvalidFrom";
 	public static final String IsLocked = "IsLocked";
-	
+
 	static {
 		metaKeys = new ArrayList<String>();
 		metaKeys.add(IsCFMOC);
@@ -56,7 +57,7 @@ public class Subscriber {
 		metaKeys.add(PASALOAD_MONEY);
 		metaKeys.add(packaze);
 		metaKeys.add(subscriberSite);
-	
+
 		metaKeys.add(vValidFrom);
 		metaKeys.add(vInvalidFrom);
 		metaKeys.add(Key);
@@ -69,7 +70,7 @@ public class Subscriber {
 		metaKeys.add(bValidFrom);
 		metaKeys.add(bInvalidFrom);
 	}
-	
+
 	private String userId;
 	private String customerId;
 	private String contractId;
@@ -93,7 +94,7 @@ public class Subscriber {
 	private DateTime created;
 	private DateTime lastModified;
 	private Boolean deleted;
-	
+
 	private Collection<SubscriberMeta> metas;
 
 	public String getUserId() {
@@ -247,22 +248,22 @@ public class Subscriber {
 	public void setCustomerSegment(String customerSegment) {
 		this.customerSegment = customerSegment;
 	}
-	
+
 	public Collection<SubscriberMeta> getMetas() {
-		if(metas == null) {
+		if (metas == null) {
 			metas = new ArrayList<SubscriberMeta>();
 		}
 		return metas;
 	}
-	
+
 	public void setMetas(Collection<SubscriberMeta> metas) {
 		this.metas = metas;
 	}
-	
+
 	public ContractState getContractState() {
 		return contractState;
 	}
-	
+
 	public void setContractState(ContractState contractState) {
 		this.contractState = contractState;
 	}
@@ -274,7 +275,7 @@ public class Subscriber {
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
-	
+
 	public DateTime getLastModified() {
 		return lastModified;
 	}
@@ -291,11 +292,12 @@ public class Subscriber {
 		this.created = created;
 	}
 
-	private Map<String, String> metaMap = new HashMap<String, String>();
+	private Map<String, String> metaMap = new TreeMap<String, String>();
+
 	public String getMetaValue(String key) {
-		if(metaMap.size() == 0 && metas != null) {
+		if (metaMap.size() == 0 && metas != null) {
 			for (SubscriberMeta meta : metas) {
-				if(meta.getValue() != null && meta.getValue().trim().length() > 0) {
+				if (meta.getValue() != null && meta.getValue().trim().length() > 0) {
 					metaMap.put(meta.getKey().toLowerCase(), meta.getValue());
 				}
 			}
