@@ -1,0 +1,37 @@
+package com.ericsson.raso.sef.bes.prodcat.entities;
+
+import java.io.Serializable;
+
+import com.ericsson.raso.sef.ruleengine.Rule;
+
+public abstract class FulfillmentProfile implements Serializable {
+	private static final long serialVersionUID = 8880950261612749964L;
+	
+	private String name = null;
+	private Rule criteria = null;
+	
+	protected FulfillmentProfile(String name) {
+		this.name = name;
+	}
+	
+	public abstract boolean execute();
+	
+	public boolean isProfileSelectable() {
+		return this.criteria.execute();
+	}
+
+	public Rule getCriteria() {
+		return criteria;
+	}
+
+	public void setCriteria(Rule criteria) {
+		this.criteria = criteria;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	
+	
+}
