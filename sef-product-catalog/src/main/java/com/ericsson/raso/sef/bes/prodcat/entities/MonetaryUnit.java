@@ -3,7 +3,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 import java.io.Serializable;
 
 public abstract class MonetaryUnit implements Serializable {
-	private static final long serialVersionUID = 337653224125706248L;
+	private static final long serialVersionUID = 10L;
 
 	private String iso4217CurrencyCode = null;
 	private long amount = -1L;

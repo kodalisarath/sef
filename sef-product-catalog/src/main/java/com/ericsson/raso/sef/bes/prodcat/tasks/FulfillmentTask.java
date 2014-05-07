@@ -1,0 +1,105 @@
+package com.ericsson.raso.sef.bes.prodcat.tasks;
+
+import java.io.Serializable;
+import java.util.concurrent.Callable;
+
+import com.ericsson.raso.sef.core.FrameworkException;
+
+public abstract class FulfillmentTask implements Callable<Boolean>, Serializable {
+	private static final long serialVersionUID = -2151895776584893865L;
+
+	private Mode mode = null;
+	private State state = State.WAITING;
+	
+
+	/**
+	 * READ - Command Pattern representing a CRUD model for the backend objects about to be impacted.
+	 * 
+	 * This method must be used for reading any values from subscriber profile, in preparation to reset back to old state when a certain
+	 * part of the transaction fails from overall perspective. Preparation carried out here mandatory to assure consistency when rollback is
+	 * invoked.
+	 * 
+	 * @return - true if successful; false if unsuccessful but gracefully handled.
+	 * @throws any
+	 *             child of FrameworkException relevant to Fulfillment Engine.
+	 */
+	public abstract boolean prepareTransaction() throws FrameworkException;
+
+	/**
+	 * DO - Command Pattern representing the requisite fulfillment.
+	 * 
+	 * This method must be used for the actual fulfillment activity of the profile.
+	 * 
+	 * @return - true if successful; false if unsuccessful but gracefully handled.
+	 * @throws any
+	 *             child of FrameworkException relevant to Fulfillment Engine.
+	 */
+	public abstract boolean fulfill() throws FrameworkException;
+
+	/**
+	 * UNDO - Command Pattern representing the reverse activity to DO Pattern.
+	 * 
+	 * This method must be used for rollback of the previous fulfillment activity. state info saved from preparation phase must be available
+	 * and hence the invoker must
+	 * 
+	 * @return - true if successful; false if unsuccessful but gracefully handled.
+	 * @throws any
+	 *             child of FrameworkException relevant to Fulfillment Engine.
+	 */
+	public abstract boolean revert() throws FrameworkException;
+
+	@Override
+	public Boolean call() throws Exception {
+		this.state = State.PROCESSING;
+		
+		boolean result;
+		switch (mode) {
+			case FULFILL:
+				result = this.fulfill();
+				break;
+			case PREPARE:
+				result = this.prepareTransaction();
+				break;
+			case REVERSE:
+				result = this.revert();
+				break;
+			default:
+				return null;
+		}
+		
+		this.state = State.DONE;
+		return result;
+		
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+
+	public Mode getMode() {
+		return this.mode;
+	}
+	
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+
+
+	enum Mode {
+		PREPARE,
+		FULFILL,
+		REVERSE;
+	}
+	
+	enum State {
+		WAITING,
+		PROCESSING,
+		DONE;
+	}
+
+}

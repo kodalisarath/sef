@@ -10,7 +10,7 @@ public final class TaxFree extends Tax {
 	@Override
 	public MonetaryUnit calculateTax(MonetaryUnit baseAmount) {
 		return new MonetaryUnit(baseAmount.getIso4217CurrencyCode(), 0) {
-			private static final long serialVersionUID = 5916881446317655006L;
+			private static final long serialVersionUID = 10L;
 		};
 	}
 

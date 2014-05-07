@@ -13,7 +13,7 @@ public final class TaxAbsolute extends Tax {
 	public MonetaryUnit calculateTax(MonetaryUnit baseAmount) {
 		long taxAmount = (baseAmount.getAmount() + taxAbsolute);
 		return new MonetaryUnit(baseAmount.getIso4217CurrencyCode(), taxAmount) {
-			private static final long serialVersionUID = -1883988856558138590L;
+			private static final long serialVersionUID = 10L;
 		};
 	}
 

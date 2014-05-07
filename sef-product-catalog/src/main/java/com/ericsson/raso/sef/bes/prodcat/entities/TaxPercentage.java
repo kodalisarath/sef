@@ -13,7 +13,7 @@ public final class TaxPercentage extends Tax {
 	public MonetaryUnit calculateTax(MonetaryUnit baseAmount) {
 		long taxAmount = ((baseAmount.getAmount() * taxPercentile) / 100);
 		return new MonetaryUnit(baseAmount.getIso4217CurrencyCode(), taxAmount) {
-			private static final long serialVersionUID = 2869828489736276348L;
+			private static final long serialVersionUID = 10L;
 		};
 	}
 
