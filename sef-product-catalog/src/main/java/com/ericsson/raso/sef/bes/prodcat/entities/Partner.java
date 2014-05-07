@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
+import com.ericsson.raso.sef.bes.prodcat.CatalogException;
+
 public class Partner extends Owner {
 	private static final long serialVersionUID = -1727528342129511142L;
 

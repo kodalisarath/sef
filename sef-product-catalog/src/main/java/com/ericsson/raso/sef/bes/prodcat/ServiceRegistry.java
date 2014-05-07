@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.ericsson.raso.sef.bes.prodcat.entities.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.raso.sef.core.FrameworkException;

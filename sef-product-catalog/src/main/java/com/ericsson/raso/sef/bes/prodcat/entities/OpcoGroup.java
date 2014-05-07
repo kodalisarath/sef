@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
+import com.ericsson.raso.sef.bes.prodcat.CatalogException;
+
 public class OpcoGroup extends Owner {
 	private static final long serialVersionUID = -8241152233201632129L;
 

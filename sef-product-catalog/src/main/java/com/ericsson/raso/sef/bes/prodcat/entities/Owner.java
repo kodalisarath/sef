@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.ericsson.raso.sef.bes.prodcat.CatalogException;
+
 public abstract class Owner implements Serializable {
 	private static final long serialVersionUID = -1598753924521940204L;
 

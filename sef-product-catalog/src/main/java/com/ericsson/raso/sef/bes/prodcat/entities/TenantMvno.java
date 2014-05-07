@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
+import com.ericsson.raso.sef.bes.prodcat.CatalogException;
+
 public class TenantMvno extends Owner {
 	private static final long serialVersionUID = 4070986735713029473L;
 

@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.bes.prodcat.entities;
+package com.ericsson.raso.sef.bes.prodcat;
 
 import com.ericsson.raso.sef.core.FrameworkException;
 

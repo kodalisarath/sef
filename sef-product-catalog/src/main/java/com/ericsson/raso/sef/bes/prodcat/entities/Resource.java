@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.ruleengine.Rule;
 
 public abstract class Resource implements Serializable {
