@@ -1,13 +1,18 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.ericsson.raso.sef.bes.prodcat.entities.Owner;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.SecureSerializationHelper;
+
+
+//TODO: please udate the code implemenation to also synchronize with Hazelcast...
 
 public final class ServiceRegistry implements Serializable, IServiceRegistry {
 	private static final long serialVersionUID = -8106773531623764112L;
@@ -125,5 +130,31 @@ public final class ServiceRegistry implements Serializable, IServiceRegistry {
 
 		return this.resources.get(resource);
 	}
+
+	@Override
+	public List<Resource> getAllResources() throws CatalogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Resource> getAllResourcesFor(Owner owner) throws CatalogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Resource> getAllResourcesFor(boolean isDiscoverable) throws CatalogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Resource> getAllResourcesFor(String resourceGroup) throws CatalogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+		
 
 }

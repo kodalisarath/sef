@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 import com.ericsson.raso.sef.core.FrameworkException;
 
-public abstract class NotificationTask implements Callable<Boolean>, Serializable {
+public abstract class NotificationTask<E> implements Callable<E>, Serializable {
 	private static final long serialVersionUID = -7189717345996246019L;
 
 	private State state = State.WAITING;
@@ -17,13 +17,13 @@ public abstract class NotificationTask implements Callable<Boolean>, Serializabl
 	 * @return - true if successful; false if unsuccessful but gracefully handled.
 	 * @throws FrameworkException relevant to Fulfillment Engine.
 	 */
-	public abstract boolean sendNotification() throws FrameworkException;
+	public abstract E sendNotification() throws FrameworkException;
 
 	@Override
-	public Boolean call() throws Exception {
+	public E call() throws Exception {
 		this.state = State.PROCESSING;
 		
-		boolean result = this.sendNotification();
+		E result = this.sendNotification();
 		
 		this.state = State.DONE;
 		return result;

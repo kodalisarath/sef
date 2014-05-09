@@ -4,23 +4,30 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycle;
+import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 
-public class AtomicProduct implements Serializable {
+public final class AtomicProduct extends Product implements Serializable {
 	private static final long serialVersionUID = 7193202158721069988L;
 
-	private String name = null;
 	private Resource resource = null;
 	private AbstractQuotaCharacteristic quota = null;
 	private AbstractTimeCharacteristic validity = null;
 	private Map<String, Object> metas = null;
-	private Map<SubscriptionLifeCycle, Boolean> suppressFulfilment = null;
+	private Map<SubscriptionLifeCycleEvent, Boolean> suppressFulfilment = null;
 	private boolean resetQuotaOnRenewal = false;
 	
 	public AtomicProduct(String name) {
-		this.name = name;
+		super(name);
 	}
 	
+	public Resource getResource() {
+		return resource;
+	}
+
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
+
 	public void setMeta(String metaName, Object value) {
 		if (this.metas == null)
 			this.metas = new TreeMap<String, Object>();
@@ -43,14 +50,6 @@ public class AtomicProduct implements Serializable {
 		return this.metas;
 	}
 
-	public Resource getResource() {
-		return resource;
-	}
-
-	public void setResource(Resource resource) {
-		this.resource = resource;
-	}
-
 	public AbstractQuotaCharacteristic getQuota() {
 		return quota;
 	}
@@ -67,11 +66,11 @@ public class AtomicProduct implements Serializable {
 		this.validity = validity;
 	}
 
-	public Map<SubscriptionLifeCycle, Boolean> getSuppressFulfilment() {
+	public Map<SubscriptionLifeCycleEvent, Boolean> getSuppressFulfilment() {
 		return suppressFulfilment;
 	}
 
-	public void setSuppressFulfilment(Map<SubscriptionLifeCycle, Boolean> suppressFulfilment) {
+	public void setSuppressFulfilment(Map<SubscriptionLifeCycleEvent, Boolean> suppressFulfilment) {
 		this.suppressFulfilment = suppressFulfilment;
 	}
 
@@ -83,8 +82,5 @@ public class AtomicProduct implements Serializable {
 		this.resetQuotaOnRenewal = resetQuotaOnRenewal;
 	}
 
-	public String getName() {
-		return name;
-	}
 	
 }

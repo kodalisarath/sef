@@ -3,7 +3,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FulfillmentTask;
 import com.ericsson.raso.sef.ruleengine.Rule;
 
-public abstract class FulfillmentProfile extends FulfillmentTask {
+public abstract class FulfillmentProfile<E> extends FulfillmentTask<E> {
 	private static final long serialVersionUID = 8880950261612749964L;
 
 	private String name = null;

@@ -5,12 +5,11 @@ import java.util.concurrent.Callable;
 
 import com.ericsson.raso.sef.core.FrameworkException;
 
-public abstract class FulfillmentTask implements Callable<Boolean>, Serializable {
+public abstract class FulfillmentTask<E> implements Callable<E>, Serializable {
 	private static final long serialVersionUID = -2151895776584893865L;
 
 	private Mode mode = null;
 	private State state = State.WAITING;
-	
 
 	/**
 	 * READ - Command Pattern representing a CRUD model for the backend objects about to be impacted.
@@ -20,10 +19,10 @@ public abstract class FulfillmentTask implements Callable<Boolean>, Serializable
 	 * invoked.
 	 * 
 	 * @return - true if successful; false if unsuccessful but gracefully handled.
-	 * @throws any
-	 *             child of FrameworkException relevant to Fulfillment Engine.
+	 * @throws FrameworkException
+	 *             relevant to Fulfillment Engine.
 	 */
-	public abstract boolean prepareTransaction() throws FrameworkException;
+	public abstract E prepareTransaction() throws FrameworkException;
 
 	/**
 	 * DO - Command Pattern representing the requisite fulfillment.
@@ -31,10 +30,10 @@ public abstract class FulfillmentTask implements Callable<Boolean>, Serializable
 	 * This method must be used for the actual fulfillment activity of the profile.
 	 * 
 	 * @return - true if successful; false if unsuccessful but gracefully handled.
-	 * @throws any
-	 *             child of FrameworkException relevant to Fulfillment Engine.
+	 * @throws FrameworkException
+	 *             relevant to Fulfillment Engine.
 	 */
-	public abstract boolean fulfill() throws FrameworkException;
+	public abstract E fulfill() throws FrameworkException;
 
 	/**
 	 * UNDO - Command Pattern representing the reverse activity to DO Pattern.
@@ -43,16 +42,15 @@ public abstract class FulfillmentTask implements Callable<Boolean>, Serializable
 	 * and hence the invoker must
 	 * 
 	 * @return - true if successful; false if unsuccessful but gracefully handled.
-	 * @throws any
-	 *             child of FrameworkException relevant to Fulfillment Engine.
+	 * @throws FrameworkException relevant to Fulfillment Engine.
 	 */
-	public abstract boolean revert() throws FrameworkException;
+	public abstract E revert() throws FrameworkException;
 
 	@Override
-	public Boolean call() throws Exception {
+	public E call() throws Exception {
 		this.state = State.PROCESSING;
-		
-		boolean result;
+
+		E result;
 		switch (mode) {
 			case FULFILL:
 				result = this.fulfill();
@@ -66,10 +64,10 @@ public abstract class FulfillmentTask implements Callable<Boolean>, Serializable
 			default:
 				return null;
 		}
-		
+
 		this.state = State.DONE;
 		return result;
-		
+
 	}
 
 	public void setMode(Mode mode) {
@@ -79,7 +77,7 @@ public abstract class FulfillmentTask implements Callable<Boolean>, Serializable
 	public Mode getMode() {
 		return this.mode;
 	}
-	
+
 	public State getState() {
 		return state;
 	}
@@ -88,14 +86,12 @@ public abstract class FulfillmentTask implements Callable<Boolean>, Serializable
 		this.state = state;
 	}
 
-
-
 	enum Mode {
 		PREPARE,
 		FULFILL,
 		REVERSE;
 	}
-	
+
 	enum State {
 		WAITING,
 		PROCESSING,

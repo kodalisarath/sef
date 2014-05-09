@@ -21,136 +21,122 @@ public abstract class Resource implements Serializable {
 	private String description = null;
 
 	/**
-	 * indicates if a Resource is abstract. For example, 'Data' can be an
-	 * abstract resource, which is used to simply the Business Product (customer
-	 * facing), while technical resources such as
+	 * indicates if a Resource is abstract. For example, 'Data' can be an abstract resource, which is used to simply the Business Product
+	 * (customer facing), while technical resources such as
 	 * 
-	 * If a Resource is abstract, it implies the following.... * This Resource
-	 * will be used for "customer facing" purposes... implies that this resource
-	 * will represent all its concrete resources toward Product Catalog. * This
-	 * Resource must identify all concrete resources, that are selected thru a
-	 * <code>Rule</code>. Only one concrete resource must be selectable for a
-	 * given context. * An abstract resource cannot be a technical resource and
-	 * hence cannot have a Fulfillment Profile in Service Registry.
+	 * If a Resource is abstract, it implies the following.... * This Resource will be used for "customer facing" purposes... implies that
+	 * this resource will represent all its concrete resources toward Product Catalog. * This Resource must identify all concrete resources,
+	 * that are selected thru a <code>Rule</code>. Only one concrete resource must be selectable for a given context. * An abstract resource
+	 * cannot be a technical resource and hence cannot have a Fulfillment Profile in Service Registry.
 	 * 
-	 * If a Resource is not abstract, it implies the following.... * This
-	 * Resource WILL have a Fulfillment Profile in Service Registry. * This
-	 * Resource can be standalone - meaning it can serve both "technical" as
-	 * well as "customer facing" purposes. * If more than ONE Fulfillment
-	 * Profile is linked to a Resource, then each Profile must be selectable
-	 * thru a Rule. Only one Profile must be selectable for a given context.
+	 * If a Resource is not abstract, it implies the following.... * This Resource WILL have a Fulfillment Profile in Service Registry. *
+	 * This Resource can be standalone - meaning it can serve both "technical" as well as "customer facing" purposes. * If more than ONE
+	 * Fulfillment Profile is linked to a Resource, then each Profile must be selectable thru a Rule. Only one Profile must be selectable
+	 * for a given context.
 	 * 
 	 * @see Rule
 	 */
 	private boolean isAbstract = false;
-	
+
 	/**
-	 * indicates if this resource must be visible during end-user's discovery or
-	 * self-care use-cases.
+	 * indicates if this resource must be visible during end-user's discovery or self-care use-cases.
 	 * 
-	 * Because Fulfillment Engine will not support transaction (required when
-	 * more than one backend operation is required), the functionality is
-	 * centralized and controlled/governed by Transaction Engine. For this
-	 * reason, all backend fulfillment primitives are kept atomic & mapped
-	 * one-to-one and hence multiple backend operations are represented thru
-	 * resources which will not be discovered/ visible to end-user but can
-	 * enrich the complexity of orchestration in the Transaction Engine.
+	 * Because Fulfillment Engine will not support transaction (required when more than one backend operation is required), the
+	 * functionality is centralized and controlled/governed by Transaction Engine. For this reason, all backend fulfillment primitives are
+	 * kept atomic & mapped one-to-one and hence multiple backend operations are represented thru resources which will not be discovered/
+	 * visible to end-user but can enrich the complexity of orchestration in the Transaction Engine.
 	 */
 	private boolean isDiscoverable = false;
 
 	/**
-	 * If this resource is abstract, then the concrete child resources must be
-	 * defined and identified. If a resource is declared abstract and no
-	 * concrete children are idenified, then the Service Registry will not allow
-	 * this resource to be discovered for Business Product definition.
+	 * If this resource is abstract, then the concrete child resources must be defined and identified. If a resource is declared abstract
+	 * and no concrete children are idenified, then the Service Registry will not allow this resource to be discovered for Business Product
+	 * definition.
 	 */
 	private List<Resource> concreteChildren = null;
 
 	/**
-	 * indicates if a resource is a consumable resource. If so, then quota can
-	 * be assigned. Quota related parameters can be defined and enforced
-	 * automatically from Service Registry & Fulfillment Engine.
+	 * indicates if a resource is a consumable resource. If so, then quota can be assigned. Quota related parameters can be defined and
+	 * enforced automatically from Service Registry & Fulfillment Engine.
 	 * 
 	 * @see consumptionUnitName, enforcedMinQuota, enforcedMaxQuota
 	 */
 	private boolean isConsumable = false;
 
 	/**
-	 * descriptive text representing the units of consumption. For example,
-	 * 'Data' can be consumed in 'KB', 'MB', 'GB' and so on.
+	 * descriptive text representing the units of consumption. For example, 'Data' can be consumed in 'KB', 'MB', 'GB' and so on.
 	 * 
-	 * Depending of the type of resource, the units can be abstract as well. A
-	 * few examples below... - SMS is consumed in 'Message' - Voice is consumed
-	 * in 'Minute' or 'Second' - Data can be consumed based on SLA which is
-	 * 'Kbps', 'Mbps', etc. - An App or Music asset is consumed in 'Piece'
+	 * Depending of the type of resource, the units can be abstract as well. A few examples below... - SMS is consumed in 'Message' - Voice
+	 * is consumed in 'Minute' or 'Second' - Data can be consumed based on SLA which is 'Kbps', 'Mbps', etc. - An App or Music asset is
+	 * consumed in 'Piece'
 	 */
 	private String consumptionUnitName = null;
 
 	/**
-	 * indicates a lowest threshold below which a user cannot be allowed to
-	 * consume... Though SEF BES does not intercept the consumption, such
-	 * thresholds can be a good way to trigger churn control, auto promotion,
-	 * auto renewal, auto purchase package, auto upsell, or atleast automatic
-	 * workflow to change the user into a different rate plan or pay-as-you-go
-	 * models.
+	 * indicates a lowest threshold below which a user cannot be allowed to consume... Though SEF BES does not intercept the consumption,
+	 * such thresholds can be a good way to trigger churn control, auto promotion, auto renewal, auto purchase package, auto upsell, or
+	 * atleast automatic workflow to change the user into a different rate plan or pay-as-you-go models.
 	 */
 	private long enforcedMinQuota = -1;
 
 	/**
-	 * indicates a highest threshold above which a user cannot be allowed to
-	 * accumulate... SEF BES will ensure that user cannot keep accumulating
-	 * quota beyoond a limit.
+	 * indicates a highest threshold above which a user cannot be allowed to accumulate... SEF BES will ensure that user cannot keep
+	 * accumulating quota beyoond a limit.
 	 * 
-	 * Such feature can be useful in enforcing a 'fair use' policy avoiding
-	 * hoarding behaviors as well as preventing users from buying more quota
-	 * than they can consume and thus avoiding a customer dispute and subsequent
-	 * reversals thus plugging potential revenue exposures.
+	 * Such feature can be useful in enforcing a 'fair use' policy avoiding hoarding behaviors as well as preventing users from buying more
+	 * quota than they can consume and thus avoiding a customer dispute and subsequent reversals thus plugging potential revenue exposures.
 	 */
 	private long enforcedMaxQuota = -1;
 
 	/**
-	 * A resource can be dependent on each other and such relationship is
-	 * captured here. Dependency can be useful in handling/ avoiding many
+	 * A resource can be dependent on each other and such relationship is captured here. Dependency can be useful in handling/ avoiding many
 	 * customer disputes...
 	 * 
-	 * <code>Dependency Check</code> - It is possible to stop a user from
-	 * discovering or requesting for a service which is dependent on another
-	 * service for which he has no access currently. For example, 'WAP' or 'MMS'
-	 * or 'GMail' services cannot be requested/ discovered if user has no 'Data'
+	 * <code>Dependency Check</code> - It is possible to stop a user from discovering or requesting for a service which is dependent on
+	 * another service for which he has no access currently. For example, 'WAP' or 'MMS' or 'GMail' services cannot be requested/ discovered
+	 * if user has no 'Data'
 	 * 
-	 * <code>Cascaded Remove</code> - It is possible to deactivate/ terminate
-	 * services/resources higher in the dependency chain, when a lower level
-	 * service is terminated. For example, when 'Data' is terminated then 'WAP',
-	 * 'MMS' or 'GMail' services can be automatically deactivated, thus
-	 * addressing customer disputes when such higher level services keep
-	 * charging user for a service that user cannot avail.
+	 * <code>Cascaded Remove</code> - It is possible to deactivate/ terminate services/resources higher in the dependency chain, when a
+	 * lower level service is terminated. For example, when 'Data' is terminated then 'WAP', 'MMS' or 'GMail' services can be automatically
+	 * deactivated, thus addressing customer disputes when such higher level services keep charging user for a service that user cannot
+	 * avail.
 	 */
 	private List<Resource> dependantOnMe = null;
 	private List<Resource> dependantOnThem = null;
 
 	/**
-	 * If a resource is not abstract, it can have a cost associated with it.
-	 * This can be useful when dynamic business products formulate based on
-	 * certain criteria or the context.
+	 * If a resource is not abstract, it can have a cost associated with it. This can be useful when dynamic business products formulate
+	 * based on certain criteria or the context.
 	 * 
-	 * For example, consider a scenario where a user wants to discover how much
-	 * data or sms he can buy for 10USD. In such scenario, the Product Catalog
-	 * can formulate a dynamic product specifically tailored for this scenario
-	 * by adjusting offering characteristics on quota, validity period, etc.
+	 * For example, consider a scenario where a user wants to discover how much data or sms he can buy for 10USD. In such scenario, the
+	 * Product Catalog can formulate a dynamic product specifically tailored for this scenario by adjusting offering characteristics on
+	 * quota, validity period, etc.
 	 */
 	private MonetaryUnit cost = null;
 
 	/**
-	 * A resource can be configured to be provisioned in many ways based on
-	 * business configuration performed in the backend systems. It may also be
-	 * the case, that same resource must decide beween multiple backend systems
-	 * - such as SEF BES integrated across Ericsson and other Vendors
-	 * simultaneously. Such features help in isolating & abstracting backend
-	 * technical operations from Business/ Marketing operations that pertain to
-	 * Product Catalog.
+	 * A resource can be configured to be provisioned in many ways based on business configuration performed in the backend systems. It may
+	 * also be the case, that same resource must decide beween multiple backend systems - such as SEF BES integrated across Ericsson and
+	 * other Vendors simultaneously. Such features help in isolating & abstracting backend technical operations from Business/ Marketing
+	 * operations that pertain to Product Catalog.
 	 * 
 	 */
 	private List<FulfillmentProfile> fulfillmentProfiles = null;
+
+	/**
+	 * identifies who is the owner for this resource. From info security context, this concept will allow a stakeholder to access all of his
+	 * own resources as well as resources for all stakeholders chained under the current level.
+	 */
+	private Owner owner = null;
+	
+	/**
+	 * identifies a Resource Group to which this Resource belongs. Each offer in a group is assigned a unique priority that determines if a
+	 * 'switch' request is an upgrade or downgrade. This priority overrides auto-calculated weightage that will be used to determine
+	 * upgrade/ downgrade. In the absence of this value, then the system auto-calculates the weightage using Characteristics - Quota,
+	 * Validity, SLA & Resource Priority.
+	 */
+	private String resourceGroup = null;
+
 
 	public Resource(String name) {
 		this.name = name;
@@ -271,37 +257,51 @@ public abstract class Resource implements Serializable {
 		return dependantOnThem;
 	}
 
-	
 	public boolean addFulfillmentProfile(FulfillmentProfile profile) throws CatalogException {
 		if (this.fulfillmentProfiles == null)
 			this.fulfillmentProfiles = new ArrayList<FulfillmentProfile>();
-		
-		return this.fulfillmentProfiles.add(profile);		
+
+		return this.fulfillmentProfiles.add(profile);
 	}
-	
+
 	public boolean removeFulfillmentProfile(FulfillmentProfile profile) {
 		if (this.fulfillmentProfiles.contains(profile))
 			this.fulfillmentProfiles.remove(profile);
-		
+
 		if (this.fulfillmentProfiles.isEmpty())
 			this.fulfillmentProfiles = null;
-		
+
 		return true;
 	}
-	
+
 	public List<FulfillmentProfile> getFulfillmentProfiles() {
 		return this.fulfillmentProfiles;
 	}
-	
-	
-	
-	
+
 	public boolean isDiscoverable() {
 		return isDiscoverable;
 	}
 
 	public void setDiscoverable(boolean isDiscoverable) {
 		this.isDiscoverable = isDiscoverable;
+	}
+
+	public Owner getOwner() {
+		return owner;
+	}
+
+	
+	public void setOwner(Owner owner) {
+		this.owner = owner;
+	}
+
+	
+	public String getResourceGroup() {
+		return resourceGroup;
+	}
+
+	public void setResourceGroup(String resourceGroup) {
+		this.resourceGroup = resourceGroup;
 	}
 
 	@Override

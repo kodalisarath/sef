@@ -8,7 +8,7 @@ package com.ericsson.raso.sef.bes.prodcat;
  * 
  * @author esatnar 
  */
-public enum SubscriptionLifeCycle {
+public enum SubscriptionLifeCycleEvent {
 	/**
 	 * This state indicates a product in discovery mode; not yet attached to a subscriber profile.
 	 */

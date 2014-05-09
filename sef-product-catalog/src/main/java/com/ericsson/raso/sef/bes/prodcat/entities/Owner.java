@@ -14,8 +14,8 @@ public abstract class Owner implements Serializable {
 	private Map<String, Owner> members = null;
 	
 
-	protected Owner(String name2) {
-		this.name = name2;
+	protected Owner(String name) {
+		this.name = name;
 	}
 
 	public static Owner createInstance(Type type, String name) {
@@ -23,19 +23,53 @@ public abstract class Owner implements Serializable {
 			case EndUser:
 				return new EndUser(name);
 			case Market:
-				return null;
+				return new Market(name);
 			case Opco:
-				return null;
+				return new Opco(name);
 			case OpcoGroup:
-				return null;
+				return new OpcoGroup(name);
 			case Partner:
-				return null;
+				return new Partner(name);
 			case TenantMvno:
-				return null;
+				return new TenantMvno(name);
 			default:
 				return null;
 		}
 	}
+	
+	public boolean contains(Owner other) {
+		if (this.members == null)
+			return false;
+		
+		if (this.members.containsValue(other))
+			return true;
+		
+		return false;
+	}
+	
+	public void removeMember(Owner owner) throws CatalogException {
+
+		if (owner instanceof Market) {
+			this.removeMarket((Market) owner);				
+		}
+		
+		if (owner instanceof Opco) {
+			this.removeOpco((Opco) owner);				
+		}
+		
+		if (owner instanceof Partner) {
+			this.removePartner((Partner) owner);				
+		}
+		
+		if (owner instanceof TenantMvno) {
+			this.removeTenant((TenantMvno) owner);				
+		}
+		
+		
+	}
+
+
+	
 	
 	public void addOpco(Opco opco) throws CatalogException {
 		if (opco == null)
@@ -284,5 +318,7 @@ public abstract class Owner implements Serializable {
 		 */
 		EndUser;
 	}
+
+
 
 }

@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 import com.ericsson.raso.sef.core.FrameworkException;
 
-public abstract class ChargingTask implements Callable<Boolean>, Serializable {
+public abstract class ChargingTask<E> implements Callable<E>, Serializable {
 	private static final long serialVersionUID = -7774372771842184423L;
 
 	private Mode mode = null;
@@ -18,7 +18,7 @@ public abstract class ChargingTask implements Callable<Boolean>, Serializable {
 	 * @return - true if successful; false if unsuccessful but gracefully handled.
 	 * @throws FrameworkException relevant to Fulfillment Engine.
 	 */
-	public abstract boolean charge() throws FrameworkException;
+	public abstract E charge() throws FrameworkException;
 
 	/**
 	 * Performs a reversal of previous charging activity, when associated fulfillment activities have failed beyond recovery.
@@ -26,13 +26,13 @@ public abstract class ChargingTask implements Callable<Boolean>, Serializable {
 	 * @return - true if successful; false if unsuccessful but gracefully handled.
 	 * @throws FrameworkException relevant to Fulfillment Engine.
 	 */
-	public abstract boolean reverse() throws FrameworkException;
+	public abstract E reverse() throws FrameworkException;
 
 	@Override
-	public Boolean call() throws Exception {
+	public E call() throws Exception {
 		this.state = State.PROCESSING;
 		
-		boolean result;
+		E result;
 		switch (mode) {
 			case CHARGE:
 				result = this.charge();
