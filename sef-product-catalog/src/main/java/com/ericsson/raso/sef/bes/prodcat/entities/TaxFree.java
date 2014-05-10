@@ -15,4 +15,5 @@ public final class TaxFree extends Tax {
 	}
 
 	
+	
 }

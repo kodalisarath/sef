@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -74,7 +75,16 @@ public class Offer implements Serializable {
 	 */
 	private AbstractAutoTermination autoTermination = null;
 	
-	//TODO: minimum Commitment
+	/**
+	 * Specifies if minimum commitment policy needs to be applied to the subscription and its lifecycle. The following are supported...<br>
+	 * <li> No Commitment - This is the default is no termination policy is defined.
+	 * <li> Until 'n' renewals
+	 * <li> Until 'n' days from Purchase/ Activation
+	 * <li> Hard Limit - Exact Date until which this subscription cannot terminate irrespective of purchase/ activation date.
+	 */
+	private AbstractMinimumCommitment minimumCommitment = null;
+	
+
 
 	/**
 	 * An Offer can be made up of one or more AtomicProduct thus creating a polymorphic Commercial Offer or Workflow Package. Such forms can
@@ -153,7 +163,7 @@ public class Offer implements Serializable {
 		this.history.setCreationTime(System.currentTimeMillis());
 	}
 	
-	public void validate(boolean suppressWarnings) {
+	public void validate(boolean suppressWarnings) throws CatalogException {
 		StringBuilder problems = new StringBuilder();
 		
 		if (this.description == null || this.description.isEmpty())
@@ -171,7 +181,7 @@ public class Offer implements Serializable {
 			if (!suppressWarnings)
 				problems.append("*WARNING* Immediate Termination is not set. Assuming to be NOT ALLOWED.\n");
 		
-		if (this.products == null)
+		if (this.products == null || this.products.isEmpty())
 			problems.append("**ERROR** There are no Products listed in this Offer!!!\n");
 			
 		if (this.price == null && this.isCommercial)
@@ -185,9 +195,105 @@ public class Offer implements Serializable {
 			if (!suppressWarnings)
 				problems.append("*WARNING* Offer is not recurrent & Exit Offer is not specified.\n");
 			
+		if (this.history == null)
+			problems.append("**ERROR** History is not initialized. Lifecycle is impossible!!.\n");
+			
+		String validityMessage = problems.toString();
+		if (validityMessage.isEmpty())
+			return;
+		
+		if (suppressWarnings && !validityMessage.contains("ERROR"))
+			return;
+		
+		throw new CatalogException(problems.toString());
 			
 	}
 
+	public boolean isVariant(Offer other) {
+		if (other == null)
+			return false;
+		
+		if (!this.name.equalsIgnoreCase(other.name))
+			return false;
+		
+		if (this.version != other.version)
+			return false;
+		
+		
+		Set<Product> myProducts = this.getProducts();
+		Set<Product> otherProducts = this.getProducts();
+		int match = 0;
+		
+		if (myProducts.size() <= otherProducts.size()) {			
+			for (Product otherProduct: otherProducts)
+				for (Product myProduct: myProducts)
+					if (otherProduct.equals(myProduct))
+						match++;
+			return (match == myProducts.size()) ? true : false;
+		} else {
+			for (Product myProduct: myProducts)
+				for (Product otherProduct: otherProducts)
+					if (myProduct.equals(otherProduct))
+						match++;
+			return (match == otherProducts.size()) ? true : false;
+		}		
+	}
+	
+	public boolean checkEditSanity(Offer other) {
+		if (other == null)
+			return false;
+		
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		
+		if (history == null) {
+			if (other.history != null)
+				return false;
+		} else if (!history.equals(other.history))
+			return false;
+		
+		if (isCommercial != other.isCommercial)
+			return false;
+		
+		if (isRecurrent != other.isRecurrent)
+			return false;
+		
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		
+		if (offerState != other.offerState)
+			return false;
+		
+		if (owner == null) {
+			if (other.owner != null)
+				return false;
+		} else if (!owner.equals(other.owner))
+			return false;
+		
+		if (renewalPeriod == null) {
+			if (other.renewalPeriod != null)
+				return false;
+		} else if (!renewalPeriod.equals(other.renewalPeriod))
+			return false;
+		
+		if (trialPeriod == null) {
+			if (other.trialPeriod != null)
+				return false;
+		} else if (!trialPeriod.equals(other.trialPeriod))
+			return false;
+		
+		return true;
+	}
+	
+	
+	
+	
 	//==========----------------------------- End of Functional Section ---------------==============================================================/
 	
 	//==========----------------------------- Java Niceties Section ---------------==================================================================/
@@ -429,6 +535,147 @@ public class Offer implements Serializable {
 	
 	public void setHistory(OfferLifeCycle history) {
 		this.history = history;
+	}
+
+	public AbstractAutoTermination getAutoTermination() {
+		return autoTermination;
+	}
+
+	public void setAutoTermination(AbstractAutoTermination autoTermination) {
+		this.autoTermination = autoTermination;
+	}
+
+	public AbstractMinimumCommitment getMinimumCommitment() {
+		return minimumCommitment;
+	}
+
+	public void setMinimumCommitment(AbstractMinimumCommitment minimumCommitment) {
+		this.minimumCommitment = minimumCommitment;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((accumulation == null) ? 0 : accumulation.hashCode());
+		result = prime * result + ((autoTermination == null) ? 0 : autoTermination.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((eligibility == null) ? 0 : eligibility.hashCode());
+		result = prime * result + ((history == null) ? 0 : history.hashCode());
+		result = prime * result + (isCommercial ? 1231 : 1237);
+		result = prime * result + (isRecurrent ? 1231 : 1237);
+		result = prime * result + ((minimumCommitment == null) ? 0 : minimumCommitment.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((offerGroup == null) ? 0 : offerGroup.hashCode());
+		result = prime * result + ((offerState == null) ? 0 : offerState.hashCode());
+		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+		result = prime * result + ((products == null) ? 0 : products.hashCode());
+		result = prime * result + ((renewalPeriod == null) ? 0 : renewalPeriod.hashCode());
+		result = prime * result + ((switching == null) ? 0 : switching.hashCode());
+		result = prime * result + ((trialPeriod == null) ? 0 : trialPeriod.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+
+		if (!(obj instanceof Offer))
+			return false;
+		
+		Offer other = (Offer) obj;
+		if (accumulation == null) {
+			if (other.accumulation != null)
+				return false;
+		} else if (!accumulation.equals(other.accumulation))
+			return false;
+		
+		if (autoTermination == null) {
+			if (other.autoTermination != null)
+				return false;
+		} else if (!autoTermination.equals(other.autoTermination))
+			return false;
+		
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		
+		if (eligibility == null) {
+			if (other.eligibility != null)
+				return false;
+		} else if (!eligibility.equals(other.eligibility))
+			return false;
+		
+		if (history == null) {
+			if (other.history != null)
+				return false;
+		} else if (!history.equals(other.history))
+			return false;
+		
+		if (isCommercial != other.isCommercial)
+			return false;
+		
+		if (isRecurrent != other.isRecurrent)
+			return false;
+		
+		if (minimumCommitment == null) {
+			if (other.minimumCommitment != null)
+				return false;
+		} else if (!minimumCommitment.equals(other.minimumCommitment))
+			return false;
+		
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		
+		if (offerGroup == null) {
+			if (other.offerGroup != null)
+				return false;
+		} else if (!offerGroup.equals(other.offerGroup))
+			return false;
+		
+		if (offerState != other.offerState)
+			return false;
+		
+		if (owner == null) {
+			if (other.owner != null)
+				return false;
+		} else if (!owner.equals(other.owner))
+			return false;
+		
+		if (products == null) {
+			if (other.products != null)
+				return false;
+		} else if (!products.equals(other.products))
+			return false;
+		
+		if (renewalPeriod == null) {
+			if (other.renewalPeriod != null)
+				return false;
+		} else if (!renewalPeriod.equals(other.renewalPeriod))
+			return false;
+		
+		if (switching == null) {
+			if (other.switching != null)
+				return false;
+		} else if (!switching.equals(other.switching))
+			return false;
+		
+		if (trialPeriod == null) {
+			if (other.trialPeriod != null)
+				return false;
+		} else if (!trialPeriod.equals(other.trialPeriod))
+			return false;
+		
+		return true;
 	}
 	
 	

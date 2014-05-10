@@ -23,6 +23,35 @@ public class CommitUntilNRenewals extends AbstractMinimumCommitment {
 		return (activationTime + (renewals  * subsription.getRenewalPeriod().getExpiryTimeInMillis()));
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + renewals;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof CommitUntilNRenewals))
+			return false;
+		
+		CommitUntilNRenewals other = (CommitUntilNRenewals) obj;
+		if (renewals != other.renewals)
+			return false;
+		
+		return true;
+	}
+
 	
 
 }

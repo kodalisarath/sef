@@ -47,6 +47,12 @@ public abstract class Resource implements Serializable {
 	 * visible to end-user but can enrich the complexity of orchestration in the Transaction Engine.
 	 */
 	private boolean isDiscoverable = false;
+	
+	/**
+	 * indicates if a Resource's consumption can be managed within SEF BES or must be queried and synchronized with external Service Elements or BSS 
+	 * systems. 
+	 */
+	private boolean isExternallyConsumed = false;
 
 	/**
 	 * If this resource is abstract, then the concrete child resources must be defined and identified. If a resource is declared abstract
@@ -121,7 +127,7 @@ public abstract class Resource implements Serializable {
 	 * operations that pertain to Product Catalog.
 	 * 
 	 */
-	private List<FulfillmentProfile> fulfillmentProfiles = null;
+	private List<FulfillmentProfile<?>> fulfillmentProfiles = null;
 
 	/**
 	 * identifies who is the owner for this resource. From info security context, this concept will allow a stakeholder to access all of his
@@ -257,14 +263,14 @@ public abstract class Resource implements Serializable {
 		return dependantOnThem;
 	}
 
-	public boolean addFulfillmentProfile(FulfillmentProfile profile) throws CatalogException {
+	public boolean addFulfillmentProfile(FulfillmentProfile<?> profile) throws CatalogException {
 		if (this.fulfillmentProfiles == null)
-			this.fulfillmentProfiles = new ArrayList<FulfillmentProfile>();
+			this.fulfillmentProfiles = new ArrayList<FulfillmentProfile<?>>();
 
 		return this.fulfillmentProfiles.add(profile);
 	}
 
-	public boolean removeFulfillmentProfile(FulfillmentProfile profile) {
+	public boolean removeFulfillmentProfile(FulfillmentProfile<?> profile) {
 		if (this.fulfillmentProfiles.contains(profile))
 			this.fulfillmentProfiles.remove(profile);
 
@@ -274,7 +280,7 @@ public abstract class Resource implements Serializable {
 		return true;
 	}
 
-	public List<FulfillmentProfile> getFulfillmentProfiles() {
+	public List<FulfillmentProfile<?>> getFulfillmentProfiles() {
 		return this.fulfillmentProfiles;
 	}
 
@@ -284,6 +290,16 @@ public abstract class Resource implements Serializable {
 
 	public void setDiscoverable(boolean isDiscoverable) {
 		this.isDiscoverable = isDiscoverable;
+	}
+	
+	
+
+	public boolean isExternallyConsumed() {
+		return isExternallyConsumed;
+	}
+
+	public void setExternallyConsumed(boolean isExternallyConsumed) {
+		this.isExternallyConsumed = isExternallyConsumed;
 	}
 
 	public Owner getOwner() {
@@ -302,6 +318,124 @@ public abstract class Resource implements Serializable {
 
 	public void setResourceGroup(String resourceGroup) {
 		this.resourceGroup = resourceGroup;
+	}
+	
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((concreteChildren == null) ? 0 : concreteChildren.hashCode());
+		result = prime * result + ((consumptionUnitName == null) ? 0 : consumptionUnitName.hashCode());
+		result = prime * result + ((cost == null) ? 0 : cost.hashCode());
+		result = prime * result + ((dependantOnMe == null) ? 0 : dependantOnMe.hashCode());
+		result = prime * result + ((dependantOnThem == null) ? 0 : dependantOnThem.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + (int) (enforcedMaxQuota ^ (enforcedMaxQuota >>> 32));
+		result = prime * result + (int) (enforcedMinQuota ^ (enforcedMinQuota >>> 32));
+		result = prime * result + ((fulfillmentProfiles == null) ? 0 : fulfillmentProfiles.hashCode());
+		result = prime * result + (isAbstract ? 1231 : 1237);
+		result = prime * result + (isConsumable ? 1231 : 1237);
+		result = prime * result + (isDiscoverable ? 1231 : 1237);
+		result = prime * result + (isExternallyConsumed ? 1231 : 1237);
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+		result = prime * result + ((resourceGroup == null) ? 0 : resourceGroup.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!(obj instanceof Resource))
+			return false;
+		
+		Resource other = (Resource) obj;
+		if (concreteChildren == null) {
+			if (other.concreteChildren != null)
+				return false;
+		} else if (!concreteChildren.equals(other.concreteChildren))
+			return false;
+		
+		if (consumptionUnitName == null) {
+			if (other.consumptionUnitName != null)
+				return false;
+		} else if (!consumptionUnitName.equals(other.consumptionUnitName))
+			return false;
+		
+		if (cost == null) {
+			if (other.cost != null)
+				return false;
+		} else if (!cost.equals(other.cost))
+			return false;
+		
+		if (dependantOnMe == null) {
+			if (other.dependantOnMe != null)
+				return false;
+		} else if (!dependantOnMe.equals(other.dependantOnMe))
+			return false;
+		
+		if (dependantOnThem == null) {
+			if (other.dependantOnThem != null)
+				return false;
+		} else if (!dependantOnThem.equals(other.dependantOnThem))
+			return false;
+		
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		
+		if (enforcedMaxQuota != other.enforcedMaxQuota)
+			return false;
+		
+		if (enforcedMinQuota != other.enforcedMinQuota)
+			return false;
+		
+		if (fulfillmentProfiles == null) {
+			if (other.fulfillmentProfiles != null)
+				return false;
+		} else if (!fulfillmentProfiles.equals(other.fulfillmentProfiles))
+			return false;
+		
+		if (isAbstract != other.isAbstract)
+			return false;
+		
+		if (isConsumable != other.isConsumable)
+			return false;
+		
+		if (isDiscoverable != other.isDiscoverable)
+			return false;
+		
+		if (isExternallyConsumed != other.isExternallyConsumed)
+			return false;
+		
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		
+		if (owner == null) {
+			if (other.owner != null)
+				return false;
+		} else if (!owner.equals(other.owner))
+			return false;
+		
+		if (resourceGroup == null) {
+			if (other.resourceGroup != null)
+				return false;
+		} else if (!resourceGroup.equals(other.resourceGroup))
+			return false;
+		
+		return true;
 	}
 
 	@Override

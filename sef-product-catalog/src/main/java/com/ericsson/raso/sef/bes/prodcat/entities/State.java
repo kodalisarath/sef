@@ -1,7 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum State implements Serializable {
@@ -32,10 +32,9 @@ public enum State implements Serializable {
 				break;
 		}
 		
-		List<State> nextStates = new ArrayList<State>(5);
-		for (State state: next) 
-			nextStates.add(state);
-		return nextStates;
+		return Arrays.asList(next);
 	}
+	
+	
 
 }

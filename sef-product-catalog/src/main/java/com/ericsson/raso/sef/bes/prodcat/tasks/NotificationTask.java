@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 import com.ericsson.raso.sef.core.FrameworkException;
 
-public abstract class NotificationTask<E> implements Callable<E>, Serializable {
+public abstract class NotificationTask<E> implements Callable<E>, Serializable, TransactionTask {
 	private static final long serialVersionUID = -7189717345996246019L;
 
 	private State state = State.WAITING;

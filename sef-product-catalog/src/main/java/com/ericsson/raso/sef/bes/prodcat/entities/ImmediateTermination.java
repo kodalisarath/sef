@@ -18,4 +18,35 @@ public final class ImmediateTermination implements Serializable {
 		
 		this.isAllowed.put(subscriberType, allowed);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((isAllowed == null) ? 0 : isAllowed.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+
+		if (!(obj instanceof ImmediateTermination))
+			return false;
+		
+		ImmediateTermination other = (ImmediateTermination) obj;
+		if (isAllowed == null) {
+			if (other.isAllowed != null)
+				return false;
+		} else if (!isAllowed.equals(other.isAllowed))
+			return false;
+		
+		return true;
+	}
+	
+	
 }

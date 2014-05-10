@@ -1,6 +1,10 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,9 +18,8 @@ import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
 //TODO: please udate the code implemenation to also synchronize with Hazelcast...
 
-public final class ServiceRegistry implements Serializable, IServiceRegistry {
-	private static final long serialVersionUID = -8106773531623764112L;
-
+public final class ServiceRegistry implements IServiceRegistry {
+	
 	private Map<String, Resource> resources = new TreeMap<String, Resource>();;
 
 	private String serviceRegistryLocation = null;
@@ -133,26 +136,69 @@ public final class ServiceRegistry implements Serializable, IServiceRegistry {
 
 	@Override
 	public List<Resource> getAllResources() throws CatalogException {
-		// TODO Auto-generated method stub
-		return null;
+		Collection<Resource> allResources = this.resources.values();
+		if (allResources.isEmpty())
+			return new ArrayList<Resource>();
+		return Arrays.asList((Resource[]) allResources.toArray());
 	}
 
 	@Override
 	public List<Resource> getAllResourcesFor(Owner owner) throws CatalogException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Resource> returnValues = new ArrayList<Resource>();
+		
+		Collection<Resource> allResources = this.resources.values();
+		if (allResources.isEmpty())
+			return returnValues;
+		
+		Iterator<Resource> scanResources = allResources.iterator();
+		while (scanResources.hasNext()) {
+			Resource resource = scanResources.next();
+			Owner resourceOwner = resource.getOwner();
+			if (resourceOwner != null && resourceOwner.equals(owner)){
+				returnValues.add(resource);
+			}
+		}
+		
+		return returnValues;
+		
 	}
 
 	@Override
 	public List<Resource> getAllResourcesFor(boolean isDiscoverable) throws CatalogException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Resource> returnValues = new ArrayList<Resource>();
+		
+		Collection<Resource> allResources = this.resources.values();
+		if (allResources.isEmpty())
+			return returnValues;
+		
+		Iterator<Resource> scanResources = allResources.iterator();
+		while (scanResources.hasNext()) {
+			Resource resource = scanResources.next();
+			if (resource.isDiscoverable()){
+				returnValues.add(resource);
+			}
+		}
+		
+		return returnValues;
 	}
 
 	@Override
 	public List<Resource> getAllResourcesFor(String resourceGroup) throws CatalogException {
-		// TODO Auto-generated method stub
-		return null;
+	List<Resource> returnValues = new ArrayList<Resource>();
+		
+		Collection<Resource> allResources = this.resources.values();
+		if (allResources.isEmpty())
+			return returnValues;
+		
+		Iterator<Resource> scanResources = allResources.iterator();
+		while (scanResources.hasNext()) {
+			Resource resource = scanResources.next();
+			if (resource.getResourceGroup() != null && resource.getResourceGroup().equalsIgnoreCase(resourceGroup)){
+				returnValues.add(resource);
+			}
+		}
+		
+		return returnValues;
 	}
 
 		

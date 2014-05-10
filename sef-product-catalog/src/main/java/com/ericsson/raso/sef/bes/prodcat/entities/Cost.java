@@ -8,4 +8,5 @@ public class Cost extends MonetaryUnit {
 		}
 
 
+		
 }

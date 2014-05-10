@@ -13,4 +13,5 @@ public final class InfiniteTime extends AbstractTimeCharacteristic {
 	}
 
 
+	
 }

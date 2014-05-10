@@ -82,5 +82,64 @@ public final class AtomicProduct extends Product implements Serializable {
 		this.resetQuotaOnRenewal = resetQuotaOnRenewal;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((quota == null) ? 0 : quota.hashCode());
+		result = prime * result + (resetQuotaOnRenewal ? 1231 : 1237);
+		result = prime * result + ((resource == null) ? 0 : resource.hashCode());
+		result = prime * result + ((suppressFulfilment == null) ? 0 : suppressFulfilment.hashCode());
+		result = prime * result + ((validity == null) ? 0 : validity.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof AtomicProduct))
+			return false;
+		
+		AtomicProduct other = (AtomicProduct) obj;
+		if (quota == null) {
+			if (other.quota != null)
+				return false;
+		} else if (!quota.equals(other.quota))
+			return false;
+		
+		if (resetQuotaOnRenewal != other.resetQuotaOnRenewal)
+			return false;
+		
+		if (resource == null) {
+			if (other.resource != null)
+				return false;
+		} else if (!resource.equals(other.resource))
+			return false;
+		
+		if (suppressFulfilment == null) {
+			if (other.suppressFulfilment != null)
+				return false;
+		} else if (!suppressFulfilment.equals(other.suppressFulfilment))
+			return false;
+		
+		if (validity == null) {
+			if (other.validity != null)
+				return false;
+		} else if (!validity.equals(other.validity))
+			return false;
+		
+		return true;
+	}
+
+	
+	
 	
 }

@@ -25,5 +25,36 @@ public final class TaxPercentage extends Tax {
 		this.taxPercentile = taxPercentile;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + taxPercentile;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof TaxPercentage))
+			return false;
+		
+		TaxPercentage other = (TaxPercentage) obj;
+		if (taxPercentile != other.taxPercentile)
+			return false;
+		
+		return true;
+	}
+
+	
+	
 	
 }

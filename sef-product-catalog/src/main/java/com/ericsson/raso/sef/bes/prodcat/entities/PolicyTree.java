@@ -113,6 +113,36 @@ public final class PolicyTree implements Serializable {
 			return true;
 		return false;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((policyChain == null) ? 0 : policyChain.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!(obj instanceof PolicyTree))
+			return false;
+		
+		PolicyTree other = (PolicyTree) obj;
+		if (policyChain == null) {
+			if (other.policyChain != null)
+				return false;
+		} else if (!policyChain.equals(other.policyChain))
+			return false;
+		
+		return true;
+	}
+	
 	
 	
 }

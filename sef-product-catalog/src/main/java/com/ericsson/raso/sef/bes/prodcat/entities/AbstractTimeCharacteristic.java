@@ -55,4 +55,38 @@ public abstract class AbstractTimeCharacteristic implements Serializable {
 		INFINITE, HOURS, DAYS, DATE,
 	}
 
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (activationTime ^ (activationTime >>> 32));
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!(obj instanceof AbstractTimeCharacteristic))
+			return false;
+		
+		AbstractTimeCharacteristic other = (AbstractTimeCharacteristic) obj;
+		if (activationTime != other.activationTime)
+			return false;
+		
+		if (type != other.type)
+			return false;
+		
+		return true;
+	}
+	
+	
+
 }

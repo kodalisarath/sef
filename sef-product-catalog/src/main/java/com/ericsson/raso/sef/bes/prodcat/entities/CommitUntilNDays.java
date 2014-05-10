@@ -24,6 +24,35 @@ public class CommitUntilNDays extends AbstractMinimumCommitment {
 
 		return (activationTime + (days * DAYS2MILLIS));
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + days;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof CommitUntilNDays))
+			return false;
+		
+		CommitUntilNDays other = (CommitUntilNDays) obj;
+		if (days != other.days)
+			return false;
+		
+		return true;
+	}
 	
 	
 

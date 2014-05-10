@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.ericsson.raso.sef.bes.prodcat.entities.Owner;
+import com.ericsson.raso.sef.bes.prodcat.service.IOwnerManager;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.SecureSerializationHelper;
 

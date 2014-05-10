@@ -20,4 +20,34 @@ public class TerminateHardDate extends AbstractAutoTermination {
 
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (int) (date ^ (date >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof TerminateHardDate))
+			return false;
+		
+		TerminateHardDate other = (TerminateHardDate) obj;
+		if (date != other.date)
+			return false;
+		
+		return true;
+	}
+
+	
 }
