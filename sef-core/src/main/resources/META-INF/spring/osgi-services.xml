@@ -10,8 +10,8 @@
 
 
 
-	<osgi:service id="IConfigService" ref=""
-        interface="com.javaworld.sample.osgi.spring.contact.IConfig">
+	<osgi:service ref="configservice"
+        interface="com.ericsson.raso.sef.core.config.IConfig">
     </osgi:service>
 
 </beans>
