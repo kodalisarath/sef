@@ -6,6 +6,7 @@ import com.ericsson.raso.sef.auth.Actor;
 
 public class RequestContext {
 	
+	private String requestId = null;
 	private Actor actor = null;
 	private String interfaceName = null;
 	private String primitive = null;
@@ -42,5 +43,13 @@ public class RequestContext {
 	public void setInProcess(Map<String, Object> inProcess) {
 		this.inProcess = inProcess;
 	}
+	public String getRequestId() {
+		return requestId;
+	}
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
+	}
+	
+	
 
 }
