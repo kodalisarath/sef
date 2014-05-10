@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.core;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.ericsson.raso.sef.auth.Actor;
 
@@ -32,12 +33,16 @@ public class RequestContext {
 		this.primitive = primitive;
 	}
 	public Map<String, Object> getRequestParameters() {
+		if (this.requestParameters == null)
+			requestParameters = new TreeMap<String, Object>();
 		return requestParameters;
 	}
 	public void setRequestParameters(Map<String, Object> requestParameters) {
 		this.requestParameters = requestParameters;
 	}
 	public Map<String, Object> getInProcess() {
+		if (this.inProcess == null)
+			this.inProcess = new TreeMap<String, Object>();
 		return inProcess;
 	}
 	public void setInProcess(Map<String, Object> inProcess) {
