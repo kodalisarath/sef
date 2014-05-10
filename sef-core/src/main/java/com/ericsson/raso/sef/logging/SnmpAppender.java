@@ -185,6 +185,7 @@ public class SnmpAppender extends AbstractAppender {
 			try {
 				Byte.parseByte(octet);
 			} catch (NumberFormatException e) {
+				LOGGER.error("WARNING OID Parsing");
 				return false;
 			}
 		}
@@ -194,21 +195,21 @@ public class SnmpAppender extends AbstractAppender {
 	@PluginFactory
 	public static SnmpAppender createAppender(@PluginAttribute("name") final String name,
 			@PluginAttribute("ignoreExceptions") final String ignore,
-			@PluginElement("managementHost") final String managementHost,
-			@PluginElement("managementPort") final String managementPort,
-			@PluginElement("communityString") final String communityString,
-			@PluginElement("applicationTrapOid") final String applicationTrapOid,
-			@PluginElement("nodeNameOid") final String nodeNameOid, @PluginElement("nodeName") final String nodeName,
-			@PluginElement("nodeLocationOid") final String nodeLocationOid,
-			@PluginElement("nodeLocation") final String nodeLocation,
-			@PluginElement("errorCodeOid") final String errorCodeOid,
-			@PluginElement("errorDescriptionOid") final String errorDescriptionOid,
-			@PluginElement("severityOid") final String severityOid,
-			@PluginElement("timestampOid") final String timestampOid,
-			@PluginElement("timestampFormat") final String timestampFormat,
-			@PluginElement("additionalTextOid") final String additionalTextOid,
-			@PluginElement("stackTraceOid") final String stackTraceOid,
-			@PluginElement("useClearanceFor") final String useClearanceFor,
+			@PluginAttribute("managementHost") final String managementHost,
+			@PluginAttribute("managementPort") final String managementPort,
+			@PluginAttribute("communityString") final String communityString,
+			@PluginAttribute("applicationTrapOid") final String applicationTrapOid,
+			@PluginAttribute("nodeNameOid") final String nodeNameOid, @PluginAttribute("nodeName") final String nodeName,
+			@PluginAttribute("nodeLocationOid") final String nodeLocationOid,
+			@PluginAttribute("nodeLocation") final String nodeLocation,
+			@PluginAttribute("errorCodeOid") final String errorCodeOid,
+			@PluginAttribute("errorDescriptionOid") final String errorDescriptionOid,
+			@PluginAttribute("severityOid") final String severityOid,
+			@PluginAttribute("timestampOid") final String timestampOid,
+			@PluginAttribute("timestampFormat") final String timestampFormat,
+			@PluginAttribute("additionalTextOid") final String additionalTextOid,
+			@PluginAttribute("stackTraceOid") final String stackTraceOid,
+			@PluginAttribute("useClearanceFor") final String useClearanceFor,
 			@PluginElement("Layout") Layout<? extends Serializable> layout,
 			@PluginElement("Filters") final Filter filter, @PluginAttribute("advertise") final String advertise,
 			@PluginConfiguration final Configuration config) {
@@ -248,28 +249,29 @@ public class SnmpAppender extends AbstractAppender {
 			appender.isConfigured = false;
 		}
 
-		if (applicationTrapOid != null && !applicationTrapOid.isEmpty() && !appender.isOidString(applicationTrapOid))
+		if (applicationTrapOid != null && !applicationTrapOid.isEmpty() && appender.isOidString(applicationTrapOid)) {
 			appender.applicationTrapOid = applicationTrapOid;
+		}
 		else {
 			LOGGER.error("NMS Integration is not configured properly - applicationTrapOid");
 			appender.isConfigured = false;
 		}
 
-		if (nodeNameOid != null && !nodeNameOid.isEmpty() && !appender.isOidString(nodeNameOid))
+		if (nodeNameOid != null && !nodeNameOid.isEmpty() && appender.isOidString(nodeNameOid))
 			appender.nodeNameOid = nodeNameOid;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - nodeNameOid");
 			appender.isConfigured = false;
 		}
 
-		if (nodeName != null && !nodeName.isEmpty() && !appender.isOidString(nodeName))
+		if (nodeName != null && !nodeName.isEmpty())
 			appender.nodeName = nodeName;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - nodeName");
 			appender.isConfigured = false;
 		}
 
-		if (nodeLocationOid != null && !nodeLocationOid.isEmpty() && !appender.isOidString(nodeLocationOid))
+		if (nodeLocationOid != null && !nodeLocationOid.isEmpty() && appender.isOidString(nodeLocationOid))
 			appender.nodeLocationOid = nodeLocationOid;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - nodeLocationOid");
@@ -283,28 +285,28 @@ public class SnmpAppender extends AbstractAppender {
 			appender.isConfigured = false;
 		}
 
-		if (errorCodeOid != null && !errorCodeOid.isEmpty() && !appender.isOidString(errorCodeOid))
+		if (errorCodeOid != null && !errorCodeOid.isEmpty() && appender.isOidString(errorCodeOid))
 			appender.errorCodeOid = errorCodeOid;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - errorCodeOid");
 			appender.isConfigured = false;
 		}
 
-		if (errorDescriptionOid != null && !errorDescriptionOid.isEmpty() && !appender.isOidString(errorDescriptionOid))
+		if (errorDescriptionOid != null && !errorDescriptionOid.isEmpty() && appender.isOidString(errorDescriptionOid))
 			appender.errorDescriptionOid = errorDescriptionOid;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - errorDescriptionOid");
 			appender.isConfigured = false;
 		}
 
-		if (severityOid != null && !severityOid.isEmpty() && !appender.isOidString(severityOid))
+		if (severityOid != null && !severityOid.isEmpty() && appender.isOidString(severityOid))
 			appender.severityOid = severityOid;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - severityOid");
 			appender.isConfigured = false;
 		}
 
-		if (timestampOid != null && !timestampOid.isEmpty() && !appender.isOidString(timestampOid))
+		if (timestampOid != null && !timestampOid.isEmpty() && appender.isOidString(timestampOid))
 			appender.timestampOid = timestampOid;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - timestampOid");
@@ -318,14 +320,14 @@ public class SnmpAppender extends AbstractAppender {
 			appender.isConfigured = false;
 		}
 
-		if (additionalTextOid != null && !additionalTextOid.isEmpty() && !appender.isOidString(additionalTextOid))
+		if (additionalTextOid != null && !additionalTextOid.isEmpty() && appender.isOidString(additionalTextOid))
 			appender.additionalTextOid = additionalTextOid;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - additionalTextOid");
 			appender.isConfigured = false;
 		}
 
-		if (stackTraceOid != null && !stackTraceOid.isEmpty() && !appender.isOidString(stackTraceOid))
+		if (stackTraceOid != null && !stackTraceOid.isEmpty() && appender.isOidString(stackTraceOid))
 			appender.stackTraceOid = stackTraceOid;
 		else {
 			LOGGER.error("NMS Integration is not configured properly - stackTraceOid");
