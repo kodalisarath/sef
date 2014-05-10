@@ -8,10 +8,9 @@
           http://cxf.apache.org/schemas/jaxws.xsd
           http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-	<import resource="classpath:META-INF/sm-core/beans.xml"/>
-	<import resource="classpath:META-INF/sm-xmlrpc/beans.xml"/>
+	<import resource="classpath:META-INF/sef-core/beans.xml"/>
 	
-	<bean id="csAirContext" class="com.ericsson.raso.sef.client.air.internal.AirClientImpl" />
+	<bean id="csAirContext" class="com.ericsson.raso.sef.client.air.internal.AirClientImpl" init-method="init"/>
 
 	<bean id="airClient" class="com.ericsson.raso.sef.client.air.internal.CsAirContext"/>
 </beans>
