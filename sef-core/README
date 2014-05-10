@@ -1,0 +1,12 @@
+Installation notes:
+
+System variables to be set for the JVM:
+
+//location of home directory. used for resolution of encrypted license file location
+SEF_HOME
+
+//location of SEF configuration file and cluster configuration file
+CONFIG_HOME
+
+// RequestId generation logic uses hostname and it will be used in cluster executor
+hostname
