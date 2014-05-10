@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 import com.ericsson.raso.sef.core.FrameworkException;
 
-public abstract class ChargingTask<E> implements Callable<E>, Serializable {
+public abstract class ChargingTask<E> implements Callable<E>, Serializable, TransactionTask {
 	private static final long serialVersionUID = -7774372771842184423L;
 
 	private Mode mode = null;

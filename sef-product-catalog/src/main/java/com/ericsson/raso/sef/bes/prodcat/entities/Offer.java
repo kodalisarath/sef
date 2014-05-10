@@ -239,6 +239,59 @@ public class Offer implements Serializable {
 		}		
 	}
 	
+	public boolean checkEditSanity(Offer other) {
+		if (other == null)
+			return false;
+		
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		
+		if (history == null) {
+			if (other.history != null)
+				return false;
+		} else if (!history.equals(other.history))
+			return false;
+		
+		if (isCommercial != other.isCommercial)
+			return false;
+		
+		if (isRecurrent != other.isRecurrent)
+			return false;
+		
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		
+		if (offerState != other.offerState)
+			return false;
+		
+		if (owner == null) {
+			if (other.owner != null)
+				return false;
+		} else if (!owner.equals(other.owner))
+			return false;
+		
+		if (renewalPeriod == null) {
+			if (other.renewalPeriod != null)
+				return false;
+		} else if (!renewalPeriod.equals(other.renewalPeriod))
+			return false;
+		
+		if (trialPeriod == null) {
+			if (other.trialPeriod != null)
+				return false;
+		} else if (!trialPeriod.equals(other.trialPeriod))
+			return false;
+		
+		return true;
+	}
+	
+	
 	
 	
 	//==========----------------------------- End of Functional Section ---------------==============================================================/
