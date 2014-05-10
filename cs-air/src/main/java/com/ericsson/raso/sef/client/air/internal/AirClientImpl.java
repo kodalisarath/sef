@@ -10,6 +10,7 @@ import com.ericsson.raso.sef.client.air.request.AbstractAirRequest;
 import com.ericsson.raso.sef.client.air.response.AbstractAirResponse;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
+import com.ericsson.raso.sef.core.config.Section;
 import com.ericsson.raso.sef.plugin.xmlrpc.ConfigParams;
 import com.ericsson.raso.sef.plugin.xmlrpc.XmlRpcClient;
 import com.ericsson.raso.sef.plugin.xmlrpc.XmlRpcClientFactory;
@@ -23,8 +24,8 @@ public class AirClientImpl implements AirClient {
 
 	private Map<String, XmlRpcClient> clientMap = new HashMap<String, XmlRpcClient>();
 	
-	public AirClientImpl() throws Exception {
-		init();
+	public AirClientImpl() {
+		
 	}
 
 	@SuppressWarnings("unused")
@@ -34,9 +35,11 @@ public class AirClientImpl implements AirClient {
 		//assuming max 10 end points can be configured 
 		for(int i=1; i<11; i++) {	
 			String sectionName = "cs-air"+i;
-			if(sectionName == null)
-				continue;
 			IConfig config = CsAirContext.getConfig();
+			Section csAir = config.getSection(sectionName);
+			if(csAir == null)
+				continue;
+			
 			originHostName = CsAirContext.getConfig().getValue(sectionName, "originHostName");
 			originNodeType = CsAirContext.getConfig().getValue(sectionName, "originNodeType");
 			defaultSite = CsAirContext.getConfig().getValue("GLOBAL", "defaultSite");
@@ -201,6 +204,7 @@ public class AirClientImpl implements AirClient {
 		params.setSoTimeout(soTimeout);
 		
 		String address = CsAirContext.getConfig().getValue(sectionName, "address");
+		if(address == null)  throw new RuntimeException("Property missing in config.xml, Section: " + sectionName + ", Property: 'address'");
 		params.setUrl(address);
 		
 		return params;
