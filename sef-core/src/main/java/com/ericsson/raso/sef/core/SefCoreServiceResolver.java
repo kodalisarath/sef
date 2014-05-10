@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import com.ericsson.raso.sef.auth.PrivilegeManager;
 import com.ericsson.raso.sef.auth.service.IPrivilegeManager;
+import com.ericsson.raso.sef.auth.service.IUserStore;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.db.service.UserManagementService;
 import com.ericsson.raso.sef.watergate.IWatergate;
@@ -36,6 +37,9 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 		return new PrivilegeManager("Z:\\Common Share\\Projects\\raso-cac\\rasocac\\privilegeStore.zccm");
 	}
 	
+	public static IUserStore getUserStore() {
+		return SefCoreServiceResolver.context.getBean(IUserStore.class);
+	}
 	//TODO: Add other services - Logger, User Store, Request Context
 	
 	
