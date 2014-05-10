@@ -23,6 +23,35 @@ public class TerminateAfterNRenewals extends AbstractAutoTermination {
 		return (activationTime + (renewals  * subsription.getRenewalPeriod().getExpiryTimeInMillis()));
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + renewals;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof TerminateAfterNRenewals))
+			return false;
+		
+		TerminateAfterNRenewals other = (TerminateAfterNRenewals) obj;
+		if (renewals != other.renewals)
+			return false;
+		
+		return true;
+	}
+
 	
 
 }

@@ -28,6 +28,39 @@ public abstract class MonetaryUnit implements Serializable {
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (amount ^ (amount >>> 32));
+		result = prime * result + ((iso4217CurrencyCode == null) ? 0 : iso4217CurrencyCode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!(obj instanceof MonetaryUnit))
+			return false;
+		
+		MonetaryUnit other = (MonetaryUnit) obj;
+		if (amount != other.amount)
+			return false;
+		
+		if (iso4217CurrencyCode == null) {
+			if (other.iso4217CurrencyCode != null)
+				return false;
+		} else if (!iso4217CurrencyCode.equals(other.iso4217CurrencyCode))
+			return false;
+		
+		return true;
+	}
 	
 	
 

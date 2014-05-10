@@ -75,4 +75,35 @@ public class OfferLifeCycle implements Serializable {
 		return this.lifecycle.get(State.RETIRED);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((lifecycle == null) ? 0 : lifecycle.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!(obj instanceof OfferLifeCycle))
+			return false;
+		
+		OfferLifeCycle other = (OfferLifeCycle) obj;
+		if (lifecycle == null) {
+			if (other.lifecycle != null)
+				return false;
+		} else if (!lifecycle.equals(other.lifecycle))
+			return false;
+		
+		return true;
+	}
+
+	
+
 }

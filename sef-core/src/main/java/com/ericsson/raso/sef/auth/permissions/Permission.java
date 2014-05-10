@@ -36,7 +36,6 @@ public class Permission implements Privilege, Serializable {
 		if (this.impliedPermissions.contains(other))
 			return true;
 		
-		//TODO: Logger - ideally this is dead code as per logic... but to be safe, add a logger to identify loopholes
 		return false;
 	}
 	

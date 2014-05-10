@@ -42,7 +42,8 @@ public abstract class FulfillmentTask<E> implements Callable<E>, Serializable {
 	 * and hence the invoker must
 	 * 
 	 * @return - true if successful; false if unsuccessful but gracefully handled.
-	 * @throws FrameworkException relevant to Fulfillment Engine.
+	 * @throws FrameworkException
+	 *             relevant to Fulfillment Engine.
 	 */
 	public abstract E revert() throws FrameworkException;
 
@@ -96,6 +97,37 @@ public abstract class FulfillmentTask<E> implements Callable<E>, Serializable {
 		WAITING,
 		PROCESSING,
 		DONE;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((mode == null) ? 0 : mode.hashCode());
+		result = prime * result + ((state == null) ? 0 : state.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+
+		if (this == obj)
+			return true;
+
+		if (obj instanceof FulfillmentTask) {
+			FulfillmentTask<E> other = (FulfillmentTask<E>) obj;
+			if (mode != other.mode)
+				return false;
+
+			if (state != other.state)
+				return false;
+		} else {
+			return false;
+		}
+
+		return true;
 	}
 
 }

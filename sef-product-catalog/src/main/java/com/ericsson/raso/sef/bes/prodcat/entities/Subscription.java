@@ -83,5 +83,7 @@ public class Subscription extends Offer {
 		subscriptionHistory.add(SubscriptionLifeCycleState.CLOSED, timestamp); 
 	}
 	
+	
+	
 
 }

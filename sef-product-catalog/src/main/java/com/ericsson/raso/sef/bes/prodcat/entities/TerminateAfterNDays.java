@@ -26,4 +26,35 @@ public class TerminateAfterNDays extends AbstractAutoTermination {
 
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + days;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof TerminateAfterNDays))
+			return false;
+		
+		TerminateAfterNDays other = (TerminateAfterNDays) obj;
+		if (days != other.days)
+			return false;
+		
+		return true;
+	}
+	
+	
+
 }

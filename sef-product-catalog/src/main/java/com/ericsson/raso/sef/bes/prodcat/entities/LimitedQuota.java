@@ -42,4 +42,39 @@ public final class LimitedQuota extends AbstractQuotaCharacteristic {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (int) (consumedQuota ^ (consumedQuota >>> 32));
+		result = prime * result + (int) (definedQuota ^ (definedQuota >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof LimitedQuota))
+			return false;
+		
+		LimitedQuota other = (LimitedQuota) obj;
+		if (consumedQuota != other.consumedQuota)
+			return false;
+		
+		if (definedQuota != other.definedQuota)
+			return false;
+		
+		return true;
+	}
+	
+	
+
 }

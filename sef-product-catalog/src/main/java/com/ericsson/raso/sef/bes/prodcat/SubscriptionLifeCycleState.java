@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -99,12 +100,7 @@ public enum SubscriptionLifeCycleState {
 
 		}
 
-		for (SubscriptionLifeCycleState state : states) {
-			if (nextStates == null)
-				nextStates = new ArrayList<SubscriptionLifeCycleState>();
-			nextStates.add(state);
-		}
-		return nextStates;
+		return Arrays.asList(states);
 	}
 
 }

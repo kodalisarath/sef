@@ -1,5 +1,6 @@
-package com.ericsson.raso.sef.bes.prodcat;
+package com.ericsson.raso.sef.bes.prodcat.service;
 
+import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.entities.Owner;
 
 public interface IOwnerManager {

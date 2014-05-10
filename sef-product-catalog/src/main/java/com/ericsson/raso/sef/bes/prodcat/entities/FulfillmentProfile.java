@@ -30,4 +30,13 @@ public abstract class FulfillmentProfile<E> extends FulfillmentTask<E> {
 		return name;
 	}
 
+
+	public FulfillmentProfile(String name, Rule criteria) {
+		super();
+		this.name = name;
+		this.criteria = criteria;
+	}
+	
+	
+
 }

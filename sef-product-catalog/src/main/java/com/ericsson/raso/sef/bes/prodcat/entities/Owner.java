@@ -311,7 +311,7 @@ public abstract class Owner implements Serializable {
 		/**
 		 * Represents an End-User that pays for products & avails services from
 		 * any stakeholder at higher levels. It is possible for an end-user to
-		 * create his/her own products, under the dynamic forumlation feature
+		 * create his/her own products, under the dynamic formulation feature
 		 * 
 		 * <code>Note:</code> Any stakeholder tagged at this level will have
 		 * permissions to all lower levels.
@@ -320,5 +320,40 @@ public abstract class Owner implements Serializable {
 	}
 
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		
+		if (obj == null)
+			return false;
+		
+		if (getClass() != obj.getClass())
+			return false;
+		
+		Owner other = (Owner) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		
+		if (type != other.type)
+			return false;
+		return true;
+	}
+
+
+	
 
 }

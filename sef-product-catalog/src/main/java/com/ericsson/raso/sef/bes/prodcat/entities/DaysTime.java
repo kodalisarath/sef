@@ -21,4 +21,35 @@ public class DaysTime extends AbstractTimeCharacteristic {
 			return (this.getActivationTime() + this.numberOfHours);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (int) (numberOfHours ^ (numberOfHours >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!super.equals(obj))
+			return false;
+		
+		if (!(obj instanceof DaysTime))
+			return false;
+		
+		DaysTime other = (DaysTime) obj;
+		if (numberOfHours != other.numberOfHours)
+			return false;
+		
+		return true;
+	}
+	
+	
+
 }

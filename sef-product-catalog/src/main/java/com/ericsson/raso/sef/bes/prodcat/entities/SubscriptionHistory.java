@@ -7,6 +7,8 @@ import java.util.List;
 
 
 
+
+
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleState;
 
@@ -80,7 +82,42 @@ public class SubscriptionHistory implements Serializable {
 
 
 
-	class HistoryEvent {
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((subscriptionHistory == null) ? 0 : subscriptionHistory.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+
+		if (!(obj instanceof SubscriptionHistory))
+			return false;
+		
+		SubscriptionHistory other = (SubscriptionHistory) obj;
+		if (subscriptionHistory == null) {
+			if (other.subscriptionHistory != null)
+				return false;
+		} else if (!subscriptionHistory.equals(other.subscriptionHistory))
+			return false;
+		
+		return true;
+	}
+
+
+
+
+
+	class HistoryEvent implements Serializable {
+		private static final long serialVersionUID = -2449277144684948258L;
 
 		private SubscriptionLifeCycleState state = null;
 		private long timestamp = -1L;
@@ -97,6 +134,46 @@ public class SubscriptionHistory implements Serializable {
 		public long getTimestamp() {
 			return timestamp;
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((state == null) ? 0 : state.hashCode());
+			result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null)
+				return false;
+			
+			if (this == obj)
+				return true;
+
+			if (!(obj instanceof HistoryEvent))
+				return false;
+			
+			HistoryEvent other = (HistoryEvent) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			
+			if (state != other.state)
+				return false;
+			
+			if (timestamp != other.timestamp)
+				return false;
+			
+			return true;
+		}
+
+		private SubscriptionHistory getOuterType() {
+			return SubscriptionHistory.this;
+		}
+		
+		
 
 	}
 

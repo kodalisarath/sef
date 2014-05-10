@@ -64,5 +64,32 @@ public abstract class AbstractQuotaCharacteristic implements Serializable {
 	enum Type {
 		UNLIMITED, LIMITED;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		
+		if (this == obj)
+			return true;
+		
+		if (!(obj instanceof AbstractQuotaCharacteristic))
+			return false;
+		
+		AbstractQuotaCharacteristic other = (AbstractQuotaCharacteristic) obj;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+	
+	
 	
 }
