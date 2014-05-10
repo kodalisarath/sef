@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.ericsson.sef</groupId>
+  <artifactId>cs-af</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <name>cs-af</name>
+  <url>http://maven.apache.org</url>
+
+  <packaging>bundle</packaging>
+
+	<properties>
+		<osgi-import-package>
+			${sefcore-packages},
+			*
+		</osgi-import-package>
+		<osgi-export-package>
+			com.ericsson.raso.sef.client.af.command,
+			com.ericsson.raso.sef.client.af.request
+		</osgi-export-package>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ericsson.sef</groupId>
+			<artifactId>sef-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Package>${osgi-export-package}</Export-Package>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
