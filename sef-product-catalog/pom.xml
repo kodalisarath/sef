@@ -12,6 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <kryo.version>2.22</kryo.version>
+	<kryo-serializers.version>0.26</kryo-serializers.version>
     <osgi-import-package>
 		com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.auth.*,
@@ -25,6 +27,16 @@
 			<groupId>com.ericsson.sef</groupId>
 			<artifactId>sef-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		 <dependency>
+			<groupId>com.esotericsoftware.kryo</groupId>
+			<artifactId>kryo</artifactId>
+			<version>${kryo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.javakaffee</groupId>
+			<artifactId>kryo-serializers</artifactId>
+			<version>${kryo-serializers.version}</version>
 		</dependency>
     	<dependency>
       		<groupId>junit</groupId>
