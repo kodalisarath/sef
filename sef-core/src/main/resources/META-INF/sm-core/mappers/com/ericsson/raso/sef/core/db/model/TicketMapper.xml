@@ -4,7 +4,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//En"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
-<mapper namespace="com.ericsson.sm.core.db.mapper.TicketMapper">
+<mapper namespace="com.ericsson.raso.sef.core.db.mapper.TicketMapper">
 
 	<resultMap id="TicketResult" type="Ticket">
 		<id property="ticketId" column="ticket_id" />

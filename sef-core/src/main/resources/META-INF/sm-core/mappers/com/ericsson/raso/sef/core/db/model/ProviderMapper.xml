@@ -4,7 +4,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ericsson.sm.core.db.mapper.ProviderMapper">
+<mapper namespace="com.ericsson.raso.sef.core.db.mapper.ProviderMapper">
 
 	<resultMap id="ProviderSLARequestResult" type="ProviderSLARequest">
 		<result property="providerName" column="partner_name" />

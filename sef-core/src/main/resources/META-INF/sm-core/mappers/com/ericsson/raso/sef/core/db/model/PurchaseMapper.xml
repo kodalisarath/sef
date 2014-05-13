@@ -5,7 +5,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
 
-<mapper namespace="com.ericsson.sm.core.db.mapper.PurchaseMapper">
+<mapper namespace="com.ericsson.raso.sef.core.db.mapper.PurchaseMapper">
 
 	<resultMap id="SequenceResult" type="SmSequence">
 		<result property="seq" column="seq" />

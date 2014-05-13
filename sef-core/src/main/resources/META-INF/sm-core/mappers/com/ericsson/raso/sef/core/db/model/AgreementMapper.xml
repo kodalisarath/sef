@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ericsson.sm.core.db.mapper.AgreementMapper">
+<mapper namespace="com.ericsson.raso.sef.core.db.mapper.AgreementMapper">
 		
 	<resultMap id="AgreementResult" type="Agreement">
 		<id property="agreementId" column="agreement_id" />
