@@ -1,1 +1,0 @@
-package com.ericsson.sm.smart.usecase;
