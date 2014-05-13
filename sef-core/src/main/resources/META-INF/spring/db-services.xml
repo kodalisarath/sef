@@ -91,35 +91,35 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
-	<bean id="subscriberService" class="com.ericsson.sm.core.db.service.internal.SubscriberServiceImpl">
-		<property name="subscriberMapper" ref="subscriberMapper"/>
-		<property name="cache" ref="smCache"/>
-	</bean>
+<!-- 	<bean id="subscriberService" class="com.ericsson.raso.sef.core.db.service.internal.SubscriberServiceImpl"> -->
+<!-- 		<property name="subscriberMapper" ref="subscriberMapper"/> -->
+<!-- 		<property name="cache" ref="smCache"/> -->
+<!-- 	</bean> -->
 	
-	<bean id="callingCircleDBService" class="com.ericsson.sm.core.db.service.internal.CallingCircleServiceImpl">
+	<bean id="callingCircleDBService" class="com.ericsson.raso.sef.core.db.service.internal.CallingCircleServiceImpl">
 		<property name="callingCircleMapper" ref="callingCircleMapper"/>
 	</bean>
 
-	<bean id="providerService" class="com.ericsson.sm.core.db.service.internal.ProviderServiceImpl">
+	<bean id="providerService" class="com.ericsson.raso.sef.core.db.service.internal.ProviderServiceImpl">
 		<property name="agreementMapper" ref="agreementMapper"/>
 	</bean>
 
-	<bean id="userManagementService" class="com.ericsson.sm.core.db.service.internal.UserManagemetServiceImpl">
+	<bean id="userManagementService" class="com.ericsson.raso.sef.core.db.service.internal.UserManagemetServiceImpl">
 		<property name="providerMapper" ref="providerMapper"/>
 		<property name="agreementMapper" ref="agreementMapper"/>
 	</bean>
 	
-	<bean id="roleManagerService" class="com.ericsson.sm.core.db.service.internal.RoleManagerServiceImpl">
-		<property name="roleManagerMapper" ref="roleManagerMapper"/>
-	</bean>
+<!-- 	<bean id="roleManagerService" class="com.ericsson.raso.sef.core.db.service.internal.RoleManagerServiceImpl"> -->
+<!-- 		<property name="roleManagerMapper" ref="roleManagerMapper"/> -->
+<!-- 	</bean> -->
 	
-	<bean id="roleManagerMapper" class="com.ericsson.sm.core.internal.SmMapperFactoryBean">
+	<bean id="roleManagerMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.RoleManagerMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 	
 	<bean id="scheduleRequestService"
-		class="com.ericsson.sm.core.db.service.internal.ScheduleRequestServiceImpl">
+		class="com.ericsson.raso.sef.core.db.service.internal.ScheduleRequestServiceImpl">
 		<property name="scheduledRequestMapper" ref="scheduledRequestMapper" />
 	</bean>
 	
