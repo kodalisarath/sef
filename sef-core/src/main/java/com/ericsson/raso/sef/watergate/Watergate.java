@@ -35,7 +35,7 @@ public class Watergate implements IWatergate {
 	
 	public boolean slaCheck(String userId, String operationName) {
 		
-		boolean isCounterValid = false;
+		boolean isInvalidCounter = true;
 		boolean hasLimit = false;
 		Sla sla;
 		
@@ -57,6 +57,7 @@ public class Watergate implements IWatergate {
 				if (counter.isStillActive()) {
 					//Check if counter is still under allowed limit
 					hasLimit = counter.hasLimit();
+					isInvalidCounter = false;
 				} else {
 					counter.reset();
 					counter = null;
@@ -64,12 +65,14 @@ public class Watergate implements IWatergate {
 			}
 			
 			// If counter expired or never created, create one
-			if(isCounterValid) {
+			if(isInvalidCounter) {
 			counter = new ConcurrencyCounter(sla.getCapacity(),
 					sla.getSlaUnit().getMilliseconds(),
 					System.currentTimeMillis(),
 					cluster.getAtomicCounter(slaCounterKey));
 			}
+			System.out.println(counter.isStillActive());
+			System.out.println(slaCounterKey);
 			map.put(slaCounterKey, counter);
 		}
 		
@@ -114,8 +117,9 @@ public class Watergate implements IWatergate {
 	}
 	
 	private String getLicenseFileLocation() {
-		String location = null;
-		//TODO: Add location resolution for System SLA file
+		String location = System.getenv("LICENSE_KEY");
+		if(location == null)
+			throw new RuntimeException("Unable to find the license file location. Ensure 'LICENSE_KEY' env variable is set with license file name and location");
 		return location;
 	}
 }
