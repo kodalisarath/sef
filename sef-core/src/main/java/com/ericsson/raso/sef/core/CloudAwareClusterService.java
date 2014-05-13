@@ -12,19 +12,18 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
 
-public class CloudAwareClusterService {
+public class CloudAwareClusterService implements CloudAwareCluster {
 
 	private HazelcastInstance instance;
 	private static final String CONFIG_HOME = "CONFIG_HOME";
 	
 	public CloudAwareClusterService() {
-		
 	}
 	
 	public void start() {
 		String configHome = System.getenv(CONFIG_HOME);
 		try {
-			FileInputStream fis = new FileInputStream(configHome + "hazelcast.xml");
+			FileInputStream fis = new FileInputStream(configHome + getFileSeparator() +  "hazelcast.xml");
 			Config config = new XmlConfigBuilder(fis).build();
 			instance = Hazelcast.newHazelcastInstance(config);
 			
@@ -57,5 +56,17 @@ public class CloudAwareClusterService {
 	
 	public HazelcastInstance getInstance() {
 		return instance;
+	}
+	
+	private String getFileSeparator() {
+		
+		String your_os = System.getProperty("os.name").toLowerCase();
+		if(your_os.indexOf("win") >= 0){
+			return "\\";
+		}else if(your_os.indexOf( "nix") >=0 || your_os.indexOf( "nux") >=0){
+			return "/";
+		}else{
+			return "/";
+		}
 	}
 }
