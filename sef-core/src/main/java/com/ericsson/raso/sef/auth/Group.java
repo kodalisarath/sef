@@ -11,34 +11,20 @@ import java.util.List;
  *
  */
 public class Group extends Identity {
-	private static final long serialVersionUID = -3082178133032486839L;
-
-	private String name = null;
-
-	private List<Actor> members = null;
-
-	public Group(String name) {
-		super(name);
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 962983347687330874L;
+	
+	private String description;
+	
+	public String getDescription() {
+		return description;
 	}
 
-	public boolean addMember(Actor actor) {
-		if (actor == null)
-			return false;
-
-		if (this.members == null)
-			this.members = new ArrayList<Actor>();
-
-		return this.members.add(actor);
-	}
-
-	public boolean removeMember(Actor actor) {
-		if (actor == null)
-			return false;
-
-		if (this.members == null)
-			return false;
-
-		return this.members.remove(actor);
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public List<Actor> getMembers() {
@@ -49,8 +35,69 @@ public class Group extends Identity {
 		this.members = members;
 	}
 
-	public String getName() {
-		return name;
+	private List<Actor> members = null;
+	
+	
+	public Group(String name) {
+		super(name);
+	}
+	
+	public boolean addMember(Actor actor) {
+		if (actor == null)
+			return false;
+		
+		if (this.members == null) 
+			this.members = new ArrayList<Actor>();
+		
+		return this.members.add(actor);
+	}
+
+	public boolean removeMember(Actor actor) {
+		if (actor == null)
+			return false;
+		
+		if (this.members == null) 
+			return false;
+		
+		return this.members.remove(actor);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((members == null) ? 0 : members.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Group other = (Group) obj;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (members == null) {
+			if (other.members != null)
+				return false;
+		} else if (!members.equals(other.members))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Group [description=" + description + ", members=" + members
+				+ "]";
 	}
 
 }

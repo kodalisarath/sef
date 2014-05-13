@@ -15,7 +15,7 @@ import com.ericsson.raso.sef.auth.CredentialFactory;
 import com.ericsson.raso.sef.auth.Identity;
 import com.ericsson.raso.sef.auth.PasswordCredential;
 import com.ericsson.raso.sef.auth.User;
-import com.ericsson.raso.sef.auth.UserStore;
+import com.ericsson.raso.sef.auth.service.UserStoreService;
 import com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple;
 import com.ericsson.raso.sef.auth.permissions.Permission;
 import com.ericsson.raso.sef.auth.permissions.Privilege;
@@ -62,7 +62,7 @@ public class AuthorizationProxy implements InvocationHandler {
 		actor.addIdentity(user);
 		requestContext.setActor(actor);
 
-		store = new UserStore();
+		store = new UserStoreService();
 		// end of testing code.... remove after Request Context Service code is
 		// ready....
 

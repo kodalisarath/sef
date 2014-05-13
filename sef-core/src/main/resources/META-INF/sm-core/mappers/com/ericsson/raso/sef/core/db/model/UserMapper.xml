@@ -1,0 +1,86 @@
+	<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+	  'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='com.ericsson.raso.sef.core.db.mapper.UserMapper'>
+
+	<resultMap id='UserResult' type='User'>
+		<id property='userId' column='user_Id' />
+		<result property="password" column="password" />
+		<result property="userMeta" column="meta" />
+		<result property="userCredentialType" column="user_Credential_Type"
+			ofType="Credential" />
+	</resultMap>
+	
+	<resultMap id='CredentialResult' type='Type'>
+		<id property="userCredentialType" column="user_Credential_Type" />
+	</resultMap>
+	
+	<resultMap id='MetaResult' type='Meta'>
+		<id property="key" column="meta-key" />
+		<result property="value" column="meta-value" />
+	</resultMap>
+	
+	<resultMap id="getAllUsersResult" type="users">
+		<collection property="users" javaType="ArrayList" ofType="User" />
+	</resultMap>
+	
+	<select id="getUserById" parameterType="int" resultType="UserResult">
+		select
+		userName from user where user_Id = #{userId}
+	</select>
+	
+	<select id="getAllUsers" resultMap="getAllUsersResult">
+		select * from user
+	</select>
+	
+	<insert id="createUser" parameterType="User">
+		insert into user(user_Id, user_Name, user_Credential_Type, password)
+		values(#{userId
+		jdbcType=VARCHAR}, #{userCredentialType
+		jdbcType=VARCHAR}, #{userName
+		jdbcType=VARCHAR}, #{password
+		jdbcType=VARCHAR})
+	</insertt>
+
+	<insert id='createUserMetas' parameterType='User' resultType="MetaResult">
+		insert into meta
+		(user_Id, meta, value) values (#{userId
+		jdbcType=VARCHAR},#{key
+		jdbcType=VARCHAR}, #{value
+		jdbcType=VARCHAR})
+	</insert>
+
+	<insert id="createMapping" parameterType="map" resultType='Type'>
+		insert into groupmap(groupid,userid)values (#{groupid},#{userid})
+	</insert>
+
+	<insert id="addIdentity" parameterType="User">
+		insert into user(user_Id,user_Name, user_Credential_Type, password)
+		values(#{userId
+		jdbcType=VARCHAR}, #{userCredentialType
+		jdbcType=VARCHAR}, #{userName
+		jdbcType=VARCHAR}, #{password
+		jdbcType=VARCHAR})
+	</insertt>
+
+	<delete id='deleteIdentity' parameterType='int'>
+		delete from user
+		where
+		user_Id=#{userId}
+	</delete>
+
+	<update id='updateUser' parameterType='User' resultType='Type'>
+		update
+		user set credential = #{credential jdbcType=VARCHAR}
+		where
+		user_Id =
+		#{userId}
+	</update>
+
+	<delete id='deleteUser' parameterType='int'>
+		delete from user where
+		user_Id=#{userId}
+	</delete>
+
+</mapper>
