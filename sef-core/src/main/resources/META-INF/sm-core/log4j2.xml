@@ -78,7 +78,7 @@
 			</Filters>
 		</Appender>
 		
-		<Appender name="Application" type="RollingFile" fileName="C:\\Projects\\app.log" filePattern="app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+		<Appender name="Application" type="RollingFile" fileName="C:\\Projects\\Smart\\app.log" filePattern="app-%d{yyyy-MM-dd-HH}-%i.log.gz">
 			<Layout Pattern="%d %p %C{1.} [%t] %m%n" Type="PatternLayout">
 				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
 			</Layout>
@@ -95,7 +95,7 @@
 			</Filters>
 		</Appender>
 		
-		<Appender name="StackTrace" type="RollingFile" fileName="C:\\Projects\\trace.log" filePattern="trace-%d{yyyy-MM-dd-HH}-%i.log.gz">
+		<Appender name="StackTrace" type="RollingFile" fileName="C:\\Projects\\Smart\\trace.log" filePattern="trace-%d{yyyy-MM-dd-HH}-%i.log.gz">
 			<Layout Pattern="%d %p %C{1.} [%t] %m%n" Type="PatternLayout">
 				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
 			</Layout>
@@ -109,7 +109,7 @@
 			</Filters>
 		</Appender>
 		
-		<Appender name="EDR" type="RollingFile" fileName="logs/sef-bes.edr" filePattern="logs/edr-%d{yyyy-MM-dd-HH}.edr.gz">
+		<Appender name="EDR" type="RollingFile" fileName="C:\\Projects\\Smart\\bes.edr" filePattern="edr-%d{yyyy-MM-dd-HH}.edr.gz">
 			<Layout Pattern="%d{yyyyMMddHHmmss.SSS},%m%n" Type="PatternLayout">
 				<Pattern>%d{yyyyMMddHHmmss.SSS},%m%n</Pattern>
 			</Layout>
@@ -142,8 +142,10 @@
 		</Logger>
 		
 		
-		<Root level="info">
+		<Root level="trace">
 			<AppenderRef ref="Application">Application</AppenderRef>
+			<AppenderRef ref="StackTrace">StackTrace</AppenderRef>
+			<AppenderRef ref="EDR">EDR</AppenderRef>
 		</Root>
 	</Loggers>
 </Configuration>
