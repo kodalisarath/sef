@@ -79,7 +79,7 @@ public class SnmpAppender extends AbstractAppender {
 		}
 		
 		Message message = event.getMessage();
-		
+	
 		SnmpEntity snmpEvent = null;
 		if (message.getParameters()[0] instanceof SnmpEntity) 
 			snmpEvent = (SnmpEntity) message.getParameters()[0];
@@ -137,11 +137,9 @@ public class SnmpAppender extends AbstractAppender {
 		
 		// event Description
 		if (snmpEvent.getAdditionalMessage() != null && !snmpEvent.getAdditionalMessage().isEmpty()) {
-			variable = new VariableBinding(new OID(errorDescriptionOid), new OctetString(snmpEvent.getMessage()));
+			variable = new VariableBinding(new OID(additionalTextOid), new OctetString(snmpEvent.getAdditionalMessage()));
 			trapPdu.add(variable);
 		}
-		
-		
 		
 		// Time to send this out....
 		try {
@@ -149,7 +147,6 @@ public class SnmpAppender extends AbstractAppender {
 		} catch (IOException e) {
 			LOGGER.fatal("Unable to send SNMP Trap - " + e.getMessage());
 		}
-		
 		
 	}
 
