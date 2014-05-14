@@ -10,6 +10,7 @@ import java.util.TreeSet;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.Constants;
 import com.ericsson.raso.sef.bes.prodcat.OfferManager;
+import com.ericsson.raso.sef.bes.prodcat.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleState;
 import com.ericsson.raso.sef.bes.prodcat.entities.SubscriptionHistory.HistoryEvent;
@@ -100,7 +101,7 @@ public class Subscription extends Offer {
 				
 		// now, pack all tasks related to exit event...
 		if (this.getExit() != null) {
-			IOfferCatalog catalog = new OfferManager();
+			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 			Offer exitOffer = catalog.getOfferById(this.getExit());
 			if (exitOffer == null) {
 				//TODO: Logger - explain whey the expiry did not switch the user to new offer when exit is defined.  "Exit Offer was defined for expiry, but the relevant offer: " + this.exitOfferId + " was not found in the Catalog"
@@ -138,7 +139,7 @@ public class Subscription extends Offer {
 		
 		if (this.getOfferState() != State.PUBLISHED) {
 			// current subscribed offer is not renewable
-			IOfferCatalog catalog = new OfferManager();
+			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 			if (this.getExit() == null) {
 				// there is no exit offer defined... so try to subscribe to later revision of this offer....
 				Offer latestVersion = catalog.getOfferById(this.getName());

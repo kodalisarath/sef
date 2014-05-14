@@ -15,7 +15,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	
 	
 	public TransactionManager() {
-		catalog = new OfferManager();
+		catalog = ServiceResolver.getOfferCatalog();
 	}
 
 

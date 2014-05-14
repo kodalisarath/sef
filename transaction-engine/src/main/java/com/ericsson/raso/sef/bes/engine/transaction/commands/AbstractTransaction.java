@@ -7,7 +7,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractResponse;
 
-public abstract class AbstractTransaction<E extends AbstractResponse> implements Callable<AbstractResponse>, Serializable {
+public abstract class AbstractTransaction implements Callable<Void>, Serializable {
 	private static final long serialVersionUID = -7350766184775285546L;
 
 	private String requestId = null;
@@ -27,16 +27,14 @@ public abstract class AbstractTransaction<E extends AbstractResponse> implements
 	 * 
 	 * @throws TransactionException
 	 */
-	public abstract E execute() throws TransactionException;
+	public abstract Void execute() throws TransactionException;
 
 	@Override
-	public AbstractResponse call() throws Exception {
+	public Void call() throws Exception {
 		if (this.request == null)
 			throw new TransactionException(this.requestId, "Transaction not initialized properly to execute");
 
-		this.response = this.execute();
-
-		return this.response;
+		return this.execute();
 	}
 
 	public AbstractRequest getRequest() {
@@ -54,5 +52,11 @@ public abstract class AbstractTransaction<E extends AbstractResponse> implements
 	protected void setResponse(AbstractResponse response) {
 		this.response = response;
 	}
+
+	public String getRequestId() {
+		return requestId;
+	}
+	
+	
 
 }
