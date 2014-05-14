@@ -1,8 +1,12 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import com.ericsson.raso.sef.bes.prodcat.Constants;
+import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.ruleengine.Rule;
 
 public final class Price extends MonetaryUnit {
@@ -12,32 +16,76 @@ public final class Price extends MonetaryUnit {
 	private List<Tax> taxes = null;
 	private List<PricingPolicy> ratingRules = null;
 	private Rule criteria = null;
+	
+	private Map<String, Object> context = null;
 
 	public Price(String iso4217CurrencyCode, long amount) {
 		super(iso4217CurrencyCode, amount);
 		this.cost = new Cost(iso4217CurrencyCode, amount);
+		
+		context = RequestContextLocalStore.get().getInProcess();
 	}
 	
 	public MonetaryUnit getSimpleAdviceOfCharge() {
-		//TODO: implement the following logic...
 		/*
 		 * 1. invoke getPrintableAdviceOfCharge()
 		 * 2. extract & return "final offer"
 		 */
-		
-		return null;
+		Map<String, MonetaryUnit> costs = this.getPrintableAdviceOfCharge();
+		return costs.get(Constants.FINAL_OFFER.name());
 	}
 	
 	public Map<String, MonetaryUnit> getPrintableAdviceOfCharge() {
-		//TODO: implement the following logic...
+		Map<String, MonetaryUnit> costElements = new TreeMap<String, MonetaryUnit>();
+		
 		/*
 		 * 1. process all policies over the base cost
 		 * 2. calculate all taxes
 		 * 3. sum up the entries to "final offer" entry
 		 * 4. load up the cost elements building up to final price in the hashmap
 		 */
+		
+		// Step 1
+		for (PricingPolicy rating: this.ratingRules) {
+			rating.setCost(this.cost);
+			if (rating.execute()) {
+				long ratedAmount = (long) context.get(Constants.RATED_AMOUNT.name());
+				costElements.put(rating.getName(), 
+						new Cost(this.getIso4217CurrencyCode(), ratedAmount));
+				this.setAmount(this.getAmount() + ratedAmount);
+			}
+		}
+		
+		// Step 2
+		long finalOffer = this.getAmount();
+		for (Tax tax: this.taxes) {
+			MonetaryUnit taxAmount = tax.calculateTax(this);
+			costElements.put(tax.getName(), taxAmount);
+			finalOffer += taxAmount.getAmount();
+		}
+		
+		// Step 3
+		costElements.put(Constants.FINAL_OFFER.name(), 
+				new Cost(this.getIso4217CurrencyCode(), finalOffer));
+
 				
-		return null;
+		return costElements;
+	}
+	
+	public Map<String, MonetaryUnit> getPenalty() {
+		Map<String, MonetaryUnit> costElements = new TreeMap<String, MonetaryUnit>();
+		
+		for (PricingPolicy rating: this.ratingRules) {
+			rating.setCost(this.cost);
+			if (rating.execute()) {
+				long ratedAmount = (long) context.get(Constants.RATED_AMOUNT.name());
+				costElements.put(rating.getName(), 
+						new Cost(this.getIso4217CurrencyCode(), ratedAmount));
+				this.setAmount(this.getAmount() + ratedAmount);
+			}
+		}
+		
+		return costElements;
 	}
 
 	public MonetaryUnit getCost() {
@@ -60,10 +108,17 @@ public final class Price extends MonetaryUnit {
 		return ratingRules;
 	}
 
-	public void setRatingRules(List<PricingPolicy> ratingRules) {
-		this.ratingRules = ratingRules;
+	public void addRatingRule(PricingPolicy rating) {
+		if (this.ratingRules == null)
+			this.ratingRules = new ArrayList<PricingPolicy>();
+		this.ratingRules.add(rating);
 	}
-
+	
+	public void removeRatingRule(PricingPolicy rating) {
+		this.ratingRules.remove(rating);
+	}
+	
+	
 	public Rule getCriteria() {
 		return criteria;
 	}

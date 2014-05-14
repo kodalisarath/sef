@@ -1,6 +1,6 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
-import com.ericsson.raso.sef.bes.prodcat.tasks.FulfillmentTask;
+import com.ericsson.raso.sef.bes.prodcat.tasks.refactor.FulfillmentTask;
 import com.ericsson.raso.sef.ruleengine.Rule;
 
 public abstract class FulfillmentProfile<E> extends FulfillmentTask<E> {

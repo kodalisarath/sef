@@ -162,4 +162,12 @@ public final class TransformUnit implements Serializable {
 		this.transform = transform;
 	}
 
+	public ExternDataUnitTask<?> getInputData() {
+		return inputData;
+	}
+
+	public void setInputData(ExternDataUnitTask<?> inputData) {
+		this.inputData = inputData;
+	}
+
 }

@@ -1,11 +1,26 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
+import com.ericsson.raso.sef.bes.prodcat.Constants;
+import com.ericsson.raso.sef.bes.prodcat.OfferManager;
+import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
+import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleState;
+import com.ericsson.raso.sef.bes.prodcat.entities.SubscriptionHistory.HistoryEvent;
+import com.ericsson.raso.sef.bes.prodcat.policies.AbstractAccumulationPolicy;
+import com.ericsson.raso.sef.bes.prodcat.policies.AbstractSwitchPolicy;
+import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.raso.sef.bes.prodcat.tasks.*;
+import com.ericsson.raso.sef.core.CloneHelper;
+import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.db.model.Subscriber;
 
 public class Offer implements Serializable {
 	private static final long serialVersionUID = 5704479496440496263L;
@@ -89,13 +104,19 @@ public class Offer implements Serializable {
 	/**
 	 * An Offer can be made up of one or more AtomicProduct thus creating a polymorphic Commercial Offer or Workflow Package. Such forms can
 	 * be <br> 
-	 * <li>Bundle - A set of {@link AtomicProduct} that must be provisioned collectively or not at all<br> <li>Package - A mixed set of
-	 * {@link AtomicProduct} and {@link TechnicalProduct} to create a hierarchy of services that can be assigned or purchased. Such feature
-	 * setup allows ease of administration and very high end-user experience, specially targeted at high-arpu subscribers.<br> <li>Promotion - A
-	 * mixed set of {@link AtomicProduct} and {@link TechnicalProduct} but conditionally provisioned for the same {@link Price}<br> <li>
-	 * Entitlement - A variant of Promotion, where an Offer is either assigned to or purchased by a subscriber but the validity period
-	 * starts only at the first access/ consumption to the service.<br> <li>Subscription - All forms of Offer is a subscription when attached to
-	 * a subscriber's profile. From this perspective, the Offer's life-cycle is also governed by the subscription life-cycle. For example,
+	 * 
+	 * 
+	 * <li>Bundle - A set of {@link AtomicProduct} that must be provisioned collectively or not at all<br> 
+	 * 
+	 * <li>Package - A mixed set of {@link AtomicProduct} and {@link TechnicalProduct} to create a hierarchy of services that can be assigned or purchased. Such feature
+	 * setup allows ease of administration and very high end-user experience, specially targeted at high-arpu subscribers.<br> 
+	 * 
+	 * <li>Promotion - A mixed set of {@link AtomicProduct} and {@link TechnicalProduct} but conditionally provisioned for the same {@link Price}<br> 
+	 * 
+	 * <li> Entitlement - A variant of Promotion, where an Offer is either assigned to or purchased by a subscriber but the validity period
+	 * starts only at the first access/ consumption to the service.<br> 
+	 * 
+	 * <li>Subscription - All forms of Offer is a subscription when attached to a subscriber's profile. From this perspective, the Offer's life-cycle is also governed by the subscription life-cycle. For example,
 	 * you cannot retire a product until all of its subscriptions are lived out or an exit product change is defined.
 	 */
 	private Set<Product> products = null;
@@ -132,12 +153,12 @@ public class Offer implements Serializable {
 	/**
 	 * A set of Accumulation rules that determine if it is allowed for accumulation of services/ resources.
 	 */
-	private PolicyTree accumulation = null;
+	private AbstractAccumulationPolicy accumulation = null;
 
 	/**
 	 * A set of Switch rules that determine if it is allowed for upgrading or downgrade of services/ resources.
 	 */
-	private PolicyTree switching = null;
+	private AbstractSwitchPolicy switching = null;
 	
 	/**
 	 * A list of users that are allowed to discover, purchase, avail and subscribe to this offer in TESTING state.
@@ -147,13 +168,23 @@ public class Offer implements Serializable {
 	/**
 	 * Specifies an exit Offer to shift the subscriber, when the subscription runs out or if the offer is retired.
 	 */
-	private Offer exit = null;
+	private String exitOfferId = null;
 	
 	/**
 	 * Implicit audit trail of Offer Lifecycle dates to track history and manage versioning.
 	 */
 	private OfferLifeCycle history = null;
 
+	/**
+	 * pre-orchestrated event actions for pre-exipry period
+	 */
+	private EventProfile preExiry = null;
+	
+	/**
+	 * pre-orchestrated event actions for pre-renewal period
+	 */
+	private EventProfile preRenewal = null;
+	
 	//==========----------------------------- End of Attributes Section ---------------==============================================================/
 	
 	//==========----------------------------- Functional Section ---------------=====================================================================/
@@ -161,6 +192,109 @@ public class Offer implements Serializable {
 		this.name = name;
 		this.history = new OfferLifeCycle();
 		this.history.setCreationTime(System.currentTimeMillis());
+	}
+	
+	public List<Resource> getAllResources() {
+		List<Resource> resources = null;
+		
+		if (this.products != null) {
+			resources = new ArrayList<Resource>();
+			
+			for (Product product: this.products) {
+				if (product instanceof AtomicProduct)
+					resources.add(((AtomicProduct) product).getResource());
+				
+				if (product instanceof ProductPackage) 
+					for (AtomicProduct atomicProduct: ((ProductPackage) product).getAtomicProducts()) 
+						resources.add(atomicProduct.getResource());
+			}
+		}
+		return resources;
+	}
+	
+	public long getCumulativeQuotaForResource(String resourceName) {
+		long cumulativeQuota = 0;
+		
+		if (this.products != null) {
+			for (Product product: this.products) {
+				if (product instanceof AtomicProduct) {
+					Resource resource = ((AtomicProduct)product).getResource(); 
+					if (resource.getName().equals(resourceName)) {
+						if (resource.isConsumable()) {
+							cumulativeQuota += ((AtomicProduct) product).getQuota().getDefinedQuota();
+						}
+					}
+				}
+				if (product instanceof ProductPackage) { 
+					for (AtomicProduct atomicProduct: ((ProductPackage) product).getAtomicProducts()) {
+						Resource resource = atomicProduct.getResource(); 
+						if (resource.getName().equals(resourceName)) {
+							if (resource.isConsumable()) {
+								cumulativeQuota += atomicProduct.getQuota().getDefinedQuota();
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return cumulativeQuota;
+	}
+	
+	public List<TransactionTask> execute(String subscriber, SubscriptionLifeCycleEvent event, boolean override, Map<String, Object> metas) throws CatalogException {
+
+		Subscription subscription = null;
+		if (!metas.containsKey(Constants.SUBSCRIPTION_ID.name())) {
+			if (event != SubscriptionLifeCycleEvent.PURCHASE) {
+				//TODO: Logger - subscriptionId is not found. Cannot proceed with assumptions
+				throw new CatalogException("Subscription Identifier is not provided. Cannot assume!!");
+			} 
+		} else {
+			String subscriptionId = (String) metas.get(Constants.SUBSCRIPTION_ID.name());
+			if (subscriptionId == null) {
+				//TODO: Logger - subscriptionId was null... cannot processed
+				if (event != SubscriptionLifeCycleEvent.PURCHASE)
+					throw new CatalogException("Subscription Identifier was null!!");
+			} else {
+				try {
+					subscription = new FetchSubscription(subscriptionId).execute();
+					metas.put(Constants.SUBSCRIPTION_ENTITY.name(), subscription);
+				} catch (FrameworkException e) {
+					if (e instanceof CatalogException)
+						throw ((CatalogException) e);
+					throw new CatalogException("Unable to fetch subscription for: " + subscriptionId, e);
+				}
+			}
+		}
+
+		
+		switch (event) {
+			case DISCOVERY:
+				// If an offer is already executing, then discovery is complete. Assuming to be a query on subscription status and consumption
+				return subscription.subscriptionQuery(subscriber, override, metas);
+			case PURCHASE:
+				return this.purchase(subscriber, override, metas);
+			case PRE_EXPIRY:
+				return subscription.preExpiry(subscriber, override, metas);
+			case EXPIRY:
+				return subscription.expiry(subscriber, override, metas);
+			case PRE_RENEWAL:
+				return subscription.preRenewal(subscriber, override, metas);
+			case RENEWAL:
+				return subscription.renewal(subscriber, override, metas);
+			case TERMINATE:
+				return subscription.terminate(subscriber, override, metas);
+		}
+		return null;
+	}
+	
+	public Subscription createPurchaseSubscription(String subscriberId, long timestamp) {
+		Offer clone = CloneHelper.deepClone(this);
+		Subscription purchaseSubscription = new Subscription(clone);
+		purchaseSubscription.setSubscriberId(subscriberId);
+		purchaseSubscription.addSubscriptionHistory(SubscriptionLifeCycleState.IN_ACTIVATION, timestamp);
+		return purchaseSubscription;
+		
 	}
 	
 	public void validate(boolean suppressWarnings) throws CatalogException {
@@ -177,6 +311,16 @@ public class Offer implements Serializable {
 		if (this.isRecurrent && this.renewalPeriod instanceof InfiniteTime)
 			problems.append("**ERROR** Recurrence is enabled but validity period is infnite!!\n");
 		
+		if (this.trialPeriod != null) {
+			if (this.trialPeriod instanceof InfiniteTime)
+				throw new CatalogException("Trial Period cannot be inifite!!");
+			
+			if (!(this.renewalPeriod instanceof InfiniteTime)) {
+				if (this.trialPeriod.getExpiryTimeInMillis() >=  this.renewalPeriod.getExpiryTimeInMillis())
+					throw new CatalogException("Trial Period cannot be longer than Offer Validity Period");
+			}
+		}
+		
 		if (this.immediateTermination == null)
 			if (!suppressWarnings)
 				problems.append("*WARNING* Immediate Termination is not set. Assuming to be NOT ALLOWED.\n");
@@ -191,7 +335,7 @@ public class Offer implements Serializable {
 			if (!suppressWarnings)
 				problems.append("*WARNING* Eligibility Rules are not set. Assuming open discovery.\n");
 			
-		if (this.exit == null || this.isRecurrent)
+		if (this.exitOfferId == null || this.isRecurrent)
 			if (!suppressWarnings)
 				problems.append("*WARNING* Offer is not recurrent & Exit Offer is not specified.\n");
 			
@@ -292,6 +436,162 @@ public class Offer implements Serializable {
 	}
 	
 	
+	protected List<TransactionTask> purchase(String subscriberId, boolean override, Map<String, Object> metas) throws CatalogException {
+		long PURCHASE_TIMESTAMP = System.currentTimeMillis();
+		
+		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
+		
+		Map<String, Object> context = RequestContextLocalStore.get().getInProcess();
+		context.put(Constants.SUBSCRIPTION_EVENT.name(), SubscriptionLifeCycleEvent.PURCHASE);
+		
+		Subscription purchase = this.createPurchaseSubscription(subscriberId, PURCHASE_TIMESTAMP);
+
+		
+		// check for offer state first
+		if (this.offerState != State.PUBLISHED) {
+			if (this.offerState == State.TESTING) {
+				if (!this.whiteListedUsers.contains(subscriberId))
+					throw new CatalogException("Offer is not published and subscriber is not whitelisted for testing!!");
+			}
+		}
+		
+		// Fetch the subscriber entity
+		Subscriber subscriber = null;	
+		try {
+			subscriber = new FetchSubscriber(subscriberId).execute();
+			context.put(Constants.SUBSCRIBER_ENTITY.name(), subscriber);
+			
+		} catch (FrameworkException e) {
+			if (e instanceof CatalogException)
+				throw (CatalogException) e;
+			throw new CatalogException("Unable to fetch Subscriber!", e);
+		}
+	
+		// check for eligibility
+		if (!this.eligibility.execute(subscriber, SubscriptionLifeCycleEvent.PURCHASE)) {
+			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
+			if (schedule == null) {
+				if (!override)
+					throw new CatalogException("Eligibility Policies rejected processing purchase/ service order request!!");
+				else { 
+					//TODO: Logger - log the exception you were about to throw
+				}
+			}
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule));
+			context.remove(Constants.FUTURE_SCHEDULE);
+		}
+		
+		// check for accumulation policies
+		if (!this.accumulation.execute()) {
+			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
+			if (schedule == null)
+				if (!override)
+					throw new CatalogException("Accumulation Policies rejected processing purchase/ service order request!!");
+				else { 
+					//TODO: Logger - log the exception you were about to throw
+				}
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule));
+			context.remove(Constants.FUTURE_SCHEDULE);
+		}		
+		// check for switch policies
+		if (this.switching.execute()) {
+			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
+			if (schedule == null)
+				if (!override)
+					throw new CatalogException("Switching Policies rejected processing purchase/ service order request!!");
+				else { 
+					//TODO: Logger - log the exception you were about to throw
+				}
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule));
+			context.remove(Constants.FUTURE_SCHEDULE);
+		}
+		
+		// trial period
+		boolean isTrialAllowed = true;
+		try {
+			if (this.trialPeriod != null) {
+				if ( new HasSubscribedToThisOfferEver(subscriberId, this.name).execute()) {
+					isTrialAllowed = false;
+				}
+			} else
+				isTrialAllowed = false;
+		} catch (FrameworkException e) {
+			if (e instanceof CatalogException)
+				throw ((CatalogException)e);
+			throw new CatalogException("Unable to verify if this user has already availed trial!!", e);
+		}
+		
+		
+		// pretty much start packing up the tasks now....
+		
+		//---------- Charging Tasks
+		/*
+		 * 1. Evaluate Price and create Charging Task
+		 */
+		if (this.isCommercial && !isTrialAllowed) {
+			MonetaryUnit rate = this.price.getSimpleAdviceOfCharge();
+			tasks.add(new Charging(ChargingMode.CHARGE, rate, subscriberId));
+			
+			purchase.addPurchaseHistory(SubscriptionLifeCycleEvent.PURCHASE, PURCHASE_TIMESTAMP, rate);
+		}
+				
+		//---------- Fulfillment Tasks
+		/*
+		 * 1. get a list of all Atomic Products
+		 * 2. create a list of Fulfillment tasks
+		 * 3. if trial period is being set, then adjust the validity period with trial period
+		 * 4. add the fulfillment tasks to the transaction tasks
+		 */
+		
+		for(AtomicProduct atomicProduct: this.getAllAtomicProducts()) {
+			AtomicProduct clone = CloneHelper.deepClone(atomicProduct);
+			if (isTrialAllowed) {
+				// If trial period, then ignore the defined validity and reset the validity to trialPeriod.
+				AbstractTimeCharacteristic trialPeriod = CloneHelper.deepClone(this.trialPeriod);
+				trialPeriod.setActivationTime(PURCHASE_TIMESTAMP);
+				clone.setValidity(trialPeriod);
+				purchase.addProduct(clone);
+			} 
+			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId));
+		}
+		
+		if (isTrialAllowed) {
+			// Make the scheduler call this offer at the end of trial period...
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.trialPeriod.getExpiryTimeInMillis()));
+		} else {
+			if (this.isRecurrent) {
+				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis()));
+			}
+		}
+		
+		//----------- Notification Tasks
+		/*
+		 * 1. Send Notification for each state of the Request Processing
+		 * 2. Transaction Engine must be able to use this task persistently across the entire process... 
+		 */
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.name, subscriberId));
+		
+		// finally save this transaction to DB...
+		tasks.add(new Persistence<Subscription>(PersistenceMode.SAVE, purchase, subscriberId));
+		
+		return tasks;
+	}
+	
+	
+	protected List<AtomicProduct> getAllAtomicProducts() {
+		List<AtomicProduct> atomicProducts = new ArrayList<AtomicProduct>();
+		
+		for (Product product: this.products) {
+			if (product instanceof AtomicProduct)
+				atomicProducts.add((AtomicProduct)product);
+			
+			if (product instanceof ProductPackage)
+				atomicProducts.addAll(((ProductPackage)product).getAtomicProducts());
+		}
+		
+		return atomicProducts;
+	}
+
 	
 	
 	//==========----------------------------- End of Functional Section ---------------==============================================================/
@@ -409,9 +709,9 @@ public class Offer implements Serializable {
 		return trialPeriod;
 	}
 
-	public AbstractTimeCharacteristic getTrialDate() {
-		return this.renewalPeriod;
-	}
+//	public AbstractTimeCharacteristic getTrialDate() {
+//		return this.renewalPeriod;
+//	}
 
 	public ImmediateTermination getImmediateTermination() {
 		return immediateTermination;
@@ -446,6 +746,10 @@ public class Offer implements Serializable {
 	public void addProducts(Set<Product> products) {
 		this.products.addAll(products);
 	}
+	
+	protected void setProducts(Set<Product> products) {
+		this.products = products;
+	}
 
 	public boolean isCommercial() {
 		return isCommercial;
@@ -478,6 +782,8 @@ public class Offer implements Serializable {
 	public void setPrice(Price price) {
 		this.price = price;
 	}
+	
+	
 
 	public PolicyTree getEligibility() {
 		return eligibility;
@@ -487,19 +793,19 @@ public class Offer implements Serializable {
 		this.eligibility = eligibility;
 	}
 
-	public PolicyTree getAccumulation() {
+	public AbstractAccumulationPolicy getAccumulation() {
 		return accumulation;
 	}
 
-	public void setAccumulation(PolicyTree accumulation) {
+	public void setAccumulation(AbstractAccumulationPolicy accumulation) {
 		this.accumulation = accumulation;
 	}
 
-	public PolicyTree getSwitching() {
+	public AbstractSwitchPolicy getSwitching() {
 		return switching;
 	}
 
-	public void setSwitching(PolicyTree switching) {
+	public void setSwitching(AbstractSwitchPolicy switching) {
 		this.switching = switching;
 	}
 
@@ -512,10 +818,13 @@ public class Offer implements Serializable {
 	}
 
 	
-	public Offer getExit() {
-		return exit;
+	public String getExit() {
+		return exitOfferId;
 	}
 
+	protected void setExit(String exitOfferId) {
+		this.exitOfferId = exitOfferId;
+	}
 	
 	public void setExit(Offer other) throws CatalogException {
 		if (other == null)
@@ -524,7 +833,7 @@ public class Offer implements Serializable {
 		if (other.offerState != State.PUBLISHED)
 			throw new CatalogException("The exit offer is not in active state to accept as exit plan!!");
 		
-		this.exit = other;
+		this.exitOfferId = other.name;
 	}
 
 	
@@ -551,6 +860,24 @@ public class Offer implements Serializable {
 
 	public void setMinimumCommitment(AbstractMinimumCommitment minimumCommitment) {
 		this.minimumCommitment = minimumCommitment;
+	}
+	
+	
+
+	public EventProfile getPreExiry() {
+		return preExiry;
+	}
+
+	public void setPreExiry(EventProfile preExiry) {
+		this.preExiry = preExiry;
+	}
+
+	public EventProfile getPreRenewal() {
+		return preRenewal;
+	}
+
+	public void setPreRenewal(EventProfile preRenewal) {
+		this.preRenewal = preRenewal;
 	}
 
 	@Override
@@ -677,8 +1004,8 @@ public class Offer implements Serializable {
 		
 		return true;
 	}
-	
-	
+
+		
 	
 	//==========----------------------------- End of Java Niceties Section ---------------===========================================================/
 	

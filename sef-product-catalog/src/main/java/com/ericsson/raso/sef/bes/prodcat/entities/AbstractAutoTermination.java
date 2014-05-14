@@ -19,7 +19,7 @@ public abstract class AbstractAutoTermination implements Serializable {
 		return this.type;
 	}
 	
-	enum Type {
+	enum Type implements Serializable {
 		NO_TERMINATION,
 		AFTER_X_DAYS,
 		AFTER_X_RENEWALS,

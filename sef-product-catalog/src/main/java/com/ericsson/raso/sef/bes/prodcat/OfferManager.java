@@ -1,12 +1,15 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.entities.State;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferAdmin;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
@@ -136,6 +139,19 @@ public class OfferManager implements IOfferAdmin, IOfferCatalog {
 	}
 	
 	//-----------============ Catalog Functions ======================================================================================================
+
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferCatalog#handleEvent(java.lang.String, java.lang.String, int, com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent)
+	 */
+	@Override
+	public List<TransactionTask> handleEvent(String subscriber, String offerId, int version, SubscriptionLifeCycleEvent event, boolean override, Map<String, Object> metas) throws CatalogException {
+		Offer offer = container.getOfferById(offerId, version);
+		if (offer == null)
+			throw new CatalogException("Given Offer: " + offerId + " of version: " + version + " does not exist");
+		
+		return offer.execute(subscriber, event, override, metas);
+	}
+	
 	
 	
 }

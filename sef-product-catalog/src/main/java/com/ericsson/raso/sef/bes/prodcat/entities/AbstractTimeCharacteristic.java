@@ -51,7 +51,7 @@ public abstract class AbstractTimeCharacteristic implements Serializable {
 
 
 
-	enum Type {
+	enum Type implements Serializable {
 		INFINITE, HOURS, DAYS, DATE,
 	}
 

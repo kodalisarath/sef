@@ -1,7 +1,5 @@
 package com.ericsson.raso.sef.core;
 
-import java.util.concurrent.ExecutorService;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -10,6 +8,7 @@ import com.ericsson.raso.sef.auth.PrivilegeManager;
 import com.ericsson.raso.sef.auth.service.IPrivilegeManager;
 import com.ericsson.raso.sef.auth.service.IUserStore;
 import com.ericsson.raso.sef.core.config.IConfig;
+import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.raso.sef.core.db.service.UserManagementService;
 import com.ericsson.raso.sef.watergate.IWatergate;
 
@@ -43,12 +42,15 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 		return SefCoreServiceResolver.context.getBean(IUserStore.class);
 	}
 	
-	public static ExecutorService getExecutorService(String name) {
-	
-		return SefCoreServiceResolver.context.getBean(CloudAwareCluster.class).getDistributedService(name);
+	public static SubscriberService getSusbcriberStore() {
+		return SefCoreServiceResolver.context.getBean(SubscriberService.class);
 	}
 	
-	//TODO: Add other services - Logger, User Store, Request Context
+	public static CloudAwareCluster getCloudAwareCluster() {
+		return SefCoreServiceResolver.context.getBean(CloudAwareCluster.class);
+	}
+	
+	//TODO: Add other services - Logger, Request Context
 	
 	
 }

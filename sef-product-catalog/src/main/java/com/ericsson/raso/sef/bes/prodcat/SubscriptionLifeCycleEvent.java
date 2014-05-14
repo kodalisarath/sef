@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
+import java.io.Serializable;
+
 /**
  * Presents a governing structure for a lifecycle of Subscription. This enum is intended to enrich any event involved in product discovery,
  * purchase and its lifecycle.
@@ -8,7 +10,7 @@ package com.ericsson.raso.sef.bes.prodcat;
  * 
  * @author esatnar 
  */
-public enum SubscriptionLifeCycleEvent {
+public enum SubscriptionLifeCycleEvent implements Serializable {
 	/**
 	 * This state indicates a product in discovery mode; not yet attached to a subscriber profile.
 	 */

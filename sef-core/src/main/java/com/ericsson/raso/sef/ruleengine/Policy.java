@@ -29,6 +29,10 @@ public class Policy implements Action, Serializable {
 	
 	
 
+	public String getName() {
+		return name;
+	}
+
 	@Override
 	public boolean execute() {
 		if (this.rule.execute()) {

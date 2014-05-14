@@ -61,7 +61,7 @@ public abstract class AbstractQuotaCharacteristic implements Serializable {
 	 */
 	public abstract long consume(long units, boolean flexible) throws SubscriptionException;
 
-	enum Type {
+	enum Type implements Serializable {
 		UNLIMITED, LIMITED;
 	}
 

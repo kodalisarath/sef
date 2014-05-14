@@ -67,7 +67,7 @@ public abstract class Tax implements Serializable {
 		return true;
 	}
 
-	enum Taxation {
+	enum Taxation implements Serializable {
 		NO_TAX,
 		TAX_PERCENTAGE,
 		TAX_ABSOLUTE;

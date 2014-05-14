@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import org.joda.time.DateTime;
 
+//TODO: Cleanup all SMART specific metas into SMART Front-End Project....
 public class Subscriber {
 
 	public static final List<String> metaKeys;

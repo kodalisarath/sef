@@ -19,7 +19,7 @@ public abstract class AbstractMinimumCommitment implements Serializable {
 		return this.type;
 	}
 	
-	enum Type {
+	enum Type implements Serializable {
 		NO_COMMITMENT,
 		UNTIL_X_DAYS,
 		UNTIL_X_RENEWALS,

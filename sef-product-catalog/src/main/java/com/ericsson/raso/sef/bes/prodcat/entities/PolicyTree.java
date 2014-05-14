@@ -6,7 +6,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
+import com.ericsson.raso.sef.core.RequestContext;
+import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.ruleengine.Action;
 
 public final class PolicyTree implements Serializable {
@@ -114,6 +118,21 @@ public final class PolicyTree implements Serializable {
 		return false;
 	}
 
+	public boolean execute(Subscriber subscriber, SubscriptionLifeCycleEvent event) throws CatalogException {
+		if (subscriber.getPaymentType() == null)
+			throw new CatalogException("Payment/Subsciber Type is not defined in the Store. All further activities will fail!!");
+		
+		SubscriberType subscriberType = SubscriberType.valueOf(subscriber.getPaymentType());
+		Map<SubscriptionLifeCycleEvent, Set<Action>> lifeCyclePolicies = this.policyChain.get(subscriberType);
+		Set<Action> contextPolicies = lifeCyclePolicies.get(event);
+		
+		for (Action policy: contextPolicies) {
+			if (!policy.execute())
+				return false;
+		}
+		return true;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

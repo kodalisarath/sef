@@ -1,0 +1,14 @@
+package com.ericsson.raso.sef.bes.prodcat;
+
+public enum Constants {
+	SUBSCRIBER_ENTITY,
+	RATED_AMOUNT,
+	FINAL_OFFER,
+	FUTURE_SCHEDULE, 
+	SUBSCRIPTION_EVENT,
+	PENALTY, 
+	SUBSCRIPTION_ID, 
+	SUBSCRIPTION_ENTITY, 
+	MINIMUM_COMMITMENT_BREACH;
+
+}
