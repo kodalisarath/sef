@@ -82,6 +82,31 @@ public final class AtomicProduct extends Product implements Serializable {
 		this.resetQuotaOnRenewal = resetQuotaOnRenewal;
 	}
 
+	public boolean isSame(AtomicProduct other) {
+		
+		if (other == null)
+			return false;
+		
+		if (this.resource == null)
+			return false;
+		
+		if (other.resource == null)
+			return false;
+		
+		if (!this.resource.equals(other.resource))
+			return false;
+		
+		if (!this.quota.equals(other.quota))
+			return false;
+		
+		if (!this.validity.equals(other.validity))
+			return false;
+		
+		
+		
+		return true;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -93,7 +118,7 @@ public final class AtomicProduct extends Product implements Serializable {
 		result = prime * result + ((validity == null) ? 0 : validity.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)

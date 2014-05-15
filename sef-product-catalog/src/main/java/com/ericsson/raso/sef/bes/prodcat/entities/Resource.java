@@ -127,7 +127,7 @@ public abstract class Resource implements Serializable {
 	 * operations that pertain to Product Catalog.
 	 * 
 	 */
-	private List<FulfillmentProfile<?>> fulfillmentProfiles = null;
+	private List<FulfillmentProfile> fulfillmentProfiles = null;
 
 	/**
 	 * identifies who is the owner for this resource. From info security context, this concept will allow a stakeholder to access all of his
@@ -263,14 +263,14 @@ public abstract class Resource implements Serializable {
 		return dependantOnThem;
 	}
 
-	public boolean addFulfillmentProfile(FulfillmentProfile<?> profile) throws CatalogException {
+	public boolean addFulfillmentProfile(FulfillmentProfile profile) throws CatalogException {
 		if (this.fulfillmentProfiles == null)
-			this.fulfillmentProfiles = new ArrayList<FulfillmentProfile<?>>();
+			this.fulfillmentProfiles = new ArrayList<FulfillmentProfile>();
 
 		return this.fulfillmentProfiles.add(profile);
 	}
 
-	public boolean removeFulfillmentProfile(FulfillmentProfile<?> profile) {
+	public boolean removeFulfillmentProfile(FulfillmentProfile profile) {
 		if (this.fulfillmentProfiles.contains(profile))
 			this.fulfillmentProfiles.remove(profile);
 
@@ -280,7 +280,7 @@ public abstract class Resource implements Serializable {
 		return true;
 	}
 
-	public List<FulfillmentProfile<?>> getFulfillmentProfiles() {
+	public List<FulfillmentProfile> getFulfillmentProfiles() {
 		return this.fulfillmentProfiles;
 	}
 

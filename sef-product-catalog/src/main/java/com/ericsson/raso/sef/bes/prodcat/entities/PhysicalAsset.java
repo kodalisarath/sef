@@ -10,7 +10,7 @@ public final class PhysicalAsset extends AssetResource {
 		}
 
 		@Override
-		public boolean addFulfillmentProfile(FulfillmentProfile<?> profile) throws CatalogException {
+		public boolean addFulfillmentProfile(FulfillmentProfile profile) throws CatalogException {
 			if (profile instanceof AsynchronousFulfillment)
 				return super.addFulfillmentProfile(profile);
 			

@@ -1,9 +1,10 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
-import com.ericsson.raso.sef.bes.prodcat.tasks.refactor.FulfillmentTask;
+import java.io.Serializable;
+
 import com.ericsson.raso.sef.ruleengine.Rule;
 
-public abstract class FulfillmentProfile<E> extends FulfillmentTask<E> {
+public abstract class FulfillmentProfile implements Serializable {
 	private static final long serialVersionUID = 8880950261612749964L;
 
 	private String name = null;

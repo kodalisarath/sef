@@ -9,8 +9,9 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
-import com.ericsson.raso.sef.bes.prodcat.OfferManager;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
@@ -24,6 +25,7 @@ public class CreateSubscriber extends AbstractTransaction {
 	
 	public CreateSubscriber(String requestId, Subscriber subscriber) {
 		super(requestId, new CreateSubscriberRequest(requestId, subscriber));
+		this.setResponse(new CreateSubscriberResponse(requestId, null));
 	}
 	
 	
@@ -47,9 +49,25 @@ public class CreateSubscriber extends AbstractTransaction {
 			}
 		}
 		
+		Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
 		
+		OrchestrationManager.getInstance().submit(this, execution);
 		
 		return null;
+	}
+	
+	public void sendResponse() {
+		//TODO: implement this logic
+		/*
+		 * 1. when this method is called, it means that Orchestration Manager has executed all steps in the transaction. Either a respnse or
+		 * exception is available.
+		 * 
+		 * 2. The response will most likely be results/ responses/ exceptions from atomic steps in the transaction. This must be packed into
+		 * the response pojo structure pertinent to method signature of the response interface.
+		 * 
+		 * 3. once the response pojo entity is packed, the client for reponse interface must be invoked. the assumption is that response
+		 * interface will notify the right JVM waiting for this response thru a Object.wait
+		 */
 	}
 
 }

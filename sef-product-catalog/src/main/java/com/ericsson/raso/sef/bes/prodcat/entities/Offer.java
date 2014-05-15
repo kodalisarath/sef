@@ -22,6 +22,9 @@ import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 
+
+//TODO: add dependency check on purchase
+//TODO: sort fulfillment tasks based on resource dependancies
 public class Offer implements Serializable {
 	private static final long serialVersionUID = 5704479496440496263L;
 	
@@ -569,7 +572,7 @@ public class Offer implements Serializable {
 		 * 1. Send Notification for each state of the Request Processing
 		 * 2. Transaction Engine must be able to use this task persistently across the entire process... 
 		 */
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.name, subscriberId));
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.name, subscriberId, SubscriptionLifeCycleEvent.PURCHASE.name()));
 		
 		// finally save this transaction to DB...
 		tasks.add(new Persistence<Subscription>(PersistenceMode.SAVE, purchase, subscriberId));

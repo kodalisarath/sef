@@ -11,21 +11,12 @@ import java.io.Serializable;
 public abstract class TransactionTask implements Serializable {
 	private static final long serialVersionUID = 82627494140719220L;
 
-	private Status status = Status.WAITING;
 	private Type type = null;
 
 	public TransactionTask(Type type) {
 		this.type = type;
 	}
 
-	public Status getStatus() {
-		return status;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-	
 	public Type getType() {
 		return type;
 	}
@@ -36,12 +27,6 @@ public abstract class TransactionTask implements Serializable {
 
 
 
-	enum Status implements Serializable {
-		WAITING,
-		PROCESSING,
-		DONE;
-	}
-	
 	enum Type {
 		CHARGING,
 		FULFILLMENT,
@@ -50,31 +35,31 @@ public abstract class TransactionTask implements Serializable {
 		PERSIST;
 	}
 
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
-			return false;
-		
 		if (this == obj)
 			return true;
-		
+		if (obj == null)
+			return false;
 		if (!(obj instanceof TransactionTask))
 			return false;
-		
 		TransactionTask other = (TransactionTask) obj;
-		if (status != other.status)
+		if (type != other.type)
 			return false;
-		
 		return true;
 	}
+
+	
 	
 	
 

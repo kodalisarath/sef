@@ -29,6 +29,13 @@ public class Subscriber {
 	private Boolean				deleted				= null;
 	private Map<String, String>	metas				= null;
 
+	
+	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
+		com.ericsson.raso.sef.core.db.model.Subscriber subscriber = new com.ericsson.raso.sef.core.db.model.Subscriber();
+		//TODO: perform the transformation
+		return subscriber;
+	}
+	
 	public String getUserId() {
 		return userId;
 	}

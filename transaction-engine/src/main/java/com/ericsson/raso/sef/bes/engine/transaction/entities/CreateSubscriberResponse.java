@@ -6,9 +6,8 @@ public final class CreateSubscriberResponse extends AbstractResponse {
 
 	private Boolean result = null;
 
-	public CreateSubscriberResponse(String requestCorrelator, Boolean result) {
+	public CreateSubscriberResponse(String requestCorrelator) {
 		super(requestCorrelator);
-		this.result = result;
 	}
 
 	public Boolean getResult() {

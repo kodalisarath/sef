@@ -2,20 +2,26 @@ package com.ericsson.raso.sef.bes.engine.transaction;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
+import com.ericsson.raso.sef.bes.engine.transaction.commands.CreateSubscriber;
+import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRequest;
+import com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriptionRequest;
-import com.ericsson.raso.sef.bes.prodcat.OfferManager;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
-import com.ericsson.raso.sef.core.db.model.Subscriber;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.UniqueIdGenerator;
 
 public class TransactionManager implements ISubscriberRequest, ISubscriptionRequest {
 
 	IOfferCatalog catalog = null;
+	ExecutorService executor = null;
 	
 	
 	public TransactionManager() {
 		catalog = ServiceResolver.getOfferCatalog();
+		executor = SefCoreServiceResolver.getExecutorService(Constants.USE_CASE_EVAL.name());
 	}
 
 
@@ -125,9 +131,11 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 
 	@Override
-	public String createSubscriber(com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber subscriber) {
-		// TODO Auto-generated method stub
-		return null;
+	public String createSubscriber(Subscriber subscriber) {
+		String requestId = UniqueIdGenerator.generateId();
+		CreateSubscriber command = new CreateSubscriber(requestId, subscriber);
+		executor.submit(command);
+		return requestId;
 	}
 
 

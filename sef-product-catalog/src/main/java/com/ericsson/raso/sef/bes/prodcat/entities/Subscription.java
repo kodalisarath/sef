@@ -1,5 +1,8 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
+//TODO: add cascaded cancel on terminate
+//TODO: sort fulfillment tasks based on resource dependancies
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -118,7 +121,7 @@ public class Subscription extends Offer {
 			}
 		}
 		
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId));
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.EXPIRY.name()));
 		
 		// save states and history & ask to be saved in DB
 		this.subscriptionHistory.add(SubscriptionLifeCycleState.IN_EXPIRY, EXPIRY_TIMESTAMP);
@@ -249,7 +252,7 @@ public class Subscription extends Offer {
 		 * 1. Send Notification for each state of the Request Processing
 		 * 2. Transaction Engine must be able to use this task persistently across the entire process... 
 		 */
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId));
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.RENEWAL.name()));
 
 		// finally save this transaction to DB...
 		this.addSubscriptionHistory(SubscriptionLifeCycleState.IN_RENEWAL, RENEWAL_TIMESTAMP);
@@ -339,7 +342,7 @@ public class Subscription extends Offer {
 			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId));
 		}
 		
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId));
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.TERMINATE.name()));
 		
 		// save states and history & ask to be saved in DB
 		this.subscriptionHistory.add(SubscriptionLifeCycleState.IN_TERMINATION, TERMINATE_TIMESTAMP);

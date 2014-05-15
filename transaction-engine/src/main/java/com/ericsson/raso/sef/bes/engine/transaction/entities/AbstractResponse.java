@@ -1,11 +1,17 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 
 public abstract class AbstractResponse implements Serializable {
 	private static final long serialVersionUID = 6889864854694969170L;
 
 	private String requestCorrelator = null;
+	private Map<String, Object> atomicStepResults = null;
+	private TransactionException returnFault = null;
 
 	public AbstractResponse(String requestCorrelator) {
 		super();
@@ -18,6 +24,30 @@ public abstract class AbstractResponse implements Serializable {
 
 	public void setRequestCorrelator(String requestCorrelator) {
 		this.requestCorrelator = requestCorrelator;
+	}
+	
+	
+	public void addAtomicStepResult(String step, Object intermediaryResult) {
+		if (this.atomicStepResults == null)
+			this.atomicStepResults = new TreeMap<String, Object>();
+		
+		this.atomicStepResults.put(step, intermediaryResult);
+	}
+
+	public Map<String, Object> getAtomicStepResults() {
+		return atomicStepResults;
+	}
+
+	public void setAtomicStepResults(Map<String, Object> atomicStepResults) {
+		this.atomicStepResults = atomicStepResults;
+	}
+
+	public TransactionException getReturnFault() {
+		return returnFault;
+	}
+
+	public void setReturnFault(TransactionException returnFault) {
+		this.returnFault = returnFault;
 	}
 
 	@Override

@@ -6,13 +6,15 @@ public final class Notification extends TransactionTask {
 	private NotificationMode mode = null;
 	private String offerId = null;
 	private String subscriberId = null;
+	private String eventId = null;
 
 	
-	public Notification(NotificationMode mode, String offerId, String subscriberId) {
+	public Notification(NotificationMode mode, String offerId, String subscriberId, String eventId) {
 		super(Type.NOTIFICATION);
 		this.mode = mode;
 		this.offerId = offerId;
 		this.subscriberId = subscriberId;
+		this.eventId = eventId;
 	}
 
 
@@ -43,6 +45,16 @@ public final class Notification extends TransactionTask {
 
 	public void setSubscriberId(String subscriberId) {
 		this.subscriberId = subscriberId;
+	}
+
+
+	public String getEventId() {
+		return eventId;
+	}
+
+
+	public void setEventId(String eventId) {
+		this.eventId = eventId;
 	}
 
 
