@@ -25,6 +25,7 @@ import com.ericsson.raso.sef.core.db.model.Subscriber;
 
 //TODO: add dependency check on purchase
 //TODO: sort fulfillment tasks based on resource dependancies
+//TODO: check suppress fulfilment is configured before building the transaction tasks
 public class Offer implements Serializable {
 	private static final long serialVersionUID = 5704479496440496263L;
 	
