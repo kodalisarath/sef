@@ -10,6 +10,8 @@ public abstract class Step<T> implements Serializable, Callable<Object> {
 	
 	private String stepCorrelator = null;
 	private TransactionTask executionInputs = null;
+	private T result = null;
+	private StepExecutionException fault = null;
 	
 	
 	
@@ -34,6 +36,22 @@ public abstract class Step<T> implements Serializable, Callable<Object> {
 
 	public TransactionTask getExecutionInputs() {
 		return executionInputs;
+	}
+
+	public T getResult() {
+		return result;
+	}
+
+	public void setResult(T result) {
+		this.result = result;
+	}
+
+	public StepExecutionException getFault() {
+		return fault;
+	}
+
+	public void setFault(StepExecutionException fault) {
+		this.fault = fault;
 	}
 	
 	

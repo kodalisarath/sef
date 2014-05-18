@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.tasks;
 
+import java.util.Map;
+
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 
 public final class Fulfillment extends TransactionTask {
@@ -9,12 +11,14 @@ public final class Fulfillment extends TransactionTask {
 
 	private AtomicProduct atomicProduct = null;
 	private String subscriberId = null;
+	private Map<String, Object> additionalInputs = null;
 	
-	public Fulfillment(FulfillmentMode mode, AtomicProduct atomicProduct, String subscriberId) {
+	public Fulfillment(FulfillmentMode mode, AtomicProduct atomicProduct, String subscriberId, Map<String, Object> additionalInputs) {
 		super(Type.FULFILLMENT);
 		this.mode = mode;
 		this.atomicProduct = atomicProduct;
 		this.subscriberId = subscriberId;
+		this.additionalInputs = additionalInputs;
 	}
 
 	public FulfillmentMode getMode() {
@@ -39,6 +43,14 @@ public final class Fulfillment extends TransactionTask {
 
 	public void setSubscriberId(String subscriberId) {
 		this.subscriberId = subscriberId;
+	}
+
+	public Map<String, Object> getAdditionalInputs() {
+		return additionalInputs;
+	}
+
+	public void setAdditionalInputs(Map<String, Object> additionalInputs) {
+		this.additionalInputs = additionalInputs;
 	}
 
 	@Override

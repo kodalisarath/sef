@@ -5,7 +5,6 @@ import java.io.Serializable;
 enum Status implements Serializable {
 	WAITING,
 	PROCESSING,
-	ROLLING_BACK,
 	DONE_SUCCESS,
 	DONE_FAILED,
 	DONE_FAULT;

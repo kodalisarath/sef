@@ -25,7 +25,7 @@ public class CreateSubscriber extends AbstractTransaction {
 	
 	public CreateSubscriber(String requestId, Subscriber subscriber) {
 		super(requestId, new CreateSubscriberRequest(requestId, subscriber));
-		this.setResponse(new CreateSubscriberResponse(requestId, null));
+		this.setResponse(new CreateSubscriberResponse(requestId));
 	}
 	
 	

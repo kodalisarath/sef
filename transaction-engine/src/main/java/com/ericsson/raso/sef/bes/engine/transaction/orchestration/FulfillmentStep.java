@@ -1,5 +1,9 @@
 package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 
+import java.util.Set;
+import java.util.TreeSet;
+
+import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 
 public class FulfillmentStep extends Step<FulfillmentStepResult> {
@@ -12,7 +16,9 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	@Override
 	public FulfillmentStepResult execute() {
 		// TODO implement code when there is a client for Fulfillment Engine available
-		return new FulfillmentStepResult(null, ((Fulfillment)this.getExecutionInputs()).getAtomicProduct());
+		Set<AtomicProduct> result = new TreeSet<AtomicProduct>();
+		result.add(((Fulfillment)this.getExecutionInputs()).getAtomicProduct());
+		return new FulfillmentStepResult(null, result);
 	}
 
 }

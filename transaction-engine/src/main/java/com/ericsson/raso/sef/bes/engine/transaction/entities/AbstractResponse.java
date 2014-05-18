@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 
 public abstract class AbstractResponse implements Serializable {
 	private static final long serialVersionUID = 6889864854694969170L;
 
 	private String requestCorrelator = null;
-	private Map<String, Object> atomicStepResults = null;
+	private Map<Step, AbstractStepResult> atomicStepResults = null;
 	private TransactionException returnFault = null;
 
 	public AbstractResponse(String requestCorrelator) {
@@ -27,18 +29,18 @@ public abstract class AbstractResponse implements Serializable {
 	}
 	
 	
-	public void addAtomicStepResult(String step, Object intermediaryResult) {
+	public void addAtomicStepResult(Step step, AbstractStepResult intermediaryResult) {
 		if (this.atomicStepResults == null)
-			this.atomicStepResults = new TreeMap<String, Object>();
+			this.atomicStepResults = new TreeMap<Step, AbstractStepResult>();
 		
 		this.atomicStepResults.put(step, intermediaryResult);
 	}
 
-	public Map<String, Object> getAtomicStepResults() {
+	public Map<Step, AbstractStepResult> getAtomicStepResults() {
 		return atomicStepResults;
 	}
 
-	public void setAtomicStepResults(Map<String, Object> atomicStepResults) {
+	public void setAtomicStepResults(Map<Step, AbstractStepResult> atomicStepResults) {
 		this.atomicStepResults = atomicStepResults;
 	}
 
