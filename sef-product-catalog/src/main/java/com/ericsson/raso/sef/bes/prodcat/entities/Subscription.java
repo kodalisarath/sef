@@ -78,7 +78,7 @@ public class Subscription extends Offer {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
 		
 		for (AtomicProduct product: this.getProvisionedProducts()) {
-			tasks.add(new Fulfillment(FulfillmentMode.QUERY, product, subscriberId));
+			tasks.add(new Fulfillment(FulfillmentMode.QUERY, product, subscriberId, null));
 		}
 		return tasks;
 	}
@@ -98,7 +98,7 @@ public class Subscription extends Offer {
 		
 		// first, pack all the fulfillment tasks pertinent to deprovisioning
 		for(AtomicProduct atomicProduct: this.getProvisionedProducts()) {
-			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId));
+			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId, null));
 		}
 
 				
@@ -244,7 +244,7 @@ public class Subscription extends Offer {
 			AtomicProduct cloned = CloneHelper.deepClone(atomicProduct);
 			cloned.getValidity().setActivationTime(RENEWAL_TIMESTAMP);
 			this.addProvisionedProduct(cloned);
-			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, cloned, subscriberId));
+			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, cloned, subscriberId, null));
 		} 
 	
 		//----------- Notification Tasks
@@ -339,7 +339,7 @@ public class Subscription extends Offer {
 		 */
 		// first, pack all the fulfillment tasks pertinent to deprovisioning
 		for(AtomicProduct atomicProduct: this.getProvisionedProducts()) {
-			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId));
+			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId, null));
 		}
 		
 		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.TERMINATE.name()));

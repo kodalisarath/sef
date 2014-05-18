@@ -35,6 +35,23 @@ public enum State implements Serializable {
 		return Arrays.asList(next);
 	}
 	
+	public int intValue() {
+		switch (this) {
+			case IN_CREATION:
+				return 1;
+			case TESTING:
+				return 2;
+			case PUBLISHED:
+				return 3;
+			case DISABLED:
+				return 4;
+			case RETIRED:
+				return 5;
+			default:
+				return 0;
+		}
+		
+	}
 	
 
 }

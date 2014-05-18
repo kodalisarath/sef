@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.TreeSet;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
+import com.ericsson.raso.sef.bes.prodcat.entities.OfferLifeCycle.HistoryEvent;
 
 public class OfferLifeCycle implements Serializable {
 	private static final long serialVersionUID = -3684779285289029622L;
@@ -169,7 +170,7 @@ public class OfferLifeCycle implements Serializable {
 		return true;
 	}
 
-	class HistoryEvent implements Serializable {
+	class HistoryEvent implements Serializable, Comparable<HistoryEvent> {
 		private static final long serialVersionUID = -6905134376367890464L;
 
 		private State state = null;
@@ -196,6 +197,55 @@ public class OfferLifeCycle implements Serializable {
 		public void setTimestamp(long timestamp) {
 			this.timestamp = timestamp;
 		}
+		
+		
+
+		@Override
+		public int compareTo(HistoryEvent other) {
+			if (this.equals(other)) {
+				return 0;
+			}
+			
+			if (this.state == other.state) {
+				return (int) ((this.timestamp - other.timestamp) & Integer.MAX_VALUE);
+			} else {
+				return (this.state.intValue() - other.state.intValue());
+			}
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((state == null) ? 0 : state.hashCode());
+			result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof HistoryEvent))
+				return false;
+			HistoryEvent other = (HistoryEvent) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (state != other.state)
+				return false;
+			if (timestamp != other.timestamp)
+				return false;
+			return true;
+		}
+
+		private OfferLifeCycle getOuterType() {
+			return OfferLifeCycle.this;
+		}
+		
+		
 
 	}
 

@@ -556,7 +556,7 @@ public class Offer implements Serializable {
 				clone.setValidity(trialPeriod);
 				purchase.addProduct(clone);
 			} 
-			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId));
+			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, null));
 		}
 		
 		if (isTrialAllowed) {
