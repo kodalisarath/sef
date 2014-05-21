@@ -582,7 +582,7 @@ public class Offer implements Serializable {
 	}
 	
 	
-	protected List<AtomicProduct> getAllAtomicProducts() {
+	public List<AtomicProduct> getAllAtomicProducts() {
 		List<AtomicProduct> atomicProducts = new ArrayList<AtomicProduct>();
 		
 		for (Product product: this.products) {
@@ -1009,6 +1009,7 @@ public class Offer implements Serializable {
 		return true;
 	}
 
+	
 		
 	
 	//==========----------------------------- End of Java Niceties Section ---------------===========================================================/

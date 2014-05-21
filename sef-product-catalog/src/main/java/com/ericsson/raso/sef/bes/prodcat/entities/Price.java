@@ -23,7 +23,6 @@ public final class Price extends MonetaryUnit {
 		super(iso4217CurrencyCode, amount);
 		this.cost = new Cost(iso4217CurrencyCode, amount);
 		
-		context = RequestContextLocalStore.get().getInProcess();
 	}
 	
 	public MonetaryUnit getSimpleAdviceOfCharge() {
@@ -37,7 +36,9 @@ public final class Price extends MonetaryUnit {
 	
 	public Map<String, MonetaryUnit> getPrintableAdviceOfCharge() {
 		Map<String, MonetaryUnit> costElements = new TreeMap<String, MonetaryUnit>();
-		
+
+		context = RequestContextLocalStore.get().getInProcess();
+
 		/*
 		 * 1. process all policies over the base cost
 		 * 2. calculate all taxes

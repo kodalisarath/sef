@@ -27,6 +27,11 @@ public class TerminateAfterNDays extends AbstractAutoTermination {
 	}
 
 	@Override
+	public long getTerminationTime(long activationTime, long renewalPeriod) throws CatalogException {
+		return (activationTime + (days * DAYS2MILLIS));
+	}
+	
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -54,6 +59,7 @@ public class TerminateAfterNDays extends AbstractAutoTermination {
 		
 		return true;
 	}
+
 	
 	
 

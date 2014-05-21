@@ -1,14 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.tasks;
 
-import com.ericsson.raso.sef.bes.prodcat.CatalogException;
-import com.ericsson.raso.sef.bes.prodcat.Constants;
 import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.core.RequestContext;
-import com.ericsson.raso.sef.core.RequestContextLocalStore;
-import com.ericsson.raso.sef.core.SefCoreServiceResolver;
-import com.ericsson.raso.sef.core.db.model.Subscriber;
-import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.raso.sef.ruleengine.ExternDataUnitTask;
 
 public final class FetchSubscription extends ExternDataUnitTask<Subscription> {
@@ -16,13 +9,13 @@ public final class FetchSubscription extends ExternDataUnitTask<Subscription> {
 	
 	private String subscriptionId = null;
 	
-	public FetchSubscription(String subscriberId) {
-		this.subscriptionId = subscriberId;
+	public FetchSubscription(String subscriptionId) {
+		this.subscriptionId = subscriptionId;
 	}
 
 	@Override
 	public Subscription execute() throws FrameworkException {
-		Subscription subscriber = null;
+		Subscription subscription = null;
 		
 		//TODO: Need DB logic to implement here....
 		/*
@@ -30,22 +23,25 @@ public final class FetchSubscription extends ExternDataUnitTask<Subscription> {
 		 * 1. use the subscriptionId to query for the subscription
 		 * 2. get subscriberId from there...
 		 * 3. fetch subscription history and load the arraylist with exact order as sorted by timestamp
+		 * 4. synchronize rest of the attributes from Offer and its version, before returning the entity...
 		 * 
 		 */
 		
-		return subscriber;
+		return subscription;
 	}
 	
 	
-	public String getSubscriberId() {
+	
+	
+	public String getSubscriptionId() {
 		return subscriptionId;
 	}
 
-	public void setSubscriberId(String subscriberId) {
-		this.subscriptionId = subscriberId;
+	public void setSubscriptionId(String subscriptionId) {
+		this.subscriptionId = subscriptionId;
 	}
 
-		@Override
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

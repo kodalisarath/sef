@@ -20,6 +20,11 @@ public class CommitHardDate extends AbstractMinimumCommitment {
 	}
 
 	@Override
+	public long getCommitmentTime(long activationTime, long renewalPeriod) throws CatalogException {
+		return this.date;
+	}
+	
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -40,6 +45,7 @@ public class CommitHardDate extends AbstractMinimumCommitment {
 			return false;
 		return true;
 	}
+
 	
 	
 

@@ -237,7 +237,7 @@ public abstract class Resource implements Serializable {
 		if (this.dependantOnThem == null)
 			this.dependantOnThem = new ArrayList<Resource>();
 
-		return (this.dependantOnThem.add(other) && other.dependantOnMe.remove(this));
+		return (this.dependantOnThem.add(other) && other.dependantOnMe.add(this));
 	}
 
 	public boolean removeDependantOn(Resource other) {

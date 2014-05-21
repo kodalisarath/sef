@@ -22,6 +22,12 @@ public class CommitUntilNRenewals extends AbstractMinimumCommitment {
 		
 		return (activationTime + (renewals  * subsription.getRenewalPeriod().getExpiryTimeInMillis()));
 	}
+	
+	
+	@Override
+	public long getCommitmentTime(long activationTime, long renewalPeriod) throws CatalogException {
+		return (activationTime + (renewals  * renewalPeriod));
+	}
 
 	@Override
 	public int hashCode() {

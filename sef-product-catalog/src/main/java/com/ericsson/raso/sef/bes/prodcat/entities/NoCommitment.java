@@ -16,6 +16,11 @@ public final class NoCommitment extends AbstractMinimumCommitment {
 		return INFINITE;
 	}
 
+	@Override
+	public long getCommitmentTime(long activationTime, long renewalPeriod) throws CatalogException {
+		return INFINITE;
+	}
+
 	
 	
 

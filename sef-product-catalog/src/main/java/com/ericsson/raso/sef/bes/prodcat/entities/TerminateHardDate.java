@@ -17,9 +17,14 @@ public class TerminateHardDate extends AbstractAutoTermination {
 	@Override
 	public long getTerminationTime(Subscription subsription) throws CatalogException {
 		return this.date;
-
 	}
 
+	@Override
+	public long getTerminationTime(long activationTime, long renewalPeriod) throws CatalogException {
+		return this.date;
+	}
+
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -49,5 +54,6 @@ public class TerminateHardDate extends AbstractAutoTermination {
 		return true;
 	}
 
+	
 	
 }

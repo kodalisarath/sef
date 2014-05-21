@@ -15,6 +15,8 @@ public abstract class AbstractMinimumCommitment implements Serializable {
 	
 	public abstract long getCommitmentTime(Subscription subsription) throws CatalogException;
 
+	public abstract long getCommitmentTime(long activationTime, long renewalPeriod) throws CatalogException;
+	
 	public Type getType() {
 		return this.type;
 	}
@@ -51,6 +53,7 @@ public abstract class AbstractMinimumCommitment implements Serializable {
 		
 		return true;
 	}
+
 	
 	
 }

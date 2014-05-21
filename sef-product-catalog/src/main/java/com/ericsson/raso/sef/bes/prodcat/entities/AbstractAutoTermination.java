@@ -15,6 +15,8 @@ public abstract class AbstractAutoTermination implements Serializable {
 	
 	public abstract long getTerminationTime(Subscription subsription) throws CatalogException;
 
+	public abstract long getTerminationTime(long activationTime, long renewalPeriod) throws CatalogException;
+
 	public Type getType() {
 		return this.type;
 	}

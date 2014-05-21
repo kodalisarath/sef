@@ -22,6 +22,13 @@ public class TerminateAfterNRenewals extends AbstractAutoTermination {
 		
 		return (activationTime + (renewals  * subsription.getRenewalPeriod().getExpiryTimeInMillis()));
 	}
+	
+	@Override
+	public long getTerminationTime(long activationTime, long renewalPeriod) throws CatalogException {
+		return (activationTime + (renewals  * renewalPeriod));
+	}
+
+
 
 	@Override
 	public int hashCode() {
@@ -52,6 +59,6 @@ public class TerminateAfterNRenewals extends AbstractAutoTermination {
 		return true;
 	}
 
-	
+		
 
 }

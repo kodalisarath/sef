@@ -26,6 +26,12 @@ public class CommitUntilNDays extends AbstractMinimumCommitment {
 	}
 
 	@Override
+	public long getCommitmentTime(long activationTime, long renewalPeriod) throws CatalogException {
+		return (activationTime + (days * DAYS2MILLIS));
+	}
+
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
