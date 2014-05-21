@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.ericsson.raso.sef.ruleengine.Rule;
 
-public abstract class FulfillmentProfile implements Serializable {
+public abstract class FulfillmentProfile<E, Map> implements Serializable {
 	private static final long serialVersionUID = 8880950261612749964L;
 
 	private String name = null;
@@ -38,6 +38,9 @@ public abstract class FulfillmentProfile implements Serializable {
 		this.criteria = criteria;
 	}
 	
+	public abstract void fulfill(E e, java.util.Map<String, String> map);
+	public abstract void prepare(E e, java.util.Map<String, String> map);
+	public abstract void query(E e, java.util.Map<String, String> map);
+	public abstract void revert(E e, java.util.Map<String, String> map);
 	
-
 }
