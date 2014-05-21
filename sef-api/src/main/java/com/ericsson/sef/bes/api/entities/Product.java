@@ -1,5 +1,12 @@
 package com.ericsson.sef.bes.api.entities;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name="product")
 public final class Product {
 	
 	private String name = null;

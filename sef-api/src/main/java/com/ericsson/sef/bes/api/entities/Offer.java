@@ -2,6 +2,11 @@ package com.ericsson.sef.bes.api.entities;
 
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="offer")
 public class Offer {
 	
 	private String name = null;
