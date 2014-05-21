@@ -21,5 +21,5 @@ public interface CloudAwareCluster {
 	public Lock getLock(String key);
 	
 	public HazelcastInstance getInstance();
-
+	
 }

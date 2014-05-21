@@ -7,6 +7,7 @@ import com.ericsson.raso.sef.core.CloudAwareCluster;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.SecureSerializationHelper;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.hazelcast.core.IMap;
 
 public class Watergate implements IWatergate {
 
@@ -59,6 +60,7 @@ public class Watergate implements IWatergate {
 					hasLimit = counter.hasLimit();
 					isInvalidCounter = false;
 				} else {
+					System.out.println("Not active");
 					counter.reset();
 					counter = null;
 				}
@@ -66,10 +68,10 @@ public class Watergate implements IWatergate {
 			
 			// If counter expired or never created, create one
 			if(isInvalidCounter) {
-			counter = new ConcurrencyCounter(sla.getCapacity(),
-					sla.getSlaUnit().getMilliseconds(),
-					System.currentTimeMillis(),
-					cluster.getAtomicCounter(slaCounterKey));
+//			counter = new ConcurrencyCounter(sla.getCapacity(),
+//					sla.getSlaUnit().getMilliseconds(),
+//					System.currentTimeMillis(),
+//					cluster.getAtomicCounter(slaCounterKey));
 			}
 			System.out.println(counter.isStillActive());
 			System.out.println(slaCounterKey);

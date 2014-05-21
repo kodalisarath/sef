@@ -9,10 +9,10 @@ public class ConcurrencyCounter implements Serializable {
 		
 		private IAtomicLong currentConcurrency;
 		private long allowedConcurrency;
-		private long validityPeriodinMillis;
+		private int validityPeriodinMillis;
 		private long createdTimeinMillis;
 		
-		public ConcurrencyCounter(long allowedConcurrency, long validityPeriod, long createdTime, IAtomicLong concurrency) {
+		public ConcurrencyCounter(long allowedConcurrency, int validityPeriod, long createdTime, IAtomicLong concurrency) {
 			this.allowedConcurrency = allowedConcurrency;
 			this.validityPeriodinMillis = validityPeriod;
 			this.createdTimeinMillis = createdTime;
@@ -20,6 +20,8 @@ public class ConcurrencyCounter implements Serializable {
 		}
 
 		public boolean isStillActive() {
+			System.out.println("Validity"+ validityPeriodinMillis);
+			System.out.println("Elapsed:" + (System.currentTimeMillis() - createdTimeinMillis));
 			if(validityPeriodinMillis < (System.currentTimeMillis() - createdTimeinMillis)) 
 				return true;
 			return false;
@@ -32,6 +34,6 @@ public class ConcurrencyCounter implements Serializable {
 		}
 		
 		public void reset() {
-			currentConcurrency.set(0l);
+			currentConcurrency.destroy();
 		}
 }
