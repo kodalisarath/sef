@@ -28,6 +28,8 @@ public abstract class AbstractTransaction implements Callable<Void>, Serializabl
 	 * @throws TransactionException
 	 */
 	public abstract Void execute() throws TransactionException;
+	
+	public abstract void sendResponse();
 
 	@Override
 	public Void call() throws Exception {

@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
 
 public enum Constants {
+	
 	CREATE_SUSBCRIBER, 
 	USECASES,
 	USE_CASE_EVAL,
@@ -10,6 +11,6 @@ public enum Constants {
 	TRANSACTION_STEPS, 
 	TRANSACTION_STEP_STATUS,
 	
-	;
+	SUBSCRIPTION_ID;
 
 }

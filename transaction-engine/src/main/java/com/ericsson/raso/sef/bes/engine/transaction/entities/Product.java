@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
+
 public final class Product {
 	
 	private String name = null;
@@ -9,6 +11,13 @@ public final class Product {
 	private String validity = null;
 	
 	
+	public Product(AtomicProduct source) {
+		this.name = source.getName();
+		this.resourceName = source.getResource().getName();
+		this.quotaDefined = (int) source.getQuota().getDefinedQuota();
+		this.quotaConsumed = (int) source.getQuota().getConsumedQuota();
+	}
+
 	public String getName() {
 		return name;
 	}

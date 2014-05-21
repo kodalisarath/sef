@@ -10,9 +10,8 @@ public final class ReadSubscriberResponse extends AbstractResponse {
 	private Map<String, String>	metas = null;
 
 	
-	public ReadSubscriberResponse(String requestCorrelator, Map<String, String> metas) {
+	public ReadSubscriberResponse(String requestCorrelator) {
 		super(requestCorrelator);
-		this.setMetas(metas);
 	}
 
 

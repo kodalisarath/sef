@@ -19,11 +19,11 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 
-public class CreateSubscriber extends AbstractTransaction {
+public class DeleteSubscriber extends AbstractTransaction {
 	private static final long	serialVersionUID	= 8085575039162225609L;
 	
 	
-	public CreateSubscriber(String requestId, Subscriber subscriber) {
+	public DeleteSubscriber(String requestId, Subscriber subscriber) {
 		super(requestId, new CreateSubscriberRequest(requestId, subscriber));
 		this.setResponse(new CreateSubscriberResponse(requestId));
 	}
@@ -35,6 +35,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		
 		
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
+		tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer workflow = catalog.getOfferById(Constants.CREATE_SUSBCRIBER.name());
@@ -46,8 +47,6 @@ public class CreateSubscriber extends AbstractTransaction {
 				// TODO - Logger unable to fetch the workflow configured for the use-case
 				throw new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e);
 			}
-			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
-			
 		}
 		
 		Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
@@ -57,7 +56,6 @@ public class CreateSubscriber extends AbstractTransaction {
 		return null;
 	}
 	
-	@Override
 	public void sendResponse() {
 		//TODO: implement this logic
 		/*
@@ -67,7 +65,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		 * 2. The response will most likely be results/ responses/ exceptions from atomic steps in the transaction. This must be packed into
 		 * the response pojo structure pertinent to method signature of the response interface.
 		 * 
-		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
+		 * 3. once the response pojo entity is packed, the client for reponse interface must be invoked. the assumption is that response
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
 	}

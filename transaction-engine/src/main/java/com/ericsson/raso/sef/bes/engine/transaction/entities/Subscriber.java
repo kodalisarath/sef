@@ -1,6 +1,15 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+import java.util.TreeMap;
+
+import org.apache.xpath.axes.SubContextList;
+import org.joda.time.DateTime;
+
+import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 
 public class Subscriber {
 
@@ -26,16 +35,89 @@ public class Subscriber {
 	private String				customerSegment		= null;
 	private Long				created				= null;
 	private Long				lastModified		= null;
-	private Boolean				deleted				= null;
 	private Map<String, String>	metas				= null;
 
 	
+	public Subscriber(com.ericsson.raso.sef.core.db.model.Subscriber other) {
+		this.userId = other.getUserId();
+		this.customerId = other.getCustomerId();
+		this.contractId = other.getContractId();
+		this.msisdn = other.getMsisdn();
+		this.pin = other.getPin();
+		this.email = other.getEmail();
+		this.imsi = other.getImsi();
+		this.imeiSv = other.getImeiSv();
+		this.paymentType = other.getPaymentType();
+		this.paymentResponsible = other.getPaymentResponsible();
+		this.paymentParent = other.getPaymentParent();
+		this.billCycleDay = other.getBillCycleDay();
+		this.contractState = other.getContractState().getName(); //TODO: this must be aligned to the subscriber life-cycle model defined in the BC workflow product & SEF Framework states
+		this.dateOfBirth = other.getDateOfBirth().getMillis();
+		this.gender = other.getGender();
+		this.prefferedLanguage = other.getPrefferedLanguage();
+		this.registrationDate = other.getRegistrationDate().getMillis();
+		this.activeDate = other.getActiveDate().getMillis();
+		this.ratePlan = other.getRatePlan();
+		this.customerSegment = other.getCustomerSegment();
+		this.created = other.getCreated().getMillis();
+		this.lastModified = other.getLastModified().getMillis();
+		this.metas = this.genericMetas(other.getMetas());
+		
+		
+	}
+	
+	
 	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriber = new com.ericsson.raso.sef.core.db.model.Subscriber();
-		//TODO: perform the transformation
+//TODO: fix this code once the core.db package is refactored....
+		subscriber.setUserId(this.userId);
+		subscriber.setCustomerId(this.customerId);
+		subscriber.setContractId(this.contractId);
+		subscriber.setMsisdn(this.msisdn);
+		subscriber.setPin(this.pin);
+		subscriber.setEmail(this.email);
+		subscriber.setImsi(this.imsi);
+		subscriber.setImeiSv(this.imeiSv);
+		subscriber.setPaymentType(this.paymentType);
+		subscriber.setPaymentResponsible(this.paymentResponsible);
+		subscriber.setPaymentParent(this.paymentParent);
+		subscriber.setBillCycleDay(this.billCycleDay);
+		subscriber.setContractState(ContractState.valueOf(this.contractState));
+		subscriber.setDateOfBirth(new DateTime(this.dateOfBirth));
+		subscriber.setGender(this.gender);
+		subscriber.setPrefferedLanguage(this.prefferedLanguage);
+		subscriber.setRegistrationDate(new DateTime(this.registrationDate));
+		subscriber.setActiveDate(new DateTime(this.activeDate));
+		subscriber.setRatePlan(this.ratePlan);
+		subscriber.setCustomerSegment(this.customerSegment);
+		subscriber.setCreated(new DateTime(this.created));
+		subscriber.setLastModified(new DateTime(lastModified));
+		subscriber.setMetas(this.nativeMetas(this.metas));
+		
 		return subscriber;
 	}
 	
+	private Collection<SubscriberMeta> nativeMetas(Map<String, String> metas) {
+		Collection<SubscriberMeta> nativeMetas = new ArrayList<SubscriberMeta>();
+		for (String key: metas.keySet()) {
+			SubscriberMeta meta = new SubscriberMeta();
+			meta.setKey(key);
+			meta.setValue(metas.get(key));
+			nativeMetas.add(meta);
+		}
+		return nativeMetas;
+	}
+
+
+	private Map<String, String> genericMetas(Collection<SubscriberMeta> metas) {
+		Map<String, String> subscriberMetas = new TreeMap<String, String>();
+		
+		for (SubscriberMeta meta: metas)
+			subscriberMetas.put(meta.getKey(), meta.getValue());
+		
+		return subscriberMetas;
+	}
+
 	public String getUserId() {
 		return userId;
 	}
@@ -210,14 +292,6 @@ public class Subscriber {
 
 	public void setLastModified(Long lastModified) {
 		this.lastModified = lastModified;
-	}
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
 	}
 
 	public Map<String, String> getMetas() {
