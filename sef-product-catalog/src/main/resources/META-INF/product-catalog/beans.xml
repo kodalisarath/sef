@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+	<osgi:reference interface="com.ericsson.raso.sef.bes.prodcat.service.IOfferAdmin" id="offerAdmin"/>
+	<osgi:reference interface="com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog" id="offerCatalog"/>
+	<osgi:reference interface="com.ericsson.raso.sef.bes.prodcat.service.IOfferGroupManager" id="offerGroupManager"/>
+	<osgi:reference interface="com.ericsson.raso.sef.bes.prodcat.service.IOwnerManager" id="ownerManager"/>
+	<osgi:reference interface="com.ericsson.raso.sef.bes.prodcat.service.IResourceGroupManager" id="resourceGroupManager"/>
+	<osgi:reference interface="com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry" id="serviceRegistry"/>
+	
+</beans>

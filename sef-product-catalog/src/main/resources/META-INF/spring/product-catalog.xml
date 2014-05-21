@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<ctx:annotation-config/>
+	
+	<bean id="serviceResolver" class="com.ericsson.raso.sef.bes.prodcat.ServiceResolver"/>
+	
+	<bean id="offerGroupManager" class="com.ericsson.raso.sef.bes.prodcat.OfferGroupManager"/>
+	<bean id="serviceRegistry" class="com.ericsson.raso.sef.bes.prodcat.ServiceRegistry" />
+	
+	<bean id="ownerManager" class="com.ericsson.raso.sef.bes.prodcat.OwnerManager" />
+	
+	<bean id="resourceGroupManager" class="com.ericsson.raso.sef.bes.prodcat.ResourceGroupManager" />
+	<bean id="offerAdmin" class="com.ericsson.raso.sef.bes.prodcat.OfferManager"/>
+	<bean id="offerCatalog" class="com.ericsson.raso.sef.bes.prodcat.OfferManager"/>
+	
+</beans>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+	<import resource="classpath:META-INF/sef-core/beans.xml"/>
+
+	<osgi:service interface="com.ericsson.raso.sef.bes.prodcat.service.IOfferAdmin" ref="offerAdmin"/>
+	<osgi:service interface="com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog" ref="offerCatalog"/>
+	<osgi:service interface="com.ericsson.raso.sef.bes.prodcat.service.IOfferGroupManager" ref="offerGroupManager"/>
+	<osgi:service interface="com.ericsson.raso.sef.bes.prodcat.service.IOwnerManager" ref="ownerManager"/>
+	<osgi:service interface="com.ericsson.raso.sef.bes.prodcat.service.IResourceGroupManager" ref="resourceGroupManager"/>
+	<osgi:service interface="com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry" ref="serviceRegistry"/>
+	
+</beans>
