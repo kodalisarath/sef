@@ -9,9 +9,7 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
                       
    
-   <bean name="configservice"
-   
-   	class = "com.ericsson.raso.sef.core.config.ConfigService"/>
+   <bean id="configservice" class="com.ericsson.raso.sef.core.config.ConfigService"/>
    	
    	
 </beans>

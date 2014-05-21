@@ -9,10 +9,7 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
 
-
-	<osgi:service ref="configservice"
-        interface="com.ericsson.raso.sef.core.config.IConfig">
-    </osgi:service>
+	<osgi:service ref="configservice" interface="com.ericsson.raso.sef.core.config.IConfig" />
 
 </beans>
 

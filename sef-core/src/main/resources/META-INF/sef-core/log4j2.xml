@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration name="sef-bes.production" status="all" strict="true">
+<Configuration name="sef-bes.production" status="debug" strict="false">
 
 	<Properties>
 		<Property name="solution">SMART SEF IL - TNT Swap</Property>
@@ -8,7 +8,23 @@
 	<ThresholdFilter level="ALL" onMatch="NEUTRAL" onMismatch="DENY" />
 
 	<Appenders>
-		<Appender name="Alarm" type="Snmp">
+		<Snmp name="Alarm" 
+		managementHost="10.245.0.42"
+		managementPort="162"
+		communityString="Ericsson/RASO/CAC"
+		timestampFormat="yyyy-MM-dd HH:mm:ss"
+		useClearanceFor="all"
+		nodeNameOid="1.3.6.1.2.1.1.5.0"
+		nodeName="localhost"
+		nodeLocationOid="1.3.6.1.2.1.1.6.0"
+		nodeLocation="IP/DNS_ADDRESS_OF_NODE/HOST/GUEST/ZONE/VM"
+		applicationTrapOid="1.3.6.1.4.1.193.255.2.1.0.1"
+		severityOid="1.3.6.1.4.1.193.255.2.1.1.1"
+		timestampOid="1.3.6.1.4.1.193.255.2.1.1.2"
+		errorCodeOid="1.3.6.1.4.1.193.255.2.1.1.3"
+		errorDescriptionOid="1.3.6.1.4.1.193.255.2.1.1.4"
+		additionalTextOid="1.3.6.1.4.1.193.255.2.1.1.5"
+		stackTraceOid="1.3.6.1.4.1.193.255.2.1.1.6">
 	
 
 	 <!--
@@ -48,40 +64,20 @@
            
 
     -->
-			<managementHost>NMS_SERVER_IP </managementHost>
-			<managementPort>NMS_SERVER_PORT</managementPort>
-			<communityString>Ericsson/RASO/CAC</communityString>
-			<timestampFormat>yyyy-MM-dd HH:mm:ss</timestampFormat>
-			<useClearanceFor>all</useClearanceFor>
 			
-			<nodeNameOid>1.3.6.1.2.1.1.5.0</nodeNameOid>
-			<nodeName>HOSTNAME_OF_HOST/GUEST/ZONE/VM</nodeName>
-			
-			<nodeLocationOid>1.3.6.1.2.1.1.6.0</nodeLocationOid>
-			<nodeLocation>IP/DNS_ADDRESS_OF_NODE/HOST/GUEST/ZONE/VM</nodeLocation>
-			
-			<applicationTrapOid>1.3.6.1.4.1.193.255.2.1.0.1</applicationTrapOid>
-			<severityOid>1.3.6.1.4.1.193.255.2.1.1.1</severityOid>
-			<timestampOid>1.3.6.1.4.1.193.255.2.1.1.2</timestampOid>
-			<errorCodeOid>1.3.6.1.4.1.193.255.2.1.1.3</errorCodeOid>
-			<errorDescriptionOid>1.3.6.1.4.1.193.255.2.1.1.4</errorDescriptionOid>
-			<additionalTextOid>1.3.6.1.4.1.193.255.2.1.1.5</additionalTextOid>
-			<stackTraceOid>1.3.6.1.4.1.193.255.2.1.1.6</stackTraceOid>
-			
-			
-			<Layout Pattern="(%F:%M:%L) - %m%n" Type="PatternLayout">
-				<Pattern>(%F:%M:%L) - %m%n</Pattern>
-			</Layout>
+			<PatternLayout Pattern="(%F:%M:%L) - %m%n" />
 
 			<Filters>
-				<Filter level="DEBUG" marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" type="MarkerFilter" />
+				<MarkerFilter marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" />
 			</Filters>
-		</Appender>
+		</Snmp>
 		
-		<Appender name="Application" type="RollingFile" fileName="C:\\Projects\\Smart\\app.log" filePattern="app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-			<Layout Pattern="%d %p %C{1.} [%t] %m%n" Type="PatternLayout">
-				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-			</Layout>
+		<Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+		
+		<RollingFile name="Application" fileName="C:\\Projects\\Smart\\app.log" filePattern="app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+			<PatternLayout Pattern="%d %p %C{1.} [%t] %m%n"/>
 
 			<Policies>
 				<TimeBasedTriggeringPolicy />
@@ -91,53 +87,54 @@
 			<DefaultRolloverStrategy max="20" />
 
 			<Filters>
-				<Filter minLevel="DEBUG" maxLevel="ERROR" marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" type="RangeFilter" />
+				<RangeFilter minLevel="DEBUG" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
 			</Filters>
-		</Appender>
+		</RollingFile>
 		
-		<Appender name="StackTrace" type="RollingFile" fileName="C:\\Projects\\Smart\\trace.log" filePattern="trace-%d{yyyy-MM-dd-HH}-%i.log.gz">
-			<Layout Pattern="%d %p %C{1.} [%t] %m%n" Type="PatternLayout">
-				<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-			</Layout>
+		<RollingFile name="StackTrace" fileName="C:\\Projects\\Smart\\trace.log" filePattern="trace-%d{yyyy-MM-dd-HH}-%i.log.gz">
+			<PatternLayout Pattern="%d %X{requestId} %p %C{1.} [%t] %m%n" />
 			<Policies>
 				<TimeBasedTriggeringPolicy />
 				<SizeBasedTriggeringPolicy size="50 MB" />
 			</Policies>
 			<DefaultRolloverStrategy max="20" />
 			<Filters>
-				<Filter level="TRACE" onMatch="ACCEPT" onMismatch="DENY" type="AtomicFilter" />
+				<AtomicFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY" />
 			</Filters>
-		</Appender>
+		</RollingFile>
 		
-		<Appender name="EDR" type="RollingFile" fileName="C:\\Projects\\Smart\\bes.edr" filePattern="edr-%d{yyyy-MM-dd-HH}.edr.gz">
-			<Layout Pattern="%d{yyyyMMddHHmmss.SSS},%m%n" Type="PatternLayout">
-				<Pattern>%d{yyyyMMddHHmmss.SSS},%m%n</Pattern>
-			</Layout>
+		<RollingFile name="EDR" fileName="C:\\Projects\\Smart\\bes.edr" filePattern="edr-%d{yyyy-MM-dd-HH}.edr.gz">
+			<PatternLayout Pattern="%d{yyyyMMddHHmmss.SSS},%X%m%n"/>
 			<Policies>
 				<TimeBasedTriggeringPolicy />
 			</Policies>
 			<DefaultRolloverStrategy max="20" />
 			<Filters>
-				<Filter level="TRACE" onMatch="ACCEPT" onMismatch="DENY" type="AtomicFilter" />
+				<AtomicFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY" />
 			</Filters>
-		</Appender>
+		</RollingFile>
 	</Appenders>
 
 	<Loggers>
-		<Logger additivity="false" level="FATAL" name="NMS">
+		<Logger additivity="false" level="ERROR" name="NMS">
 			<Filters>
-				<Filter level="FATAL" marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" type="MarkerFilter" />
+				<MarkerFilter marker="SNMP" onMatch="ACCEPT" onMismatch="DENY"  />
 			</Filters>
 			<AppenderRef ref="Alarm">Alarm</AppenderRef>
 		</Logger>
 		
 		<Logger additivity="false" level="ALL" name="File">
 			<Filters>
-				<Filter level="FATAL" marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" type="MarkerFilter" />
+				<MarkerFilter marker="SNMP" onMatch="ACCEPT" onMismatch="DENY" />
 			</Filters>
 			<AppenderRef ref="Application">Application</AppenderRef>
 			<AppenderRef ref="StackTrace">StackTrace</AppenderRef>
 			<AppenderRef ref="EDR">EDR</AppenderRef>
+			
+		</Logger>
+		
+		<Logger name="org.apache.logging.log4j" additivity="false" level="ALL">
+			<AppenderRef ref="Console">Console</AppenderRef>
 			
 		</Logger>
 		
@@ -146,6 +143,7 @@
 			<AppenderRef ref="Application">Application</AppenderRef>
 			<AppenderRef ref="StackTrace">StackTrace</AppenderRef>
 			<AppenderRef ref="EDR">EDR</AppenderRef>
+			<AppenderRef ref="Alarm">Alarm</AppenderRef>
 		</Root>
 	</Loggers>
 </Configuration>
