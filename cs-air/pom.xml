@@ -21,6 +21,20 @@
 	<xml.apis.version>1.0.b2</xml.apis.version>
 	<ws-commons-util.version>1.0.2</ws-commons-util.version>
 	<slf4j-version>1.7.1</slf4j-version>
+	
+	<osgi-import-package>
+		com.ericsson.raso.sef.core,
+		com.ericsson.raso.sef.core.camelprocessors,
+		com.ericsson.raso.sef.core.config,
+		com.ericsson.raso.sef.logging,
+		META-INF.sef-core
+	</osgi-import-package>
+	<osgi-export-package>
+			com.ericsson.raso.sef.client.air.command,
+			com.ericsson.raso.sef.client.air.request,
+			com.ericsson.raso.sef.client.air.response
+	</osgi-export-package>
+	
   </properties>
 
   <dependencies>
@@ -99,6 +113,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
+						<Import-Package>${osgi-import-package}</Import-Package>
 						<Export-Package>${osgi-export-package}</Export-Package>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 					</instructions>

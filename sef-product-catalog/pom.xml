@@ -19,7 +19,13 @@
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
+		META-INF.sef-core
 		</osgi-import-package>
+		<osgi-export-package>
+		com.ericsson.raso.sef.bes.prodcat.service,
+		com.ericsson.raso.sef.bes.prodcat.entities,
+		META-INF.product-catalog
+		</osgi-export-package>
   </properties>
 
   <dependencies>
@@ -65,6 +71,7 @@
 				<configuration>
 					<instructions>
 						<Import-Package>${osgi-import-package}</Import-Package>
+						<Export-Package>${osgi-export-package}</Export-Package>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
