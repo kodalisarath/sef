@@ -19,7 +19,7 @@ public class LicenseThrottleInterceptor extends AbstractPhaseInterceptor<Message
 	@Override
 	public void handleMessage(Message message) throws Fault {
 		
-		if(!SefCoreServiceResolver.getWatergateService().slaCheck("SYSTEM", "")) {
+		if(!SefCoreServiceResolver.getWatergateService().slaCheck("SYSTEM", "", "")) {
 			//TODO: Raise alarm about license throttling
 			throw new SecurityException("License capacity exceeded!!");
 		}
