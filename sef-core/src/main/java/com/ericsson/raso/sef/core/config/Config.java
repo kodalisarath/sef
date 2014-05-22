@@ -18,14 +18,11 @@ public class Config {
 	
 	
 	public ArrayList<Section> getSection() {
-		System.out.println("sdffsdf");
 	    return section;  
 	} 
 		
 	@XmlElement(name="section")
 	public void setSection(ArrayList<Section> section) {  
-	System.out.println("sdffsdf set");
-		
 	    this.section = section;  
 	}  
 	  
