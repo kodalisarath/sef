@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.raso.sef.core.config.IConfig;
 
 public class ServiceResolver implements ApplicationContextAware {
 
@@ -17,6 +18,10 @@ public class ServiceResolver implements ApplicationContextAware {
 	
 	public static IOfferCatalog getOfferCatalog() {
 		return context.getBean(IOfferCatalog.class);
+	}
+	
+	public static IConfig getConfig() {
+		return context.getBean(IConfig.class);
 	}
 
 }

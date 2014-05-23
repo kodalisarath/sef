@@ -15,7 +15,7 @@ import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
 public class OfferManager implements IOfferAdmin, IOfferCatalog {
 	
-	private static String offerStoreLocation = null;
+	private static String offerStoreLocation = null;;
 
 	private SecureSerializationHelper ssh = null;
 	
@@ -24,6 +24,11 @@ public class OfferManager implements IOfferAdmin, IOfferCatalog {
 	public OfferManager() {
 		// TODO: fetch the store location from config, once the config services is ready....
 
+		System.out.println("Offer Manager Start======>");
+		//System.out.println("Config access: " + ServiceResolver.getConfig());
+		//offerStoreLocation = ServiceResolver.getConfig().getValue("GLOBAL", "offerStoreLocation");
+		offerStoreLocation = getStoreLocation();
+		System.out.println("offerstore location: " + offerStoreLocation);
 		ssh = new SecureSerializationHelper();
 		if (ssh.fileExists(offerStoreLocation)) {
 			try {
@@ -32,6 +37,22 @@ public class OfferManager implements IOfferAdmin, IOfferCatalog {
 				// TODO: LOgger on this error...
 			}
 		}
+	}
+	
+	private String getStoreLocation() {
+		String offerStoreLocation = System.getenv("SEF_CATALOG_HOME");
+		String filename = "offerStore.ccm";
+		String finalfile = "";
+		String your_os = System.getProperty("os.name").toLowerCase();
+		if(your_os.indexOf("win") >= 0){
+			finalfile = offerStoreLocation + "\\" + filename;
+		}else if(your_os.indexOf( "nix") >=0 || your_os.indexOf( "nux") >=0){
+			finalfile = offerStoreLocation + "/" + filename;
+		}else{
+			finalfile = offerStoreLocation + "{others}" + filename;
+		}
+		
+		return finalfile;
 	}
 	
 	//-----------============ Admin Functions ========================================================================================================

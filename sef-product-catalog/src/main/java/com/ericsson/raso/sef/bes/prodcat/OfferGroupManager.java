@@ -31,6 +31,7 @@ public class OfferGroupManager implements  IOfferGroupManager {
 		ssh = new SecureSerializationHelper();
 
 		// TODO: fetch the store location from config, once the config services is ready....
+		offerGroupsStoreLocation = getStoreLocation();
 
 		if (ssh.fileExists(this.offerGroupsStoreLocation)) {
 			try {
@@ -43,6 +44,23 @@ public class OfferGroupManager implements  IOfferGroupManager {
 		}
 	}
 
+	
+	private String getStoreLocation() {
+		String offerStoreLocation = System.getenv("SEF_CATALOG_HOME");
+		String filename = "offerGroupStore.ccm";
+		String finalfile = "";
+		String your_os = System.getProperty("os.name").toLowerCase();
+		if(your_os.indexOf("win") >= 0){
+			finalfile = offerStoreLocation + "\\" + filename;
+		}else if(your_os.indexOf( "nix") >=0 || your_os.indexOf( "nux") >=0){
+			finalfile = offerStoreLocation + "/" + filename;
+		}else{
+			finalfile = offerStoreLocation + "{others}" + filename;
+		}
+		
+		return finalfile;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferGroupManager#getOfferGroup(java.lang.String)
 	 */

@@ -29,6 +29,7 @@ public class ResourceGroupManager implements IResourceGroupManager {
 		ssh = new SecureSerializationHelper();
 
 		// TODO: fetch the store location from, once the config services is ready....
+		resourceGroupsStoreLocation = getStoreLocation();
 
 		if (ssh.fileExists(this.resourceGroupsStoreLocation)) {
 			try {
@@ -39,6 +40,23 @@ public class ResourceGroupManager implements IResourceGroupManager {
 				this.resourceGroups = new TreeMap<String, Map<String,Byte>>();
 			}
 		}
+	}
+	
+	
+	private String getStoreLocation() {
+		String offerStoreLocation = System.getenv("SEF_CATALOG_HOME");
+		String filename = "resourceGroupStore.ccm";
+		String finalfile = "";
+		String your_os = System.getProperty("os.name").toLowerCase();
+		if(your_os.indexOf("win") >= 0){
+			finalfile = offerStoreLocation + "\\" + filename;
+		}else if(your_os.indexOf( "nix") >=0 || your_os.indexOf( "nux") >=0){
+			finalfile = offerStoreLocation + "/" + filename;
+		}else{
+			finalfile = offerStoreLocation + "{others}" + filename;
+		}
+		
+		return finalfile;
 	}
 
 	/* (non-Javadoc)

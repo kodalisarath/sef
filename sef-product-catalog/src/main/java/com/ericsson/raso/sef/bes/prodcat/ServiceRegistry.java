@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import com.ericsson.raso.sef.bes.prodcat.entities.Owner;
@@ -29,6 +30,8 @@ public final class ServiceRegistry implements IServiceRegistry {
 		// TODO: fetch the store location from config, once the config services
 		// is ready....
 
+		serviceRegistryLocation = getStoreLocation();
+		
 		ssh = new SecureSerializationHelper();
 
 		if (ssh.fileExists(this.serviceRegistryLocation)) {
@@ -38,6 +41,22 @@ public final class ServiceRegistry implements IServiceRegistry {
 				// TODO: LOgger on this error...
 			}
 		}
+	}
+	
+	private String getStoreLocation() {
+		String offerStoreLocation = System.getenv("SEF_CATALOG_HOME");
+		String filename = "serviceRegistry.ccm";
+		String finalfile = "";
+		String your_os = System.getProperty("os.name").toLowerCase();
+		if(your_os.indexOf("win") >= 0){
+			finalfile = offerStoreLocation + "\\" + filename;
+		}else if(your_os.indexOf( "nix") >=0 || your_os.indexOf( "nux") >=0){
+			finalfile = offerStoreLocation + "/" + filename;
+		}else{
+			finalfile = offerStoreLocation + "{others}" + filename;
+		}
+		
+		return finalfile;
 	}
 
 	/* (non-Javadoc)
@@ -107,7 +126,7 @@ public final class ServiceRegistry implements IServiceRegistry {
 				for (Resource other: resource.getDependantOnOthers()) 
 					other.removeDependantOnMe(resource);			
 			
-			this.resources.remove(resource.getName(), resource);
+			remove(resource.getName(), resource);
 		} else
 			return false;
 
@@ -120,6 +139,14 @@ public final class ServiceRegistry implements IServiceRegistry {
 
 	}
 
+	private boolean remove(String name, Resource resource) {
+		
+		if(this.resources.containsKey(name) && Objects.equals(this.resources.get(name), resource) ) {
+			this.resources.remove(name);
+		}
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.ericsson.raso.sef.bes.prodcat.IServiceRegistry#readResource(java.lang.String)
 	 */
