@@ -21,7 +21,7 @@
 		<mybatis-version>3.1.1</mybatis-version>
 		<mybatis-spring-version>1.2.2</mybatis-spring-version>
 		<joda-time-version>2.3</joda-time-version>
-		<spring-version>3.1.4.RELEASE</spring-version>
+		<spring-version>3.2.9.RELEASE</spring-version>
 		<osgi-dynamic-packages>
 		org.apache.tomcat.dbcp.*
 		</osgi-dynamic-packages>
@@ -29,7 +29,14 @@
 		oracle.jdbc.driver,
 		org.springframework.*,
 		org.apache.tomcat.dbcp.dbcp,
-		javax.sql
+		javax.sql,
+		org.xml.sax,
+		org.apache.cxf.binding.soap.interceptor,
+    	org.apache.camel,
+    	org.w3c.dom,
+    	org.apache.cxf.message,
+    	org.apache.cxf.interceptor,
+    	org.apache.cxf.binding.soap
 		</osgi-import-packages>
 		<osgi-export-package>
 		com.ericsson.raso.sef.core,
@@ -37,6 +44,7 @@
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
+		com.ericsson.raso.sef.core.lb,
 		META-INF.sef-core
 		</osgi-export-package>
 	</properties>
@@ -204,8 +212,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
