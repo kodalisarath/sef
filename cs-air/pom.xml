@@ -22,11 +22,30 @@
 	<ws-commons-util.version>1.0.2</ws-commons-util.version>
 	<slf4j-version>1.7.1</slf4j-version>
 	
+	<osgi-dynamicimport-package>
+	</osgi-dynamicimport-package>
 	<osgi-import-package>
+	org.springframework.*,
+		!org.apache.log,
+			javax.xml.bind,
+			javax.xml.bind.annotation,
+			javax.xml.datatype,
+			javax.xml.namespace,
+			javax.xml.parsers,
+			javax.xml.stream,
+			javax.xml.transform,
+			javax.xml.transform.dom,
+			javax.xml.transform.sax,
+			javax.xml.transform.stax,
+			javax.xml.transform.stream,
+			org.w3c.dom,
+			org.xml.sax,
+			org.xml.sax.helpers,
 		com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.core.camelprocessors,
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
+		com.ericsson.raso.sef.core.lb,
 		META-INF.sef-core
 	</osgi-import-package>
 	<osgi-export-package>
@@ -115,7 +134,18 @@
 					<instructions>
 						<Import-Package>${osgi-import-package}</Import-Package>
 						<Export-Package>${osgi-export-package}</Export-Package>
+						
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Embed-Dependency>
+							xmlrpc-client;
+							xmlrpc-common;
+							commons-httpclient;
+							commons-logging;
+							commons-codec;
+							ws-commons-util;
+							scope=compile|runtime
+						</Embed-Dependency>
+<!-- 						<DynamicImport-Package>${osgi-dynamicimport-package}</DynamicImport-Package> -->
 					</instructions>
 				</configuration>
 			</plugin>

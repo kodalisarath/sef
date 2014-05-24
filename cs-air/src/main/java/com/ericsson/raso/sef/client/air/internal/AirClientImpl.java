@@ -8,6 +8,7 @@ import java.util.Map;
 import com.ericsson.raso.sef.client.air.AirClient;
 import com.ericsson.raso.sef.client.air.request.AbstractAirRequest;
 import com.ericsson.raso.sef.client.air.response.AbstractAirResponse;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.config.Section;
@@ -15,6 +16,7 @@ import com.ericsson.raso.sef.plugin.xmlrpc.ConfigParams;
 import com.ericsson.raso.sef.plugin.xmlrpc.XmlRpcClient;
 import com.ericsson.raso.sef.plugin.xmlrpc.XmlRpcClientFactory;
 import com.ericsson.raso.sef.plugin.xmlrpc.XmlRpcException;
+import com.ericsson.raso.sef.plugin.xmlrpc.internal.DefaultXmlRpcClientFactory;
 
 public class AirClientImpl implements AirClient {
 	
@@ -30,23 +32,23 @@ public class AirClientImpl implements AirClient {
 
 	@SuppressWarnings("unused")
 	private void init() throws XmlRpcException {
-		XmlRpcClientFactory factory = CsAirContext.getXmlRpcClientFactory();
+		XmlRpcClientFactory factory = new DefaultXmlRpcClientFactory();
 		
 		//assuming max 10 end points can be configured 
 		for(int i=1; i<11; i++) {	
 			String sectionName = "cs-air"+i;
-			IConfig config = CsAirContext.getConfig();
+			IConfig config = SefCoreServiceResolver.getConfigService();
 			Section csAir = config.getSection(sectionName);
 			if(csAir == null)
 				continue;
 			
-			originHostName = CsAirContext.getConfig().getValue(sectionName, "originHostName");
-			originNodeType = CsAirContext.getConfig().getValue(sectionName, "originNodeType");
-			defaultSite = CsAirContext.getConfig().getValue("GLOBAL", "defaultSite");
+			originHostName = SefCoreServiceResolver.getConfigService().getValue(sectionName, "originHostName");
+			originNodeType = SefCoreServiceResolver.getConfigService().getValue(sectionName, "originNodeType");
+			defaultSite = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultSite");
 		
 			ConfigParams configParams = createXmlRpcConfig(config, sectionName);
 			XmlRpcClient client = factory.create(configParams);
-			String siteId = CsAirContext.getConfig().getValue(sectionName, "siteId");
+			String siteId = SefCoreServiceResolver.getConfigService().getValue(sectionName, "siteId");
 			clientMap.put(siteId, client);
 			
 		}
