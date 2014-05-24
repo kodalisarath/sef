@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:camel="http://camel.apache.org/schema/spring" 
 	xmlns:cxf="http://camel.apache.org/schema/cxf"
 	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd">
 
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
-	<import resource="classpath:META-INF/sef-product-catalog/beans.xml" />
-	<import resource="classpath:META-INF/sef-api/beans.xml" />
+	<import resource="classpath:META-INF/product-catalog/beans.xml" />
 
 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
 
 	<cxf:cxfEndpoint id="fulfillmentEngine"
-		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentManagement" bus="cxf">
+		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest" bus="cxf">
 
 		<cxf:properties>
 			<entry key="address" value="http://0.0.0.0:8080/services/ws/fulfillment" />
@@ -48,7 +45,6 @@
 		</httpj:engine>
 	</httpj:engine-factory>
 
-	<bean class="com.ericsson.sm.fulfillment.FulfillmentContext" />
 	<bean id="requestIdProcessor" class="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor"/>
 
 	<camelContext id="com.ericsson.raso.sef.fulfillmentEngine"
@@ -58,34 +54,12 @@
 			<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor" />
 			<!-- Add request context fetch & publish local -->
 			<wireTap uri="direct:usecase" />
-			<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.ActivationStatusProcessor" />
+			<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.ResponseProcessor" />
 		</route>
 		
 		<route>
 			<from uri="direct:usecase" />
-			<camel:doTry>
-				<camel:choice>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'create'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.CreateRequestProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'update'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.UpdateRequestProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'delete'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.DeleteRequestProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'get'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.GetRequestProcessor" />
-					</camel:when>
-				</camel:choice>
-				<camel:doFinally>
-				<!-- Add exception handler -->
-				</camel:doFinally>
-			</camel:doTry>
+			<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.UseCaseProcessor" />
 		</route>
 	</camelContext>
 </beans>

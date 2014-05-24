@@ -6,8 +6,34 @@
 	<artifactId>fulfillment-engine</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Service Fulfillment Engine</description>
+	<packaging>bundle</packaging>
 
 	<properties>
+	
+	<osgi-import-package>
+		org.springframework.*,
+		com.ericsson.raso.sef.core,
+		com.ericsson.raso.sef.core.camelprocessors,
+		com.ericsson.raso.sef.auth.*,
+		com.ericsson.raso.sef.core.config,
+		com.ericsson.raso.sef.logging,
+		META-INF.sef-core,
+		com.ericsson.raso.sef.bes.prodcat.service,
+		com.ericsson.raso.sef.bes.prodcat.entities,
+		META-INF.product-catalog,
+		com.ericsson.sef.bes.api.fulfillment,
+    	com.ericsson.sef.bes.api.entities,
+    	com.ericsson.raso.sef.client.air.command,
+		com.ericsson.raso.sef.client.air.request,
+		com.ericsson.raso.sef.client.air.response,
+    	com.ericsson.raso.sef.client.af.command,
+		com.ericsson.raso.sef.client.af.request,
+    	META-INF.cxf,
+    	org.apache.cxf.interceptor,
+    	org.apache.cxf.bus.spring,
+    	org.eclipse.jetty.server.nio,
+    	org.apache.camel
+	</osgi-import-package>
 	</properties>
 
 	<dependencies>
@@ -59,8 +85,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -69,7 +95,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>${osgi-export-package}</Export-Package>
+						<Import-Package>${osgi-import-package}</Import-Package>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
