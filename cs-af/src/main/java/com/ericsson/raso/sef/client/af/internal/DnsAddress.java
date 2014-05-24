@@ -1,4 +1,4 @@
-package com.ericsson.sm.client.af.internal;
+package com.ericsson.raso.sef.client.af.internal;
 
 public class DnsAddress {
 	

@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" 
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
-          http://www.springframework.org/schema/beans 
-          http://www.springframework.org/schema/beans/spring-beans.xsd
-          http://cxf.apache.org/jaxws 
-          http://cxf.apache.org/schemas/jaxws.xsd
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
           http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
+	<ctx:annotation-config/>
+	
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	
-	<bean id="dnsContext" class="com.ericsson.sm.client.af.DnsServiceResolver" />
+	<bean id="dnsContext" class="com.ericsson.raso.sef.client.af.DnsServiceResolver" />
 	
-	<bean id="afRoute" class="com.ericsson.sm.client.af.internal.AccountFinderRoute" init-method="init" />
+	<bean id="afRoute" class="com.ericsson.raso.sef.client.af.internal.AccountFinderRoute" init-method="init" />
 
 </beans>

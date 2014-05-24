@@ -1,4 +1,4 @@
-package com.ericsson.sm.client.af;
+package com.ericsson.raso.sef.client.af;
 
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;

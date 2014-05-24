@@ -1,4 +1,4 @@
-package com.ericsson.sm.client.af.internal;
+package com.ericsson.raso.sef.client.af.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.client.af.DnsServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.config.Section;
 import com.ericsson.raso.sef.core.lb.LoadBalancerPool;
 import com.ericsson.raso.sef.core.lb.Member;
-import com.ericsson.sm.client.af.DnsServiceResolver;
 
 public class AccountFinderRoute  {
 	

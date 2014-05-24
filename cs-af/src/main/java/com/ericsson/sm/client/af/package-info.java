@@ -1,1 +1,0 @@
-package com.ericsson.sm.client.af;

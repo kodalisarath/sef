@@ -13,11 +13,14 @@
 
 	<properties>
 		<osgi-import-package>
+		org.springframework.*,
 		com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.core.camelprocessors,
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
+		com.ericsson.raso.sef.core.lb,
+		org.slf4j,
 		META-INF.sef-core
 		</osgi-import-package>
 		<osgi-export-package>
@@ -42,8 +45,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>

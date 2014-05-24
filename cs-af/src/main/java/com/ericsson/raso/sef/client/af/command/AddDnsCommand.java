@@ -1,4 +1,4 @@
-package com.ericsson.sm.client.af.command;
+package com.ericsson.raso.sef.client.af.command;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,20 +7,19 @@ import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SimpleResolver;
 import org.xbill.DNS.Update;
 
+import com.ericsson.raso.sef.client.af.DnsServiceResolver;
+import com.ericsson.raso.sef.client.af.internal.DnsAddress;
+import com.ericsson.raso.sef.client.af.request.AddDnsRequest;
 import com.ericsson.raso.sef.core.Command;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.sm.client.af.DnsServiceResolver;
-import com.ericsson.sm.client.af.internal.DnsAddress;
-import com.ericsson.sm.client.af.request.DeleteDnsRequest;
 
-
-public class DeleteDnsCommand implements Command<Void> {
+public class AddDnsCommand implements Command<Void> {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private DeleteDnsRequest request;
+	private AddDnsRequest request;
 
-	public DeleteDnsCommand(DeleteDnsRequest request) {
+	public AddDnsCommand(AddDnsRequest request) {
 		this.request = request;
 	}
 
@@ -32,16 +31,18 @@ public class DeleteDnsCommand implements Command<Void> {
 			String lastDigit = msisdn.substring(msisdn.length() - 1);
 			String restMsisdn = msisdn.substring(0, msisdn.length() - 1);
 			String updateMsisdn = restMsisdn + '.' + lastDigit;
+			String rData = request.getSdpId() + request.getRdata();
 			
 			Name zone = Name.fromString(lastDigit + request.getZname());
 			Update update = new Update(zone);
-			update.delete(Name.fromString(updateMsisdn + request.getZname()), request.getDtype());
+			update.add(Name.fromString(updateMsisdn + request.getZname()), request.getDtype(),  request.getTtl(), rData);
+
 			Resolver res = new SimpleResolver(dns.getIp());
 			res.setTCP(dns.isUseTcp());
 			
-			log.info("DNS Delete entry: "  + update.toString());
+			log.info("DNS Add entry: "  + update.toString());
 			res.send(update);
-			log.info("dns update for msisdn: " + msisdn);
+			log.info("dns updated for msisdn: " + msisdn);
 		} catch (Exception e) {
 			log.error("Error while firing DNS command.", e);
 			throw new SmException("cs-af", e);

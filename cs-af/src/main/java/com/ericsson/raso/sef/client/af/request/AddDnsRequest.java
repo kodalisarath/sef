@@ -1,4 +1,4 @@
-package com.ericsson.sm.client.af.request;
+package com.ericsson.raso.sef.client.af.request;
 
 public class AddDnsRequest {
 

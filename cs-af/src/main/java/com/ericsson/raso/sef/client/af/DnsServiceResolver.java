@@ -1,11 +1,11 @@
-package com.ericsson.sm.client.af;
+package com.ericsson.raso.sef.client.af;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import com.ericsson.raso.sef.client.af.internal.AccountFinderRoute;
 import com.ericsson.raso.sef.core.config.IConfig;
-import com.ericsson.sm.client.af.internal.AccountFinderRoute;
 
 public class DnsServiceResolver implements ApplicationContextAware {
 
