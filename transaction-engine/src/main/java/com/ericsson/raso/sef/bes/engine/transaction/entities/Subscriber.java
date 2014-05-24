@@ -66,6 +66,11 @@ public class Subscriber {
 		
 	}
 	
+	//This is added as a parameterized constructor is already there
+	public Subscriber(){
+		
+	}
+	
 	
 	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriber = new com.ericsson.raso.sef.core.db.model.Subscriber();
