@@ -3,6 +3,7 @@ package com.ericsson.raso.sef.auth;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import com.ericsson.raso.sef.auth.permissions.Privilege;
@@ -230,11 +231,19 @@ public class Actor implements Serializable {
 		if (!this.memberships.containsKey(group.getName()))
 			return false;
 
-		this.memberships.remove(group.getName(), group);
+		remove(group.getName(), group);
 
 		group.removeMember(this);
 
 		return true;
+	}
+	
+	private boolean remove(String key, Group value) {
+		if (this.memberships.containsKey(key) && Objects.equals(this.memberships.get(key), value)) {
+		     this.memberships.remove(key);
+		     return true;
+		 } else
+		     return false;
 	}
 
 	public void removeMeta(String metaName) throws AuthAdminException {

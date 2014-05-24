@@ -2,7 +2,6 @@ package com.ericsson.raso.sef.auth.test;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 
 import com.ericsson.raso.sef.auth.Authorizations;
 import com.ericsson.raso.sef.auth.AuthorizeIfAllowedFor;
@@ -44,20 +43,20 @@ public class AuthorizeMethod implements InvocationHandler {
 				isAuthorized = true;
 		}
 
-		Parameter[] params = originalMethod.getParameters();
-		if (params != null) {
-			for (Parameter param : params) {
-				System.out.println("Parameter: " + param.getName());
-				Authorizations paramAuthorizations = param.getAnnotation(Authorizations.class);
-				if (paramAuthorizations != null) {
-					for (AuthorizeIfAllowedFor auth : paramAuthorizations.value()) {
-						System.out.println("Permission: " + auth.permission());
-						System.out.println("Reference Check: " + auth.referenceValueInIdentity());
-					}
-				} else
-					System.out.println("Parameter has no annotation");
-			}
-		}
+//		Parameter[] params = originalMethod.getParameters();
+//		if (params != null) {
+//			for (Parameter param : params) {
+//				System.out.println("Parameter: " + param.getName());
+//				Authorizations paramAuthorizations = param.getAnnotation(Authorizations.class);
+//				if (paramAuthorizations != null) {
+//					for (AuthorizeIfAllowedFor auth : paramAuthorizations.value()) {
+//						System.out.println("Permission: " + auth.permission());
+//						System.out.println("Reference Check: " + auth.referenceValueInIdentity());
+//					}
+//				} else
+//					System.out.println("Parameter has no annotation");
+//			}
+//		}
 
 		// if (originalMethod.isAnnotationPresent(AuthorizeIfAllowedFor.class))
 		// {

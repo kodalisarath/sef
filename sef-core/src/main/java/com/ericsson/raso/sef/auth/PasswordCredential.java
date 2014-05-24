@@ -2,7 +2,7 @@ package com.ericsson.raso.sef.auth;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import javax.xml.bind.DatatypeConverter;
 
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.SecureSerializationHelper;
@@ -81,7 +81,7 @@ public class PasswordCredential implements Credential {
 	}
 
 	private byte[] encodeBase64(String password) {
-		return Base64.getUrlEncoder().encode(password.getBytes());
+		return DatatypeConverter.printBase64Binary(password.getBytes()).getBytes();
 	}
 
 	private byte[] encryptDes(String password) throws FrameworkException {

@@ -10,16 +10,16 @@ import com.ericsson.raso.sef.auth.AuthorizeIfAllowedFor;
 
 public class AnnotatedPojo implements ServiceContext {
 
-	@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_MARKET_OWN, referenceValueInIdentity = "PLDT.SMART")
-	@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_META, referenceValueInIdentity = "name")
+	//@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_MARKET_OWN, referenceValueInIdentity = "PLDT.SMART")
+	//@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_META, referenceValueInIdentity = "name")
 	public String	name	= "Sathya";
 
-	@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_MARKET_OWN, referenceValueInIdentity = "PLDT.SMART")
-	@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_META, referenceValueInIdentity = "gender")
+	//@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_MARKET_OWN, referenceValueInIdentity = "PLDT.SMART")
+	//@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_META, referenceValueInIdentity = "gender")
 	public String	gender	= "male";
 
-	@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_MARKET_OWN, referenceValueInIdentity = "PLDT.SMART")
-	@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_META, referenceValueInIdentity = "age")
+	//@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_MARKET_OWN, referenceValueInIdentity = "PLDT.SMART")
+	//@AuthorizeIfAllowedFor(permission = DOMAIN_SUBSCRIBER_META, referenceValueInIdentity = "age")
 	public int		age		= 33;
 
 	public void testAnnotation(String name) {
