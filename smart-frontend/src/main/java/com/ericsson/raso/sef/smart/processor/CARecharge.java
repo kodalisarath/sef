@@ -2,16 +2,227 @@ package com.ericsson.raso.sef.smart.processor;
 
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+
+import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.SmartServiceResolver;
+import com.ericsson.raso.sef.smart.commons.SmartConstants;
+import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
+import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
+import com.ericsson.raso.sef.smart.usecase.RechargeRequest;
+import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ListParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 
 public class CARecharge implements Processor {
 
 	@Override
 	public void process(Exchange arg0) throws Exception {
-		// TODO Auto-generated method stub
 		
+		RechargeRequest rechargeRequest = (RechargeRequest) arg0.getIn().getBody();
+		
+		if (rechargeRequest.getEventClass() == null) {
+			throw new SmException(new ResponseCode(500, "Recharge Type is not defined"));
+		}
+		
+		// Prepare parameters for transaction engine purchase
+		String msisdn = rechargeRequest.getCustomerId();
+		String offerid= null;
+		String requestId = null;
+		Map<String, String> metas = null;
+		
+		if (msisdn == null) {
+			throw new SmException(new ResponseCode(8002, "CustomerId or AccesKey is not defined in input parameter"));
+		}
+		
+		
+		//TODO: Subscriber validation/caching goes here
+		
+		String eventClass = rechargeRequest.getEventClass();
+		if (eventClass.equals("predefined") || eventClass.equals("unli")) {
+			metas = prepareRecharge(rechargeRequest);
+			offerid = rechargeRequest.getEventName();
+		} else if (eventClass.equals("flexible")) {
+			metas = prepareFlexibleRecharge(rechargeRequest);
+			offerid = rechargeRequest.getRatingInput1();
+		} else if (eventClass.equals("pasaload")) {
+			rechargeRequest.setRatingInput0("pasaload");
+			metas = prepareRecharge(rechargeRequest);
+			offerid = rechargeRequest.getEventName();
+		} else if (eventClass.equals("reversal")) {
+			metas = prepareReversalRecharge(rechargeRequest);
+			offerid = rechargeRequest.getEventName();;
+		} else {
+			throw new SmException(new ResponseCode(500, "Recharge Type is not defined"));
+		}
+		
+		requestId = RequestContextLocalStore.get().getRequestId();
+		ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
+		PurchaseResponse response = new PurchaseResponse();
+		String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, metas);
+		
+		try {
+			synchronized (response) {
+				RequestCorrelationStore.put(correlationId, response);
+				response.wait(60000L);
+			}
+		} catch(InterruptedException e) {
+			
+		}
+		
+		PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+		
+		if((purchaseResponse == null) || (purchaseResponse.getSubscriptionId() == null)) {
+			//request timed out but no response. possible request missing from correlation store
+			// there is no response time out error code in smart interface and hence throw internal server error
+			throw new SmException(ErrorCode.internalServerError);
+		}
+		
+		CommandResponseData responseData = createResponse(rechargeRequest.isTransactional(),purchaseResponse);
+		arg0.getOut().setBody(responseData);
+		
+	}
+	
+	
+	private Map<String,String> prepareRecharge(RechargeRequest rechargeRequest) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
+
+		if (rechargeRequest.getRatingInput0() != null) {
+			map.put(Constants.CHANNEL_NAME, rechargeRequest.getRatingInput0());
+			map.put(Constants.EX_DATA3, rechargeRequest.getRatingInput0());
+		}
+
+		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
+		map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
+		map.put(SmartConstants.USECASE, "recharge");
+
+		return map;
+
+	}
+
+	private Map<String, String> prepareReversalRecharge(RechargeRequest rechargeRequest) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
+
+		if (rechargeRequest.getRatingInput0() != null) {
+			map.put(Constants.CHANNEL_NAME, rechargeRequest.getRatingInput0());
+			map.put(Constants.EX_DATA3, rechargeRequest.getRatingInput0());
+		}
+		
+		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
+		map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
+		map.put(SmartConstants.USECASE, "reversal");
+
+		return map;
+	}
+
+
+	private Map<String, String> prepareFlexibleRecharge(RechargeRequest rechargeRequest) {
+		Map<String, String> map = new HashMap<String, String>();
+		
+		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
+		map.put(Constants.CHANNEL_NAME, rechargeRequest.getRatingInput0());
+		map.put(Constants.EX_DATA3, rechargeRequest.getRatingInput0());
+		map.put(SmartConstants.EXPIRY_POLICY, rechargeRequest.getRatingInput2());
+
+		int expiryDatePolicy = Integer.valueOf(rechargeRequest.getRatingInput2());
+		switch (expiryDatePolicy) {
+		case 0://absolute
+			map.put(SmartConstants.EXPIRY_DATE, rechargeRequest.getRatingInput4());
+			break;
+		case 2://No change to expiry date. days of extension = 0
+			map.put(SmartConstants.EXPIRY_DAYS_OF_EXTENSION, String.valueOf(0));
+			break;
+		case 3://releative to current date (make it absolute) 
+		case 1://releative to expiry date
+		case 4:// 
+			map.put(SmartConstants.EXPIRY_DAYS_OF_EXTENSION, rechargeRequest.getRatingInput3());
+			break;
+		default:
+			break;
+		}
+
+		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
+		if(rechargeRequest.getEventInfo() != null) {
+			map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
+		}
+		map.put(SmartConstants.USECASE, "recharge");
+
+		return map;
+	}
+	
+	
+	private CommandResponseData createResponse(boolean isTransactional, PurchaseResponse response) throws SmException {
+		CommandResponseData responseData = new CommandResponseData();
+		CommandResult result = new CommandResult();
+		responseData.setCommandResult(result);
+		OperationResult operationResult = new OperationResult();
+		Operation operation = new Operation();
+		operation.setName("Recharge");
+		operationResult.getOperation().add(operation);
+		ParameterList parameterList = new ParameterList();
+		operation.setParameterList(parameterList);
+		ListParameter listParameter = new ListParameter();
+		listParameter.setName("RechargedBalances");
+		parameterList.getParameterOrBooleanParameterOrByteParameter().add(listParameter);
+
+		if(isTransactional) {
+			TransactionResult transactionResult = new TransactionResult();
+			result.setTransactionResult(transactionResult);
+			transactionResult.getOperationResult().add(operationResult);
+		} else {
+			result.setOperationResult(operationResult);
+		}
+		
+		
+		Map<String, String> billingMetas = response.getBillingMetas();
+		
+		//convert purchase billing meta's to SMART response
+		
+		
+		/*SmartModel model = new FetchRequestContextTask().execute().get(SmConstants.RESULT);
+		if(model != null) {
+			for (RechargeBalance balance : model.getRechargeBalances()) {
+				StringElement stringElement = new StringElement();
+				String name= balance.getName();
+				
+				long delta = balance.getDelta();
+				long curr = balance.getCurrentValue();
+				if(balance.getOfferId() != SmConstants.AIRTIME_OFFER_ID && balance.getOfferId() != SmConstants.ALKANSYA_OFFER_ID) {
+					name += ":s_PeriodicBonus";
+				}
+				
+				if(balance.getOfferId() >= SmConstants.UNLI_OFFER_START_ID) {
+					delta = 1;
+					curr = 1;
+				} else {
+					long confec= CommonUtil.getConversionFector(""+balance.getOfferId());
+					delta = delta/confec;
+					curr = curr/confec;
+				}
+				
+				String val = name + ";" + delta + ";" + curr + ";" + balance.getExpiryDate("yyyy-MM-dd HH:mm:ss");
+				
+				stringElement.setValue(val);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+			}
+		}*/
+		return responseData;
 	}
 	
 }
