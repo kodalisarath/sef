@@ -25,7 +25,7 @@
 	
 <!-- 	<bean id="licenseInterceptor" class="com.ericsson.raso.sef.auth.integration.LicenseThrottleInterceptor" /> -->
 <!-- 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" /> -->
-	
+
 	
 	
 	<bean id="subscriberRequestClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">

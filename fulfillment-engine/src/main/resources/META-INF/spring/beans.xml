@@ -37,7 +37,8 @@
 			<ref bean="loggingOutInterceptor" />
 		</cxf:outInterceptors>
 	</cxf:cxfEndpoint>
-
+	
+	
 	<httpj:engine-factory>
 		<httpj:engine port="8080">
 			<httpj:connector>
