@@ -267,4 +267,48 @@
 				<property key="5031" value="505" />
 	</section>
 	
+	<!-- Web service client end points -->
+	
+	<section description="Fulfilment engine request interface client" id="fulfillment-request-client">
+		<property key="address" value=""/>
+		<property key="connectionTimeout" value="60000"/>
+		<property key="receiveTimeout" value="120000"/>
+		<property key="connectionType" value="KEEP_ALIVE"/>
+	</section>
+	
+	<section description="Fulfilment engine response interface client" id="fulfillment-response-client">
+		<property key="address" value=""/>
+		<property key="connectionTimeout" value="60000"/>
+		<property key="receiveTimeout" value="120000"/>
+		<property key="connectionType" value="KEEP_ALIVE"/>
+	</section>
+	
+	<section description="Subscriber request interface client" id="subscriber-request-client">
+		<property key="address" value=""/>
+		<property key="connectionTimeout" value="60000"/>
+		<property key="receiveTimeout" value="120000"/>
+		<property key="connectionType" value="KEEP_ALIVE"/>
+	</section>
+	
+	<section description="Subscriber response interface client" id="subscriber-response-client">
+		<property key="address" value=""/>
+		<property key="connectionTimeout" value="60000"/>
+		<property key="receiveTimeout" value="120000"/>
+		<property key="connectionType" value="KEEP_ALIVE"/>
+	</section>
+	
+	<section description="Subscription request interface client" id="subscription-request-client">
+		<property key="address" value=""/>
+		<property key="connectionTimeout" value="60000"/>
+		<property key="receiveTimeout" value="120000"/>
+		<property key="connectionType" value="KEEP_ALIVE"/>
+	</section>
+	
+	<section description="Subscription response interface client" id="subscription-response-client">
+		<property key="address" value=""/>
+		<property key="connectionTimeout" value="60000"/>
+		<property key="receiveTimeout" value="120000"/>
+		<property key="connectionType" value="KEEP_ALIVE"/>
+	</section>
+	
 </config>
