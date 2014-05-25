@@ -23,7 +23,6 @@
 		<property name="serviceType" value="com.ericsson.sef.bes.api.subscriber.ISubscriberRequest"/>
 		<property name="endpointId" value="subscriber-request-client"/>
 	</bean>
-	
 	<bean id="subscriptionRequestClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
 		<property name="serviceType" value="com.ericsson.sef.bes.api.subscription.ISubscriptionRequest"/>
 		<property name="endpointId" value="subscription-request-client"/>
