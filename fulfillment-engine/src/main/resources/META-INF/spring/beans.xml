@@ -20,6 +20,7 @@
 		<property name="serviceType" value="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse"/>
 		<property name="endpointId" value="subscriber-request-client"/>
 	</bean>
+	
 	<cxf:cxfEndpoint id="fulfillmentEngine"
 		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest" bus="cxf">
 

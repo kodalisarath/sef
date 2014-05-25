@@ -20,7 +20,6 @@
 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
 
-
      <bean id="subscriberResponseClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
 		<property name="serviceType" value="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse"/>
 		<property name="endpointId" value="subscriber-request-client"/>
