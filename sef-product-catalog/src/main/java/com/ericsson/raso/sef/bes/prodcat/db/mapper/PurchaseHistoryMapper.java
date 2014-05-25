@@ -20,4 +20,5 @@ public interface PurchaseHistoryMapper {
 	
 	String findLastPurchaseState(String subscriptionId);
 	
+	
 }
