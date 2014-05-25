@@ -7,7 +7,7 @@ import javax.jws.WebService;
 
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionException;
-@SuppressWarnings("restriction")
+
 @WebService
 public interface ISubscriberResponse {
 	
