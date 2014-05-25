@@ -11,9 +11,9 @@ public final class Product {
 	
 	private String name = null;
 	private String resourceName = null;
-	private int quotaDefined = -1;
-	private int quotaConsumed = -1;
-	private String validity = null;
+	private long quotaDefined = -1;
+	private long quotaConsumed = -1;
+	private long validity = 0L;
 	
 	
 	public String getName() {
@@ -31,31 +31,29 @@ public final class Product {
 	public void setResourceName(String resourceName) {
 		this.resourceName = resourceName;
 	}
-	
-	public int getQuotaDefined() {
+
+	public long getQuotaDefined() {
 		return quotaDefined;
 	}
-	
-	public void setQuotaDefined(int quotaDefined) {
+
+	public void setQuotaDefined(long quotaDefined) {
 		this.quotaDefined = quotaDefined;
 	}
-	
-	public int getQuotaConsumed() {
+
+	public long getQuotaConsumed() {
 		return quotaConsumed;
 	}
-	
-	public void setQuotaConsumed(int quotaConsumed) {
+
+	public void setQuotaConsumed(long quotaConsumed) {
 		this.quotaConsumed = quotaConsumed;
 	}
-	
-	public String getValidity() {
+
+	public long getValidity() {
 		return validity;
 	}
-	
-	public void setValidity(String validity) {
+
+	public void setValidity(long validity) {
 		this.validity = validity;
 	}
 	
-	
-
 }
