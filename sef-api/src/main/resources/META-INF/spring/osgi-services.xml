@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:osgi="http://www.springframework.org/schema/osgi"
+
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+	<import resource="classpath:META-INF/spring/beans.xml" />
+	<osgi:service ref="subscriberRequestClient" interface="com.ericsson.sef.bes.api.subscriber.ISubscriberRequest" />
+   <osgi:service ref="subscriptionRequestClient" interface="com.ericsson.sef.bes.api.subscription.ISubscriptionRequest" />
+   <osgi:service ref="subscriberResponseClient" interface="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse" />
+    <osgi:service ref="subscriptionResponseClient" interface="com.ericsson.sef.bes.api.subsciption.ISubscriptionResponse" />
+    <osgi:service ref="fulfillmentResponseClient" interface="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse" />
+</beans>
+
