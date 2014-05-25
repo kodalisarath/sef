@@ -42,4 +42,5 @@
 		<property name="endpointId" value="subscription-request-client"/>
 	</bean>
 
+
 </beans>
