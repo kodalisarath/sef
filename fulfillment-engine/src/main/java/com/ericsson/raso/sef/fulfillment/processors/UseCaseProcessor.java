@@ -5,43 +5,45 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.ws.Holder;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
-import com.ericsson.sef.bes.api.entities.Meta;
-import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.raso.sef.bes.prodcat.entities.FulfillmentProfile;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentServiceResolver;
+import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Product;
 
 public class UseCaseProcessor implements Processor {
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void process(Exchange arg0) throws Exception {
 		IServiceRegistry serviceRegistry = FulfillmentServiceResolver.getServiceRegistry();
-		String operationName = (String) arg0.getIn().getHeader("operationName");
-		String msisdn = (String) arg0.getIn().getBody(String.class);
-		Product product = (Product) arg0.getIn().getBody(Product.class);
-		List<Meta> metas = (List<Meta>) arg0.getIn().getBody(List.class);
+		Object[] objectArray=(Object[]) arg0.getIn().getBody(Object.class);
+		String operationName = (String)objectArray[0];
+	 	Holder<String> msisdn =(Holder<String>)objectArray[1];
+	 	Holder<Product> product=(Holder<Product>) objectArray[2]; 
+	 	Holder<List> metas =(Holder<List>) objectArray[3];
+		Map<String, String> map = covertToMap(msisdn.value, metas.value);
 		
-		Map<String, String> map = covertToMap(msisdn, metas);
-		
-		Resource resource = serviceRegistry.readResource(product.getResourceName());
+		Resource resource = serviceRegistry.readResource(product.value.getResourceName());
 		List<FulfillmentProfile> fulfillmentProfiles = resource.getFulfillmentProfiles();
 		
 		
 		if(operationName.equalsIgnoreCase("fulfill")) {
-			fulfill(fulfillmentProfiles,product, map);
+			fulfill(fulfillmentProfiles,product.value, map);
 		} else if (operationName.equalsIgnoreCase("reverse")){
-			reverse(fulfillmentProfiles,product, map);
+			reverse(fulfillmentProfiles,product.value, map);
 		} else if(operationName.equalsIgnoreCase("query")) {
-			query(fulfillmentProfiles,product, map);
+			query(fulfillmentProfiles,product.value, map);
 		} else if(operationName.equalsIgnoreCase("prepare")) {
-			prepare(fulfillmentProfiles,product, map);
+			prepare(fulfillmentProfiles,product.value, map);
 		} else if(operationName.equalsIgnoreCase("cancel")) {
-			reverse(fulfillmentProfiles,product, map);
+			reverse(fulfillmentProfiles,product.value, map);
 		} else return;
 	}
 	
@@ -82,9 +84,10 @@ public class UseCaseProcessor implements Processor {
 		}
 	}
 	
-	private Map<String, String> covertToMap(String msisdn, List<Meta> metas) {
+	private Map<String, String> covertToMap(String msisdn, List metas) {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("msisdn", msisdn);
+		
+		map.put("msisdn", msisdn.toString());
 		Iterator<Meta> iterator = metas.iterator();
 		while(iterator.hasNext()) {
 			Meta meta = iterator.next();

@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.processor;
 
+import javax.xml.ws.Holder;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
@@ -11,13 +13,12 @@ public class CreateSubscriberProcessor implements Processor{
 
 	@Override
 	public void process(Exchange arg0) throws Exception {
-		
-		String requestId = arg0.getIn().getBody(String.class);
-		com.ericsson.sef.bes.api.entities.Subscriber subscriber = arg0.getIn().getBody(Subscriber.class);
-		com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber subscriberTransaction= ServiceResolver.parseToCoreSubscriber(subscriber);
+		Object[] objectArray = (Object[]) arg0.getIn().getBody(Object.class);
+		Holder<String> requestId = (Holder<String>)objectArray[0];
+		Holder<com.ericsson.sef.bes.api.entities.Subscriber> subscriber = (Holder<com.ericsson.sef.bes.api.entities.Subscriber>)objectArray[1];
+		com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber subscriberTransaction= ServiceResolver.parseToCoreSubscriber(subscriber.value);
 		TransactionManager transactionManager = ServiceResolver.getTransactionManager();
-		//TO:DO   to be implemented
-		transactionManager.createSubscriber(requestId, subscriberTransaction);
+		transactionManager.createSubscriber(requestId.value, subscriberTransaction);
 		
 	}
 
