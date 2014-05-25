@@ -10,6 +10,6 @@
     <osgi:reference id="subscriberResponseClient" interface="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse" />
     <osgi:reference id="subscriptionResponseClient" interface="com.ericsson.sef.bes.api.subsciption.ISubscriptionResponse" />
     <osgi:reference id="fulfillmentResponseClient" interface="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse" />
-  
+  	<osgi:reference id="fulfillmentRequestClient" interface="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest" />
     
 </beans>
