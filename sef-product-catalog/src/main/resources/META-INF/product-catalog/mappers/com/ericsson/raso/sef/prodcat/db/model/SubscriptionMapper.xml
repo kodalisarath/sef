@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ericsson.raso.sef.bes.prodcat.db.mapper.SubscriptionMapper">
+
+	<resultMap id="SubscriptionResult" type="Subscription">
+		<id property="subscriptionId" column="subscription_Id" />
+		<result property="subscriberId" column="subscriber_Id" />
+		<result property="offerId" column="offer_Id" />
+		<result property="version" column="version" />
+		<result property="recurrence" column="recurrence" />
+		<result property="purchaseType" column="purchase_Type" />
+		<result property="activationTime" column="activation_Time" />
+		<result property="validUntil" column="valid_Until" />
+		<result property="gift" column="gift" />
+		<result property="chargedUserId" column="charged_User_Id" />
+		<result property="state" column="state" />
+
+		<!-- To be verified -->
+		<result property="subscriptionHistory" column="subscription_History" />
+		<result property="purchaseHistory" column="purchase_History" />
+		<result property="provisionedProducts" column="provisioned_Products" />
+
+	</resultMap>
+
+	<resultMap id="OfferResult" type="Offer">
+		<id property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="externalHandles" column="external_Handles" />
+		<result property="version" column="version" />
+		<result property="offerState" column="offer_State" />
+		<result property="isRecurrent" column="is_Recurrent" />
+		<result property="renewalPeriod" column="renewal_Period" />
+		<result property="trialPeriod" column="trial_Period" />
+		<result property="immediateTermination" column="immediate_Termination" />
+		<result property="autoTermination" column="auto_Termination" />
+		<result property="minimumCommitment" column="minimum_Commitment" />
+		<result property="products" column="products" />
+		<result property="isCommercial" column="is_Commercial" />
+		<result property="owner" column="owner" />
+		<result property="offerGroup" column="offer_Group" />
+		<result property="price" column="price" />
+		<result property="eligibility" column="eligibility" />
+		<result property="accumulation" column="accumulation" />
+		<result property="switching" column="switching" />
+		<result property="whiteListedUsers" column="white_Listed_Users" />
+		<result property="exitOfferId" column="exit_Offer_Id" />
+		<result property="history" column="history" />
+		<result property="preExiry" column="pre_Exiry" />
+		<result property="preRenewal" column="pre_Renewal" />
+
+	</resultMap>
+
+	<resultMap id="AtomicProductResult" type="AtomicProduct">
+		<id property="name" column="name" />
+		<result property="subscriptionId" column="subscription_Id" />
+		<result property="resource" column="resource" />
+		<result property="state" column="state" />
+		<result property="definedQuota" column="defined_quota" />
+		<result property="consumedQuota" column="consumed_Quota" />
+		<result property="validity" column="validity" />
+
+	</resultMap>
+
+	<resultMap id="PurchaseHistoryResult" type="PurchaseHistory">
+		<id property="subscriptionId" column="subscription_Id" />
+		<result property="eventTimestamp" column="event_Timestamp" />
+		<result property="eventId" column="event_Id" />
+		<result property="chargedAmount" column="charged_Amount" />
+		<result property="currency" column="currency" />
+
+	</resultMap>
+
+	<resultMap id="SubscriptionHistoryResult" type="SubscriptionHistory">
+		<id property="subscriptionId" column="subscription_Id" />
+		<result property="eventTimestamp" column="event_Timestamp" />
+		<result property="state" column="state" />
+
+	</resultMap>
+
+	<select id="getUserSubscriptions" resultType="List"
+		parameterType="String">
+		select * from subscription
+		where subscriber_Id =
+		#{subscriberId}
+	</select>
+
+	<select id="getSubscription" resultType="Subscription">
+		select * from
+		subscription
+		where subscription_Id = #{subscriptionId} and offer_Id =
+		#{offerId}
+	</select>
+
+	<select id="getSubscriptionHistory" resultType="SubscriptionHistory"
+		parameterType="String">
+		select * from subscription_History
+		where subscription_Id
+		= #{subscriptionId}
+	</select>
+
+	<insert id="createSubscription" parameterType="Subscription">
+		insert into
+		subscription
+		(subscription_Id,subscriber_Id,offer_Id,version,recurrence,purchase_Type,activation_Time,valid_Until,gift,charged_User_Id,state)
+		values
+		(#{subscriptionId jdbcType=VARCHAR},
+		#{subscriberId
+		jdbcType=VARCHAR},
+		#{offerId jdbcType=VARCHAR},
+		#{version
+		jdbcType=NUMBER},
+		#{recurrence jdbcType=NUMBER},
+		#{purchaseType
+		jdbcType=VARCHAR},
+		#{activationTime jdbcType=TIMESTAMP},
+		#{validUntil
+		jdbcType=TIMESTAMP},
+		#{gift jdbcType=NUMBER},
+		#{chargedUserId
+		jdbcType=VARCHAR},
+		#{state jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateSubscription" parameterType="Subscription">
+		update
+		subscription set
+		subscription_Id=#{subscriptionId jdbcType=VARCHAR},
+		subscriber_Id=#{subscriberId jdbcType=VARCHAR},
+		offer_Id=#{offerId
+		jdbcType=VARCHAR},
+		version=#{version jdbcType=NUMBER},
+		recurrence=#{recurrence jdbcType=NUMBER},
+		purchase_Type=#{purchaseType
+		jdbcType=VARCHAR},
+		activationTime=#{activationTime jdbcType=TIMESTAMP},
+		validUntil=#{validUntil jdbcType=TIMESTAMP},
+		gift=#{gift
+		jdbcType=NUMBER},
+		charged_User_Id=#{chargedUserId jdbcType=VARCHAR},
+		state=#{state jdbcType=VARCHAR}
+
+		where subscription_Id =
+		#{subscriptionId}
+	</update>
+
+	<delete id="deleteSubscription" parameterType="String">
+		delete from
+		subscription
+		where subscription_Id = #{subscriptionId}
+	</delete>
+
+	<delete id="deleteSubscriptions">
+		delete from
+		subscription where
+		subscription_Id=#{subscriptionId} and offer_Id=#{offerId}
+	</delete>
+
+
+	<resultMap id="getAllActiveSubscriptions" type="Subscription">
+		<collection property="groups" javaType="ArrayList" ofType="Subscription" />
+	</resultMap>
+
+
+	<!-- Query Active Subscriptions to Resource -->
+
+	<select id="getAllActiveSubscriptions" resultType="List"
+		resultMap="SubscriptionResult" parameterType="String">
+		select * from
+		subscription where subscription_Id =#{select subscription_Id from
+		atomic_product where
+		resource = #{resource}} and state ='ACTIVE'
+
+	</select>
+
+	<!-- Query Count of Active Subscriptions to Resource -->
+
+	<select id="getActiveSubscriptionsCount" resultType="int"
+		parameterType="String">
+		select count(*) from subscription where subscription_Id
+		=#{select subscription_Id from
+		atomic_product where resource =
+		#{resource}} and state
+		='ACTIVE'
+
+	</select>
+
+	<!-- boolean isEverSubscribedToOffer(String OfferId); -->
+	<!-- If ever subscribed to an Offer irrespective if currently active or 
+		not -->
+
+	<select id="isEverSubscribedToOffer" resultType="boolean"
+		parameterType="String">
+		select case when count(*) > 0 then 1 else 0 end
+		from
+		subscription where Offer_Id=#{OfferId}
+
+	</select>
+
+	<!-- If ever subscribed to an Resource irrespective if currently active 
+		or not -->
+	<!-- boolean isEverSubscribedToResource(String resource); -->
+
+	<select id="isEverSubscribedToResource" resultType="boolean"
+		parameterType="String">
+		select case when count(*) > 0 then 1 else 0 end
+		from
+		subscription where subscription_Id=#{select subscription_Id from
+		atomic_product where resource=#{resource}}
+
+	</select>
+
+	<!-- int getRenewalsCountToActiveSubscription_ForGivenOffer(String subscriptionId, 
+		String offerId); -->
+
+	<select id="getRenewalsCountToActiveSubscription_ForGivenOffer"
+		resultType="int">
+		select count(*) from purchase_history where
+		event_Id=#{eventId} and subscription_Id=#{
+		select subscription_Id from
+		subscription where state='ACTIVE' and
+		offer_Id=#{offerId}}
+
+	</select>
+
+	<!-- int getRenewalsCountToActiveSubscription_ForGivenResource(String subscriptionId, 
+		String resource); -->
+
+	<select id="getRenewalsCountToActiveSubscription_ForGivenResource"
+		resultType="int">
+		select count(*) from purchase_history where
+		event_Id=#{eventId} and subscription_Id=#{
+		select subscription_Id from
+		subscription where state='ACTIVE' and
+		resource=#{resource}}
+
+	</select>
+
+	<!-- int getRenewalFailedCount_ForSubscriber(String subscriptionId); -->
+
+	<select id="getRenewalFailedCount_ForSubscriber" parameterType="String"
+		resultType="int">
+		select count(*) from purchase_history where
+		event_Id=#{eventId} and subscription_Id=#{subscription_Id}
+
+	</select>
+
+	<!-- int getRenewalSuspensionsCount_On_Subscriber_AcrossAll_Active_ClosedSubscrptions( 
+		String subscriberId); -->
+
+	<select
+		id="getRenewalSuspensionsCount_On_Subscriber_AcrossAll_Active_ClosedSubscrptions"
+		parameterType="String" resultType="int">
+		select count(*) from subscription
+		where
+		subscription_Id=#{subscription_Id} and state='ACTIVE' OR 'CLOSED'
+
+	</select>
+
+	<!-- int getRenewalSuspensionsCount_On_Subscriber_inGivenPeriod( String 
+		subscriberId); @TO - DO -->
+
+	<select id="getRenewalSuspensionsCount_On_Subscriber_inGivenPeriod"
+		parameterType="String" resultType="int">
+		select count(*) from subscription
+		where
+		subscription_Id=#{subscription_Id} and state=#{state}
+
+	</select>
+
+	<!-- int getBarringSuspensionsCount_On_Subscriber(String subscriberId); -->
+
+	<select id="getBarringSuspensionsCount_On_Subscriber"
+		parameterType="String" resultType="int">
+		select count(*) from subscription
+		where
+		subscription_Id=#{subscription_Id} and state='IN_TERMINATION'
+
+	</select>
+
+	<!-- int getBarringSuspensionsCount_On_Subscriber_inGivenPeriod( String 
+		subscriberId); @TO -DO -->
+
+	<select id="getBarringSuspensionsCount_On_Subscriber_inGivenPeriod"
+		parameterType="String" resultType="int">
+		select count(*) from subscription
+		where
+		subscription_Id=#{subscription_Id} and state='IN_TERMINATION'
+
+	</select>
+
+	<!-- int getBarredReactivatedCount_On_Subscriber(String subscriberId); -->
+
+	<select id="getBarredReactivatedCount_On_Subscriber"
+		parameterType="String" resultType="int">
+		select count(*) from subscription
+		where
+		subscription_Id=#{subscription_Id} and state='BARRING_SUSPENSION'
+		AND 'ACTIVE'
+
+	</select>
+
+	<!-- int getBarredReactivatedCount_On_Subscriber_inGivenPeriod( String subscriberId); 
+		@ TO -DO -->
+
+	<select id="getBarredReactivatedCount_On_Subscriber_inGivenPeriod"
+		parameterType="String" resultType="int">
+		select count(*) from subscription
+		where
+		subscription_Id=#{subscription_Id} and state='BARRING_SUSPENSION'
+		AND 'ACTIVE'
+
+	</select>
+
+	<!-- int getGraceActiveTransitionsCount_On_Subscriber(String subscriberId); -->
+	<select id="getGraceActiveTransitionsCount_On_Subscriber"
+		parameterType="String" resultType="int">
+		select count(*) from subscription
+		where
+		subscriber_Id=#{subscriberId} and state='GRACE' AND 'ACTIVE'
+
+	</select>
+
+	<!-- int getGraceActiveTransitionsCount_On_Subscriber_inGivenPeriod( String 
+		subscriberId); @TO-DO -->
+	<select id="getGraceActiveTransitionsCount_On_Subscriber_inGivenPeriod"
+		parameterType="String" resultType="int">
+		select count(*) from subscription
+		where
+		subscriber_Id=#{subscriberId} and state='GRACE' AND 'ACTIVE'
+
+	</select>
+
+	<!-- String findLastSubscriptionState(String subscriptionId); -->
+
+	<select id="findLastSubscriptionState" parameterType="String"
+		resultType="String">
+		select state from subscription_history
+		where
+		subscription_Id=#{subscriptionId} and
+		event_Timestamp=max(event_Timestamp)
+
+	</select>
+
+	<!-- String findLastSubscription_LifeCycleState(String subscriptionId); -->
+
+	<select id="findLastSubscription_LifeCycleState" parameterType="String"
+		resultType="String">
+		select state from subscription
+		where
+		subscription_Id=#{select subscription_Id from subscription_History
+		where event_Timestamp=max(event_Timestamp)}
+
+	</select>
+
+	<!-- String findFirstSubscriptionLifeCycleState(String subscriptionId); -->
+	<select id="findFirstSubscriptionLifeCycleState" parameterType="String"
+		resultType="String">
+		select state from subscription
+		where
+		subscription_Id=#{select subscription_Id from subscription_History
+		where event_Timestamp=min(event_Timestamp)}
+
+
+	</select>
+
+
+</mapper>

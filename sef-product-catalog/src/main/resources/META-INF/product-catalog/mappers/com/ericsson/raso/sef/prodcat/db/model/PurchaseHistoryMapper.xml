@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.ericsson.raso.sef.bes.prodcat.db.mapper.PurchaseHistoryMapper">
+
+	<resultMap id="purchaseHistoryResult" type="PurchaseHistory">
+		<id property="subscriptionId" column="subscription_id" />
+		<id property="eventTimeStamp" column="event_timestamp" />
+		<result property="eventId" column="event_id" />
+		<result property="chargedAmount" column="charged_amount" />
+		<result property="currency" column="currency" />
+	</resultMap>
+
+	<select id="createPurchaseHIstory" parameterType="PurchaseHistory">
+		insert into
+		purchase_history
+		(subscription_id,event_timestamp,event_id,charged_amount,currency)
+		values
+		(#{subscriptionId jdbcType=VARCHAR},
+		#{eventTimeStamp
+		jdbcType=TIMESTAMP},
+		#{eventId jdbcType=VARCHAR},
+		#{chargedAmount
+		jdbcType=NUMBER},
+		#{currency jdbcType=VARCHAR})
+
+	</select>
+	<select id="updatePurchaseHistory" parameterType="PurchaseHistory">
+
+		update
+		purchase_history set
+		subscription_id=#{subscriptionId
+		jdbcType=VARCHAR},
+		event_timestamp=#{eventTimeStamp
+		jdbcType=TIMESTAMP},
+		event_id=#{eventId jdbcType=VARCHAR},
+		charged_amount=#{chargedAmount jdbcType=NUMBER},
+		currency=#{currency
+		jdbcType=VARCHAR}
+
+		where subscription_id = #{subscriptionId}
+
+	</select>
+	<select id="deletePurchaseHistory" parameterType="String">
+		delete from
+		purchase_history where
+		subscription_id = #{subscriptionId}
+	</select>
+	<select id="getPurchaseHistory" parameterType="String"
+		resultMap="purchaseHistoryResult">
+		select * from purchase_history where
+		subscription_id =
+		#{subscriptionId}
+	</select>
+	
+	<!-- Last purchase state of a subscription
+	String findLastPurchaseState(String subscriptionId);
+	 -->
+	<select
+		id="findLastPurchaseState"
+		parameterType="String" resultType="String">
+		select event_Id from purchase_history
+		where
+		subscription_Id=#{subscriptionId} and event_Timestamp=max(event_Timestamp)
+
+	</select>		
+
+<!-- 	String findLastSubscriptionLifeCycleEvent_in_Subscription_Purchase_History(
+			String subscriptionId, String eventId);
+ -->
+	
+	<select
+		id="findLastSubscriptionLifeCycleEvent_in_Subscription_Purchase_History"
+		resultType="String">
+		select state from subscription 
+		where
+		subscription_Id={select subscriptionId}#{subscriptionId} and event_Timestamp=max(event_Timestamp)
+
+	</select>		
+		
+	
+	<!--  String findFirstSubscriptionLifeCycleEvent_in_Subscription_PurchaseHistory(
+			String subscriptionId, String eventId);-->
+	
+	<select
+		id="findFirstSubscriptionLifeCycleEvent_in_Subscription_PurchaseHistory"
+		resultType="String">
+		select event_Id from purchase_history
+		where
+		subscription_Id=#{subscriptionId} and event_Timestamp=max(event_Timestamp)
+
+	</select>		
+		
+</mapper>
