@@ -14,12 +14,23 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     	
     	<osgi-import-packages>
+    	org.springframework.*,
     	META-INF.sef-core,
+    	com.ericsson.raso.sef.smart.*,
     	com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.core.camelprocessors,
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
-		com.ericsson.raso.sef.logging
+		com.ericsson.raso.sef.logging,
+		com.ericsson.raso.sef.core.jaxws,
+		org.slf4j.*,
+    	META-INF.cxf,
+    	org.apache.cxf.interceptor,
+    	org.apache.cxf.bus.spring,
+    	org.eclipse.jetty.server.nio,
+    	com.ericsson.sef.bes.api.subscription,
+    	com.ericsson.sef.bes.api.subscriber,
+    	org.apache.camel		
 		</osgi-import-packages>
 		<osgi-export-package>
 		wsdl,

@@ -34,7 +34,8 @@
     	org.apache.cxf.interceptor,
     	org.apache.cxf.bus.spring,
     	org.eclipse.jetty.server.nio,
-    	org.apache.camel
+    	org.apache.camel,
+    	com.ericsson.sef.bes.api.subscription
 	</osgi-import-package>
 	</properties>
 

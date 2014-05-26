@@ -11,7 +11,7 @@
 	<osgi:service ref="subscriberRequestClient" interface="com.ericsson.sef.bes.api.subscriber.ISubscriberRequest" />
    <osgi:service ref="subscriptionRequestClient" interface="com.ericsson.sef.bes.api.subscription.ISubscriptionRequest" />
    <osgi:service ref="subscriberResponseClient" interface="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse" />
-    <osgi:service ref="subscriptionResponseClient" interface="com.ericsson.sef.bes.api.subsciption.ISubscriptionResponse" />
+    <osgi:service ref="subscriptionResponseClient" interface="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse" />
     <osgi:service ref="fulfillmentResponseClient" interface="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse" />
     <osgi:service ref="fulfillmentRequestClient" interface="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest" />
 </beans>

@@ -13,9 +13,15 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<osgi-import-packages>
+    	java.jaxws,
+		com.ericsson.raso.sef.core.jaxws
+		</osgi-import-packages>    
     <osgi-export-package>
     com.ericsson.sef.bes.api.fulfillment,
-    com.ericsson.sef.bes.api.entities
+    com.ericsson.sef.bes.api.entities,
+    com.ericsson.sef.bes.api.subscription,
+    com.ericsson.sef.bes.api.subscriber
     </osgi-export-package>
   </properties>
   

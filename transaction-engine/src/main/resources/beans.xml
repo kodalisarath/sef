@@ -38,7 +38,7 @@
 	</cxf:cxfEndpoint>
 	
 	<cxf:cxfEndpoint id="subscriptionInterface"
-		serviceClass="com.ericsson.sef.bes.api.subsciption.ISubscriptionRequest" bus="cxf">
+		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionRequest" bus="cxf">
 
 		<cxf:properties>
 			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscription" />
