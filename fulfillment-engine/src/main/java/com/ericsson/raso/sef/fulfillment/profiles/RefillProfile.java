@@ -84,7 +84,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		
 		String extData3 = map.get(Constants.TRANSPARENT_META3);
 		if(extData3 != null) {
-			refillRequest.setExternalData3(Constants.TRANSPARENT_META3);
+			refillRequest.setExternalData3(extData3);
 		}
 		
 		refillRequest.setRefAccBeforeFlag(true);

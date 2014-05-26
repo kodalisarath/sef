@@ -12,9 +12,6 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.sef.bes.api.entities.Meta;
-import com.ericsson.sef.bes.api.entities.Product;
-import com.ericsson.raso.sef.bes.prodcat.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.entities.FulfillmentProfile;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
@@ -41,17 +38,20 @@ public class UseCaseProcessor implements Processor {
 		List<FulfillmentProfile> fulfillmentProfiles = resource.getFulfillmentProfiles();
 		
 		
-		if(operationName.equalsIgnoreCase("fulfill")) {
-			fulfill(fulfillmentProfiles,product.value, map);
-		} else if (operationName.equalsIgnoreCase("reverse")){
-			reverse(fulfillmentProfiles,product.value, map);
-		} else if(operationName.equalsIgnoreCase("query")) {
-			query(fulfillmentProfiles,product.value, map);
-		} else if(operationName.equalsIgnoreCase("prepare")) {
-			prepare(fulfillmentProfiles,product.value, map);
-		} else if(operationName.equalsIgnoreCase("cancel")) {
-			reverse(fulfillmentProfiles,product.value, map);
-		} else return;
+		switch(operationName){
+		case "fulfill":fulfill(fulfillmentProfiles,product.value, map);
+		               break;
+		case "reverse":reverse(fulfillmentProfiles,product.value, map);
+		               break;
+		case "query":query(fulfillmentProfiles,product.value, map);
+		             break;
+		case "prepare":prepare(fulfillmentProfiles,product.value, map);
+		                break;
+		case "cancel":cancel(fulfillmentProfiles,product.value, map);
+		               break;
+		default:  break;
+		}
+		
 	}
 	
 	

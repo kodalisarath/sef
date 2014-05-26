@@ -12,5 +12,7 @@ public class Constants {
 	public static final String EX_DATA1 = "externalData1";
 	public static final String EX_DATA2 = "externalData2";
 	public static final String EX_DATA3 = "externalData3";
-	
+	public static final String TRANSPARENT_META1 = "transparentMeta1";
+	public static final String TRANSPARENT_META2 = "transparentMeta2";
+	public static final String TRANSPARENT_META3 = "transparentMeta3";
 }

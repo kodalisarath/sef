@@ -27,16 +27,6 @@
 <!-- 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" /> -->
 	
 	
-	<bean id="subscriberRequestClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
-		<property name="serviceType" value="com.ericsson.sef.bes.api.subscriber.ISubscriberRequest"/>
-		<property name="endpointId" value="subscriber-request-client"/>
-	</bean>
-	
-	<bean id="subscriptionRequestClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
-		<property name="serviceType" value="com.ericsson.sef.bes.api.subscription.ISubscriptionRequest"/>
-		<property name="endpointId" value="subscription-request-client"/>
-	</bean>
-	
 	<cxf:cxfEndpoint id="smartInterface"
 		serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface"
 		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"
