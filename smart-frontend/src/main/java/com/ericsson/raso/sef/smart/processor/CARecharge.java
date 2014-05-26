@@ -2,7 +2,9 @@ package com.ericsson.raso.sef.smart.processor;
 
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
@@ -18,6 +20,7 @@ import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.RechargeRequest;
+import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
@@ -73,7 +76,8 @@ public class CARecharge implements Processor {
 		requestId = RequestContextLocalStore.get().getRequestId();
 		ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		PurchaseResponse response = new PurchaseResponse();
-		String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, metas);
+		List<Meta> listMeta=convertToList(metas);
+		String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
 		
 		try {
 			synchronized (response) {
@@ -225,4 +229,16 @@ public class CARecharge implements Processor {
 		return responseData;
 	}
 	
+	/*Method to convert a map to a list*/
+	private List<Meta> convertToList(Map<String,String> metas){
+		List<Meta> metaList = new ArrayList<Meta>();
+		for(String metaKey:metas.keySet()){
+			Meta meta=new Meta();
+			meta.setKey(metaKey);
+			meta.setValue(metas.get(metaKey));
+			metaList.add(meta);
+		}
+		return metaList;
+		
+	}
 }
