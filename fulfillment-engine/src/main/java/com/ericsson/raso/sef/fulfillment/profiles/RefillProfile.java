@@ -1,19 +1,26 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.ericsson.raso.sef.bes.prodcat.entities.BlockingFulfillment;
 import com.ericsson.raso.sef.client.air.command.RefillCommand;
 import com.ericsson.raso.sef.client.air.request.RefillRequest;
+import com.ericsson.raso.sef.client.air.response.AccBefAndAfterRef;
+import com.ericsson.raso.sef.client.air.response.DedicatedAccountInformation;
+import com.ericsson.raso.sef.client.air.response.OfferInformation;
 import com.ericsson.raso.sef.client.air.response.RefillResponse;
 import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
 import com.ericsson.sef.bes.api.entities.Product;
+import com.ericsson.sef.bes.api.entities.TransactionException;
 
 public class RefillProfile extends BlockingFulfillment<Product> {
-
 
 	/**
 	 * 
@@ -99,9 +106,9 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			response = command.execute();
 		} catch (SmException e1) {
 			e1.printStackTrace();
-			//TODO: handle 114 response with different error code for alkansya 
+			//TODO: handle 114 response with different error code for alkansya
 		}
-		return null;
+		return createResponse(e, response);
 	}
 
 
@@ -123,6 +130,91 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	public List<Product> revert(Product e, Map<String, String> map) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	//TODO: Move to smart-commons
+	private List<Product> createResponse(Product p, RefillResponse response) {
+		
+		List<Product> products = new ArrayList<Product>();
+		
+		//Fetch accounts before and after refill 
+		AccBefAndAfterRef accBefore = response.getAccountBeforeRefill();
+		AccBefAndAfterRef accAfter = response.getAccountAfterRefill();
+
+		List<DedicatedAccountInformation> beforeDas = accBefore.getDedicatedAccInfo();
+		List<DedicatedAccountInformation> afterDas = accAfter.getDedicatedAccInfo();
+
+		Map<Integer, DedicatedAccountInformation> beforeDaMap = toDaMap(beforeDas);
+		Map<Integer, DedicatedAccountInformation> afterDaMap = toDaMap(afterDas);
+
+		// Fetch all accounts after refill
+		List<OfferInformation> offerInformationList = accAfter.getOfferInformationList();
+
+		Map<Integer, OfferInformation> offerMap = toOfferMap(offerInformationList);
+
+		// For each CS offer Id associated to the refill prepare balance statement.. Product represent the recharged balance & validity
+		for(String resource: this.getAbstractResources()) {
+			
+			Product product = new Product();
+			product.setResourceName(resource);
+			OfferInformation offerInformation = offerMap.get(resource);
+			
+			//prepare validity
+			if (offerInformation != null && offerInformation.getExpiryDateTime() != null) {
+				product.setValidity(offerInformation.getExpiryDateTime().getTime());
+			} else {
+				product.setValidity(new Date(Long.MAX_VALUE).getTime());
+			}
+			
+			// Fetch DA and prepare balances
+			String daID = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_offerMapping", resource);
+			if (daID == null) {
+				continue;
+			}
+			
+			DedicatedAccountInformation beforeDa = beforeDaMap.get(Integer.valueOf(daID));
+			DedicatedAccountInformation afterDa = afterDaMap.get(Integer.valueOf(daID));
+
+			if (beforeDa != null) {
+				if (beforeDa.getDedicatedAccountValue1() != null) {
+					Long prevBalance = Long.valueOf(beforeDa.getDedicatedAccountValue1());
+					if (beforeDa.getDedicatedAccountValue2() != null) {
+						prevBalance += Long.valueOf(beforeDa.getDedicatedAccountValue2());
+					}
+					product.setQuotaDefined(prevBalance);
+				}
+			}
+			if (afterDa != null) {
+				if (afterDa.getDedicatedAccountValue1() != null) {
+					Long currentBalance = Long.valueOf(afterDa.getDedicatedAccountValue1());
+					if (afterDa.getDedicatedAccountValue2() != null) {
+						currentBalance += Long.valueOf(afterDa.getDedicatedAccountValue2());
+					}
+					product.setQuotaConsumed(currentBalance);
+				}
+			}
+			product.setName(p.getName());
+			products.add(product);
+		}
+		
+		return products;
+	}
+	
+	
+	private Map<Integer, OfferInformation> toOfferMap(List<OfferInformation> list) {
+		Map<Integer, OfferInformation> map = new LinkedHashMap<Integer, OfferInformation>();
+		for (OfferInformation offer : list) {
+			map.put(offer.getOfferID(), offer);
+		}
+		return map;
+	}
+	
+	private Map<Integer, DedicatedAccountInformation> toDaMap(List<DedicatedAccountInformation> list) {
+		Map<Integer, DedicatedAccountInformation> map = new LinkedHashMap<Integer, DedicatedAccountInformation>();
+		for (DedicatedAccountInformation da : list) {
+			map.put(da.getDedicatedAccountID(), da);
+		}
+		return map;
 	}
 
 }
