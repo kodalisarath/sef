@@ -13,6 +13,7 @@
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	<import resource="classpath:META-INF/product-catalog/beans.xml" />
 
+	<bean id="fulfillmentContext" class="com.ericsson.raso.sef.fulfillment.commons.FulfillmentServiceResolver" />
 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />

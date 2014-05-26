@@ -15,8 +15,7 @@
 
 
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
-
-<!-- 	<import resource="classpath:META-INF/sef-api/beans.xml" /> -->
+	<import resource="classpath:META-INF/sef-api/beans.xml" />
 	
 <!-- 	<bean id="smartContext" class="com.ericsson.raso.sef.smart.SmartServiceResolver"/> -->
 
@@ -47,24 +46,19 @@
 <!-- 			<ref bean="loggingOutInterceptor" /> -->
 		</cxf:outInterceptors>
 	</cxf:cxfEndpoint>
+	
 	<cxf:cxfEndpoint id="subscriptionResponse"
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriptionResponse"
 		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"
 		wsdlURL="classpath:wsdl/TisService.xml">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscription" />
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" />
 		</cxf:properties>
-		<cxf:inInterceptors>
-<!-- 			<ref bean="loggingInInterceptor" /> -->
-<!-- 			<ref bean="licenseInterceptor" /> -->
-<!-- 			<ref bean="authenticationInterceptor" /> -->
-		</cxf:inInterceptors>
-
-		<cxf:outInterceptors>
-<!-- 			<ref bean="loggingOutInterceptor" /> -->
-		</cxf:outInterceptors>
+		
 	</cxf:cxfEndpoint>
+	
+	
 	<cxf:cxfEndpoint id="subscriberResponse"
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse"
 		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -73,15 +67,7 @@
 		<cxf:properties>
 			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriber" />
 		</cxf:properties>
-		<cxf:inInterceptors>
-<!-- 			<ref bean="loggingInInterceptor" /> -->
-<!-- 			<ref bean="licenseInterceptor" /> -->
-<!-- 			<ref bean="authenticationInterceptor" /> -->
-		</cxf:inInterceptors>
-
-		<cxf:outInterceptors>
-<!-- 			<ref bean="loggingOutInterceptor" /> -->
-		</cxf:outInterceptors>
+		
 	</cxf:cxfEndpoint>
 
 <!-- 	<httpj:engine-factory> -->
@@ -110,7 +96,7 @@
 			<camel:doTry>
 <!-- 				<camel:bean ref="gatekeeperProcessor" method="process"/> -->
 <!-- 				<camel:bean ref="smartInEdr"/> -->
-				<camel:bean ref="dummyProcessor"/>
+				<camel:bean ref="usecaseProcessor"/>
 <!-- 				<camel:bean ref="smartOutEdr"/> -->
 				<camel:doCatch>
 					<camel:exception>java.lang.Exception</camel:exception>

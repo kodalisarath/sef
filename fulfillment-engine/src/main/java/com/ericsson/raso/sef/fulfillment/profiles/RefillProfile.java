@@ -1,10 +1,12 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
+import java.util.List;
 import java.util.Map;
 
 import com.ericsson.raso.sef.bes.prodcat.entities.BlockingFulfillment;
 import com.ericsson.raso.sef.client.air.command.RefillCommand;
 import com.ericsson.raso.sef.client.air.request.RefillRequest;
+import com.ericsson.raso.sef.client.air.response.RefillResponse;
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
@@ -63,7 +65,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 
 
 	@Override
-	public void fulfill(Product e, Map<String, String> map) {
+	public List<Product> fulfill(Product e, Map<String, String> map) {
 		
 		RefillRequest refillRequest = new RefillRequest();
 		refillRequest.setSubscriberNumber(map.get("msisdn"));
@@ -72,17 +74,17 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		refillRequest.setTransacAmount(this.transactionAmount);
 		refillRequest.setTransacCurrency(this.transactionCurrency.name());
 		
-		String extData1 = map.get(Constants.TRANSPARENT_META1);
+		String extData1 = map.get(Constants.EX_DATA1);
 		if(extData1 != null) {
 			refillRequest.setExternalData1(extData1);
 		}
 		
-		String extData2 = map.get(Constants.TRANSPARENT_META2);
+		String extData2 = map.get(Constants.EX_DATA2);
 		if(extData2 != null) {
 			refillRequest.setExternalData2(extData2);
 		}
 		
-		String extData3 = map.get(Constants.TRANSPARENT_META3);
+		String extData3 = map.get(Constants.EX_DATA3);
 		if(extData3 != null) {
 			refillRequest.setExternalData3(extData3);
 		}
@@ -90,31 +92,37 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		refillRequest.setRefAccBeforeFlag(true);
 		refillRequest.setRefAccAfterFlag(true);
 		
+		RefillResponse response = null;
 		RefillCommand command = new RefillCommand(refillRequest);
+		
 		try {
-			command.execute();
+			response = command.execute();
 		} catch (SmException e1) {
 			e1.printStackTrace();
 			//TODO: handle 114 response with different error code for alkansya 
 		}
+		return null;
 	}
 
 
 	@Override
-	public void prepare(Product e, Map<String, String> map) {
-		
+	public List<Product> prepare(Product e, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
 	@Override
-	public void query(Product e, Map<String, String> map) {
-		
+	public List<Product> query(Product e, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
 	@Override
-	public void revert(Product e, Map<String, String> map) {
-		
+	public List<Product> revert(Product e, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

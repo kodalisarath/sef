@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
+import java.util.List;
 import java.util.Map;
 
 import com.ericsson.raso.sef.bes.prodcat.entities.BlockingFulfillment;
@@ -26,30 +27,28 @@ public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
 		this.serviceClassAction = serviceClassAction;
 	}
 
-
 	@Override
-	public void fulfill(Product e, Map<String, String> map) {
+	public List<Product> fulfill(Product e, Map<String, String> map) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void prepare(Product e, Map<String, String> map) {
+	public List<Product> prepare(Product e, Map<String, String> map) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void query(Product e, Map<String, String> map) {
+	public List<Product> query(Product e, Map<String, String> map) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void revert(Product e, Map<String, String> map) {
+	public List<Product> revert(Product e, Map<String, String> map) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
-	
 	
 }
