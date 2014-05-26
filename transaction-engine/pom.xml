@@ -13,7 +13,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <osgi-import-package>
-    	org.springframework,
+    	org.springframework.*,
     	com.ericsson.sef.bes.api.subscription,
 		com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.auth.*,

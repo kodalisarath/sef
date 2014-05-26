@@ -1,9 +1,11 @@
 package com.ericsson.raso.sef.smart.subscription.response;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
+import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Offer;
+import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionException;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
@@ -31,13 +33,6 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 	}
 
 	@Override
-	public void discoverOfferById(String requestCorrelator,
-			TransactionException fault, String subscriber, Offer offer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void discoverOfferByFederatedId(String requestCorrelator,
 			TransactionException fault, Offer offer) {
 		// TODO Auto-generated method stub
@@ -53,10 +48,17 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 
 	@Override
 	public void purchase(String requestCorrelator, TransactionException fault,
-			String subscriptionId, Map<String, String> billingMetas) {
+			String subscriptionId, List<Product> products,
+			List<Meta> billingMetas) {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/*@Override
+	public void purchase(String requestCorrelator, TransactionException fault,String subscriptionId,List<Meta> billingMetas) {
+		// TODO Auto-generated method stub
+		
+	}*/
 
 	@Override
 	public void terminate(String requestCorrelator, TransactionException fault,
@@ -99,5 +101,15 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void discoverOfferForUserById(String requestCorrelator,
+			TransactionException fault, String subscriber, Offer offer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
 
 }

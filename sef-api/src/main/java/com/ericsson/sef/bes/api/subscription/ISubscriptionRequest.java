@@ -16,7 +16,7 @@ public interface ISubscriptionRequest {
 	
 	public @WebMethod abstract String discoverOfferById(String requestId, String offerId);
 	
-	public @WebMethod abstract String discoverOfferById(String requestId, String offerId, String subscriberId);
+	public @WebMethod abstract String discoverOfferForUserById(String requestId, String offerId, String subscriberId);
 	
 	public @WebMethod abstract String discoverOfferByFederatedId(String requestId, String handle, String subscriberId);
 	
