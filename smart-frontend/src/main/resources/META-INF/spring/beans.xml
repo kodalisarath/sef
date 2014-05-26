@@ -90,7 +90,7 @@
 <!-- 	<bean id="smartOutEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdrOutProcessor" />	 -->
 	<bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
 	
-	<camelContext id="com.ericsson.sm.smart.smartInterface" xmlns="http://camel.apache.org/schema/spring">
+	<camelContext id="com.ericsson.raso.sef.smart.smartInterface" xmlns="http://camel.apache.org/schema/spring">
 		<route>
 			<from uri="cxf:bean:smartInterface" />
 			<camel:doTry>
