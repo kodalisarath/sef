@@ -11,6 +11,7 @@
 		<property key="InGTAddress" value="639180001285"/>
 		<property key="minDateTimeExtension" value="1" />
 		<property key="defaultServiceClass" value="200" />
+		<property key="defaultSite" value="MANILA" />
 	</section>
 	
 	<section id="GLOBAL_walletMapping" description="smart wallet mapping">
@@ -164,6 +165,54 @@
 		<property key="address" value="10.245.139.133" />
 		<property key="hostId" value="af02.smart.com.ph" />
 		<property key="site" value="CEBU" />
+	</section>
+	
+	<section id="cs-air1">
+		    <property key="originNodeType" value="ADM"/>
+            <property key="originHostName" value="IL"/>   
+			<property key="csair protocol" value="air" />
+			<property key="type" value="client" />
+			<property key="username" value="fdsuser" />
+			<property key="password" value="fdsuser"/>
+			<property key="userAgent" value="UGw Server/5.0/1.0" />
+			<property key="connectionTimeout" value="30000" />
+			<property key="idleConnctionTimeout" value="360000" />
+			<property key="idleConnectionTimeoutInterval" value="60000" />
+			<property key="maxConnections" value="32" />
+			<property key="maxConnectionsPerHost" value="32" />
+			<property key="staleCheckingEnabled" value="true"/>
+			<property key="retryCount" value="3" />
+			<property key="useApacheHttpClient" value="true" />
+			<property key="soTimeout" value="120000" />
+			<property key="endpointId" value="air" />
+	        <property key="staticRoute realm" value="smart.com.ph"/>
+            <property key="address" value="http://10.245.144.65:10010/Air"/>
+			<property key="hostId" value="air-lb1.smart.com.ph"/>
+            <property key="site" value="MANILA"/>         		
+	</section>
+
+	<section id="cs-air2">
+	        <property key="originNodeType" value="ADM"/>
+            <property key="originHostName" value="IL"/>   	
+			<property key="csair protocol" value="air" />
+			<property key="type" value="client" />
+			<property key="username" value="fdsuser" />
+			<property key="password" value="fdsuser"/>
+			<property key="userAgent" value="UGw Server/5.0/1.0" />
+			<property key="connectionTimeout" value="30000" />
+			<property key="idleConnctionTimeout" value="360000" />
+			<property key="idleConnectionTimeoutInterval" value="60000" />
+			<property key="maxConnections" value="32" />
+			<property key="maxConnectionsPerHost" value="32" />
+			<property key="staleCheckingEnabled" value="true"/>
+			<property key="retryCount" value="3" />
+			<property key="useApacheHttpClient" value="true" />
+			<property key="soTimeout" value="120000" />
+			<property key="endpointId" value="air" />	
+	        <property key="staticRoute realm" value="smart.com.ph"/>
+            <property key="address" value="http://10.245.144.20:10010/Air"/>
+			<property key="hostId" value="air-lb2.smart.com.ph"/>
+            <property key="site" value="CEBU"/>
 	</section>
 	
 	<section id="smart-frontend-responsemap" description="SMART Front Response mapping of backend error/status codes. 

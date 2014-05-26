@@ -9,7 +9,12 @@ import javax.xml.ws.Holder;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Product;
+import com.ericsson.raso.sef.bes.prodcat.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.entities.FulfillmentProfile;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
@@ -18,6 +23,8 @@ import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class UseCaseProcessor implements Processor {
+	
+	Logger logger = LoggerFactory.getLogger(UseCaseProcessor.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override

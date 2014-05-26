@@ -45,11 +45,20 @@
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
 		com.ericsson.raso.sef.core.lb,
-		META-INF.sef-core
+		META-INF.sef-core,
+		wsdl,
+		com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1,
+		com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1,
 		</osgi-export-package>
 	</properties>
 
 	<dependencies>
+		<dependency>
+		<groupId>com.ericsson.sef</groupId>
+		<artifactId>sef-core</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
