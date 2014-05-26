@@ -14,14 +14,15 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     	<osgi-import-packages>
+    	org.springframework.*,
     	java.jaxws,
-		com.ericsson.raso.sef.core.jaxws
+		com.ericsson.raso.sef.core.jaxws.*
 		</osgi-import-packages>    
     <osgi-export-package>
     com.ericsson.sef.bes.api.fulfillment,
     com.ericsson.sef.bes.api.entities,
     com.ericsson.sef.bes.api.subscription,
-    com.ericsson.sef.bes.api.subscriber
+    com.ericsson.sef.bes.api.subscriber,
     </osgi-export-package>
   </properties>
   
@@ -54,6 +55,7 @@
 				<version>2.4.0</version>
 				<configuration>
 					<instructions>
+						<Import-Package>${osgi-import-packages}</Import-Package>
 						<Export-Package>${osgi-export-package}</Export-Package>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 					</instructions>

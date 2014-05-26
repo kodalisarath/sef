@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	
 	<groupId>com.ericsson.sef</groupId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -34,9 +33,13 @@
 		org.apache.cxf.binding.soap.interceptor,
     	org.apache.camel,
     	org.w3c.dom,
+    	org.apache.cxf.*
+    	<!-- 
     	org.apache.cxf.message,
     	org.apache.cxf.interceptor,
-    	org.apache.cxf.binding.soap
+    	org.apache.cxf.binding.soap,
+    	org.apache.cxf.jaxws
+    	 -->
 		</osgi-import-packages>
 		<osgi-export-package>
 		com.ericsson.raso.sef.core,
@@ -104,6 +107,7 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 			<version>${cxf-version}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
