@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.ericsson.raso.sef.ruleengine.Rule;
 
@@ -9,6 +10,7 @@ public abstract class FulfillmentProfile<E, Map> implements Serializable {
 
 	private String name = null;
 	private Rule criteria = null;
+	private List<String> abstractResources = null;
 
 	protected FulfillmentProfile(String name) {
 		this.name = name;
@@ -38,9 +40,9 @@ public abstract class FulfillmentProfile<E, Map> implements Serializable {
 		this.criteria = criteria;
 	}
 	
-	public abstract void fulfill(E e, java.util.Map<String, String> map);
-	public abstract void prepare(E e, java.util.Map<String, String> map);
-	public abstract void query(E e, java.util.Map<String, String> map);
-	public abstract void revert(E e, java.util.Map<String, String> map);
+	public abstract List<E> fulfill(E e, java.util.Map<String, String> map);
+	public abstract List<E> prepare(E e, java.util.Map<String, String> map);
+	public abstract List<E> query(E e, java.util.Map<String, String> map);
+	public abstract List<E> revert(E e, java.util.Map<String, String> map);
 	
 }
