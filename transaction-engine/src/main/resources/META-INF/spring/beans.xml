@@ -151,7 +151,7 @@
 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByIdProcessor" />
 					</camel:when>
 					<camel:when>
-						<camel:simple>${header.operationName} == 'discoverOfferById'</camel:simple>
+						<camel:simple>${header.operationName} == 'discoverOfferForUserById'</camel:simple>
 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.CreateSubscriberProcessor" />
 					</camel:when>
 					<camel:when>

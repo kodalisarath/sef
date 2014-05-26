@@ -21,7 +21,7 @@ public interface ISubscriptionResponse {
 	
 	public @WebMethod abstract void discoverOfferById(String requestCorrelator, TransactionException fault, Offer offer);
 	
-	public @WebMethod abstract void discoverOfferById(String requestCorrelator, TransactionException fault, String subscriber, Offer offer);
+	public @WebMethod abstract void discoverOfferForUserById(String requestCorrelator, TransactionException fault, String subscriber, Offer offer);
 	
 	public @WebMethod abstract void discoverOfferByFederatedId(String requestCorrelator, TransactionException fault, Offer offer);
 	

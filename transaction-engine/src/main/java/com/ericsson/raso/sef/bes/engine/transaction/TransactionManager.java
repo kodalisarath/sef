@@ -55,15 +55,6 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 		return requestId;
 	}
 
-
-	@Override
-	public String discoverOfferById(String requestId, String offerId, String subscriberId) {
-		FetchOfferForUser command = new FetchOfferForUser(requestId, offerId, subscriberId);
-		executor.submit(command);
-		return requestId;
-	}
-
-
 	@Override
 	public String discoverOfferByFederatedId(String requestId, String handle, String subscriberId) {
 		FetchOfferByHandleForUser command = new FetchOfferByHandleForUser(requestId, handle, subscriberId);
@@ -172,5 +163,11 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	}
 
 
+	@Override
+	public String discoverOfferForUserById(String requestId, String offerId,
+			String subscriberId) {FetchOfferForUser command = new FetchOfferForUser(requestId, offerId, subscriberId);
+			executor.submit(command);
+			return requestId;
+			}
 		
 }

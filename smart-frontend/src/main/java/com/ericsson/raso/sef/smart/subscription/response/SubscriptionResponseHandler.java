@@ -33,13 +33,6 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 	}
 
 	@Override
-	public void discoverOfferById(String requestCorrelator,
-			TransactionException fault, String subscriber, Offer offer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void discoverOfferByFederatedId(String requestCorrelator,
 			TransactionException fault, Offer offer) {
 		// TODO Auto-generated method stub
@@ -107,6 +100,13 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 			TransactionException fault, Offer subscription) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void discoverOfferForUserById(String requestCorrelator,
+			TransactionException fault, String subscriber, Offer offer) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
