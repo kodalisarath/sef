@@ -24,7 +24,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	private CurrencyCode transactionCurrency;
 
 
-	protected RefillProfile(String name) {
+	public RefillProfile(String name) {
 		super(name);
 	}
 	

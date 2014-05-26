@@ -46,6 +46,7 @@
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
 		com.ericsson.raso.sef.core.lb,
+		org.slf4j.*,
 		META-INF.sef-core
 	</osgi-import-package>
 	<osgi-export-package>

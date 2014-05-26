@@ -16,7 +16,7 @@ public class DedicatedAccountProfile extends BlockingFulfillment<com.ericsson.se
 	private String externalData1;
 	private String externalData2;
 	
-	protected DedicatedAccountProfile(String name) {
+	public DedicatedAccountProfile(String name) {
 		super(name);
 	}
 
@@ -102,6 +102,11 @@ public class DedicatedAccountProfile extends BlockingFulfillment<com.ericsson.se
 
 	@Override
 	public void revert(Product e, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setTransactionAmount(String transactionAmount) {
 		// TODO Auto-generated method stub
 		
 	}

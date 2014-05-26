@@ -205,7 +205,7 @@ public class AirClientImpl implements AirClient {
 		
 		params.setSoTimeout(soTimeout);
 		
-		String address = CsAirContext.getConfig().getValue(sectionName, "address");
+		String address = SefCoreServiceResolver.getConfigService().getValue(sectionName, "address");
 		if(address == null)  throw new RuntimeException("Property missing in config.xml, Section: " + sectionName + ", Property: 'address'");
 		params.setUrl(address);
 		

@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SecureSerializationHelper {
 
-	private String keyFileLocation = "Z:\\Common Share\\Projects\\raso-cac\\rasocac\\serialKey.sccm";
+	private String keyFileLocation = "C:\\Temp\\serialKey.sccm";
 
 	/**
 	 * hardcoded key defined to ensure consistency to recover when key file is

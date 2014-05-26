@@ -12,8 +12,9 @@ public final class Fulfillment extends TransactionTask {
 	private AtomicProduct atomicProduct = null;
 	private String subscriberId = null;
 	private Map<String, Object> additionalInputs = null;
-	
-	public Fulfillment(FulfillmentMode mode, AtomicProduct atomicProduct, String subscriberId, Map<String, Object> additionalInputs) {
+
+	public Fulfillment(FulfillmentMode mode, AtomicProduct atomicProduct,
+			String subscriberId, Map<String, Object> additionalInputs) {
 		super(Type.FULFILLMENT);
 		this.mode = mode;
 		this.atomicProduct = atomicProduct;
@@ -57,9 +58,11 @@ public final class Fulfillment extends TransactionTask {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((atomicProduct == null) ? 0 : atomicProduct.hashCode());
+		result = prime * result
+				+ ((atomicProduct == null) ? 0 : atomicProduct.hashCode());
 		result = prime * result + ((mode == null) ? 0 : mode.hashCode());
-		result = prime * result + ((subscriberId == null) ? 0 : subscriberId.hashCode());
+		result = prime * result
+				+ ((subscriberId == null) ? 0 : subscriberId.hashCode());
 		return result;
 	}
 
@@ -67,33 +70,30 @@ public final class Fulfillment extends TransactionTask {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		
+
 		if (!super.equals(obj))
 			return false;
-		
+
 		if (!(obj instanceof Fulfillment))
 			return false;
-		
+
 		Fulfillment other = (Fulfillment) obj;
 		if (atomicProduct == null) {
 			if (other.atomicProduct != null)
 				return false;
 		} else if (!atomicProduct.equals(other.atomicProduct))
 			return false;
-		
+
 		if (mode != other.mode)
 			return false;
-		
+
 		if (subscriberId == null) {
 			if (other.subscriberId != null)
 				return false;
 		} else if (!subscriberId.equals(other.subscriberId))
 			return false;
-		
+
 		return true;
 	}
-	
-	
 
-		
 }

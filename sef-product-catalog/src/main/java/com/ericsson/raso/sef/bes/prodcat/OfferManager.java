@@ -15,7 +15,7 @@ import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
 public class OfferManager implements IOfferAdmin, IOfferCatalog {
 	
-	private static String offerStoreLocation = null;;
+	public static String offerStoreLocation = null;;
 
 	private SecureSerializationHelper ssh = null;
 	

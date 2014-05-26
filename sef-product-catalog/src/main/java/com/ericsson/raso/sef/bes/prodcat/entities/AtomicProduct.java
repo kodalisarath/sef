@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 
-public final class AtomicProduct extends Product implements Serializable {
+public final class AtomicProduct extends Product implements Serializable, Comparable<AtomicProduct> {
 	private static final long serialVersionUID = 7193202158721069988L;
 
 	private Resource resource = null;
@@ -162,6 +162,12 @@ public final class AtomicProduct extends Product implements Serializable {
 			return false;
 		
 		return true;
+	}
+
+	@Override
+	public int compareTo(AtomicProduct o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	

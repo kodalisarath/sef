@@ -79,7 +79,7 @@ public class OfferProfile extends BlockingFulfillment<Product> {
 		this.expiryDateTimeRelative = expiryDateTimeRelative;
 	}
 
-	protected OfferProfile(String name) {
+	public OfferProfile(String name) {
 		super(name);
 	}
 

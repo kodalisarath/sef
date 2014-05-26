@@ -7,7 +7,7 @@ import com.ericsson.sef.bes.api.entities.Product;
 
 public class AddPeriodicAccountManagementDataProfile extends BlockingFulfillment<Product>{
 
-	protected AddPeriodicAccountManagementDataProfile(String name) {
+	public AddPeriodicAccountManagementDataProfile(String name) {
 		super(name);
 	}
 
@@ -45,6 +45,16 @@ public class AddPeriodicAccountManagementDataProfile extends BlockingFulfillment
 
 	@Override
 	public void revert(Product e, Map<String, String> map) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setPamIndicator(Integer pamIndicator) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setPamServiceId(Integer pamServiceId) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -20,6 +20,10 @@ public class ServiceResolver implements ApplicationContextAware {
 		return context.getBean(IOfferCatalog.class);
 	}
 	
+	public static ServiceRegistry getServiceRegistry() {
+		return context.getBean(ServiceRegistry.class);
+	}
+	
 	public static IConfig getConfig() {
 		return context.getBean(IConfig.class);
 	}
