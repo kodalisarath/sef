@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import com.ericsson.sef.bes.api.entities.Offer;
+
 
 
 public final class QuerySubscriptionResponse extends AbstractResponse {

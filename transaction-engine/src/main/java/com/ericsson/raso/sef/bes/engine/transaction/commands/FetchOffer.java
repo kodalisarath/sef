@@ -2,10 +2,13 @@ package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
+import com.ericsson.raso.sef.bes.engine.transaction.entities.DiscoverOffersForUserResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferResponse;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 
 public class FetchOffer extends AbstractTransaction {
@@ -21,7 +24,7 @@ public class FetchOffer extends AbstractTransaction {
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer prodcatOffer = catalog.getOfferById(((FetchOfferRequest)this.getRequest()).getOfferId());
-		com.ericsson.raso.sef.bes.engine.transaction.entities.Offer resultantOffer = new com.ericsson.raso.sef.bes.engine.transaction.entities.Offer(prodcatOffer);
+		com.ericsson.sef.bes.api.entities.Offer resultantOffer = TransactionServiceHelper.getApiEntity(prodcatOffer);
 		((FetchOfferResponse)this.getResponse()).setResult(resultantOffer);
 		
 		this.sendResponse();
@@ -43,6 +46,13 @@ public class FetchOffer extends AbstractTransaction {
 		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
+		
+		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
+		if (subscriptionClient != null) {
+			subscriptionClient.discoverOfferById(this.getRequestId(), ((FetchOfferResponse)this.getResponse()).getReturnFault(), ((FetchOfferResponse)this.getResponse()).getResult());
+			//TODO: This error is because the api package is not yet refactored to align with the namespace com.ericsson.raso.sef... Fix it!!
+		}
+
 	}
 	
 	

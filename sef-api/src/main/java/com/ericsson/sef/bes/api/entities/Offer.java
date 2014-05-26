@@ -2,24 +2,32 @@ package com.ericsson.sef.bes.api.entities;
 
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="offer")
 public class Offer {
 	
-	private String name = null;
-	private String description = null;
-	private String validity = null;
-	private boolean recurrence = false;
-	private String trial = null;
-	private String minimumCommitment = null;
-	private String autoTerminate = null;
-	private long price = -1;
-	private String currency = null;
-	private Set<Product> products = null;
+	private String			subscriptionId		= null;
+	private String			name				= null;
+	private String			description			= null;
+	private String			validity			= null;
+	private boolean			recurrence			= false;
+	private String			trial				= null;
+	private String			minimumCommitment	= null;
+	private String			autoTerminate		= null;
+	private long			price				= -1;
+	private String			currency			= null;
+	private Set<Product>	products			= null;
 	
+	
+	public String getSubscriptionId() {
+		return subscriptionId;
+	}
+
+	public void setSubscriptionId(String subscriptionId) {
+		this.subscriptionId = subscriptionId;
+	}
+
 	public String getName() {
 		return name;
 	}

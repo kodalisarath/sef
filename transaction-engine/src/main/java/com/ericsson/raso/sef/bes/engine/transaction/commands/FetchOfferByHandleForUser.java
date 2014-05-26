@@ -2,14 +2,17 @@ package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferByHandleForUserRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferByHandleForUserResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferForUserRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferForUserResponse;
+import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferResponse;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 
 public class FetchOfferByHandleForUser extends AbstractTransaction {
@@ -28,11 +31,12 @@ public class FetchOfferByHandleForUser extends AbstractTransaction {
 		
 		try {
 			prodcatOffer.execute(((FetchOfferForUserRequest)this.getRequest()).getSusbcriberId(), SubscriptionLifeCycleEvent.PURCHASE, false, null);
-			com.ericsson.raso.sef.bes.engine.transaction.entities.Offer resultantOffer = new com.ericsson.raso.sef.bes.engine.transaction.entities.Offer(prodcatOffer);
-			((FetchOfferForUserResponse)this.getResponse()).setResult(resultantOffer);
+			com.ericsson.sef.bes.api.entities.Offer resultantOffer = TransactionServiceHelper.getApiEntity(prodcatOffer);
+			((FetchOfferByHandleForUserResponse)this.getResponse()).setSubscriberId(((FetchOfferForUserRequest)this.getRequest()).getSusbcriberId());
+			((FetchOfferByHandleForUserResponse)this.getResponse()).setResult(resultantOffer);
 			
 		} catch (CatalogException e) {
-			((FetchOfferForUserResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Offer not available for user", e));
+			((FetchOfferByHandleForUserResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Offer not available for user", e));
 		}
 		
 		this.sendResponse();
@@ -54,6 +58,13 @@ public class FetchOfferByHandleForUser extends AbstractTransaction {
 		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
+		
+		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
+		if (subscriptionClient != null) {
+			subscriptionClient.discoverOfferByFederatedId(this.getRequestId(), ((FetchOfferByHandleForUserResponse)this.getResponse()).getReturnFault(), ((FetchOfferByHandleForUserResponse)this.getResponse()).getSubscriberId(), ((FetchOfferByHandleForUserResponse)this.getResponse()).getResult());
+			//TODO: This error is because the api package is not yet refactored to align with the namespace com.ericsson.raso.sef... Fix it!!
+		}
+
 	}
 	
 	
