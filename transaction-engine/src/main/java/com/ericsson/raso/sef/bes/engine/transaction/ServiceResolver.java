@@ -4,9 +4,12 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberResponse;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.sef.bes.api.entities.Subscriber;
+import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
+import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 public class ServiceResolver implements ApplicationContextAware {
 
@@ -28,6 +31,19 @@ public class ServiceResolver implements ApplicationContextAware {
 	public static TransactionManager getTransactionManager() {
 		return context.getBean(TransactionManager.class);
 	}
+	
+	public static ISubscriberResponse getSubscriberResponseClient() {
+		return context.getBean(ISubscriberResponse.class);
+	}
+	
+	public static ISubscriptionResponse getSubscriptionResponseClient() {
+		return context.getBean(ISubscriptionResponse.class);
+	}
+	
+	public static FulfillmentRequest getFulfillmentRequestClient() {
+		return context.getBean(FulfillmentRequest.class);
+	}
+	
 	
 	//Method  to parse com.ericsson.sef.bes.api.entities.Subscriber object values to 
 		//com.ericsson.raso.sef.core.db.model.Subscriber
