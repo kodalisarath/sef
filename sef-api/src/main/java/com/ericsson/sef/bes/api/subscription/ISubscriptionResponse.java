@@ -1,12 +1,14 @@
 package com.ericsson.sef.bes.api.subscription;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
+import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Offer;
+import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionException;
 
 
@@ -27,7 +29,7 @@ public interface ISubscriptionResponse {
 	
 	public @WebMethod abstract void getAdviceOfCharge(String requestCorrelator, TransactionException fault, long priceAmount, String iso4217);
 	
-	public @WebMethod abstract void purchase(String requestCorrelator, TransactionException fault, String subscriptionId, Map<String, String> billingMetas);
+	public @WebMethod abstract void purchase(String requestCorrelator, TransactionException fault, String subscriptionId, List<Product> products,List<Meta> billingMetas);
 	
 	public @WebMethod abstract void terminate(String requestCorrelator, TransactionException fault, Boolean result);
 	
