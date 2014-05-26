@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -7,7 +8,6 @@ import java.util.TreeSet;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
-import com.ericsson.raso.sef.bes.prodcat.entities.Product;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
@@ -46,7 +46,16 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	}
 
 	private List<Meta> converToList(Map<String, Object> metas) {
-		return null;
+		List<Meta> metaList = new ArrayList<Meta>();
+		for (String metaskey: metas.keySet()) {
+			Meta meta = new Meta();
+			if(metas.get(metaskey) instanceof String){
+				meta.setKey(metaskey);
+				meta.setValue(metas.get(metaskey).toString());
+				metaList.add(meta);
+			}
+		}
+		return metaList;
 	}
 	
 
