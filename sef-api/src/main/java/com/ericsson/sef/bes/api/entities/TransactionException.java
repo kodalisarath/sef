@@ -1,8 +1,13 @@
 package com.ericsson.sef.bes.api.entities;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.ws.WebFault;
 
 @WebFault(faultBean = "com.ericsson.sef.bes.api.entities.FaultInfo")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name="transactionException")
 public final class TransactionException extends Exception {
 	private static final long serialVersionUID = 2651520114941007027L;
 	
