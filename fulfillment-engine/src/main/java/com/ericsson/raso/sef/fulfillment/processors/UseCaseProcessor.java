@@ -19,7 +19,7 @@ import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentServiceResolver;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
-import com.ericsson.sef.bes.api.entities.TransactionException;
+import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class UseCaseProcessor implements Processor {
 	
@@ -120,7 +120,7 @@ public class UseCaseProcessor implements Processor {
 		return map;
 	}
 	
-	private void sendFulfillResponse(String correlationId, String msidn, TransactionException fault, List<Product> products, List<Meta> meta) {
+	private void sendFulfillResponse(String correlationId, String msidn, TransactionStatus fault, List<Product> products, List<Meta> meta) {
 		FulfillmentServiceResolver.getFulfillmentResponseClient().fulfill(correlationId, fault, products, meta);
 	}
 }

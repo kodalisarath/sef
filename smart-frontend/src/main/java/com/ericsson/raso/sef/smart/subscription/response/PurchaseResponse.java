@@ -1,23 +1,22 @@
 package com.ericsson.raso.sef.smart.subscription.response;
 
 import java.util.List;
-import java.util.Map;
 
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
-import com.ericsson.sef.bes.api.entities.TransactionException;
+import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class PurchaseResponse extends AbstractSubscriptionResponse {
 	
-	private TransactionException fault;
+	private TransactionStatus fault;
 	private String subscriptionId;
 	private List<Product> products;
 	private List<Meta> billingMetas;
 	
-	public TransactionException getFault() {
+	public TransactionStatus getFault() {
 		return fault;
 	}
-	public void setFault(TransactionException fault) {
+	public void setFault(TransactionStatus fault) {
 		this.fault = fault;
 	}
 	public String getSubscriptionId() {

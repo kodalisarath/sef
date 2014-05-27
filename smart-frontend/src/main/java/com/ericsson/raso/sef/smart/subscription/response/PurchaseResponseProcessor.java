@@ -9,7 +9,7 @@ import org.apache.camel.Processor;
 
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
-import com.ericsson.sef.bes.api.entities.TransactionException;
+import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class PurchaseResponseProcessor implements Processor {
 
@@ -19,7 +19,7 @@ public class PurchaseResponseProcessor implements Processor {
 
 		Object[] objectArray=(Object[]) exchange.getIn().getBody(Object.class);
 		String correlationId = (String)objectArray[0];
-	 	Holder<TransactionException> fault =(Holder<TransactionException>)objectArray[1];
+	 	Holder<TransactionStatus> fault =(Holder<TransactionStatus>)objectArray[1];
 	 	Holder<String> subscriptionId = (Holder<String>) objectArray[2]; 
 	 	Holder<List<Product>> products =(Holder<List<Product>>) objectArray[3];
 	 	Holder<List<Meta>> metas =(Holder<List<Meta>>) objectArray[4];

@@ -18,7 +18,6 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
 import com.ericsson.sef.bes.api.entities.Product;
-import com.ericsson.sef.bes.api.entities.TransactionException;
 
 public class RefillProfile extends BlockingFulfillment<Product> {
 

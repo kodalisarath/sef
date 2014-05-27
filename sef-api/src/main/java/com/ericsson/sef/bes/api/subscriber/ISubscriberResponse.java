@@ -7,21 +7,21 @@ import javax.jws.WebService;
 
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
-import com.ericsson.sef.bes.api.entities.TransactionException;
+import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 @WebService
 public interface ISubscriberResponse {
 	
-	public @WebMethod abstract void readSubscriber(String requestCorrelator, TransactionException fault, Subscriber subscriber);
+	public @WebMethod abstract void readSubscriber(String requestCorrelator, TransactionStatus fault, Subscriber subscriber);
 	
-	public @WebMethod abstract void readSubscriberMeta(String requestCorrelator, TransactionException fault, String subscriberId, List<Meta> metaNames);
+	public @WebMethod abstract void readSubscriberMeta(String requestCorrelator, TransactionStatus fault, String subscriberId, List<Meta> metaNames);
 	
-	public @WebMethod abstract void createSubscriber(String requestCorrelator, TransactionException fault, Boolean result);
+	public @WebMethod abstract void createSubscriber(String requestCorrelator, TransactionStatus fault, Boolean result);
 	
-	public @WebMethod abstract void updateSubscriber(String requestCorrelator, TransactionException fault, Boolean result);
+	public @WebMethod abstract void updateSubscriber(String requestCorrelator, TransactionStatus fault, Boolean result);
 	
-	public @WebMethod abstract void deleteSubscriber(String requestCorrelator, TransactionException fault, Boolean result);
+	public @WebMethod abstract void deleteSubscriber(String requestCorrelator, TransactionStatus fault, Boolean result);
 	
-	public @WebMethod abstract void handleLifeCycle (String requestCorrelator, TransactionException fault, Boolean result);
+	public @WebMethod abstract void handleLifeCycle (String requestCorrelator, TransactionStatus fault, Boolean result);
 
 }
