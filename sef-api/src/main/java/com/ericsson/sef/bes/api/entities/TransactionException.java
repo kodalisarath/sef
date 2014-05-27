@@ -2,7 +2,7 @@ package com.ericsson.sef.bes.api.entities;
 
 import javax.xml.ws.WebFault;
 
-/* @WebFault(faultBean = "com.ericsson.sef.bes.api.entities.FaultInfo") */
+@WebFault(faultBean = "com.ericsson.sef.bes.api.entities.FaultInfo")
 public final class TransactionException extends Exception {
 	private static final long serialVersionUID = 2651520114941007027L;
 	

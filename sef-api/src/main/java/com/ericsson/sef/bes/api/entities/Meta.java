@@ -11,6 +11,9 @@ public class Meta {
 	private String key;
 	private String value;
 	
+	public Meta() {
+		
+	}
 	public String getKey() {
 		return key;
 	}
