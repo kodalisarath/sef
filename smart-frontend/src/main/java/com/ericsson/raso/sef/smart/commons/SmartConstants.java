@@ -21,5 +21,18 @@ public class SmartConstants {
 	public static final String notificationMessage = "notificationMessage";
 	public static final String GRACE_PERIOD = "gracePeriod";
 	public static final String USECASE = "usecase";
+	
+	public static final int AIRTIME_DA_ID = 1;
+	public static final int AIRTIME_OFFER_ID = 1001;
+	public static final int ALKANSYA_OFFER_ID = 1241;
+	public static final int ALKANSYA_DA_ID = 241;
+	public static final int GRACE_ACC_OFFER_ID = 1;
+	public static final int GRACE_TIMER_OFFER_ID = 2;
+	public static final int UNLI_DA_ID = 242;
+	public static final int UNLI_OFFER_START_ID = 2001;
+	
+	public static final String OfferConversionFector = "walletConversionFactor";
+	
+	public static final long CS_LONGEST_EXPTIME = 2114351999000l;
 
 }
