@@ -4,8 +4,9 @@
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	
-     <bean id="subscriberRequestClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
+    <bean id="subscriberRequestClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
 		<property name="serviceType" value="com.ericsson.sef.bes.api.subscriber.ISubscriberRequest"/>
 		<property name="endpointId" value="subscriber-request-client"/>
 	</bean>
@@ -33,7 +34,7 @@
 	<bean id="subscriptionResponseClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
 		<property name="serviceType"
 	value="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse" />
-		<property name="endpointId" value="subscription-request-client"/>
+		<property name="endpointId" value="subscription-response-client"/>
 	</bean>
 
 

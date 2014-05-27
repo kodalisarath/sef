@@ -16,6 +16,7 @@
     	<osgi-import-packages>
     	org.springframework.*,
     	META-INF.sef-core,
+    	META-INF.sef-api,
     	com.ericsson.sef.bes.api.subscription,
     	com.ericsson.sef.bes.api.subscriber,    	
     	com.ericsson.raso.sef.smart.*,

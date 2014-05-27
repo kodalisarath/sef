@@ -15,6 +15,7 @@
     	
     	<osgi-import-packages>
     	META-INF.sef-core,
+    	META-INF.sef-api,
     	com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.core.camelprocessors,
 		com.ericsson.raso.sef.auth.*,

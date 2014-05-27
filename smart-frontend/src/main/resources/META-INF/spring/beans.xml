@@ -48,7 +48,7 @@
 	</cxf:cxfEndpoint>
 	
 	<cxf:cxfEndpoint id="subscriptionResponse"
-		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriptionResponse"
+		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse"
 		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"
 		wsdlURL="classpath:wsdl/TisService.xml">
 

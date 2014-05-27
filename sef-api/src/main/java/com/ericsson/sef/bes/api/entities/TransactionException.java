@@ -2,16 +2,21 @@ package com.ericsson.sef.bes.api.entities;
 
 import javax.xml.ws.WebFault;
 
-@WebFault
+/* @WebFault(faultBean = "com.ericsson.sef.bes.api.entities.FaultInfo") */
 public final class TransactionException extends Exception {
 	private static final long serialVersionUID = 2651520114941007027L;
 	
-	private FaultInfo fault;
+	private FaultInfo faultBean;
 	private String requestId = null;
 	
-	public TransactionException()
-	{
-		super();
+	public TransactionException(String message, FaultInfo faultBean) {
+		super(message);
+		this.faultBean = faultBean;
+	}
+	
+	public TransactionException(String message, FaultInfo faultBean, Throwable cause) {
+		super(message);
+		this.faultBean = faultBean;
 	}
 	
 	public TransactionException(String arg0, Throwable arg1, boolean arg2, boolean arg3) {
@@ -33,21 +38,22 @@ public final class TransactionException extends Exception {
 		super(arg0);
 	}
 	
-	public TransactionException(String message, FaultInfo fault) {
-		super();
-	}
-	
-	public TransactionException(String message, FaultInfo fault, Throwable cause) {
-		super();
-	}
-
 	protected String getRequestId() {
 		return requestId;
 	}
 
 	
 	public FaultInfo getFaultInfo() {
-		return fault;
+		return faultBean;
 	}
 	
+//    @Override
+//    public StackTraceElement[] getStackTrace() {
+//        return super.getStackTrace();
+//    }
+//	
+//    @Override
+//    public Throwable getCause() {
+//        return super.getCause();
+//    }	
 }
