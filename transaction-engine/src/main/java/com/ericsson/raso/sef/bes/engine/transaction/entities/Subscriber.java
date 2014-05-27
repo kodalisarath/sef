@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.xpath.axes.SubContextList;
 import org.joda.time.DateTime;
 
 import com.ericsson.raso.sef.core.db.model.ContractState;

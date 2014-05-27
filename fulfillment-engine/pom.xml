@@ -18,6 +18,7 @@
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
 		META-INF.sef-core,
+		META-INF.sef-api,
 		com.ericsson.raso.sef.bes.prodcat,
 		com.ericsson.raso.sef.bes.prodcat.service,
 		com.ericsson.raso.sef.bes.prodcat.entities,

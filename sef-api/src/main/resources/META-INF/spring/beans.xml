@@ -32,8 +32,7 @@
 	</bean>
 	
 	<bean id="subscriptionResponseClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
-		<property name="serviceType"
-	value="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse" />
+		<property name="serviceType" value="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse" />
 		<property name="endpointId" value="subscription-response-client"/>
 	</bean>
 
