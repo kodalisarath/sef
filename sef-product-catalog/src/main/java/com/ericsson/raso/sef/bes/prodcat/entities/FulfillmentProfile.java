@@ -40,6 +40,23 @@ public abstract class FulfillmentProfile<E, Map> implements Serializable {
 		this.criteria = criteria;
 	}
 	
+	
+	
+	public List<String> getAbstractResources() {
+		return abstractResources;
+	}
+
+
+	public void setAbstractResources(List<String> abstractResources) {
+		this.abstractResources = abstractResources;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
 	public abstract List<E> fulfill(E e, java.util.Map<String, String> map);
 	public abstract List<E> prepare(E e, java.util.Map<String, String> map);
 	public abstract List<E> query(E e, java.util.Map<String, String> map);
