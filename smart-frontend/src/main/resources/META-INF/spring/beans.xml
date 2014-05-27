@@ -85,7 +85,7 @@
 	
 <!-- 	<bean id="smartEdr" class="com.ericsson.raso.sef.smart.processor.SmartEDRProcessor" />	 -->
 <!-- 	<bean id="requestIdGenerator" class="com.ericsson.raso.sef.core.camelprocessors.RequestIdGenerator" /> -->
-<!-- 	<bean id="usecaseProcessor" class="com.ericsson.raso.sef.smart.usecase.UsecaseProcessor" /> -->
+	<bean id="usecaseProcessor" class="com.ericsson.raso.sef.smart.usecase.UsecaseProcessor" />
 <!-- 	<bean id="smartInEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdrInProcessor" />	 -->
 <!-- 	<bean id="smartOutEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdrOutProcessor" />	 -->
 	<bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
@@ -103,6 +103,11 @@
 					<camel:bean beanType="com.ericsson.raso.sef.smart.SmartExceptionHandler" />
 				</camel:doCatch>
 			</camel:doTry>	
+		</route>
+		
+		<route>
+			<from uri="cxf:bean:subscriptionResponse"/>
+			<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PurchaseResponseProcessor"/>
 		</route>
 	</camelContext>
 	

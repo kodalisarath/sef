@@ -50,8 +50,14 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 	public void purchase(String requestCorrelator, TransactionException fault,
 			String subscriptionId, List<Product> products,
 			List<Meta> billingMetas) {
-		// TODO Auto-generated method stub
-		
+		PurchaseResponse response = (PurchaseResponse) RequestCorrelationStore.get(requestCorrelator);
+		synchronized (response) {
+			response.setBillingMetas(billingMetas);
+			response.setProducts(products);
+			response.setSubscriptionId(subscriptionId);
+			response.setFault(fault);
+			response.notify();
+		}
 	}
 	
 	/*@Override

@@ -1,14 +1,18 @@
 package com.ericsson.raso.sef.smart.subscription.response;
 
+import java.util.List;
 import java.util.Map;
 
+import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionException;
 
 public class PurchaseResponse extends AbstractSubscriptionResponse {
 	
 	private TransactionException fault;
 	private String subscriptionId;
-	private Map<String, String> billingMetas;
+	private List<Product> products;
+	private List<Meta> billingMetas;
 	
 	public TransactionException getFault() {
 		return fault;
@@ -22,12 +26,16 @@ public class PurchaseResponse extends AbstractSubscriptionResponse {
 	public void setSubscriptionId(String subscriptionId) {
 		this.subscriptionId = subscriptionId;
 	}
-	public Map<String, String> getBillingMetas() {
+	public List<Product> getProducts() {
+		return products;
+	}
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+	public List<Meta> getBillingMetas() {
 		return billingMetas;
 	}
-	public void setBillingMetas(Map<String, String> billingMetas) {
+	public void setBillingMetas(List<Meta> billingMetas) {
 		this.billingMetas = billingMetas;
 	}
-	
-	
 }

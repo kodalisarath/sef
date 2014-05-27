@@ -2,7 +2,10 @@ package com.ericsson.raso.sef.smart.processor;
 
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,7 @@ import org.apache.camel.Processor;
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
@@ -21,6 +25,7 @@ import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.RechargeRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
@@ -28,6 +33,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ListParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringElement;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 
@@ -193,40 +199,47 @@ public class CARecharge implements Processor {
 			result.setOperationResult(operationResult);
 		}
 		
+		//convert resulted products to SMART response
 		
-		Map<String, String> billingMetas = response.getBillingMetas();
-		
-		//convert purchase billing meta's to SMART response
-		
-		
-		/*SmartModel model = new FetchRequestContextTask().execute().get(SmConstants.RESULT);
-		if(model != null) {
-			for (RechargeBalance balance : model.getRechargeBalances()) {
-				StringElement stringElement = new StringElement();
-				String name= balance.getName();
-				
-				long delta = balance.getDelta();
-				long curr = balance.getCurrentValue();
-				if(balance.getOfferId() != SmConstants.AIRTIME_OFFER_ID && balance.getOfferId() != SmConstants.ALKANSYA_OFFER_ID) {
-					name += ":s_PeriodicBonus";
-				}
-				
-				if(balance.getOfferId() >= SmConstants.UNLI_OFFER_START_ID) {
-					delta = 1;
-					curr = 1;
-				} else {
-					long confec= CommonUtil.getConversionFector(""+balance.getOfferId());
-					delta = delta/confec;
-					curr = curr/confec;
-				}
-				
-				String val = name + ";" + delta + ";" + curr + ";" + balance.getExpiryDate("yyyy-MM-dd HH:mm:ss");
-				
-				stringElement.setValue(val);
-				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+		List<Product> products = response.getProducts();
+		for (Product product: products) {
+			StringElement stringElement = new StringElement();
+			String offer = product.getResourceName();
+			int offerId = Integer.parseInt(offer);
+			String name = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offer);
+			
+			long delta = product.getQuotaDefined() - product.getQuotaConsumed();
+			long curr = product.getQuotaConsumed();
+			if(offerId != SmartConstants.AIRTIME_OFFER_ID && offerId != SmartConstants.ALKANSYA_OFFER_ID) {
+				name += ":s_PeriodicBonus";
 			}
-		}*/
+			
+			
+			if(offerId >= SmartConstants.UNLI_OFFER_START_ID) {
+				delta = 1;
+				curr = 1;
+			} else {
+				String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", name);
+				long confec= Long.parseLong(conversionFactor); 
+				delta = delta/confec;
+				curr = curr/confec;
+			}
+			
+			String val = name + ";" + delta + ";" + curr + ";" + getMillisToDate(product.getValidity());
+			
+			stringElement.setValue(val);
+			listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+		}
+		
 		return responseData;
+	}
+	
+	private Date getMillisToDate(long millis) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(millis);
+		df.format(calendar.getTime());
+		return null;
 	}
 	
 	/*Method to convert a map to a list*/
