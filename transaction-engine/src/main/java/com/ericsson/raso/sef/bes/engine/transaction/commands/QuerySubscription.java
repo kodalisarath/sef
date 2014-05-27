@@ -1,15 +1,11 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
-import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
-import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.QuerySubscriptionRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.QuerySubscriptionResponse;
 import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscription;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.sef.bes.api.entities.Offer;
-import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 
 public class QuerySubscription extends AbstractTransaction {
@@ -25,8 +21,8 @@ public class QuerySubscription extends AbstractTransaction {
 		
 		try {
 			Subscription subscription = new FetchSubscription(((QuerySubscriptionRequest)this.getRequest()).getSubscriptionId()).execute();
-			Offer result = TransactionServiceHelper.getApiEntity(subscription);
-			((QuerySubscriptionResponse)this.getResponse()).setResult(result);
+		//	Offer result = TransactionServiceHelper.getApiEntity(subscription);
+		//	((QuerySubscriptionResponse)this.getResponse()).setResult(result);
 		} catch (FrameworkException e) {
 			((QuerySubscriptionResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Unable to fetch subscription", e));
 		}
@@ -52,11 +48,11 @@ public class QuerySubscription extends AbstractTransaction {
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
 		
-		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
-		if (subscriptionClient != null) {
-			subscriptionClient.querySubscription(this.getRequestId(), ((QuerySubscriptionResponse)this.getResponse()).getReturnFault(), ((QuerySubscriptionResponse)this.getResponse()).getResult());
-			//TODO: This error is because the api package is not yet refactored to align with the namespace com.ericsson.raso.sef... Fix it!!
-		}
+//		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
+//		if (subscriptionClient != null) {
+//			subscriptionClient.querySubscription(this.getRequestId(), ((QuerySubscriptionResponse)this.getResponse()).getReturnFault(), ((QuerySubscriptionResponse)this.getResponse()).getResult());
+//			//TODO: This error is because the api package is not yet refactored to align with the namespace com.ericsson.raso.sef... Fix it!!
+//		}
 	}
 	
 	

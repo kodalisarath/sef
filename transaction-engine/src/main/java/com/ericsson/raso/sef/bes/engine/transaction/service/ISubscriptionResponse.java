@@ -1,23 +1,21 @@
 package com.ericsson.raso.sef.bes.engine.transaction.service;
 
 import java.util.Map;
-import java.util.Set;
 
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.Offer;
 
 public interface ISubscriptionResponse {
 	
-	public abstract void discoverOffers(String requestCorrelator, TransactionException fault, Set<Offer> offers);
-	
-	public abstract void discoverOffersForUser(String requestCorrelator, TransactionException fault, Set<Offer> offers);
-	
-	public abstract void discoverOfferById(String requestCorrelator, TransactionException fault, Offer offer);
-	
-	public abstract void discoverOfferById(String requestCorrelator, TransactionException fault, String subscriber, Offer offer);
-	
-	public abstract void discoverOfferByFederatedId(String requestCorrelator, TransactionException fault, Offer offer);
-	
+//	public abstract void discoverOffers(String requestCorrelator, TransactionException fault, Set<Offer> offers);
+//	
+//	public abstract void discoverOffersForUser(String requestCorrelator, TransactionException fault, Set<Offer> offers);
+//	
+//	public abstract void discoverOfferById(String requestCorrelator, TransactionException fault, Offer offer);
+//	
+//	public abstract void discoverOfferById(String requestCorrelator, TransactionException fault, String subscriber, Offer offer);
+//	
+//	public abstract void discoverOfferByFederatedId(String requestCorrelator, TransactionException fault, Offer offer);
+//	
 	
 	
 	public abstract void getAdviceOfCharge(String requestCorrelator, TransactionException fault, long priceAmount, String iso4217);
@@ -34,6 +32,6 @@ public interface ISubscriptionResponse {
 	
 	public abstract String preRenewal(String requestCorrelator, TransactionException fault, Boolean result);
 	
-	public abstract String querySubscription(String requestCorrelator, TransactionException fault, Offer subscription);
+	//public abstract String querySubscription(String requestCorrelator, TransactionException fault, Offer subscription);
 
 }

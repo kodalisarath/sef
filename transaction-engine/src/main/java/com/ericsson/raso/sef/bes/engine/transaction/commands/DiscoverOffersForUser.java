@@ -5,15 +5,12 @@ import java.util.TreeSet;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
-import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.DiscoverOffersForUserRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.DiscoverOffersForUserResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.DiscoverOffersResponse;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
-import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 
 public class DiscoverOffersForUser extends AbstractTransaction {
@@ -34,7 +31,7 @@ public class DiscoverOffersForUser extends AbstractTransaction {
 		for (Offer tempOffer: prodcatOffers) {
 			try {
 				tempOffer.execute( ((DiscoverOffersForUserRequest)this.getRequest()).getSubscriberId(), SubscriptionLifeCycleEvent.PURCHASE, false, null);
-				resultOffers.add(TransactionServiceHelper.getApiEntity(tempOffer));
+				//resultOffers.add(TransactionServiceHelper.getApiEntity(tempOffer));
 				
 			} catch (CatalogException e) {
 				//TODO: Logger - this offer is not eligible for the subscriber... eliminating from return list
@@ -64,11 +61,11 @@ public class DiscoverOffersForUser extends AbstractTransaction {
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
 		
-		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
-		if (subscriptionClient != null) {
-			subscriptionClient.discoverOffersForUser(this.getRequestId(), ((DiscoverOffersForUserResponse)this.getResponse()).getReturnFault(), ((DiscoverOffersForUserResponse)this.getResponse()).getResult());
-			//TODO: This error is because the api package is not yet refactored to align with the namespace com.ericsson.raso.sef... Fix it!!
-		}
+//		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
+//		if (subscriptionClient != null) {
+//			subscriptionClient.discoverOffersForUser(this.getRequestId(), ((DiscoverOffersForUserResponse)this.getResponse()).getReturnFault(), ((DiscoverOffersForUserResponse)this.getResponse()).getResult());
+//			//TODO: This error is because the api package is not yet refactored to align with the namespace com.ericsson.raso.sef... Fix it!!
+//		}
 
 	}
 	
