@@ -6,6 +6,7 @@ import javax.xml.ws.WebFault;
 public final class TransactionException extends Exception {
 	private static final long serialVersionUID = 2651520114941007027L;
 	
+	private FaultInfo fault;
 	private String requestId = null;
 	
 	public TransactionException()
@@ -31,12 +32,22 @@ public final class TransactionException extends Exception {
 	public TransactionException(Throwable arg0) {
 		super(arg0);
 	}
+	
+	public TransactionException(String message, FaultInfo fault) {
+		super();
+	}
+	
+	public TransactionException(String message, FaultInfo fault, Throwable cause) {
+		super();
+	}
 
 	protected String getRequestId() {
 		return requestId;
 	}
 
 	
-	
+	public FaultInfo getFaultInfo() {
+		return fault;
+	}
 	
 }
