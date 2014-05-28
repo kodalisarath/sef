@@ -12,6 +12,7 @@ import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 
+
 public class TransactionManager implements ISubscriberRequest, ISubscriptionRequest {
 
 	IOfferCatalog catalog = null;
@@ -19,7 +20,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	
 	
 	public TransactionManager() {
-		catalog = ServiceResolver.getOfferCatalog();
+		catalog = com.ericsson.raso.sef.bes.prodcat.ServiceResolver.getOfferCatalog();
 		executor = SefCoreServiceResolver.getExecutorService(Constants.USE_CASE_EVAL.name());
 	}
 
