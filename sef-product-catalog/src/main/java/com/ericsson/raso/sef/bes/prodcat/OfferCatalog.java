@@ -5,13 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.entities.State;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferAdmin;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
 public class OfferCatalog implements IOfferCatalog {
 	
@@ -21,21 +23,28 @@ public class OfferCatalog implements IOfferCatalog {
 	
 	private OfferContainer container = new OfferContainer();
 
+	Logger logger = LoggerFactory.getLogger(OfferCatalog.class);
+	
 	public OfferCatalog() {
 		// TODO: fetch the store location from config, once the config services is ready....
 
-		System.out.println("Offer Catalog Start======>");
+		logger.info("Offer Catalog Start======>");
 		//System.out.println("Config access: " + ServiceResolver.getConfig());
 		//offerStoreLocation = ServiceResolver.getConfig().getValue("GLOBAL", "offerStoreLocation");
 		offerStoreLocation = getStoreLocation();
-		System.out.println("offerstore location: " + offerStoreLocation);
+		logger.info("offerstore location: " + offerStoreLocation);
 		ssh = new SecureSerializationHelper();
 		if (ssh.fileExists(offerStoreLocation)) {
 			try {
 				this.container = (OfferContainer) ssh.fetchFromFile(offerStoreLocation);
+				logger.debug("E/// Offer Catalog is loaded");
+				logger.debug("Fetching a sample offer J: "  + container.getOfferById("J").getName());
 			} catch (FrameworkException e) {
+				logger.debug("E/// I encountered an error here: " + e.getMessage() + " " + e.getCause());
 				// TODO: LOgger on this error...
 			}
+		} else {
+			logger.debug("E/// File does not exist");
 		}
 	}
 	

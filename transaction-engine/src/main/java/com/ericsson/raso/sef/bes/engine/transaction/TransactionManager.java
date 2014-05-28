@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.commands.*;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber;
@@ -21,9 +21,11 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	IOfferCatalog offerCatalog = null;
 	ExecutorService executor = null;
 	
+	Logger logger = LoggerFactory.getLogger(TransactionManager.class);
+	
 	public TransactionManager() {
 		offerCatalog = com.ericsson.raso.sef.bes.prodcat.ServiceResolver.getOfferCatalog();
-		executor = SefCoreServiceResolver.getExecutorService(Constants.USE_CASE_EVAL.name());
+		executor = SefCoreServiceResolver.getExecutors().getThreadPoolExecutor();
 	}
 
 
@@ -76,6 +78,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 	@Override
 	public String purchase(String requestId, String offerId, String subscriberId, Boolean override, Map<String, Object> metas) {
+		logger.debug("Entering TXManager.Purchase..........");
 		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, offerId, subscriberId, null, SubscriptionLifeCycleEvent.PURCHASE, override, metas);
 		executor.submit(command);
 		return requestId;

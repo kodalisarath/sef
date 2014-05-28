@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
@@ -25,6 +28,8 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 public class HandleSubscriptionEvent extends AbstractTransaction {
 	private static final long	serialVersionUID	= 8130277491237379246L;
 
+	Logger logger = LoggerFactory.getLogger(HandleSubscriptionEvent.class);
+	
 	public HandleSubscriptionEvent(String requestId, 
 									String offerId, 
 									String subscriberId, 
@@ -39,11 +44,13 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 
 	@Override
 	public Void execute() throws TransactionException {
+		logger.debug("Entered handleSubscriptionEvent!!!");
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer prodcatOffer = catalog.getOfferById(((HandleSubscriptionEventRequest)this.getRequest()).getOfferId());
-		
+		if(prodcatOffer != null)
+		logger.debug("Offer retrieved from catalog: " + prodcatOffer.getName());
 		try {
 			String subscriptionId = ((HandleSubscriptionEventRequest)this.getRequest()).getSubscriptionId();
 			if (subscriptionId != null) {
@@ -54,19 +61,21 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 				metas.put(Constants.SUBSCRIPTION_ID.name(), subscriptionId);
 				((HandleSubscriptionEventRequest)this.getRequest()).setMetas(metas);
 			}
-			
 			tasks.addAll(prodcatOffer.execute(((HandleSubscriptionEventRequest)this.getRequest()).getSubscriberId(), 
 												((HandleSubscriptionEventRequest)this.getRequest()).getEvent(), 
 												((HandleSubscriptionEventRequest)this.getRequest()).getOverride(),
 												((HandleSubscriptionEventRequest)this.getRequest()).getMetas()));
-			
+			logger.debug("Offer executed successfully!!!. Total tasks to be orchestrated = " + tasks.size());
 		} catch (CatalogException e) {
+			logger.error("Offer execution failed??. Cause: " + e.getMessage());
+			e.printStackTrace();
 			// TODO - Logger unable to fetch the workflow configured for the use-case
 			throw new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e);
 		}
 		
 		Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
 		
+		logger.info("Going to execute the orcheastration profile for: " + execution.getNorthBoundCorrelator());
 		OrchestrationManager.getInstance().submit(this, execution);
 		
 		return null;
