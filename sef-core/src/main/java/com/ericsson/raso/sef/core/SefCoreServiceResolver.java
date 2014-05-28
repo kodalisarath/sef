@@ -1,10 +1,12 @@
 package com.ericsson.raso.sef.core;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.ericsson.raso.sef.auth.PrivilegeManager;
 import com.ericsson.raso.sef.auth.service.IPrivilegeManager;
@@ -46,6 +48,11 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 
 	public static ExecutorService getExecutorService(String name) {
 		return SefCoreServiceResolver.context.getBean(CloudAwareCluster.class).getDistributedService(name);
+	}
+	
+	public static ThreadPoolTaskExecutor getExecutors() {
+		return context.getBean(ThreadPoolTaskExecutor.class);
+		
 	}
 	
 	public static SubscriberService getSusbcriberStore() {

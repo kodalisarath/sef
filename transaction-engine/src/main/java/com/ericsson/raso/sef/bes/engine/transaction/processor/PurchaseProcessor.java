@@ -33,7 +33,9 @@ public class PurchaseProcessor implements Processor{
 		boolean override=(boolean)objectArray[3];
 		List<Meta> metas= (List<Meta>)objectArray[4];
 		TransactionManager transactionManager=ServiceResolver.getTransactionManager();
-		transactionManager.purchase(requestId, offerId, subscriberId, override, convertToList(metas));
+		String req = transactionManager.purchase(requestId, offerId, subscriberId, override, convertToList(metas));
+		 
+		logger.debug("Transaction manager correlationID: " + req);
 		
 	}
 	/*Method to convert a list to a map*/

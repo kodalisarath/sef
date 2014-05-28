@@ -20,13 +20,14 @@
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
 		META-INF.sef-core,
+		org.slf4j,
 		org.springframework.*
 		</osgi-import-package>
 		<osgi-export-package>
 		com.ericsson.raso.sef.bes.prodcat,
 		com.ericsson.raso.sef.bes.prodcat.service,
 		com.ericsson.raso.sef.bes.prodcat.entities,
-		META-INF.product-catalog
+		META-INF.product-catalog,
 		</osgi-export-package>
   </properties>
 

@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.entities.OfferLifeCycle;
@@ -40,6 +43,7 @@ public class OfferContainer implements Serializable {
 	 */
 	private TreeMap<String, String> offersByExternalHandle = new TreeMap<String, String>();
 
+	private transient Logger logger = LoggerFactory.getLogger(OfferContainer.class);
 	
 	public void createOffer(Offer offer) throws CatalogException {
 		if (offer == null)
@@ -238,11 +242,14 @@ public class OfferContainer implements Serializable {
 	
 	public Offer getOfferById(String id) {
 		Offer offer = null;
-
+		
+		logger.debug("E/// Getting latest version of this offer: " + id);
 		TreeMap<Integer, Offer> versionedOffer = this.offersById.get(id);
+		logger.debug("E/// How many offers?: " + versionedOffer.size());
 		if (versionedOffer != null) {
 			int latestVersion = versionedOffer.descendingKeySet().first();
 			offer = versionedOffer.get(latestVersion);
+			logger.debug("E/// Offer Name: " + offer.getName());
 		}
 
 		return offer;

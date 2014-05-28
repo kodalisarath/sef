@@ -34,8 +34,8 @@ public class SecureSerializationHelper {
 	private Cipher decryptionCipher = null;
 
 	public SecureSerializationHelper() {
-		// TODO: initialize cipher key location from config, once the config
-		// service is ready
+		keyFileLocation = System.getenv("LICENSE_KEY");
+		
 		if (this.fileExists(keyFileLocation)) {
 			this.loadFromKeyFile();
 		} else {
@@ -43,7 +43,8 @@ public class SecureSerializationHelper {
 		}
 
 	}
-
+	
+	
 	public boolean fileExists(String fileLocation) {
 		try {
 			FileInputStream fis = new FileInputStream(fileLocation);
@@ -143,11 +144,11 @@ public class SecureSerializationHelper {
 			return contents;
 
 		} catch (FileNotFoundException e) {
-			throw new FrameworkException("Cannot fetch contents...", e);
+			throw new FrameworkException("FileNotFound: Cannot fetch contents...", e);
 		} catch (IOException e) {
-			throw new FrameworkException("Cannot fetch contents...", e);
+			throw new FrameworkException("IOException: Cannot fetch contents...", e);
 		} catch (ClassNotFoundException e) {
-			throw new FrameworkException("Cannot fetch contents...", e);
+			throw new FrameworkException("ClassNotFoundException: Cannot fetch contents...", e);
 		}
 	}
 
