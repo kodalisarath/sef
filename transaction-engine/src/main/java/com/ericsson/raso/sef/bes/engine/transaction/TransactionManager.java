@@ -25,7 +25,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	
 	public TransactionManager() {
 		offerCatalog = com.ericsson.raso.sef.bes.prodcat.ServiceResolver.getOfferCatalog();
-		executor = SefCoreServiceResolver.getExecutors().getThreadPoolExecutor();
+		executor = SefCoreServiceResolver.getExecutorService("");
 	}
 
 
@@ -80,6 +80,12 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	public String purchase(String requestId, String offerId, String subscriberId, Boolean override, Map<String, Object> metas) {
 		logger.debug("Entering TXManager.Purchase..........");
 		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, offerId, subscriberId, null, SubscriptionLifeCycleEvent.PURCHASE, override, metas);
+//		try {
+//			command.call();
+//		} catch (Exception e) {
+//			logger.error("Exception while executing Handle subscription event??" + e.getMessage());
+//			e.printStackTrace();
+//		}
 		executor.submit(command);
 		return requestId;
 	}
@@ -88,7 +94,13 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	@Override
 	public String terminate(String requestId, String subscriptionId, Boolean override, Map<String, Object> metas) {
 		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, null, null, subscriptionId, SubscriptionLifeCycleEvent.TERMINATE, override, metas);
-		executor.submit(command);
+		try {
+			command.call();
+		} catch (Exception e) {
+			logger.error("Exception while executing Handle subscription event??" + e.getMessage());
+			e.printStackTrace();
+		}
+//		executor.submit(command);
 		return requestId;
 	}
 
