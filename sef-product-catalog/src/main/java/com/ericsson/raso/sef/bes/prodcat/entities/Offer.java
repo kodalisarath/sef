@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.Constants;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
@@ -38,6 +41,7 @@ import com.ericsson.raso.sef.core.db.model.Subscriber;
 //TODO: check suppress fulfilment is configured before building the transaction tasks
 public class Offer implements Serializable {
 	private static final long serialVersionUID = 5704479496440496263L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(Offer.class);
 	
 	
 	//==========----------------------------- Attributes Section ---------------====================================================================/
@@ -260,15 +264,16 @@ public class Offer implements Serializable {
 		Subscription subscription = null;
 		if (!metas.containsKey(Constants.SUBSCRIPTION_ID.name())) {
 			if (event != SubscriptionLifeCycleEvent.PURCHASE) {
-				//TODO: Logger - subscriptionId is not found. Cannot proceed with assumptions
+				LOGGER.info("subscriptionId is not found in a subscription event[" + event + "]. Cannot proceed with assumptions");
 				throw new CatalogException("Subscription Identifier is not provided. Cannot assume!!");
 			} 
 		} else {
 			String subscriptionId = (String) metas.get(Constants.SUBSCRIPTION_ID.name());
 			if (subscriptionId == null) {
-				//TODO: Logger - subscriptionId was null... cannot processed
-				if (event != SubscriptionLifeCycleEvent.PURCHASE)
+				if (event != SubscriptionLifeCycleEvent.PURCHASE) {
+					LOGGER.info("subscriptionId is not populated in a subscription event[" + event + "]. Cannot proceed with assumptions");
 					throw new CatalogException("Subscription Identifier was null!!");
+				}
 			} else {
 				try {
 					subscription = new FetchSubscription(subscriptionId).execute();
@@ -471,18 +476,18 @@ public class Offer implements Serializable {
 		
 		// Fetch the subscriber entity
 		Subscriber subscriber = null;	
-		try {
-			subscriber = new FetchSubscriber(subscriberId).execute();
-			context.put(Constants.SUBSCRIBER_ENTITY.name(), subscriber);
-			
-		} catch (FrameworkException e) {
-			if (e instanceof CatalogException)
-				throw (CatalogException) e;
-			throw new CatalogException("Unable to fetch Subscriber!", e);
-		}
+//		try {
+//			subscriber = new FetchSubscriber(subscriberId).execute();
+//			context.put(Constants.SUBSCRIBER_ENTITY.name(), subscriber);
+//			
+//		} catch (FrameworkException e) {
+//			if (e instanceof CatalogException)
+//				throw (CatalogException) e;
+//			throw new CatalogException("Unable to fetch Subscriber!", e);
+//		}
 	
 		// check for eligibility
-		if (!this.eligibility.execute(subscriber, SubscriptionLifeCycleEvent.PURCHASE)) {
+		if (this.eligibility != null && !this.eligibility.execute(subscriber, SubscriptionLifeCycleEvent.PURCHASE)) {
 			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
 			if (schedule == null) {
 				if (!override)
@@ -496,7 +501,7 @@ public class Offer implements Serializable {
 		}
 		
 		// check for accumulation policies
-		if (!this.accumulation.execute()) {
+		if (this.accumulation != null && !this.accumulation.execute()) {
 			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
 			if (schedule == null)
 				if (!override)
@@ -508,7 +513,7 @@ public class Offer implements Serializable {
 			context.remove(Constants.FUTURE_SCHEDULE);
 		}		
 		// check for switch policies
-		if (this.switching.execute()) {
+		if (this.switching != null && this.switching.execute()) {
 			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
 			if (schedule == null)
 				if (!override)

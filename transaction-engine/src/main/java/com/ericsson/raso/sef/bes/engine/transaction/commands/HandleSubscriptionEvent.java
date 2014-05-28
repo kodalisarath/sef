@@ -53,14 +53,17 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		//if(prodcatOffer != null)
 		
 		try {
-			String subscriptionId = ((HandleSubscriptionEventRequest)this.getRequest()).getSubscriptionId();
-			if (subscriptionId != null) {
-				Map<String, Object> metas = ((HandleSubscriptionEventRequest)this.getRequest()).getMetas();
-				if (metas == null)
-					metas = new TreeMap<String, Object>();
-				
-				metas.put(Constants.SUBSCRIPTION_ID.name(), subscriptionId);
-				((HandleSubscriptionEventRequest)this.getRequest()).setMetas(metas);
+			
+			if (((HandleSubscriptionEventRequest)this.getRequest()).getEvent() != SubscriptionLifeCycleEvent.PURCHASE) {
+				String subscriptionId = ((HandleSubscriptionEventRequest)this.getRequest()).getSubscriptionId();
+				if (subscriptionId != null) {
+					Map<String, Object> metas = ((HandleSubscriptionEventRequest)this.getRequest()).getMetas();
+					if (metas == null)
+						metas = new TreeMap<String, Object>();
+
+					metas.put(Constants.SUBSCRIPTION_ID.name(), subscriptionId);
+					((HandleSubscriptionEventRequest)this.getRequest()).setMetas(metas);
+				}
 			}
 			tasks.addAll(prodcatOffer.execute(((HandleSubscriptionEventRequest)this.getRequest()).getSubscriberId(), 
 												((HandleSubscriptionEventRequest)this.getRequest()).getEvent(), 
