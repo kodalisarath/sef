@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>com.ericsson.sef</groupId>
 	<version>0.0.1-SNAPSHOT</version>
 	<artifactId>sef-core</artifactId>
 	<packaging>bundle</packaging>
 
 	<name>sef-core</name>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<wss4j.version>1.5.6</wss4j.version>
@@ -22,49 +22,37 @@
 		<joda-time-version>2.3</joda-time-version>
 		<spring-version>3.2.9.RELEASE</spring-version>
 		<osgi-dynamic-packages>
-		org.apache.tomcat.dbcp.*
+			org.apache.tomcat.dbcp.*
 		</osgi-dynamic-packages>
 		<osgi-import-packages>
-		oracle.jdbc.driver,
-		org.springframework.*,
-		org.apache.tomcat.dbcp.dbcp,
-		javax.sql,
-		org.xml.sax,
-		org.apache.cxf.binding.soap.interceptor,
-    	org.apache.camel,
-    	org.w3c.dom,
-    	org.apache.cxf.*,
-    	org.slf4j
-    	<!-- 
-    	org.apache.cxf.message,
-    	org.apache.cxf.interceptor,
-    	org.apache.cxf.binding.soap,
-    	org.apache.cxf.jaxws
-    	 -->
+			oracle.jdbc.driver,
+			org.springframework.*,
+			org.apache.tomcat.dbcp.dbcp,
+			javax.sql,
+			org.xml.sax,
+			org.apache.cxf.binding.soap.interceptor,
+			org.apache.camel,
+			org.w3c.dom,
+			org.apache.cxf.*,
+			org.slf4j
 		</osgi-import-packages>
 		<osgi-export-package>
-		com.ericsson.raso.sef.core,
-		com.ericsson.raso.sef.ruleengine,
-		com.ericsson.raso.sef.core.jaxws,
-		com.ericsson.raso.sef.core.camelprocessors,
-		com.ericsson.raso.sef.auth.*,
-		com.ericsson.raso.sef.core.config,
-		com.ericsson.raso.sef.logging,
-		com.ericsson.raso.sef.core.lb,
-		META-INF.sef-core,
-		wsdl,
-		com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1,
-		com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1,
+			com.ericsson.raso.sef.core,
+			com.ericsson.raso.sef.ruleengine,
+			com.ericsson.raso.sef.core.jaxws,
+			com.ericsson.raso.sef.core.camelprocessors,
+			com.ericsson.raso.sef.auth.*,
+			com.ericsson.raso.sef.core.config,
+			com.ericsson.raso.sef.logging,
+			com.ericsson.raso.sef.core.lb,
+			META-INF.sef-core,
+			wsdl,
+			com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1,
+			com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1,
 		</osgi-export-package>
 	</properties>
 
 	<dependencies>
-		<dependency>
-		<groupId>com.ericsson.sef</groupId>
-		<artifactId>sef-core</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
@@ -75,13 +63,13 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${log4j-version}</version>
 		</dependency>
-		
+
 		<dependency>
-    		<groupId>org.apache.logging.log4j</groupId>
-    		<artifactId>log4j-slf4j-impl</artifactId>
-    		<version>${log4j-version}</version>
-  		</dependency>
-		
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j-version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.snmp4j</groupId>
 			<artifactId>snmp4j</artifactId>
@@ -92,36 +80,38 @@
 			<artifactId>camel-core</artifactId>
 			<version>${camel-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-spring</artifactId>
 			<version>${camel-version}</version>
 		</dependency>
-        
-        <dependency>
+
+		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-core</artifactId>
 			<version>${cxf-version}</version>
 		</dependency>
-		
-        <dependency>
+
+		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 			<version>${cxf-version}</version>
 			<scope>compile</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxws</artifactId>
 			<version>${cxf-version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http</artifactId>
 			<version>${cxf-version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-ws-security</artifactId>
@@ -131,8 +121,8 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-bindings-soap</artifactId>
 			<version>${cxf-version}</version>
-		</dependency>    
-            
+		</dependency>
+
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
@@ -143,66 +133,61 @@
 			<artifactId>hazelcast-client</artifactId>
 			<version>${hazelcast.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
 			<version>11.2.0.4</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-dbcp</artifactId>
-            <version>7.0.50</version>
-         </dependency>
-		
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>7.0.50</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-mybatis</artifactId>
 			<version>${camel-version}</version>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.apache.ibatis</groupId> -->
-<!-- 			<artifactId>ibatis-core</artifactId> -->
-<!-- 			<version>3.0</version> -->
-<!-- 		</dependency> -->
-		
 		<dependency>
-				<groupId>org.mybatis</groupId>
-				<artifactId>mybatis</artifactId>
-				<version>${mybatis-version}</version>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis-spring</artifactId>
 			<version>${mybatis-spring-version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
 		
 		<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-tx</artifactId>
-				<version>${spring-version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring-version}</version>
 		</dependency>
 		<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jdbc</artifactId>
-				<version>${spring-version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring-version}</version>
 		</dependency>
-		<dependency>
-        	<groupId>org.springframework</groupId>
-        	<artifactId>spring-beans</artifactId>
-        	<version>${spring-version}</version>
-	 	</dependency>
-	
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -214,11 +199,9 @@
 			<artifactId>spring-core</artifactId>
 			<version>${spring-version}</version>
 		</dependency>
-		
-	</dependencies>
-	
 
-	
+	</dependencies>
+
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<plugins>
@@ -238,7 +221,7 @@
 				<version>2.4.0</version>
 				<configuration>
 					<instructions>
-<!-- 						<DynamicImport-Package>${osgi-dynamic-packages}</DynamicImport-Package> -->
+						<!-- <DynamicImport-Package>${osgi-dynamic-packages}</DynamicImport-Package> -->
 						<Import-Package>${osgi-import-packages}</Import-Package>
 						<Export-Package>${osgi-export-package}</Export-Package>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>

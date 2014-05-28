@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.ericsson.raso.sef.bes.prodcat.entities.BlockingFulfillment;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class OfferProfile extends BlockingFulfillment<Product> {

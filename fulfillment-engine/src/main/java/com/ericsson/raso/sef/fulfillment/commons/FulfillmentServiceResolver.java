@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
+import com.ericsson.raso.sef.fulfillment.profiles.IProfileRegistry;
 import com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse;
 
 public class FulfillmentServiceResolver implements ApplicationContextAware {
@@ -23,6 +24,10 @@ public class FulfillmentServiceResolver implements ApplicationContextAware {
 	
 	public static FulfillmentResponse getFulfillmentResponseClient() {
 		return context.getBean(FulfillmentResponse.class);
+	}
+	
+	public static IProfileRegistry getProfileRegistry() {
+		return context.getBean(IProfileRegistry.class);
 	}
 	
 	
