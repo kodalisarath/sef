@@ -13,7 +13,7 @@
        http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd">
 
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
-	<import resource="classpath:META-INF/sef-product-catalog/beans.xml" />
+	<import resource="classpath:META-INF/product-catalog/beans.xml" />
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
 
 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
@@ -131,50 +131,50 @@
 						<camel:simple>${header.operationName} == 'discoverOffersForUser'</camel:simple>
 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOffersForUserProcessor" />
 					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'discoverOfferById'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByIdProcessor" />
-					</camel:when>
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'discoverOfferById'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByIdProcessor" /> -->
+<!-- 					</camel:when> -->
 					<camel:when>
 						<camel:simple>${header.operationName} == 'discoverOfferForUserById'</camel:simple>
 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.CreateSubscriberProcessor" />
 					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByFederatedIdProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'getAdviceOfCharge'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.GetAdviceOfChargeProcessor" />
-					</camel:when>
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByFederatedIdProcessor" /> -->
+<!-- 					</camel:when> -->
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'getAdviceOfCharge'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.GetAdviceOfChargeProcessor" /> -->
+<!-- 					</camel:when> -->
 					<camel:when>
 						<camel:simple>${header.operationName} == 'purchase'</camel:simple>
 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PurchaseProcessor" />
 					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'terminate'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.TerminateProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'expiry'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ExpiryProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'renew'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.RenewProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'preExpiry'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreExpiryProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'preRenewal'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreRenewalProcessor" />
-					</camel:when>
-					<camel:when>
-						<camel:simple>${header.operationName} == 'querySubscription'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.QuerySubscriptionProcessor" />
-					</camel:when>
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'terminate'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.TerminateProcessor" /> -->
+<!-- 					</camel:when> -->
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'expiry'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ExpiryProcessor" /> -->
+<!-- 					</camel:when> -->
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'renew'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.RenewProcessor" /> -->
+<!-- 					</camel:when> -->
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'preExpiry'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreExpiryProcessor" /> -->
+<!-- 					</camel:when> -->
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'preRenewal'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreRenewalProcessor" /> -->
+<!-- 					</camel:when> -->
+<!-- 					<camel:when> -->
+<!-- 						<camel:simple>${header.operationName} == 'querySubscription'</camel:simple> -->
+<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.QuerySubscriptionProcessor" /> -->
+<!-- 					</camel:when> -->
 				</camel:choice>
 				<camel:doFinally>
 				<!-- Add exception handler -->

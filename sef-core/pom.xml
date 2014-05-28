@@ -33,7 +33,8 @@
 		org.apache.cxf.binding.soap.interceptor,
     	org.apache.camel,
     	org.w3c.dom,
-    	org.apache.cxf.*
+    	org.apache.cxf.*,
+    	org.slf4j
     	<!-- 
     	org.apache.cxf.message,
     	org.apache.cxf.interceptor,

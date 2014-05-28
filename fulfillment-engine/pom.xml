@@ -36,7 +36,8 @@
     	org.apache.cxf.bus.spring,
     	org.eclipse.jetty.server.nio,
     	org.apache.camel,
-    	com.ericsson.sef.bes.api.subscription
+    	com.ericsson.sef.bes.api.subscription,
+    	com.ericsson.sef.bes.api.subscriber
 	</osgi-import-package>
 	</properties>
 

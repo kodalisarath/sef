@@ -17,7 +17,7 @@
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
 	
-<!-- 	<bean id="smartContext" class="com.ericsson.raso.sef.smart.SmartServiceResolver"/> -->
+	<bean id="smartContext" class="com.ericsson.raso.sef.smart.SmartServiceResolver"/>
 
 <!-- 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" /> -->
 <!-- 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" /> -->
@@ -28,8 +28,8 @@
 	
 	<cxf:cxfEndpoint id="smartInterface"
 		serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface"
-		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"
-		wsdlURL="classpath:wsdl/TisService.xml">
+		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/">
+		<!-- wsdlURL="classpath:wsdl/TisService.xml" -->
 
 		<cxf:properties>
 			<entry key="address"
@@ -82,16 +82,18 @@
 		
 	
 <!-- 	<bean id="smartEdr" class="com.ericsson.raso.sef.smart.processor.SmartEDRProcessor" />	 -->
-<!-- 	<bean id="requestIdGenerator" class="com.ericsson.raso.sef.core.camelprocessors.RequestIdGenerator" /> -->
+	<bean id="requestIdGenerator" class="com.ericsson.raso.sef.smart.processor.RequestIdProcessor" />
 	<bean id="usecaseProcessor" class="com.ericsson.raso.sef.smart.usecase.UsecaseProcessor" />
 <!-- 	<bean id="smartInEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdrInProcessor" />	 -->
 <!-- 	<bean id="smartOutEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdrOutProcessor" />	 -->
 	<bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
+	<bean id="CARecharge" class="com.ericsson.raso.sef.smart.processor.CARecharge" />
 	
 	<camelContext id="com.ericsson.raso.sef.smart.smartInterface" xmlns="http://camel.apache.org/schema/spring">
 		<route>
 			<from uri="cxf:bean:smartInterface" />
 			<camel:doTry>
+				<camel:bean ref="requestIdGenerator"/>
 <!-- 				<camel:bean ref="gatekeeperProcessor" method="process"/> -->
 <!-- 				<camel:bean ref="smartInEdr"/> -->
 				<camel:bean ref="usecaseProcessor"/>
