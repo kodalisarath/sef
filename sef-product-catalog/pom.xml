@@ -16,6 +16,7 @@
 	<kryo-serializers.version>0.26</kryo-serializers.version>
     <osgi-import-package>
 		com.ericsson.raso.sef.core,
+		com.ericsson.raso.sef.ruleengine,
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.logging,
@@ -27,7 +28,7 @@
 		com.ericsson.raso.sef.bes.prodcat,
 		com.ericsson.raso.sef.bes.prodcat.service,
 		com.ericsson.raso.sef.bes.prodcat.entities,
-		META-INF.product-catalog,
+		META-INF.product-catalog
 		</osgi-export-package>
   </properties>
 

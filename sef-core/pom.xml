@@ -44,6 +44,7 @@
 		</osgi-import-packages>
 		<osgi-export-package>
 		com.ericsson.raso.sef.core,
+		com.ericsson.raso.sef.ruleengine,
 		com.ericsson.raso.sef.core.jaxws,
 		com.ericsson.raso.sef.core.camelprocessors,
 		com.ericsson.raso.sef.auth.*,

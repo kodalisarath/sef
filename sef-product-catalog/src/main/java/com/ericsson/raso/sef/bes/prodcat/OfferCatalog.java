@@ -14,7 +14,6 @@ import com.ericsson.raso.sef.bes.prodcat.service.IOfferAdmin;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
 public class OfferCatalog implements IOfferCatalog {
 	
@@ -38,10 +37,14 @@ public class OfferCatalog implements IOfferCatalog {
 		if (ssh.fileExists(offerStoreLocation)) {
 			try {
 				this.container = (OfferContainer) ssh.fetchFromFile(offerStoreLocation);
+				logger.debug("E/// Offer Catalog is loaded");
+				logger.debug("Fetching a sample offer J: "  + container.getOfferById("J").getName());
 			} catch (FrameworkException e) {
 				logger.debug("E/// I encountered an error here: " + e.getMessage() + " " + e.getCause());
 				// TODO: LOgger on this error...
 			}
+		} else {
+			logger.debug("E/// File does not exist");
 		}
 	}
 	
