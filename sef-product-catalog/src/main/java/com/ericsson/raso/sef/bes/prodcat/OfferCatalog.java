@@ -13,7 +13,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
-public class OfferManager implements IOfferAdmin {
+public class OfferCatalog implements IOfferCatalog {
 	
 	public static String offerStoreLocation = null;;
 
@@ -21,10 +21,10 @@ public class OfferManager implements IOfferAdmin {
 	
 	private OfferContainer container = new OfferContainer();
 
-	public OfferManager() {
+	public OfferCatalog() {
 		// TODO: fetch the store location from config, once the config services is ready....
 
-		System.out.println("Offer Manager Start======>");
+		System.out.println("Offer Catalog Start======>");
 		//System.out.println("Config access: " + ServiceResolver.getConfig());
 		//offerStoreLocation = ServiceResolver.getConfig().getValue("GLOBAL", "offerStoreLocation");
 		offerStoreLocation = getStoreLocation();
@@ -55,64 +55,6 @@ public class OfferManager implements IOfferAdmin {
 		return finalfile;
 	}
 	
-	//-----------============ Admin Functions ========================================================================================================
-	
-	/* (non-Javadoc)
-	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferAdmin#changeLifeCycle(java.lang.String, int, com.ericsson.raso.sef.bes.prodcat.entities.State)
-	 */
-	@Override
-	public void changeLifeCycle(String offerId, int vesion, State newState) throws CatalogException {
-		container.changeLifeCycle(offerId, vesion, newState);
-		
-		try {
-			this.ssh.persistToFile(offerStoreLocation, (Serializable) this.container);
-		} catch (FrameworkException e) {
-			throw new CatalogException("Could not save the changes!!!", e);
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferAdmin#createOffer(com.ericsson.raso.sef.bes.prodcat.entities.Offer)
-	 */
-	@Override
-	public void createOffer(Offer offer) throws CatalogException {
-		container.createOffer(offer);
-		
-		try {
-			this.ssh.persistToFile(offerStoreLocation, (Serializable) this.container);
-		} catch (FrameworkException e) {
-			throw new CatalogException("Could not save the changes!!!", e);
-		}
-	}
-		
-	/* (non-Javadoc)
-	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferAdmin#deleteOffer(java.lang.String)
-	 */
-	@Override
-	@Deprecated
-	public void deleteOffer(String offerId) throws CatalogException {
-		container.deleteOffer(offerId);
-		
-		try {
-			this.ssh.persistToFile(offerStoreLocation, (Serializable) this.container);
-		} catch (FrameworkException e) {
-			throw new CatalogException("Could not save the changes!!!", e);
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferAdmin#updateOffer(com.ericsson.raso.sef.bes.prodcat.entities.Offer)
-	 */
-	@Override
-	public void updateOffer(Offer offer) throws CatalogException {
-		container.updateOffer(offer);
-		
-		try {
-			this.ssh.persistToFile(offerStoreLocation, (Serializable) this.container);
-		} catch (FrameworkException e) {
-			throw new CatalogException("Could not save the changes!!!", e);
-		}
-	}
 	
 	//-----------============ Admin & Catalog Functions ==============================================================================================
 	
@@ -143,7 +85,36 @@ public class OfferManager implements IOfferAdmin {
 		return container.offerExists(offerId);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferCatalog#getOfferByExternalHandle(java.lang.String)
+	 */
+	@Override
+	public Offer getOfferByExternalHandle(String handle) {
+		return container.getOfferByExternalHandle(handle);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferCatalog#getOffersByResource(java.lang.String)
+	 */
+	@Override
+	public Set<Offer> getOffersByResource(String resourceName) {
+		return container.getOffersByResource(resourceName);
+	}
+	
+	//-----------============ Catalog Functions ======================================================================================================
+
+	/* (non-Javadoc)
+	 * @see com.ericsson.raso.sef.bes.prodcat.IOfferCatalog#handleEvent(java.lang.String, java.lang.String, int, com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent)
+	 */
+	@Override
+	public List<TransactionTask> handleEvent(String subscriber, String offerId, int version, SubscriptionLifeCycleEvent event, boolean override, Map<String, Object> metas) throws CatalogException {
+		Offer offer = container.getOfferById(offerId, version);
+		if (offer == null)
+			throw new CatalogException("Given Offer: " + offerId + " of version: " + version + " does not exist");
 		
-		
+		return offer.execute(subscriber, event, override, metas);
+	}
+	
+	
 	
 }
