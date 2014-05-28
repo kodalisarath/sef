@@ -3,12 +3,16 @@ package com.ericsson.raso.sef.bes.engine.transaction.commands;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractResponse;
 
 public abstract class AbstractTransaction implements Callable<Void>, Serializable {
 	private static final long serialVersionUID = -7350766184775285546L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTransaction.class);
 
 	private String requestId = null;
 	private AbstractRequest request = null;
@@ -36,7 +40,25 @@ public abstract class AbstractTransaction implements Callable<Void>, Serializabl
 		if (this.request == null)
 			throw new TransactionException(this.requestId, "Transaction not initialized properly to execute");
 
-		return this.execute();
+		try {
+			return this.execute();
+		} catch (Throwable e) {
+			if (e instanceof TransactionException)
+				throw e;
+			
+			if (e instanceof RuntimeException) {
+				LOGGER.error("Abnormal flow - " + e.getClass().getName() + ": " + e.getMessage());
+				throw new TransactionException(this.requestId, "Transaction failed executing...", e);
+			}
+				
+			if (e instanceof Error) {
+				LOGGER.error("Container under Stress - " + e.getClass().getName() + ": " + e.getMessage());
+				throw e;
+			} else {
+				LOGGER.error("Gneric Exception Handler - " + e.getClass().getName() + ": " + e.getMessage());
+				throw new TransactionException(this.requestId, "Transaction failed executing...", e);
+			}
+		}
 	}
 
 	public AbstractRequest getRequest() {
