@@ -38,7 +38,7 @@ public class OfferCatalog implements IOfferCatalog {
 			try {
 				this.container = (OfferContainer) ssh.fetchFromFile(offerStoreLocation);
 				logger.debug("E/// Offer Catalog is loaded");
-				logger.debug("Fetching a sample offer J: "  + container.getOfferById("J").getName());
+				logger.debug("Fetching a sample offer J: "  + container.getOfferById("AllText10").getName());
 			} catch (FrameworkException e) {
 				logger.debug("E/// I encountered an error here: " + e.getMessage() + " " + e.getCause());
 				// TODO: LOgger on this error...

@@ -43,7 +43,7 @@ public class OfferContainer implements Serializable {
 	 */
 	private TreeMap<String, String> offersByExternalHandle = new TreeMap<String, String>();
 
-	private transient Logger logger = LoggerFactory.getLogger(OfferContainer.class);
+	private static final Logger logger = LoggerFactory.getLogger(OfferContainer.class);
 	
 	public void createOffer(Offer offer) throws CatalogException {
 		if (offer == null)

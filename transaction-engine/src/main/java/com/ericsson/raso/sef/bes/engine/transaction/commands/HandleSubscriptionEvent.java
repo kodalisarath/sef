@@ -49,8 +49,9 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer prodcatOffer = catalog.getOfferById(((HandleSubscriptionEventRequest)this.getRequest()).getOfferId());
-		if(prodcatOffer != null)
 		logger.debug("Offer retrieved from catalog: " + prodcatOffer.getName());
+		//if(prodcatOffer != null)
+		
 		try {
 			String subscriptionId = ((HandleSubscriptionEventRequest)this.getRequest()).getSubscriptionId();
 			if (subscriptionId != null) {
