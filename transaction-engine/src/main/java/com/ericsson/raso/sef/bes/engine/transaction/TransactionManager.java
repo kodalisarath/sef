@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import com.ericsson.raso.sef.bes.engine.transaction.commands.*;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberRequest;
@@ -15,12 +18,11 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 
 public class TransactionManager implements ISubscriberRequest, ISubscriptionRequest {
 
-	IOfferCatalog catalog = null;
+	IOfferCatalog offerCatalog = null;
 	ExecutorService executor = null;
 	
-	
 	public TransactionManager() {
-		catalog = com.ericsson.raso.sef.bes.prodcat.ServiceResolver.getOfferCatalog();
+		offerCatalog = com.ericsson.raso.sef.bes.prodcat.ServiceResolver.getOfferCatalog();
 		executor = SefCoreServiceResolver.getExecutorService(Constants.USE_CASE_EVAL.name());
 	}
 
