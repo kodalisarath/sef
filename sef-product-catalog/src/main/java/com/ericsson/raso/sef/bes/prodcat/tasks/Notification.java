@@ -10,7 +10,7 @@ public final class Notification extends TransactionTask {
 
 	
 	public Notification(NotificationMode mode, String offerId, String subscriberId, String eventId) {
-		super(Type.NOTIFICATION);
+		super(TaskType.NOTIFICATION);
 		this.mode = mode;
 		this.offerId = offerId;
 		this.subscriberId = subscriberId;

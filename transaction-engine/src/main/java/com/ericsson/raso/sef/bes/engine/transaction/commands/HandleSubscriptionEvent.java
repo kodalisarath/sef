@@ -11,18 +11,30 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferForUserRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferForUserResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleLifeCycleRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleSubscriptionEventRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleSubscriptionEventResponse;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStep;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceStep;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
+import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
+import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
+import com.ericsson.raso.sef.bes.prodcat.tasks.TaskType;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Product;
+import com.ericsson.sef.bes.api.entities.TransactionStatus;
+import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 
 public class HandleSubscriptionEvent extends AbstractTransaction {
@@ -102,6 +114,29 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		 * a. If purchase event, then ensure returning subscriptionId
 		 * b. For renewal, terminate, expiry, pre-renewal, pre-expiry 
 		 */
+		
+		String subscriptionId = null;
+		List<Product> products = new ArrayList<Product>();
+		List<Meta> billingMetas = new ArrayList<Meta>();
+		for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
+			if (result.getExecutionInputs().getType() == TaskType.PERSIST) {
+				Object saved = ((Persistence<?>)((PersistenceStep) result).getExecutionInputs()).getToSave();
+				if (saved instanceof Subscription) {
+					subscriptionId = ((Subscription)saved).getSubscriptionId(); 
+				}	
+			}
+			
+			if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
+				products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+			}
+		}
+		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
+		subscriptionClient.purchase(this.getRequestId(), 
+									new TransactionStatus("Tx-Engine", 501, "Success"), 
+									subscriptionId, 
+									products, 
+									billingMetas);
+		
 	}
 	
 	

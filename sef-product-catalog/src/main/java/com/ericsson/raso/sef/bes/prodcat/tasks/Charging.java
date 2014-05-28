@@ -11,7 +11,7 @@ public final class Charging extends TransactionTask {
 	private String subscriberId = null;
 	
 	public Charging(ChargingMode mode, MonetaryUnit charging, String subscriberId) {
-		super(Type.CHARGING);
+		super(TaskType.CHARGING);
 		this.mode = mode;
 		this.charging = charging;
 		this.subscriberId = subscriberId;

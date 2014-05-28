@@ -74,6 +74,7 @@ public class OrchestrationManager {
 		}
 		
 		//TODO: invoke response sending to the IResponse interface
+		usecase.sendResponse();
 		
 	}
 

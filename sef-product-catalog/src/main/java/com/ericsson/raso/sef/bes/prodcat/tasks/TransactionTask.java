@@ -11,29 +11,23 @@ import java.io.Serializable;
 public abstract class TransactionTask implements Serializable {
 	private static final long serialVersionUID = 82627494140719220L;
 
-	private Type type = null;
+	private TaskType type = null;
 
-	public TransactionTask(Type type) {
+	public TransactionTask(TaskType type) {
 		this.type = type;
 	}
 
-	public Type getType() {
+	public TaskType getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setType(TaskType type) {
 		this.type = type;
 	}
 
 
 
-	enum Type {
-		CHARGING,
-		FULFILLMENT,
-		NOTIFICATION,
-		FUTURE,
-		PERSIST;
-	}
+	
 
 
 

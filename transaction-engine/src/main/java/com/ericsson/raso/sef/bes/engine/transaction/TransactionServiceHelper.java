@@ -140,7 +140,16 @@ public abstract class TransactionServiceHelper {
 		return returned;
 	}
 	
-	private static Set<Product> translateProducts(List<AtomicProduct> allAtomicProducts) {
+	public static Set<Product> translateProducts(List<AtomicProduct> allAtomicProducts) {
+		Set<Product> products = new TreeSet<Product>();
+		
+		for (AtomicProduct source: allAtomicProducts) 
+			products.add(TransactionServiceHelper.getApiEntity(source));
+		
+		return products;
+	}
+
+	public static Set<Product> translateProducts(Set<AtomicProduct> allAtomicProducts) {
 		Set<Product> products = new TreeSet<Product>();
 		
 		for (AtomicProduct source: allAtomicProducts) 
@@ -240,7 +249,7 @@ public abstract class TransactionServiceHelper {
 		
 	}
 	
-	private static Set<AtomicProduct> translatetoAtomicProducts(List<Product> products) {
+	public static Set<AtomicProduct> translatetoAtomicProducts(List<Product> products) {
 		Set<AtomicProduct> AtomicProducts = new TreeSet<AtomicProduct>();
 		for (Product source: products) 
 			

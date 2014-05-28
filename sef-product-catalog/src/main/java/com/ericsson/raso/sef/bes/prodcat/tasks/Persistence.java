@@ -10,7 +10,7 @@ public final class Persistence<T> extends TransactionTask {
 	private String subscriberId = null;
 	
 	public Persistence(PersistenceMode mode, T entity, String subscriberId) {
-		super(Type.CHARGING);
+		super(TaskType.PERSIST);
 		this.mode = mode;
 		this.toSave = entity;
 		this.subscriberId = subscriberId;

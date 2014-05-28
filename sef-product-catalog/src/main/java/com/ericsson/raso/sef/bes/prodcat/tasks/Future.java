@@ -13,7 +13,7 @@ public final class Future extends TransactionTask  {
 
 	
 	public Future(FutureMode mode, SubscriptionLifeCycleEvent event, String offerId, String subscriberId, Long schedule) {
-		super(Type.FUTURE);
+		super(TaskType.FUTURE);
 		this.mode = mode;
 		this.offerId = offerId;
 		this.subscriberId = subscriberId;

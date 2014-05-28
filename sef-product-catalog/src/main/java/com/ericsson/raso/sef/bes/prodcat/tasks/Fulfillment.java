@@ -15,7 +15,7 @@ public final class Fulfillment extends TransactionTask {
 
 	public Fulfillment(FulfillmentMode mode, AtomicProduct atomicProduct,
 			String subscriberId, Map<String, Object> additionalInputs) {
-		super(Type.FULFILLMENT);
+		super(TaskType.FULFILLMENT);
 		this.mode = mode;
 		this.atomicProduct = atomicProduct;
 		this.subscriberId = subscriberId;
