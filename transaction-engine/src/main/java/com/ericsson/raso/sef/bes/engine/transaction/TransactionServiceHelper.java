@@ -17,7 +17,48 @@ import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
 import com.ericsson.sef.bes.api.entities.Offer;
 import com.ericsson.sef.bes.api.entities.Product;
+import com.ericsson.sef.bes.api.entities.Subscriber;
+
+
 public abstract class TransactionServiceHelper {
+	
+	
+	public static Subscriber getApiEntity(com.ericsson.raso.sef.core.db.model.Subscriber subscriber) {
+		Subscriber returned = new Subscriber();
+		
+		
+		returned.setActiveDate(subscriber.getActiveDate());
+		returned.setBillCycleDay(subscriber.getBillCycleDay());
+		returned.setContractId(subscriber.getContractId());
+		returned.setContractState(subscriber.getContractState().getName());
+		returned.setCreated(subscriber.getCreated());
+		returned.setCustomerId(subscriber.getCustomerId());
+		returned.setCustomerSegment(subscriber.getCustomerSegment());
+		returned.setDateOfBirth(subscriber.getDateOfBirth());
+		returned.setDeleted(subscriber.getDeleted());
+		returned.setEmail(subscriber.getEmail());
+		returned.setGender(subscriber.getGender());
+		returned.setImeiSv(subscriber.getImeiSv());
+		returned.setImsi(subscriber.getImsi());
+		returned.setLastModified(subscriber.getLastModified());
+		returned.setMetas(subscriber.getMetas()); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
+		returned.setMsisdn(subscriber.getMsisdn());
+		returned.setPaymentParent(subscriber.getPaymentParent());
+		returned.setPaymentResponsible(subscriber.getPaymentResponsible());
+		returned.setPaymentType(subscriber.getPaymentType());
+		returned.setPin(subscriber.getPin());
+		returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
+		returned.setRatePlan(subscriber.getRatePlan());
+		returned.setRegistrationDate(subscriber.getRegistrationDate());
+		returned.setUserId(subscriber.getUserId());
+		
+	}
+	
+	
+
+
+	
+	
 	public static Offer getApiEntity(com.ericsson.raso.sef.bes.prodcat.entities.Offer other) {
 		Offer returned = new Offer();
 		

@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import com.ericsson.sef.bes.api.entities.Subscriber;
+
 
 public final class CreateSubscriberRequest extends AbstractRequest {
 	private static final long serialVersionUID = -5742652213191533447L;

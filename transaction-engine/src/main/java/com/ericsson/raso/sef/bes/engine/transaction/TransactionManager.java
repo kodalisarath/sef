@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.commands.*;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriptionRequest;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
@@ -30,7 +29,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 
 	@Override
-	public String createSubscriber(String requestId, Subscriber subscriber) {
+	public String createSubscriber(String requestId, com.ericsson.sef.bes.api.entities.Subscriber subscriber) {
 		CreateSubscriber command = new CreateSubscriber(requestId, subscriber);
 		executor.submit(command);
 		return requestId;

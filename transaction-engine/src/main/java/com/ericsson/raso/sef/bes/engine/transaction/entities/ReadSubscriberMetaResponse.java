@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import com.ericsson.sef.bes.api.entities.Subscriber;
+
 
 public final class ReadSubscriberMetaResponse extends AbstractResponse {
 	private static final long	serialVersionUID	= 1953619690977342269L;

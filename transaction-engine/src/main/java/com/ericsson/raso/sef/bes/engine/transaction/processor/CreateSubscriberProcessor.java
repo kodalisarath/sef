@@ -16,9 +16,9 @@ public class CreateSubscriberProcessor implements Processor{
 		Object[] objectArray = (Object[]) arg0.getIn().getBody(Object.class);
 		Holder<String> requestId = (Holder<String>)objectArray[0];
 		Holder<com.ericsson.sef.bes.api.entities.Subscriber> subscriber = (Holder<com.ericsson.sef.bes.api.entities.Subscriber>)objectArray[1];
-		com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber subscriberTransaction= ServiceResolver.parseToCoreSubscriber(subscriber.value);
+		//Subscriber subscriberTransaction= ServiceResolver.parseToCoreSubscriber(subscriber.value);
 		TransactionManager transactionManager = ServiceResolver.getTransactionManager();
-		transactionManager.createSubscriber(requestId.value, subscriberTransaction);
+		transactionManager.createSubscriber(requestId.value, subscriber.value);
 		
 	}
 

@@ -10,7 +10,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractResponse;
 
-public abstract class AbstractTransaction implements Callable<Void>, Serializable {
+public abstract class AbstractTransaction implements Callable<Boolean>, Serializable {
 	private static final long serialVersionUID = -7350766184775285546L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTransaction.class);
 
@@ -31,32 +31,45 @@ public abstract class AbstractTransaction implements Callable<Void>, Serializabl
 	 * 
 	 * @throws TransactionException
 	 */
-	public abstract Void execute() throws TransactionException;
+	public abstract Boolean execute() throws TransactionException;
 	
 	public abstract void sendResponse();
 
 	@Override
-	public Void call() throws Exception {
+	public Boolean call() throws Exception {
 		if (this.request == null)
-			throw new TransactionException(this.requestId, "Transaction not initialized properly to execute");
+			this.response.setReturnFault(new TransactionException(this.requestId, "Transaction not initialized properly to execute"));
 
 		try {
-			return this.execute();
+			this.execute();
+			this.sendResponse();
+			return true;
 		} catch (Throwable e) {
-			if (e instanceof TransactionException)
-				throw e;
+			LOGGER.error("Use-case: " + this.getClass().getName() + ":" + this.requestId, e);
+			
+			if (e instanceof TransactionException) {
+				this.response.setReturnFault((TransactionException) e);
+				this.sendResponse();
+				return false;
+			}
 			
 			if (e instanceof RuntimeException) {
 				LOGGER.error("Abnormal flow - " + e.getClass().getName() + ": " + e.getMessage());
-				throw new TransactionException(this.requestId, "Transaction failed executing...", e);
+				this.response.setReturnFault(new TransactionException(this.requestId, "Transaction failed executing...", e));
+				this.sendResponse();
+				return false;
 			}
 				
 			if (e instanceof Error) {
 				LOGGER.error("Container under Stress - " + e.getClass().getName() + ": " + e.getMessage());
+				this.response.setReturnFault(new TransactionException(this.requestId, "System under stress...", e));
+				this.sendResponse();
 				throw e;
 			} else {
 				LOGGER.error("Gneric Exception Handler - " + e.getClass().getName() + ": " + e.getMessage());
-				throw new TransactionException(this.requestId, "Transaction failed executing...", e);
+				this.response.setReturnFault(new TransactionException(this.requestId, "Transaction failed executing...", e));
+				this.sendResponse();
+				return false;
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.QuerySubscriptionRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.QuerySubscriptionResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberRequest;
@@ -21,20 +22,17 @@ public class ReadSubscriber extends AbstractTransaction {
 	}
 
 	@Override
-	public Void execute() throws TransactionException {
+	public Boolean execute() throws TransactionException {
 		
 		try {
 			Subscriber subscriber = new FetchSubscriber(((ReadSubscriberRequest)this.getRequest()).getSubscriberId()).execute();
-			com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber result = new com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber(subscriber);
+			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper.getApiEntity(subscriber);
 			((ReadSubscriberResponse)this.getResponse()).setSubscriber(result);
 		} catch (FrameworkException e) {
 			((QuerySubscriptionResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Unable to fetch subscription", e));
 		}
 		
-		
-		this.sendResponse();
-		
-		return null;
+		return true;
 	}
 
 	

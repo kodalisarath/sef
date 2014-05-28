@@ -24,7 +24,7 @@ public class GetAdviceOfCharge extends AbstractTransaction {
 	}
 
 	@Override
-	public Void execute() throws TransactionException {
+	public Boolean execute() throws TransactionException {
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer prodcatOffer = catalog.getOfferById(((GetAdviceOfChargeRequest)this.getRequest()).getOfferId());
@@ -41,9 +41,7 @@ public class GetAdviceOfCharge extends AbstractTransaction {
 				
 		}
 		
-		this.sendResponse();
-		
-		return null;
+		return true;
 	}
 
 	

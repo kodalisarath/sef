@@ -3,7 +3,6 @@ package com.ericsson.raso.sef.bes.engine.transaction.service;
 import java.util.Map;
 import java.util.Set;
 
-import com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber;
 
 
 public interface ISubscriberRequest {
@@ -12,7 +11,7 @@ public interface ISubscriberRequest {
 	
 	public abstract String readSubscriberMeta(String requestId, String subscriberId, Set<String> metaNames);
 	
-	public abstract String createSubscriber(String requestId, Subscriber subscriber);
+	public abstract String createSubscriber(String requestId, com.ericsson.sef.bes.api.entities.Subscriber subscriber);
 	
 	public abstract String updateSubscriber(String requestId, String subscriberId, Map<String, String> metas);
 	

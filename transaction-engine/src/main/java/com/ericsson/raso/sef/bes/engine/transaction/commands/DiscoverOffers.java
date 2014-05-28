@@ -20,7 +20,7 @@ public class DiscoverOffers extends AbstractTransaction {
 	}
 
 	@Override
-	public Void execute() throws TransactionException {
+	public Boolean execute() throws TransactionException {
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Set<Offer> prodcatOffers = catalog.getOffersByResource(((DiscoverOffersRequest)this.getRequest()).getResource());
@@ -33,9 +33,7 @@ public class DiscoverOffers extends AbstractTransaction {
 		
 		((DiscoverOffersResponse)this.getResponse()).setResult(resultOffers);
 		
-		this.sendResponse();
-		
-		return null;
+		return true;
 	}
 
 	

@@ -17,7 +17,7 @@ public class QuerySubscription extends AbstractTransaction {
 	}
 
 	@Override
-	public Void execute() throws TransactionException {
+	public Boolean execute() throws TransactionException {
 		
 		try {
 			Subscription subscription = new FetchSubscription(((QuerySubscriptionRequest)this.getRequest()).getSubscriptionId()).execute();
@@ -26,9 +26,6 @@ public class QuerySubscription extends AbstractTransaction {
 		} catch (FrameworkException e) {
 			((QuerySubscriptionResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Unable to fetch subscription", e));
 		}
-		
-		
-		this.sendResponse();
 		
 		return null;
 	}

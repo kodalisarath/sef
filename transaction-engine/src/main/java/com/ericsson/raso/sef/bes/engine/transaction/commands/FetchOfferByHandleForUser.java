@@ -20,7 +20,7 @@ public class FetchOfferByHandleForUser extends AbstractTransaction {
 	}
 
 	@Override
-	public Void execute() throws TransactionException {
+	public Boolean execute() throws TransactionException {
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer prodcatOffer = catalog.getOfferByExternalHandle(((FetchOfferByHandleForUserRequest)this.getRequest()).getHandle());
@@ -35,9 +35,8 @@ public class FetchOfferByHandleForUser extends AbstractTransaction {
 			((FetchOfferByHandleForUserResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Offer not available for user", e));
 		}
 		
-		this.sendResponse();
 		
-		return null;
+		return true;
 	}
 
 	

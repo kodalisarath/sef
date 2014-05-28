@@ -6,7 +6,6 @@ import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferResponse;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
-import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 
 public class FetchOffer extends AbstractTransaction {
@@ -18,16 +17,15 @@ public class FetchOffer extends AbstractTransaction {
 	}
 
 	@Override
-	public Void execute() throws TransactionException {
+	public Boolean execute() throws TransactionException {
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer prodcatOffer = catalog.getOfferById(((FetchOfferRequest)this.getRequest()).getOfferId());
 //		com.ericsson.sef.bes.api.entities.Offer resultantOffer = TransactionServiceHelper.getApiEntity(prodcatOffer);
 //		((FetchOfferResponse)this.getResponse()).setResult(resultantOffer);
 		
-		this.sendResponse();
 		
-		return null;
+		return true;
 	}
 
 	

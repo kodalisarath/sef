@@ -8,7 +8,6 @@ import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.Subscriber;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
@@ -18,6 +17,7 @@ import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.sef.bes.api.entities.Subscriber;
 
 public class CreateSubscriber extends AbstractTransaction {
 	private static final long	serialVersionUID	= 8085575039162225609L;
@@ -30,7 +30,7 @@ public class CreateSubscriber extends AbstractTransaction {
 	
 	
 	@Override
-	public Void execute() throws TransactionException {
+	public Boolean execute() throws TransactionException {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 		
 		
@@ -54,7 +54,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		
 		OrchestrationManager.getInstance().submit(this, execution);
 		
-		return null;
+		return true;
 	}
 	
 	@Override

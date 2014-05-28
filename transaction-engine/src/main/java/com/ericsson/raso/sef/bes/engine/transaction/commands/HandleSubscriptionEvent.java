@@ -43,7 +43,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 	}
 
 	@Override
-	public Void execute() throws TransactionException {
+	public Boolean execute() throws TransactionException {
 		logger.debug("Entered handleSubscriptionEvent!!!");
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 		
@@ -79,7 +79,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		logger.info("Going to execute the orcheastration profile for: " + execution.getNorthBoundCorrelator());
 		OrchestrationManager.getInstance().submit(this, execution);
 		
-		return null;
+		return true;
 	}
 
 	
