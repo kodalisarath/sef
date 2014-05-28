@@ -18,7 +18,18 @@
 		com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
-		com.ericsson.raso.sef.logging
+		com.ericsson.raso.sef.logging,
+		com.ericsson.raso.sef.bes.prodcat.service,
+		com.ericsson.sef.bes.api.subscriber,
+		com.ericsson.sef.bes.api.fulfillment,
+		org.apache.cxf.bus.spring,
+		org.eclipse.jetty.server.nio,
+		org.apache.camel,
+		com.ericsson.raso.sef.bes.engine.transaction.processor,
+		org.apache.cxf.interceptor,
+		META-INF.sef-core,
+		META-INF.product-catalog,
+		META-INF.sef-api
 		</osgi-import-package>
   </properties>
 
