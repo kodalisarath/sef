@@ -1,10 +1,8 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
 import java.util.List;
-import java.util.Map;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
-import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 
 public interface IProfileRegistry {
 

@@ -18,7 +18,7 @@
 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
-	
+	<bean id="profileRegistry" class="com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry" />
 	
 	<cxf:cxfEndpoint id="fulfillmentEngine"
 		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest" bus="cxf">

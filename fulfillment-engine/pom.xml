@@ -16,6 +16,7 @@
 		com.ericsson.raso.sef.core.camelprocessors,
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
+		com.ericsson.raso.sef.ruleengine,
 		com.ericsson.raso.sef.logging,
 		META-INF.sef-core,
 		META-INF.sef-api,
