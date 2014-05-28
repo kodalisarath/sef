@@ -1,8 +1,11 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -15,6 +18,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.HardDateTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.LimitedQuota;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
+import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 import com.ericsson.sef.bes.api.entities.Offer;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.Subscriber;
@@ -27,21 +31,21 @@ public abstract class TransactionServiceHelper {
 		Subscriber returned = new Subscriber();
 		
 		
-		returned.setActiveDate(subscriber.getActiveDate());
+		returned.setActiveDate(subscriber.getActiveDate().getMillis());
 		returned.setBillCycleDay(subscriber.getBillCycleDay());
 		returned.setContractId(subscriber.getContractId());
 		returned.setContractState(subscriber.getContractState().getName());
-		returned.setCreated(subscriber.getCreated());
+		returned.setCreated(subscriber.getCreated().getMillis());
 		returned.setCustomerId(subscriber.getCustomerId());
 		returned.setCustomerSegment(subscriber.getCustomerSegment());
-		returned.setDateOfBirth(subscriber.getDateOfBirth());
+		returned.setDateOfBirth(subscriber.getDateOfBirth().getMillis());
 		returned.setDeleted(subscriber.getDeleted());
 		returned.setEmail(subscriber.getEmail());
 		returned.setGender(subscriber.getGender());
 		returned.setImeiSv(subscriber.getImeiSv());
 		returned.setImsi(subscriber.getImsi());
-		returned.setLastModified(subscriber.getLastModified());
-		returned.setMetas(subscriber.getMetas()); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
+		returned.setLastModified(subscriber.getLastModified().getMillis());
+		returned.setMetas(getMetas(subscriber.getMetas())); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
 		returned.setMsisdn(subscriber.getMsisdn());
 		returned.setPaymentParent(subscriber.getPaymentParent());
 		returned.setPaymentResponsible(subscriber.getPaymentResponsible());
@@ -49,13 +53,22 @@ public abstract class TransactionServiceHelper {
 		returned.setPin(subscriber.getPin());
 		returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
 		returned.setRatePlan(subscriber.getRatePlan());
-		returned.setRegistrationDate(subscriber.getRegistrationDate());
+		returned.setRegistrationDate(subscriber.getRegistrationDate().getMillis());
 		returned.setUserId(subscriber.getUserId());
+		
+		return returned;
 		
 	}
 	
 	
 
+	private static Map<String, String> getMetas(Collection<SubscriberMeta> subscriberMetas) {
+		Map<String,String> map = new HashMap<String, String>();
+		for(SubscriberMeta meta: subscriberMetas) {
+			map.put(meta.getKey(), meta.getValue());
+		}
+		return map;
+	}
 
 	
 	
