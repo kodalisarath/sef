@@ -16,6 +16,8 @@
 	<import resource="classpath:META-INF/product-catalog/beans.xml" />
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
 
+	<bean id="transactionManager" class="com.ericsson.raso.sef.bes.engine.transaction.TransactionManager" />
+	<bean id="serviceResolver" class="com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver" />
 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />

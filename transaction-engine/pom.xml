@@ -14,7 +14,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <osgi-import-package>
     	org.springframework.*,
+    	com.ericsson.raso.sef.bes.engine.transaction,
+    	com.ericsson.raso.sef.bes.engine.transaction.processor,
     	com.ericsson.sef.bes.api.subscription,
+    	com.ericsson.sef.bes.api.entities,
 		com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
@@ -25,11 +28,11 @@
 		org.apache.cxf.bus.spring,
 		org.eclipse.jetty.server.nio,
 		org.apache.camel,
-		com.ericsson.raso.sef.bes.engine.transaction.processor,
 		org.apache.cxf.interceptor,
 		META-INF.sef-core,
 		META-INF.product-catalog,
-		META-INF.sef-api
+		META-INF.sef-api,
+		org.slf4j
 		</osgi-import-package>
   </properties>
 

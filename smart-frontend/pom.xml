@@ -17,6 +17,7 @@
     	org.springframework.*,
     	META-INF.sef-core,
     	META-INF.sef-api,
+    	com.ericsson.sef.bes.api.entities,
     	com.ericsson.sef.bes.api.subscription,
     	com.ericsson.sef.bes.api.subscriber,
     	com.ericsson.sef.bes.api.fulfillment,  	
