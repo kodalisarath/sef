@@ -16,7 +16,7 @@ import com.ericsson.raso.sef.core.SecureSerializationHelper;
 public class ProfileRegistry implements IProfileRegistry {
 
 	
-	private Map<String, FulfillmentProfile<?, Map<String, String>>> profiles = new TreeMap<String, FulfillmentProfile<?, Map<String, String>>>();;
+	private Map<String, FulfillmentProfile<?>> profiles = new TreeMap<String, FulfillmentProfile<?>>();;
 
 	private String profileRegistryLocation = null;
 	private SecureSerializationHelper ssh = null;
@@ -29,7 +29,7 @@ public class ProfileRegistry implements IProfileRegistry {
 
 		if (ssh.fileExists(this.profileRegistryLocation)) {
 			try {
-				this.profiles = (Map<String, FulfillmentProfile<?, Map<String, String>>>) ssh.fetchFromFile(this.profileRegistryLocation);
+				this.profiles = (Map<String, FulfillmentProfile<?>>) ssh.fetchFromFile(this.profileRegistryLocation);
 			} catch (FrameworkException e) {
 				// TODO: LOgger on this error...
 			}
@@ -46,7 +46,7 @@ public class ProfileRegistry implements IProfileRegistry {
 		}else if(your_os.indexOf( "nix") >=0 || your_os.indexOf( "nux") >=0){
 			finalfile = profileStoreLoc + "/" + filename;
 		}else{
-			finalfile = profileStoreLoc + "{others}" + filename;
+			finalfile = profileStoreLoc + "/" + filename;
 		}
 		
 		return finalfile;
@@ -54,12 +54,12 @@ public class ProfileRegistry implements IProfileRegistry {
 	
 	@Override
 	public boolean createProfile(
-			FulfillmentProfile<?, Map<String, String>> profile)
+			FulfillmentProfile<?> profile)
 			throws CatalogException {
 		if (profile == null)
-			throw new CatalogException("Given Resource was null!!");
+			throw new CatalogException("Given profile was null!!");
 
-		if (!this.profiles.containsValue(profile))
+		if (!this.profiles.containsKey(profile.getName()))
 			this.profiles.put(profile.getName(), profile);
 		else 
 			throw new CatalogException("Given Profile (" + profile + ") already exists!!");
@@ -75,7 +75,7 @@ public class ProfileRegistry implements IProfileRegistry {
 
 	@Override
 	public boolean updateProfile(
-			FulfillmentProfile<?, Map<String, String>> profile)
+			FulfillmentProfile<?> profile)
 			throws CatalogException {
 		if (profile == null)
 			throw new CatalogException("Given profile was null!!");
@@ -83,7 +83,7 @@ public class ProfileRegistry implements IProfileRegistry {
 		if (this.profiles.isEmpty())
 			return false;
 
-		if (this.profiles.containsValue(profile))
+		if (this.profiles.containsKey(profile.getName()))
 			this.profiles.put(profile.getName(), profile);
 		else
 			return false;
@@ -99,7 +99,7 @@ public class ProfileRegistry implements IProfileRegistry {
 
 	@Override
 	public boolean deleteProfile(
-			FulfillmentProfile<?, Map<String, String>> profile)
+			FulfillmentProfile<?> profile)
 			throws CatalogException {
 		if (profile == null)
 			throw new CatalogException("Given profile was null!!");
@@ -108,7 +108,7 @@ public class ProfileRegistry implements IProfileRegistry {
 			return false;
 
 		
-		if (this.profiles.containsValue(profile)) {
+		if (this.profiles.containsKey(profile.getName())) {
 			
 			remove(profile.getName(), profile);
 		} else
@@ -123,7 +123,7 @@ public class ProfileRegistry implements IProfileRegistry {
 
 	}
 
-	private boolean remove(String name, FulfillmentProfile<?, Map<String, String>> profile) {
+	private boolean remove(String name, FulfillmentProfile<?> profile) {
 		
 		if(this.profiles.containsKey(name) && Objects.equals(this.profiles.get(name), profile) ) {
 			this.profiles.remove(name);
@@ -132,19 +132,17 @@ public class ProfileRegistry implements IProfileRegistry {
 	}
 	
 	
-	
-
 	@Override
-	public List<FulfillmentProfile<?, Map<String, String>>> getAllProfiles()
+	public List<FulfillmentProfile<?>> getAllProfiles()
 			throws CatalogException {
-		Collection<FulfillmentProfile<?, Map<String, String>>> allResources = this.profiles.values();
+		Collection<FulfillmentProfile<?>> allResources = this.profiles.values();
 		if (allResources.isEmpty())
-			return new ArrayList<FulfillmentProfile<?, Map<String, String>>>();
-		return Arrays.asList((FulfillmentProfile<?, Map<String, String>>[]) allResources.toArray());
+			return new ArrayList<FulfillmentProfile<?>>();
+		return Arrays.asList((FulfillmentProfile<?>[]) allResources.toArray());
 	}
 
 	@Override
-	public FulfillmentProfile<?, Map<String, String>> readProfile(String profile)
+	public FulfillmentProfile<?> readProfile(String profile)
 			throws CatalogException {
 		if (profile == null)
 			throw new CatalogException("Given profile was null!!");

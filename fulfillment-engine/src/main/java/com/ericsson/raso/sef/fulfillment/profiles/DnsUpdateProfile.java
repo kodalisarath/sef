@@ -3,7 +3,6 @@ package com.ericsson.raso.sef.fulfillment.profiles;
 import java.util.List;
 import java.util.Map;
 
-import com.ericsson.raso.sef.bes.prodcat.entities.BlockingFulfillment;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.api.entities.Product> {

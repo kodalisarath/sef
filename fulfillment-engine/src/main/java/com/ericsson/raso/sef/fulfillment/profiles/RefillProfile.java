@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ericsson.raso.sef.bes.prodcat.entities.BlockingFulfillment;
 import com.ericsson.raso.sef.client.air.command.RefillCommand;
 import com.ericsson.raso.sef.client.air.request.RefillRequest;
 import com.ericsson.raso.sef.client.air.response.AccBefAndAfterRef;

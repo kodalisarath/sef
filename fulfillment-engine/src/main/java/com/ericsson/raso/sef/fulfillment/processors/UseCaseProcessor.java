@@ -13,10 +13,11 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.bes.prodcat.entities.FulfillmentProfile;
+import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentServiceResolver;
+import com.ericsson.raso.sef.fulfillment.profiles.FulfillmentProfile;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
@@ -40,8 +41,8 @@ public class UseCaseProcessor implements Processor {
 		
 		IServiceRegistry serviceRegistry = FulfillmentServiceResolver.getServiceRegistry();
 		Resource resource = serviceRegistry.readResource(product.value.getResourceName());
-		List<FulfillmentProfile> fulfillmentProfiles = resource.getFulfillmentProfiles();
-		
+		List<String> fulfillmentProfileIds = resource.getFulfillmentProfiles();
+		List<FulfillmentProfile> fulfillmentProfiles = getProfiles(fulfillmentProfileIds);
 		
 		switch(operationName){
 		case "fulfill":fulfill(correlationId, msisdn.value, fulfillmentProfiles,product.value, map);
@@ -59,6 +60,26 @@ public class UseCaseProcessor implements Processor {
 	}
 	
 	
+	@SuppressWarnings("rawtypes")
+	private List<FulfillmentProfile> getProfiles(
+			List<String> fulfillmentProfileIds) {
+		
+		List<FulfillmentProfile> profiles = new ArrayList<FulfillmentProfile>();
+		
+		try {
+			for(String profile: fulfillmentProfileIds) {
+			
+				FulfillmentProfile fulfillmentProfile =  FulfillmentServiceResolver.getProfileRegistry().readProfile(profile);
+				profiles.add(fulfillmentProfile);
+			}
+		} catch (CatalogException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return profiles;
+	}
+
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void fulfill(String correlationId, String msisdn, List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
 

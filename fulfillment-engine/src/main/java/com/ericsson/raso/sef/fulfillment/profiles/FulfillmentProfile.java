@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.ericsson.raso.sef.ruleengine.Rule;
 
-public abstract class FulfillmentProfile<E, Map> implements Serializable {
+public abstract class FulfillmentProfile<E> implements Serializable {
 	private static final long serialVersionUID = 8880950261612749964L;
 
 	private String name = null;
