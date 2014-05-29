@@ -9,6 +9,10 @@ public class RequestContextLocalStore {
 	}
 	
 	public static RequestContext get() {
+		if(reqCtxLocal.get() == null){
+			RequestContext ctx = new RequestContext();
+			reqCtxLocal.set(ctx);
+		}
 		return reqCtxLocal.get();
 	}
 

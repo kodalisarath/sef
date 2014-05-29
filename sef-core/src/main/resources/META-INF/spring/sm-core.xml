@@ -12,6 +12,7 @@
 	<ctx:annotation-config />
 
 	<bean id="sefCoreServiceResolver" class="com.ericsson.raso.sef.core.SefCoreServiceResolver" />
+	<bean id="clusterService" class="com.ericsson.raso.sef.core.CloudAwareClusterService" />
 
 	<bean id="configservice" class="com.ericsson.raso.sef.core.config.ConfigService" />
 	<bean id="taskExecutor"

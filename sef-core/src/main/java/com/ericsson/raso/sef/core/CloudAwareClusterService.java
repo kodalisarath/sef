@@ -18,6 +18,7 @@ public class CloudAwareClusterService implements CloudAwareCluster {
 	private static final String CONFIG_HOME = "CONFIG_HOME";
 	
 	public CloudAwareClusterService() {
+		start();
 	}
 	
 	public void start() {

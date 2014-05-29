@@ -10,6 +10,7 @@
 
 
 	<osgi:service ref="configservice" interface="com.ericsson.raso.sef.core.config.IConfig" />
+	<osgi:service ref="clusterService" interface="com.ericsson.raso.sef.core.CloudAwareCluster" />
 
 </beans>
 
