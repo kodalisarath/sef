@@ -62,11 +62,11 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer prodcatOffer = catalog.getOfferById(((HandleSubscriptionEventRequest)this.getRequest()).getOfferId());
 		logger.debug("Offer retrieved from catalog: " + prodcatOffer.getName());
-		//if(prodcatOffer != null)
 		
 		try {
 			
 			if (((HandleSubscriptionEventRequest)this.getRequest()).getEvent() != SubscriptionLifeCycleEvent.PURCHASE) {
+				logger.debug("Not a purchase event...");
 				String subscriptionId = ((HandleSubscriptionEventRequest)this.getRequest()).getSubscriptionId();
 				if (subscriptionId != null) {
 					Map<String, Object> metas = ((HandleSubscriptionEventRequest)this.getRequest()).getMetas();
@@ -77,6 +77,8 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 					((HandleSubscriptionEventRequest)this.getRequest()).setMetas(metas);
 				}
 			}
+			
+			logger.debug("Offer execution to start now...");
 			tasks.addAll(prodcatOffer.execute(((HandleSubscriptionEventRequest)this.getRequest()).getSubscriberId(), 
 												((HandleSubscriptionEventRequest)this.getRequest()).getEvent(), 
 												((HandleSubscriptionEventRequest)this.getRequest()).getOverride(),

@@ -42,7 +42,7 @@ public abstract class AbstractTransaction implements Callable<Boolean>, Serializ
 
 		try {
 			this.execute();
-			this.sendResponse();
+			//this.sendResponse(); //-- not all the time, the response will be blocking execution. In cases, the use-case may request orchestration who will invoke sendResponse()
 			return true;
 		} catch (Throwable e) {
 			LOGGER.error("Use-case: " + this.getClass().getName() + ":" + this.requestId, e);

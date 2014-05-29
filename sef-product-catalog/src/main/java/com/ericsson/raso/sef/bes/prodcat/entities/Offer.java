@@ -312,6 +312,7 @@ public class Offer implements Serializable {
 		Subscription purchaseSubscription = new Subscription(clone);
 		purchaseSubscription.setSubscriberId(subscriberId);
 		purchaseSubscription.addSubscriptionHistory(SubscriptionLifeCycleState.IN_ACTIVATION, timestamp);
+		LOGGER.debug("Subscription Purchase created: " + purchaseSubscription);
 		return purchaseSubscription;
 		
 	}
@@ -469,8 +470,10 @@ public class Offer implements Serializable {
 		// check for offer state first
 		if (this.offerState != State.PUBLISHED) {
 			if (this.offerState == State.TESTING) {
-				if (!this.whiteListedUsers.contains(subscriberId))
+				if (!this.whiteListedUsers.contains(subscriberId)) {
+					LOGGER.error("Offer is not published and subscriber is not whitelisted for testing!!");
 					throw new CatalogException("Offer is not published and subscriber is not whitelisted for testing!!");
+				}
 			}
 		}
 		
@@ -490,9 +493,10 @@ public class Offer implements Serializable {
 		if (this.eligibility != null && !this.eligibility.execute(subscriber, SubscriptionLifeCycleEvent.PURCHASE)) {
 			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
 			if (schedule == null) {
-				if (!override)
+				if (!override) {
+					LOGGER.error("Eligibility Policies rejected processing purchase/ service order request!!");
 					throw new CatalogException("Eligibility Policies rejected processing purchase/ service order request!!");
-				else { 
+				} else { 
 					//TODO: Logger - log the exception you were about to throw
 				}
 			}
@@ -504,9 +508,10 @@ public class Offer implements Serializable {
 		if (this.accumulation != null && !this.accumulation.execute()) {
 			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
 			if (schedule == null)
-				if (!override)
+				if (!override) {
+					LOGGER.error("Accumulation Policies rejected processing purchase/ service order request!!");
 					throw new CatalogException("Accumulation Policies rejected processing purchase/ service order request!!");
-				else { 
+				} else { 
 					//TODO: Logger - log the exception you were about to throw
 				}
 			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule));
@@ -516,9 +521,10 @@ public class Offer implements Serializable {
 		if (this.switching != null && this.switching.execute()) {
 			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
 			if (schedule == null)
-				if (!override)
+				if (!override) {
+					LOGGER.error("Switching Policies rejected processing purchase/ service order request!!");
 					throw new CatalogException("Switching Policies rejected processing purchase/ service order request!!");
-				else { 
+				} else { 
 					//TODO: Logger - log the exception you were about to throw
 				}
 			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule));
@@ -535,6 +541,7 @@ public class Offer implements Serializable {
 			} else
 				isTrialAllowed = false;
 		} catch (FrameworkException e) {
+			LOGGER.error("Unable to verify if this user has already availed trial!!", e);
 			if (e instanceof CatalogException)
 				throw ((CatalogException)e);
 			throw new CatalogException("Unable to verify if this user has already availed trial!!", e);
@@ -551,6 +558,7 @@ public class Offer implements Serializable {
 			MonetaryUnit rate = this.price.getSimpleAdviceOfCharge();
 			tasks.add(new Charging(ChargingMode.CHARGE, rate, subscriberId));
 			
+			LOGGER.debug("Adding purchase history for charging...");
 			purchase.addPurchaseHistory(SubscriptionLifeCycleEvent.PURCHASE, PURCHASE_TIMESTAMP, rate);
 		}
 				
@@ -571,6 +579,8 @@ public class Offer implements Serializable {
 				clone.setValidity(trialPeriod);
 				purchase.addProduct(clone);
 			} 
+			
+			LOGGER.debug("Adding a Fulfillment for: " + subscriberId + " with: " + clone);
 			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, null));
 		}
 		
@@ -580,6 +590,8 @@ public class Offer implements Serializable {
 		} else {
 			if (this.isRecurrent) {
 				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis()));
+			} else {
+				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis()));
 			}
 		}
 		

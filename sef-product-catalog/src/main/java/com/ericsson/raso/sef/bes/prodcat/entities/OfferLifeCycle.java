@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.TreeSet;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
-import com.ericsson.raso.sef.bes.prodcat.entities.OfferLifeCycle.HistoryEvent;
 
 public class OfferLifeCycle implements Serializable {
 	private static final long serialVersionUID = -3684779285289029622L;
