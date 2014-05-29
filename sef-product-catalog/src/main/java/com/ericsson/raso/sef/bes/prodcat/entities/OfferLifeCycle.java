@@ -216,9 +216,8 @@ public class OfferLifeCycle implements Serializable {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + getOuterType().hashCode();
 			result = prime * result + ((state == null) ? 0 : state.hashCode());
-			result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
+			result = prime * result + (int) (timestamp);
 			return result;
 		}
 
