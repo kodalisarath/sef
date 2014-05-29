@@ -6,7 +6,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public final class CloneHelper {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CloneHelper.class);
 	
 	public static <T> T deepClone(T object) {
 		T cloned = null;
@@ -33,11 +37,14 @@ public final class CloneHelper {
 			bais = null;
 
 		} catch (IOException e) {
-			//TODO: Logger - write what happened here
+			LOGGER.error("Unable to clone" + object, e);
 		} catch (ClassNotFoundException e) {
-			//TODO: Logger - write what happened here
+			LOGGER.error("Unable to clone" + object, e);
 		}
-		
+		catch (Exception e) {
+			LOGGER.error("Unable to clone" + object, e);
+		}
+
 		return cloned;
 	}
 
