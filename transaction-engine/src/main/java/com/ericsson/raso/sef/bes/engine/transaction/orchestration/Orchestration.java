@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.PessimisticLockingFailureException;
 
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
@@ -23,7 +25,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.raso.sef.bes.prodcat.tasks.*;
-import com.ericsson.raso.sef.core.CloneHelper;
+import com.ericsson.raso.sef.bes.engine.transaction.CloneHelper;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
 
@@ -43,6 +45,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private Mode							mode					= Mode.FORWARD;
 	private Map<Phase, Status>				phasingProgress			= null;
 	private TransactionException			executionFault			= null;
+	
+	private static final Logger logger = LoggerFactory.getLogger(Orchestration.class);
 
 	private Map<String, Orchestration> orchestrationTaskMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.ORCHESTRATION_TASK_MAPPER.name());
 	
@@ -490,14 +494,17 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private List<FulfillmentStep> packOrchestration(Queue<Fulfillment> toProcess) {
 		ParallelExecution parallel = new ParallelExecution();
 		SequentialExecution sequence = new SequentialExecution();
-		
+		logger.debug("Packaging the orchestration!!!");
 		IServiceRegistry resources = ServiceResolver.getServiceRegistry();
 		while (!toProcess.isEmpty()) {
 			Fulfillment fulfillment = toProcess.peek();
+			logger.debug("Adding Fulfillment Profile: " + fulfillment.getAtomicProduct().getName());
+			
 			try {
+				logger.debug("Retrieve resource from registry: " + fulfillment.getAtomicProduct().getResource().getName());
 				Resource current = resources.readResource(fulfillment.getAtomicProduct().getResource().getName());
 				if (current.getDependantOnOthers() != null) {
-					
+					logger.debug("Found dependency for the resouce. preparing sequential orchestration");
 					for (Resource dependancy: current.getDependantOnOthers()) {
 						if (this.isPresentIn(toProcess, dependancy)) {
 							String southBoundRequestId = UniqueIdGenerator.generateId();
@@ -518,6 +525,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		}
 		
 		if (!parallel.isEmpty()) {
+			logger.debug("total parallel tasks: " + parallel.size());
+			logger.debug("total Sequential tasks: " + sequence.size());
 			parallel.add(sequence);
 			return parallel;
 		} else
