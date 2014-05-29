@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
+import com.ericsson.raso.sef.bes.prodcat.CloneHelper;
 import com.ericsson.raso.sef.bes.prodcat.Constants;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleState;
@@ -30,7 +31,6 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.NotificationMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
-import com.ericsson.raso.sef.core.CloneHelper;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
