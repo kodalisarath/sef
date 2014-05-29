@@ -36,5 +36,9 @@ public class TransactionStatus {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public TransactionStatus() {
+		
+	}
 
 }
