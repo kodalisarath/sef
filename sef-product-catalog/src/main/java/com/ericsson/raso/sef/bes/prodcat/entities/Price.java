@@ -47,6 +47,7 @@ public final class Price extends MonetaryUnit {
 		 */
 		
 		// Step 1
+		if(this.ratingRules != null) {
 		for (PricingPolicy rating: this.ratingRules) {
 			rating.setCost(this.cost);
 			if (rating.execute()) {
@@ -55,6 +56,7 @@ public final class Price extends MonetaryUnit {
 						new Cost(this.getIso4217CurrencyCode(), ratedAmount));
 				this.setAmount(this.getAmount() + ratedAmount);
 			}
+		}
 		}
 		
 		// Step 2
