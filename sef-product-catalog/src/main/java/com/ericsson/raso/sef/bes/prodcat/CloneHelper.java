@@ -44,7 +44,11 @@ public final class CloneHelper {
 		} catch (ClassNotFoundException e) {
 			//TODO: Logger - write what happened here
 			logger.error("ClassNotFoundError while object clone " + e.getMessage());
+		} 
+		catch (Exception e) {
+			logger.error("Unable to clone" + object, e);
 		}
+
 		
 		logger.debug("Cloned object " + cloned);
 		
