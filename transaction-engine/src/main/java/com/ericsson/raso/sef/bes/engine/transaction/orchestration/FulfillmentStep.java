@@ -7,9 +7,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
 
@@ -38,16 +40,16 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		
 		logger.debug("retrieved fulfillment inputs, product: " +  atomicProduct.getName() + "subscriber: " +  subscriberId);
 		logger.debug("Resource name: " + atomicProduct.getResource().getName());
-		logger.debug("Validity: " + atomicProduct.getValidity().getExpiryTimeInMillis());
-		logger.debug("Quota: " + atomicProduct.getQuota().getDefinedQuota());
+//		logger.debug("Validity: " + atomicProduct.getValidity().getExpiryTimeInMillis());
+//		logger.debug("Quota: " + atomicProduct.getQuota().getDefinedQuota());
 		
 		
 		
 		com.ericsson.sef.bes.api.entities.Product product = new com.ericsson.sef.bes.api.entities.Product();
 		product.setName(atomicProduct.getName());
 		product.setResourceName(atomicProduct.getResource().getName());
-		product.setValidity(atomicProduct.getValidity().getExpiryTimeInMillis());
-		product.setQuotaDefined(atomicProduct.getQuota().getDefinedQuota());
+		//product.setValidity(atomicProduct.getValidity().getExpiryTimeInMillis());
+		//product.setQuotaDefined(atomicProduct.getQuota().getDefinedQuota());
 		List<Meta> metas = converToList(additionalInputs);
 		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
 		
@@ -60,12 +62,19 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		
 		} catch(Exception e) {
 			logger.debug("Exception in execution of fulfillment: Exception: " +  e);
-			return new FulfillmentStepResult(new StepExecutionException("FulfilmentExecution failed"), null);
+			FulfillmentStepResult result = new FulfillmentStepResult(new StepExecutionException("FulfilmentExecution failed"), null);
+			Map<String, AbstractStepResult> stepResultStore = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEP_STATUS.name());
+			stepResultStore.put(stepCorrelator, result);
+			Map<String, Orchestration> orchestrationStore = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.ORCHESTRATION_TASK_MAPPER.name());
+			orchestrationStore.get(stepResultStore);
+			OrchestrationManager.getInstance().promoteFulfillmentExecution(stepCorrelator, result); 
+			return result;
 		}
 	}
 
 	private List<Meta> converToList(Map<String, Object> metas) {
 		List<Meta> metaList = new ArrayList<Meta>();
+		if(metas != null) {
 		for (String metaskey: metas.keySet()) {
 			Meta meta = new Meta();
 			if(metas.get(metaskey) instanceof String){
@@ -73,6 +82,7 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 				meta.setValue(metas.get(metaskey).toString());
 				metaList.add(meta);
 			}
+		}
 		}
 		return metaList;
 	}

@@ -71,11 +71,14 @@ public class OrchestrationManager {
 			Orchestration rollback = orchestration.getRollbackProfile();
 			orchestration.cleanupTransaction();
 			this.submit(usecase, rollback);
+		} else if(orchestration.getStatus() != Status.DONE_SUCCESS && orchestration.getMode() == Mode.ROLLBACK) {
+			orchestration.cleanupTransaction();
 		}
 		
 		//TODO: invoke response sending to the IResponse interface
 		usecase.sendResponse();
 		
+		nbTransactionStore.remove(nbCorrelator);
 	}
 
 	
