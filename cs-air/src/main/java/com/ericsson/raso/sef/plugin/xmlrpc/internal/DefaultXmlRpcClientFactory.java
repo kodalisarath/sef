@@ -12,6 +12,8 @@ import org.apache.xmlrpc.client.XmlRpcClientConfig;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.plugin.xmlrpc.ConfigParams;
 import com.ericsson.raso.sef.plugin.xmlrpc.XmlRpcClient;
@@ -19,12 +21,15 @@ import com.ericsson.raso.sef.plugin.xmlrpc.XmlRpcClientFactory;
 import com.ericsson.raso.sef.plugin.xmlrpc.XmlRpcException;
 
 public class DefaultXmlRpcClientFactory implements XmlRpcClientFactory {
+	
+	Logger logger = LoggerFactory.getLogger(DefaultXmlRpcClientFactory.class);
 
 	@Override
 	public XmlRpcClient create(ConfigParams params) throws XmlRpcException {
 		DefaultXmlRpcClient client = null;
 		try {
 			System.out.println("HTTP max connections:" + System.getProperty("http.maxConnections"));
+			logger.debug("XML RPC Factory will create the client now");
 			org.apache.xmlrpc.client.XmlRpcClient xmlRpcClient = new org.apache.xmlrpc.client.XmlRpcClient();
 
 			XmlRpcClientConfig xmlRpcConfig = createConfig(params);
@@ -49,6 +54,7 @@ public class DefaultXmlRpcClientFactory implements XmlRpcClientFactory {
 			client = new DefaultXmlRpcClient();
 			client.setNativeClient(xmlRpcClient);
 		} catch (Exception e) {
+			logger.debug("Exception in XML RPC connection creation: " + e.getMessage() + "Exception: "+ e);
 			throw new XmlRpcException(e.getMessage(), e);
 		}
 		return client;

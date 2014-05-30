@@ -32,14 +32,12 @@ public class AirClientImpl implements AirClient {
 	Logger logger = LoggerFactory.getLogger(AirClientImpl.class);
 	
 	public AirClientImpl() throws XmlRpcException {
-		logger.debug("E/// Im getting there. I am actually entering AIR :D");		
+		logger.debug("AIR Endpoint initialization starts!!!");		
 		init();
 	}
 
 	private void init() throws XmlRpcException {
-		logger.debug("E/// Before XmlRpcClientFactory");
 		XmlRpcClientFactory factory = new DefaultXmlRpcClientFactory();
-		logger.debug("E/// After XmlRpcClientFactory");
 		//assuming max 10 end points can be configured 
 		for(int i=1; i<11; i++) {	
 			String sectionName = "cs-air"+i;
@@ -62,7 +60,7 @@ public class AirClientImpl implements AirClient {
 			clientMap.put(siteId, client);
 			
 		}
-		logger.debug("E/// Client Map size: " + clientMap.size());
+		logger.debug("AIR Endpoint initialized with " + clientMap.size() + "clients");
 	}
 
 	@Override
@@ -83,6 +81,7 @@ public class AirClientImpl implements AirClient {
 
 		try {
 			AirEdrLogger.requestIn(request.getMethodName(), request.getParams());
+			logger.debug("Fetching client for siteId: " +  request.getSiteId());
 			XmlRpcClient xmlRpcClient = getXmlRpcClient(request.getSubscriberNumber(), request.getSiteId());
 			xmlRpcClient.execute(request, response);
 			AirEdrLogger.responseOut(request.getMethodName(), response.getResult());
@@ -116,6 +115,7 @@ public class AirClientImpl implements AirClient {
 		if(site!=null) {
 			return clientMap.get(site);
 		} 
+		logger.debug("Probably no siteId specificied for the MSISDN, returning default site "+ defaultSite + " client" + clientMap.get(defaultSite));
 		return clientMap.get(defaultSite);
 	}
 	
