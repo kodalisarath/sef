@@ -32,11 +32,13 @@ import com.ericsson.raso.sef.core.UniqueIdGenerator;
 public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private static final long		serialVersionUID		= -8295152874923894285L;
 
+	private static final Logger logger = LoggerFactory.getLogger(Orchestration.class);
+	
 	private String							northBoundCorrelator	= null;
 	private List<ChargingStep>				charges					= null;
-	private List<FulfillmentStep>			prepareFulfillment		= null;
-	private List<FulfillmentStep>			fulfillment				= null;
-	private List<FulfillmentStep>			reverseFulfillment		= null;
+	private List			prepareFulfillment		= null;
+	private List			fulfillment				= null;
+	private List			reverseFulfillment		= null;
 	private List<NotificationStep>			notification			= null;
 	private List<SchedulingStep>			schedules				= null;
 	private List<PersistenceStep>			persistence				= null;
@@ -46,13 +48,13 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private Map<Phase, Status>				phasingProgress			= null;
 	private TransactionException			executionFault			= null;
 	
-	private static final Logger logger = LoggerFactory.getLogger(Orchestration.class);
+	
 
-	private Map<String, Orchestration> orchestrationTaskMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.ORCHESTRATION_TASK_MAPPER.name());
+	private static Map<String, Orchestration> orchestrationTaskMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.ORCHESTRATION_TASK_MAPPER.name());
 	
-	private Map<String, AbstractStepResult> sbRequestResultMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEP_STATUS.name());
+	private static Map<String, AbstractStepResult> sbRequestResultMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEP_STATUS.name());
 	
-	private Map<String, Step> sbRequestStepMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEPS.name());
+	private static Map<String, Step> sbRequestStepMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEPS.name());
 	
 	
 
@@ -117,17 +119,22 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 	@Override
 	public AbstractResponse call() throws Exception {
+		try {
 		switch (this.status) {
 			case WAITING:
+				logger.debug("Entering waiting phase");
 				try {
 					this.initiateExecution();
 				} catch (Exception e) {
+					logger.error("Exception while preparation, Exception:" + e);
 					this.status = Status.DONE_FAULT;
 					this.executionFault = new TransactionException(northBoundCorrelator, "CHARGING FAIED", e);
 				}
 				break;
 			case PROCESSING:
+				
 				if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
+					logger.debug("Entering " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) 
 						this.promote2Fulfill();
 					else {
@@ -135,6 +142,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
 					}
 				} else if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
+					logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
 						this.processNotification();
 						this.promote2Schedule();
@@ -182,21 +190,35 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		}
 		
 		if (this.status.name().startsWith("DONE_")) {
+			logger.debug("Orchestration completed with status: " + this.status.name());
 			this.processNotification();
 			OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
 		}
 		
 		return null;
+		} catch(Exception e) {
+			logger.error("Exception in orchestration. Exception Message: " + e.getMessage() + "Exception: " + e);
+			e.printStackTrace();
+			this.status = Status.DONE_FAULT;
+			this.executionFault = new TransactionException(northBoundCorrelator, "Fault occured during orchestration");
+			OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
+			throw e;
+		}
 	}
 
 	
 	private void promote2Fulfill() {
+		logger.debug("Entering promote2Fulfill()....");
+		
 		boolean isAllStepsCompleted = true;
 		boolean isCurrentParallelAllCompleted = true;
 		boolean isSequenceCompleted = true;
 		boolean isSerialModeNow = false;
 		boolean anyFailure = false;
 		boolean anyFault = false;
+		
+		this.status = Status.PROCESSING;
+		this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.PROCESSING);
 		
 		for (Object next: this.fulfillment) {
 			Step step = null;
@@ -286,7 +308,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_SUCCESS);
 			this.phasingProgress.put(Phase.TX_PHASE_SCHEDULE, Status.PROCESSING);
 		}
-		
+		logger.debug("exiting promote2Fulfill()");
 	}
 
 	private void promote2Persist() {
@@ -370,18 +392,22 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
 		}
 		
-		for (Step<FulfillmentStepResult> cleanupKey: this.prepareFulfillment) { 
+		Iterator  iterator1 = this.prepareFulfillment.iterator();
+		while(iterator1.hasNext()) {
+			Step<FulfillmentStepResult> cleanupKey = (Step<FulfillmentStepResult>) iterator1.next();
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
 		}
 		
-		for (Step<FulfillmentStepResult> cleanupKey: this.fulfillment) { 
+		Iterator  iterator2 = this.fulfillment.iterator();
+		while(iterator2.hasNext()) {
+			Step<FulfillmentStepResult> cleanupKey = (Step<FulfillmentStepResult>) iterator2.next();
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
 		}
-		
+
 		for (Step<NotificationStepResult> cleanupKey: this.notification) { 
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
@@ -411,6 +437,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.WAITING);
 		this.phasingProgress.put(Phase.TX_PHASE_SCHEDULE, Status.WAITING);
 		this.phasingProgress.put(Phase.TX_PHASE_PERSISTENCE, Status.WAITING);
+		logger.debug("init phasing progress set to WAITING!!");
 	}
 	
 	
@@ -419,6 +446,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		this.phasingProgress.put(Phase.TX_PHASE_CHARGING, Status.PROCESSING);
 		
 		// first... finish the charging phase....
+		logger.debug("Charging tasks to be executed now!!! Total: " + this.charges.size());
 		boolean isAllChargingComplete = true;
 		for (ChargingStep charging: this.charges) {
 			ChargingStepResult result = null;
@@ -426,7 +454,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				result = charging.call();
 				charging.setResult(result);
 				this.sbRequestResultMapper.put(charging.getStepCorrelator(), result);
-				
+				logger.debug("Charging tasks completed");
 			} catch (Exception e) {
 				result = new ChargingStepResult(new StepExecutionException("Charging Step Failed", e), null);
 				this.sbRequestResultMapper.put(charging.getStepCorrelator(), result);
@@ -435,22 +463,28 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				break;
 			}
 		}
-		if (isAllChargingComplete)
+		if (isAllChargingComplete) {
 			this.phasingProgress.put(Phase.TX_PHASE_CHARGING, Status.DONE_SUCCESS);
-		else {
+			logger.debug("Charging phase complete");
+		} else {
 			this.status = Status.DONE_FAULT;
 			throw new TransactionException(northBoundCorrelator, "Charging Failed... Cannot proceed!!");
 		}	
 		
+		logger.debug("Prepare Fulfillment tasks to be executed now!!!. Total: " + this.prepareFulfillment.size());
 		// then... get into fulfillment phase & fire out prepare queries....
 		this.phasingProgress.put(Phase.TX_PHASE_PREP_FULFILLMENT, Status.PROCESSING);
-		for (Step prepare: this.prepareFulfillment) {
+		
+		Iterator iterator = this.prepareFulfillment.iterator();
+		while(iterator.hasNext()) {
+			Step prepare = (Step) iterator.next();
 			this.orchestrationTaskMapper.put(prepare.getStepCorrelator(), this);
 			this.sbRequestStepMapper.put(prepare.getStepCorrelator(), prepare);
-			this.sbRequestResultMapper.put(prepare.getStepCorrelator(), null);
+			this.sbRequestResultMapper.put(prepare.getStepCorrelator(), new FulfillmentStepResult(null, null));
 			OrchestrationManager.getInstance().getGrinder().submit(prepare);
 		}
-		
+		logger.debug("Prepare fulfilment completed");
+						
 	}
 
  	private List<ChargingStep> extractChargingSteps(List<TransactionTask> tasks) {
@@ -462,6 +496,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				charges.add(new ChargingStep(southBoundRequestId, (Charging)task));
 			}
 		}
+		logger.debug("Extracted charging steps. Total: " + charges.size());
 		return charges;
 	}
 
@@ -473,6 +508,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			}
 		}
 		
+		logger.debug("Going to create prepare fulfillment tasks");
 		this.prepareFulfillment = this.packPreparation(toProcess);
 		return this.packOrchestration(toProcess);
 	}
@@ -488,10 +524,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				prepFulfill.add(new FulfillmentStep(southBoundRequestId, (Fulfillment)clonedTask));
 			}
 		}
+		logger.debug("Extracted prepare fulfilment tasks. Total: " + prepFulfill.size());
 		return prepFulfill;
 	}
 
-	private List<FulfillmentStep> packOrchestration(Queue<Fulfillment> toProcess) {
+	private List packOrchestration(Queue<Fulfillment> toProcess) {
 		ParallelExecution parallel = new ParallelExecution();
 		SequentialExecution sequence = new SequentialExecution();
 		logger.debug("Packaging the orchestration!!!");
@@ -517,7 +554,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					String southBoundRequestId = UniqueIdGenerator.generateId();
 					parallel.add(new FulfillmentStep(southBoundRequestId, fulfillment));
 				}
-				
+				toProcess.poll();
 			} catch (CatalogException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -525,8 +562,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		}
 		
 		if (!parallel.isEmpty()) {
-			logger.debug("total parallel tasks: " + parallel.size());
-			logger.debug("total Sequential tasks: " + sequence.size());
+			logger.debug("Fulfillment tasks packed. Total parallel tasks: " + parallel.size());
+			logger.debug("Fulfillment tasks packed. Total Sequential tasks: " + sequence.size());
 			parallel.add(sequence);
 			return parallel;
 		} else
@@ -575,14 +612,16 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private Map<String, Object> getPreparedInfo(FulfillmentStep originalFulfillment) {
 		Map<String, Object> preparedInfo = new TreeMap<String, Object>();
 		
-		for (FulfillmentStep prepared: this.prepareFulfillment) {
+		Iterator iterator = this.prepareFulfillment.iterator();
+		while(iterator.hasNext()) {
+			FulfillmentStep prepared = (FulfillmentStep) iterator.next();
 			String resourceFromOriginalFulfillment = ((Fulfillment)originalFulfillment.getExecutionInputs()).getAtomicProduct().getResource().getName();
 			String resourceFromPreparedFulfillment = ((Fulfillment)prepared.getExecutionInputs()).getAtomicProduct().getResource().getName(); 
 			if (resourceFromOriginalFulfillment.equals(resourceFromPreparedFulfillment)) {
 				preparedInfo.put(resourceFromPreparedFulfillment, prepared.getResult().getFulfillmentResult());
 			}
 		}
-		
+						
 		return preparedInfo;
 	}
 
@@ -595,6 +634,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				notifications.add(new NotificationStep(southBoundRequestId, (Notification)task));
 			}
 		}
+		logger.debug("Extracted notification tasks. Total: " + notifications.size());
 		return notifications;
 	}
 
@@ -608,6 +648,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				schedules.add(new SchedulingStep(southBoundRequestId, (Future)task));
 			}
 		}
+		logger.debug("Extracted schedule tasks. Total: " + schedules.size());
 		return schedules;
 	}
 
@@ -620,6 +661,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				persistence.add(new PersistenceStep(southBoundRequestId, (Persistence<?>)task));
 			}
 		}
+		logger.debug("Extracted persistence tasks. Total: " + persistence.size());
 		return persistence;
 	}
 
@@ -630,14 +672,37 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		for (Step step: this.charges)
 			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
 		
-		for (Step step: this.prepareFulfillment)
+		Iterator itr1 = this.prepareFulfillment.iterator();
+		while(itr1.hasNext()) {
+			Step step = (Step) itr1.next();
 			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+		}
 		
-		for (Step step: this.fulfillment)
-			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+		Iterator itr2 = this.fulfillment.iterator();
+		while(itr2.hasNext()) {
+			
+			Object oNext = itr2.next();
+			if(oNext instanceof Step) {
+				Step step = (Step) oNext;
+				results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+			} else if(oNext instanceof SequentialExecution) {
+				SequentialExecution seqSteps = (SequentialExecution) oNext; 
+				Iterator it1 = seqSteps.iterator();
+				while(it1.hasNext()) {
+					Step step = (Step) it1.next();
+					results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+				}
+					
+			}
+			
+		}
 		
-		for (Step step: this.reverseFulfillment)
+		Iterator itr3 = this.reverseFulfillment.iterator();
+		while(itr3.hasNext()) {
+			Step step = (Step) itr3.next();
 			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+		}
+			
 		
 		for (Step step: this.schedules)
 			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
@@ -674,7 +739,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	
 	private boolean isPhaseComplete(Phase phase) {
 		List<? extends Step> toCheck = null;
-		
+		logger.debug("Checking if phase is complete. Phase: " + phase.name());
 		switch (phase) {
 			case TX_PHASE_CHARGING:
 				// this is impossible, since charging is handled synchronous execution... but hey!! what the hell?!
@@ -729,12 +794,19 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				}
 			}
 		}
-		if (isAllStepsComplete && !anyFailure && !anyFault)
+		if (isAllStepsComplete && !anyFailure && !anyFault) {
+			logger.debug("All steps complete. Moving: " + Phase.TX_PHASE_PREP_FULFILLMENT.name() + " -> Status: " + Status.DONE_SUCCESS.name());
 			this.phasingProgress.put(Phase.TX_PHASE_PREP_FULFILLMENT, Status.DONE_SUCCESS);
-		if (isAllStepsComplete && anyFailure && !anyFault)
+		} else if (isAllStepsComplete && anyFailure && !anyFault) {
+			logger.debug("All steps complete. Moving: " + Phase.TX_PHASE_PREP_FULFILLMENT.name() + " -> Status: " + Status.DONE_FAILED.name());
 			this.phasingProgress.put(Phase.TX_PHASE_PREP_FULFILLMENT, Status.DONE_FAILED);
-		else if (isAllStepsComplete && anyFault)
+		}
+		else if (isAllStepsComplete && anyFault) {
+			logger.debug("All steps complete. Moving: " + Phase.TX_PHASE_PREP_FULFILLMENT.name() + " -> Status: " + Status.DONE_FAULT.name());
 			this.phasingProgress.put(Phase.TX_PHASE_PREP_FULFILLMENT, status.DONE_FAULT);
+		} else {
+			logger.debug("Seems like all steps are not completed yet???");
+		}
 
 		return true;
 	}
@@ -758,7 +830,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	}
 
 
-	enum Mode {
+	enum Mode implements Serializable {
 		FORWARD,
 		ROLLBACK;
 	}

@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
@@ -14,6 +17,7 @@ import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
 
 public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	private static final long	serialVersionUID	= 6645187522590773212L;
+	private static final Logger logger = LoggerFactory.getLogger(FulfillmentStep.class);
 
 	FulfillmentStep(String stepCorrelator, Fulfillment executionInputs) {
 		super(stepCorrelator, executionInputs);
@@ -23,6 +27,7 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	
 	@Override
 	public FulfillmentStepResult execute() {
+		logger.debug("Preparing for fulfillment");
 		AtomicProduct atomicProduct = ((Fulfillment)this.getExecutionInputs()).getAtomicProduct();
 		String subscriberId = ((Fulfillment)this.getExecutionInputs()).getSubscriberId();
 		Map<String, Object> additionalInputs = ((Fulfillment)this.getExecutionInputs()).getAdditionalInputs();
@@ -35,10 +40,10 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		
 		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
 		List<Meta> metas = converToList(additionalInputs);
-		
+		logger.debug("Major milestone.. going to fulfill the service provisioning");
 		FulfillmentRequest request = ServiceResolver.getFulfillmentRequestClient();
 		request.fulfill(getStepCorrelator(), subscriberId, product, metas);
-		
+		logger.info("Fulfillment completed!!!.. going to update results");
 		
 		Set<AtomicProduct> result = new TreeSet<AtomicProduct>();
 		result.add(((Fulfillment)this.getExecutionInputs()).getAtomicProduct());

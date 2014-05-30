@@ -40,7 +40,7 @@ import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 public class HandleSubscriptionEvent extends AbstractTransaction {
 	private static final long	serialVersionUID	= 8130277491237379246L;
 
-	Logger logger = LoggerFactory.getLogger(HandleSubscriptionEvent.class);
+	private static final Logger logger = LoggerFactory.getLogger(HandleSubscriptionEvent.class);
 	
 	public HandleSubscriptionEvent(String requestId, 
 									String offerId, 
