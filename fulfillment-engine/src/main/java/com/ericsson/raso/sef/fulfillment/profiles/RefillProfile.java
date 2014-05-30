@@ -6,6 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.client.air.command.RefillCommand;
 import com.ericsson.raso.sef.client.air.request.RefillRequest;
 import com.ericsson.raso.sef.client.air.response.AccBefAndAfterRef;
@@ -30,7 +33,8 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	private String transactionAmount;
 	private CurrencyCode transactionCurrency;
 
-
+	Logger logger = LoggerFactory.getLogger(RefillProfile.class);
+	
 	public RefillProfile(String name) {
 		super(name);
 	}
@@ -72,6 +76,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) {
 		
+		logger.debug("E/// Executing fulfillment request to air for...: " + e.getName());
 		RefillRequest refillRequest = new RefillRequest();
 		refillRequest.setSubscriberNumber(map.get("msisdn"));
 		refillRequest.setRefProfID(this.refillProfileId);

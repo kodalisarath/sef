@@ -9,9 +9,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.core.SecureSerializationHelper;
+import com.ericsson.raso.sef.fulfillment.commons.SecureSerializationHelper;
 
 public class ProfileRegistry implements IProfileRegistry {
 
@@ -21,16 +24,20 @@ public class ProfileRegistry implements IProfileRegistry {
 	private String profileRegistryLocation = null;
 	private SecureSerializationHelper ssh = null;
 
+	Logger logger = LoggerFactory.getLogger(ProfileRegistry.class);
+	
+	@SuppressWarnings("unchecked")
 	public ProfileRegistry() {
 		
 		profileRegistryLocation = getStoreLocation();
-		
+		logger.debug("E/// Profile registry: " + profileRegistryLocation);
 		ssh = new SecureSerializationHelper();
 
 		if (ssh.fileExists(this.profileRegistryLocation)) {
 			try {
 				this.profiles = (Map<String, FulfillmentProfile<?>>) ssh.fetchFromFile(this.profileRegistryLocation);
 			} catch (FrameworkException e) {
+				logger.debug("E/// Is there an error: " + e.getMessage());
 				// TODO: LOgger on this error...
 			}
 		}

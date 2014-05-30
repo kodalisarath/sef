@@ -23,37 +23,41 @@ import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class UseCaseProcessor implements Processor {
-	
+
 	Logger logger = LoggerFactory.getLogger(UseCaseProcessor.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void process(Exchange arg0) throws Exception {
-		
-		
-		Object[] objectArray=(Object[]) arg0.getIn().getBody(Object.class);
+	public void process(Exchange arg0) throws Exception {		
+
+		logger.debug("E/// Request: " + arg0.getIn().getBody().toString());
+		Object[] objectArray= arg0.getIn().getBody(Object[].class);
 		String operationName = (String)objectArray[0];
-	 	Holder<String> msisdn =(Holder<String>)objectArray[1];
-	 	Holder<Product> product=(Holder<Product>) objectArray[2]; 
-	 	Holder<List<Meta>> metas =(Holder<List<Meta>>) objectArray[3];
-		Map<String, String> map = covertToMap(msisdn.value, metas.value);
+	 	String msisdn =(String)objectArray[1];
+	 	Product product=(Product) objectArray[2]; 
+	 	List<Meta> metas = (List<Meta>) objectArray[3];
+		Map<String, String> map = covertToMap(msisdn, metas);
 		String correlationId = (String) arg0.getIn().getHeader("CORRELATIONID");
 		
+		logger.debug("E/// msisdn: " + msisdn);
+		logger.debug("E/// operationName: " + operationName);
+		
 		IServiceRegistry serviceRegistry = FulfillmentServiceResolver.getServiceRegistry();
-		Resource resource = serviceRegistry.readResource(product.value.getResourceName());
+		Resource resource = serviceRegistry.readResource(product.getResourceName());
+		logger.debug("E/// productResourceName " + product.getResourceName());
 		List<String> fulfillmentProfileIds = resource.getFulfillmentProfiles();
 		List<FulfillmentProfile> fulfillmentProfiles = getProfiles(fulfillmentProfileIds);
 		
 		switch(operationName){
-		case "fulfill":fulfill(correlationId, msisdn.value, fulfillmentProfiles,product.value, map);
+		case "fulfill":fulfill(correlationId, msisdn, fulfillmentProfiles,product, map);
 		               break;
-		case "reverse":reverse(fulfillmentProfiles,product.value, map);
+		case "reverse":reverse(fulfillmentProfiles,product, map);
 		               break;
-		case "query":query(fulfillmentProfiles,product.value, map);
+		case "query":query(fulfillmentProfiles,product, map);
 		             break;
-		case "prepare":prepare(fulfillmentProfiles,product.value, map);
+		case "prepare":prepare(fulfillmentProfiles,product, map);
 		                break;
-		case "cancel":cancel(fulfillmentProfiles,product.value, map);
+		case "cancel":cancel(fulfillmentProfiles,product, map);
 		               break;
 		default:  break;
 		}
@@ -84,7 +88,10 @@ public class UseCaseProcessor implements Processor {
 	private void fulfill(String correlationId, String msisdn, List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
 
 		List<Product> products = new ArrayList<Product>();
-		for(FulfillmentProfile profile: profiles) { 
+		logger.debug("E/// How many profiles we have: " + profiles.size() + " and correlationID is " + correlationId);
+		for(FulfillmentProfile profile: profiles) {
+			logger.debug("E/// Product name: " + product.getName() + " " + map.size());
+			logger.debug("E/// Profile name: " + profile.getName() + " " + map.size());
 			products.addAll((profile.fulfill(product, map)));
 		}
 		
@@ -130,14 +137,13 @@ public class UseCaseProcessor implements Processor {
 	}
 	
 	private Map<String, String> covertToMap(String msisdn, List<Meta> metas) {
-		Map<String, String> map = new HashMap<String, String>();
-		
+		Map<String,String> map = new HashMap<String,String>();
 		map.put("msisdn", msisdn.toString());
-		Iterator<Meta> iterator = metas.iterator();
-		while(iterator.hasNext()) {
-			Meta meta = iterator.next();
-			map.put(meta.getKey(), meta.getValue());
+		
+		for(Meta meta: metas){
+			map.put(meta.getKey(), meta.getValue().toString());
 		}
+
 		return map;
 	}
 	
