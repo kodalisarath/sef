@@ -139,11 +139,11 @@ public class UseCaseProcessor implements Processor {
 	private Map<String, String> covertToMap(String msisdn, List<Meta> metas) {
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("msisdn", msisdn.toString());
-		
+		if(metas != null) {
 		for(Meta meta: metas){
 			map.put(meta.getKey(), meta.getValue().toString());
 		}
-
+		}
 		return map;
 	}
 	
