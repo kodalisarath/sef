@@ -40,7 +40,10 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 public class CARecharge implements Processor {
 
 	@Override
-	public void process(Exchange arg0) throws Exception {
+	public void process(Exchange arg0) throws SmException {
+		
+		try{
+			
 		
 		RechargeRequest rechargeRequest = (RechargeRequest) arg0.getIn().getBody();
 		
@@ -88,7 +91,7 @@ public class CARecharge implements Processor {
 		try {
 			synchronized (response) {
 				RequestCorrelationStore.put(correlationId, response);
-				response.wait(60000L);
+				response.wait(10000L);
 			}
 		} catch(InterruptedException e) {
 			
@@ -104,6 +107,11 @@ public class CARecharge implements Processor {
 		
 		CommandResponseData responseData = createResponse(rechargeRequest.isTransactional(),purchaseResponse);
 		arg0.getOut().setBody(responseData);
+		
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new SmException(ErrorCode.internalSystemError);
+		}
 		
 	}
 	
