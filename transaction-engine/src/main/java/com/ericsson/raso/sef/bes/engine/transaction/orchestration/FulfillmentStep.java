@@ -3,14 +3,11 @@ package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
-import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 import com.ericsson.sef.bes.api.entities.Meta;
@@ -35,26 +32,35 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		String subscriberId = ((Fulfillment)this.getExecutionInputs()).getSubscriberId();
 		Map<String, Object> additionalInputs = ((Fulfillment)this.getExecutionInputs()).getAdditionalInputs();
 		
+		//------------------------------------------------------------------------------------
+		// Remove these loggers post FT
+		//====================================================================================
+		
+		logger.debug("retrieved fulfillment inputs, product: " +  atomicProduct.getName() + "subscriber: " +  subscriberId);
+		logger.debug("Resource name: " + atomicProduct.getResource().getName());
+		logger.debug("Validity: " + atomicProduct.getValidity().getExpiryTimeInMillis());
+		logger.debug("Quota: " + atomicProduct.getQuota().getDefinedQuota());
+		
+		
+		
 		com.ericsson.sef.bes.api.entities.Product product = new com.ericsson.sef.bes.api.entities.Product();
 		product.setName(atomicProduct.getName());
 		product.setResourceName(atomicProduct.getResource().getName());
 		product.setValidity(atomicProduct.getValidity().getExpiryTimeInMillis());
 		product.setQuotaDefined(atomicProduct.getQuota().getDefinedQuota());
-		
-		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
 		List<Meta> metas = converToList(additionalInputs);
+		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
+		
 		logger.debug("Major milestone.. going to fulfill the service provisioning");
 		FulfillmentRequest request = ServiceResolver.getFulfillmentRequestClient();
 		request.fulfill(getStepCorrelator(), subscriberId, product, metas);
 		logger.info("Fulfillment completed!!!.. going to update results");
 		
-		Set<AtomicProduct> result = new TreeSet<AtomicProduct>();
-		result.add(((Fulfillment)this.getExecutionInputs()).getAtomicProduct());
-		return new FulfillmentStepResult(null, result);
+		return new FulfillmentStepResult(null, null);
+		
 		} catch(Exception e) {
 			logger.debug("Exception in execution of fulfillment: Exception: " +  e);
-			Set<AtomicProduct> result = new TreeSet<AtomicProduct>();
-			return new FulfillmentStepResult(new StepExecutionException("FulfilmentExecution failed"), result);
+			return new FulfillmentStepResult(new StepExecutionException("FulfilmentExecution failed"), null);
 		}
 	}
 
