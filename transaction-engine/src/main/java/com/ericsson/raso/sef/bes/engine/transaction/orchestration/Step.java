@@ -8,7 +8,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 public abstract class Step<T> implements Serializable, Callable<Object>, Comparable<Step<T>> {
 	private static final long	serialVersionUID	= -4938200229157969953L;
 	
-	private String stepCorrelator = null;
+	protected String stepCorrelator = null;
 	private TransactionTask executionInputs = null;
 	private T result = null;
 	private StepExecutionException fault = null;
