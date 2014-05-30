@@ -10,11 +10,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.entities.Owner;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.core.SecureSerializationHelper;
+import com.ericsson.raso.sef.bes.prodcat.SecureSerializationHelper;
 
 
 //TODO: please udate the code implemenation to also synchronize with Hazelcast...
@@ -22,6 +25,7 @@ import com.ericsson.raso.sef.core.SecureSerializationHelper;
 public final class ServiceRegistry implements IServiceRegistry {
 	
 	private Map<String, Resource> resources = new TreeMap<String, Resource>();;
+	private static final Logger logger = LoggerFactory.getLogger(ServiceRegistry.class);
 
 	private String serviceRegistryLocation = null;
 	private SecureSerializationHelper ssh = null;
@@ -37,8 +41,10 @@ public final class ServiceRegistry implements IServiceRegistry {
 		if (ssh.fileExists(this.serviceRegistryLocation)) {
 			try {
 				this.resources = (Map<String, Resource>) ssh.fetchFromFile(this.serviceRegistryLocation);
+				logger.info("Successfully loaded resources in Service Registry, Total resources loaded: " + this.resources.size());
 			} catch (FrameworkException e) {
-				// TODO: LOgger on this error...
+				logger.error("Error loading service registry, Exception: " +  e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}
@@ -55,7 +61,7 @@ public final class ServiceRegistry implements IServiceRegistry {
 		}else{
 			finalfile = offerStoreLocation + "{others}" + filename;
 		}
-		
+		logger.debug("ServiceRegisty Store location: " +  finalfile);
 		return finalfile;
 	}
 
