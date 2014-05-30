@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 
-public abstract class Step<T> implements Serializable, Callable<Object> {
+public abstract class Step<T> implements Serializable, Callable<Object>, Comparable<Step<T>> {
 	private static final long	serialVersionUID	= -4938200229157969953L;
 	
 	private String stepCorrelator = null;
@@ -54,6 +54,8 @@ public abstract class Step<T> implements Serializable, Callable<Object> {
 		this.fault = fault;
 	}
 	
-	
+	public int compareTo(Step<T> t) {
+		return t.stepCorrelator.compareTo(this.stepCorrelator);
+	}
 
 }
