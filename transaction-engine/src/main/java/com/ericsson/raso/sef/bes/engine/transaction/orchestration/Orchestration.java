@@ -795,15 +795,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			}
 		}
 		if (isAllStepsComplete && !anyFailure && !anyFault) {
-			logger.debug("All steps complete. Moving: " + Phase.TX_PHASE_PREP_FULFILLMENT.name() + " -> Status: " + Status.DONE_SUCCESS.name());
-			this.phasingProgress.put(Phase.TX_PHASE_PREP_FULFILLMENT, Status.DONE_SUCCESS);
+			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_SUCCESS.name());
+			this.phasingProgress.put(phase, Status.DONE_SUCCESS);
 		} else if (isAllStepsComplete && anyFailure && !anyFault) {
-			logger.debug("All steps complete. Moving: " + Phase.TX_PHASE_PREP_FULFILLMENT.name() + " -> Status: " + Status.DONE_FAILED.name());
-			this.phasingProgress.put(Phase.TX_PHASE_PREP_FULFILLMENT, Status.DONE_FAILED);
+			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_FAILED.name());
+			this.phasingProgress.put(phase, Status.DONE_FAILED);
 		}
 		else if (isAllStepsComplete && anyFault) {
-			logger.debug("All steps complete. Moving: " + Phase.TX_PHASE_PREP_FULFILLMENT.name() + " -> Status: " + Status.DONE_FAULT.name());
-			this.phasingProgress.put(Phase.TX_PHASE_PREP_FULFILLMENT, status.DONE_FAULT);
+			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_FAULT.name());
+			this.phasingProgress.put(phase, status.DONE_FAULT);
 		} else {
 			logger.debug("Seems like all steps are not completed yet???");
 		}

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 import com.ericsson.sef.bes.api.entities.Meta;
@@ -27,6 +28,8 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	
 	@Override
 	public FulfillmentStepResult execute() {
+		
+		try{
 		logger.debug("Preparing for fulfillment");
 		AtomicProduct atomicProduct = ((Fulfillment)this.getExecutionInputs()).getAtomicProduct();
 		String subscriberId = ((Fulfillment)this.getExecutionInputs()).getSubscriberId();
@@ -48,6 +51,11 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		Set<AtomicProduct> result = new TreeSet<AtomicProduct>();
 		result.add(((Fulfillment)this.getExecutionInputs()).getAtomicProduct());
 		return new FulfillmentStepResult(null, result);
+		} catch(Exception e) {
+			logger.debug("Exception in execution of fulfillment: Exception: " +  e);
+			Set<AtomicProduct> result = new TreeSet<AtomicProduct>();
+			return new FulfillmentStepResult(new StepExecutionException("FulfilmentExecution failed"), result);
+		}
 	}
 
 	private List<Meta> converToList(Map<String, Object> metas) {
