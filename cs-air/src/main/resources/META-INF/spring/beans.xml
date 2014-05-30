@@ -10,7 +10,7 @@
 
 	<import resource="classpath:META-INF/sef-core/beans.xml"/>
 	
-	<bean id="airClient" class="com.ericsson.raso.sef.client.air.internal.AirClientImpl" init-method="init"/>
+	<bean id="airClient" class="com.ericsson.raso.sef.client.air.internal.AirClientImpl"/>
 
 	<bean id="csAirContext" class="com.ericsson.raso.sef.client.air.internal.CsAirContext"/>
 </beans>

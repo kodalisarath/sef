@@ -76,7 +76,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) {
 		
-		logger.debug("E/// Executing fulfillment request to air for...: " + e.getName());
+		//logger.debug("E/// Executing fulfillment request to air for...: " + e.getName());
 		RefillRequest refillRequest = new RefillRequest();
 		refillRequest.setSubscriberNumber(map.get("msisdn"));
 		refillRequest.setRefProfID(this.refillProfileId);

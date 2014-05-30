@@ -52,7 +52,8 @@
 	<osgi-export-package>
 			com.ericsson.raso.sef.client.air.command,
 			com.ericsson.raso.sef.client.air.request,
-			com.ericsson.raso.sef.client.air.response
+			com.ericsson.raso.sef.client.air.response,
+			com.ericsson.raso.sef.client.air.internal
 	</osgi-export-package>
 	
   </properties>

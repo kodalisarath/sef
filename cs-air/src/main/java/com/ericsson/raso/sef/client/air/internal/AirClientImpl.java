@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.client.air.AirClient;
 import com.ericsson.raso.sef.client.air.request.AbstractAirRequest;
 import com.ericsson.raso.sef.client.air.response.AbstractAirResponse;
@@ -26,14 +29,17 @@ public class AirClientImpl implements AirClient {
 
 	private Map<String, XmlRpcClient> clientMap = new HashMap<String, XmlRpcClient>();
 	
-	public AirClientImpl() {
-		
+	Logger logger = LoggerFactory.getLogger(AirClientImpl.class);
+	
+	public AirClientImpl() throws XmlRpcException {
+		logger.debug("E/// Im getting there. I am actually entering AIR :D");		
+		init();
 	}
 
-	@SuppressWarnings("unused")
 	private void init() throws XmlRpcException {
+		logger.debug("E/// Before XmlRpcClientFactory");
 		XmlRpcClientFactory factory = new DefaultXmlRpcClientFactory();
-		
+		logger.debug("E/// After XmlRpcClientFactory");
 		//assuming max 10 end points can be configured 
 		for(int i=1; i<11; i++) {	
 			String sectionName = "cs-air"+i;
@@ -45,13 +51,18 @@ public class AirClientImpl implements AirClient {
 			originHostName = SefCoreServiceResolver.getConfigService().getValue(sectionName, "originHostName");
 			originNodeType = SefCoreServiceResolver.getConfigService().getValue(sectionName, "originNodeType");
 			defaultSite = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultSite");
-		
+			
+			logger.debug("originHostName: " + originHostName);
+			logger.debug("originNodeType: " + originNodeType);
+			logger.debug("defaultSite: " + defaultSite);
+			
 			ConfigParams configParams = createXmlRpcConfig(config, sectionName);
 			XmlRpcClient client = factory.create(configParams);
 			String siteId = SefCoreServiceResolver.getConfigService().getValue(sectionName, "siteId");
 			clientMap.put(siteId, client);
 			
 		}
+		logger.debug("E/// Client Map size: " + clientMap.size());
 	}
 
 	@Override
