@@ -34,6 +34,8 @@
 			org.apache.camel,
 			org.w3c.dom,
 			org.apache.cxf.*,
+			com.hazelcast.config,
+			 com.hazelcast.core,
 			org.slf4j
 		</osgi-import-packages>
 		<osgi-export-package>
@@ -44,6 +46,7 @@
 			com.ericsson.raso.sef.auth.*,
 			com.ericsson.raso.sef.core.config,
 			com.ericsson.raso.sef.logging,
+			com.ericsson.raso.sef.core.db.model,
 			com.ericsson.raso.sef.core.lb,
 			META-INF.sef-core,
 			wsdl,
