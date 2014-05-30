@@ -11,7 +11,7 @@ public class FulfillmentStepResult extends AbstractStepResult {
 	private Set<AtomicProduct> fulfillmentResult = null;
 	
 	
-	FulfillmentStepResult(StepExecutionException resultantFault, Set<AtomicProduct> result) {
+	public FulfillmentStepResult(StepExecutionException resultantFault, Set<AtomicProduct> result) {
 		super(resultantFault);
 		this.fulfillmentResult = result;
 	}
