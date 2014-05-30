@@ -3,8 +3,9 @@ package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
@@ -14,6 +15,7 @@ import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
 
 public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	private static final long	serialVersionUID	= 6645187522590773212L;
+	private static final Logger logger = LoggerFactory.getLogger(FulfillmentStep.class);
 
 	FulfillmentStep(String stepCorrelator, Fulfillment executionInputs) {
 		super(stepCorrelator, executionInputs);
@@ -23,26 +25,43 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	
 	@Override
 	public FulfillmentStepResult execute() {
+		
+		try{
+		logger.debug("Preparing for fulfillment");
 		AtomicProduct atomicProduct = ((Fulfillment)this.getExecutionInputs()).getAtomicProduct();
 		String subscriberId = ((Fulfillment)this.getExecutionInputs()).getSubscriberId();
 		Map<String, Object> additionalInputs = ((Fulfillment)this.getExecutionInputs()).getAdditionalInputs();
+		
+		//------------------------------------------------------------------------------------
+		// Remove these loggers post FT
+		//====================================================================================
+		
+		logger.debug("retrieved fulfillment inputs, product: " +  atomicProduct.getName() + "subscriber: " +  subscriberId);
+		logger.debug("Resource name: " + atomicProduct.getResource().getName());
+		logger.debug("Validity: " + atomicProduct.getValidity().getExpiryTimeInMillis());
+		logger.debug("Quota: " + atomicProduct.getQuota().getDefinedQuota());
+		
+		
 		
 		com.ericsson.sef.bes.api.entities.Product product = new com.ericsson.sef.bes.api.entities.Product();
 		product.setName(atomicProduct.getName());
 		product.setResourceName(atomicProduct.getResource().getName());
 		product.setValidity(atomicProduct.getValidity().getExpiryTimeInMillis());
 		product.setQuotaDefined(atomicProduct.getQuota().getDefinedQuota());
-		
-		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
 		List<Meta> metas = converToList(additionalInputs);
+		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
 		
+		logger.debug("Major milestone.. going to fulfill the service provisioning");
 		FulfillmentRequest request = ServiceResolver.getFulfillmentRequestClient();
 		request.fulfill(getStepCorrelator(), subscriberId, product, metas);
+		logger.info("Fulfillment completed!!!.. going to update results");
 		
+		return new FulfillmentStepResult(null, null);
 		
-		Set<AtomicProduct> result = new TreeSet<AtomicProduct>();
-		result.add(((Fulfillment)this.getExecutionInputs()).getAtomicProduct());
-		return new FulfillmentStepResult(null, result);
+		} catch(Exception e) {
+			logger.debug("Exception in execution of fulfillment: Exception: " +  e);
+			return new FulfillmentStepResult(new StepExecutionException("FulfilmentExecution failed"), null);
+		}
 	}
 
 	private List<Meta> converToList(Map<String, Object> metas) {

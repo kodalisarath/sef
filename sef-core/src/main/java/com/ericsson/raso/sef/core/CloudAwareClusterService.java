@@ -15,14 +15,14 @@ import com.hazelcast.core.IAtomicLong;
 public class CloudAwareClusterService implements CloudAwareCluster {
 
 	private HazelcastInstance instance;
-	private static final String CONFIG_HOME = "CONFIG_HOME";
+	private static final String HZ_CONFIG = "HZ_CONFIG";
 	
 	public CloudAwareClusterService() {
 		start();
 	}
 	
 	public void start() {
-		String configHome = System.getenv(CONFIG_HOME);
+		String configHome = System.getenv(HZ_CONFIG);
 		try {
 			FileInputStream fis = new FileInputStream(configHome + getFileSeparator() +  "hazelcast.xml");
 			Config config = new XmlConfigBuilder(fis).build();
@@ -31,7 +31,6 @@ public class CloudAwareClusterService implements CloudAwareCluster {
 		} catch (FileNotFoundException e) {
 			//TODO: Throw SNMP Unable load cluster configuration. Cannot start
 			e.printStackTrace();
-			throw new RuntimeException("Cannot load cluster configuration");
 		}
 	}
 

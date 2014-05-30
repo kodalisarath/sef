@@ -87,7 +87,7 @@
 	<!-- <bean class="com.ericsson.sm.fulfillment.FulfillmentContext" /> -->
 	<!-- <bean id="requestIdProcessor" class="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor"/> -->
 
-	<camelContext id="com.ericsson.raso.sef.fulfillmentEngine"
+	<camelContext id="com.ericsson.raso.sef.transactionEngine"
 		xmlns="http://camel.apache.org/schema/spring">
 		<!-- camel route for the subscriber -->
 		<route>
@@ -182,6 +182,11 @@
 				<!-- Add exception handler -->
 				</camel:doFinally>
 			</camel:doTry>
+		</route>
+		
+		<route>
+			<from uri="cxf:bean:fulfillmentInterface"/>
+			<camel:bean beanType="com.ericsson.raso.sef.bes.engine.fulfillment.response.FulfillResponseProcessor"></camel:bean>
 		</route>
 		<!-- End of the route -->
 	</camelContext>
