@@ -42,6 +42,8 @@ public class SmTypeFactory extends TypeFactoryImpl {
 			return new DateSerializer(newFormat());
 		} else if(pObject instanceof XmlRpcInt) {
 			return new IntSerializer();
+		} else if(pObject instanceof String) {
+			return new StringSerializer();
 		} else {
 			return super.getSerializer(pConfig, pObject);
 		}

@@ -70,7 +70,7 @@ public class AirClientImpl implements AirClient {
 			request.setOriginTransactionId(String.valueOf(createTransactionId()));
 		}
 		
-		String nai = CsAirContext.getProperty("subscriberNumberNAI");
+		String nai = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "subscriberNumberNAI");
 		if(nai != null) {
 			request.setSubscriberNumberNAI(Integer.valueOf(nai));
 		}
