@@ -33,7 +33,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	private String transactionAmount;
 	private CurrencyCode transactionCurrency;
 
-	Logger logger = LoggerFactory.getLogger(RefillProfile.class);
+	private static final Logger logger = LoggerFactory.getLogger(RefillProfile.class);
 	
 	public RefillProfile(String name) {
 		super(name);
@@ -76,7 +76,8 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) {
 		
-		//logger.debug("E/// Executing fulfillment request to air for...: " + e.getName());
+		logger.debug("Fufill request for refill");
+		logger.debug("E/// Executing fulfillment request to air for...: " + e.getName());
 		RefillRequest refillRequest = new RefillRequest();
 		refillRequest.setSubscriberNumber(map.get("msisdn"));
 		refillRequest.setRefProfID(this.refillProfileId);
@@ -117,27 +118,28 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Product> products = new ArrayList<Product>();
+		return products;
 	}
 
 
 	@Override
 	public List<Product> query(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Product> products = new ArrayList<Product>();
+		return products;
 	}
 
 
 	@Override
 	public List<Product> revert(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Product> products = new ArrayList<Product>();
+		return products;
 	}
 	
 	//TODO: Move to smart-commons
 	private List<Product> createResponse(Product p, RefillResponse response) {
 		
+		logger.debug("Convering CS - IL response");
 		List<Product> products = new ArrayList<Product>();
 		
 		//Fetch accounts before and after refill 
@@ -155,7 +157,9 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 
 		Map<Integer, OfferInformation> offerMap = toOfferMap(offerInformationList);
 
+		logger.debug("Retrieved refill balance information");
 		// For each CS offer Id associated to the refill prepare balance statement.. Product represent the recharged balance & validity
+		if(this.getAbstractResources() != null) {
 		for(String resource: this.getAbstractResources()) {
 			
 			Product product = new Product();
@@ -172,9 +176,11 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			// Fetch DA and prepare balances
 			String daID = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_offerMapping", resource);
 			if (daID == null) {
+				logger.debug("Associated DA not found.. continuing with next offer");
 				continue;
 			}
 			
+			logger.debug("Proceeding with balance population");
 			DedicatedAccountInformation beforeDa = beforeDaMap.get(Integer.valueOf(daID));
 			DedicatedAccountInformation afterDa = afterDaMap.get(Integer.valueOf(daID));
 
@@ -199,7 +205,10 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			product.setName(p.getName());
 			products.add(product);
 		}
-		
+		} else {
+			logger.debug("No associated offers found. Empty response will be sent");
+		}
+		logger.debug("Total products in response" + products.size());
 		return products;
 	}
 	

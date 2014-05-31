@@ -32,12 +32,13 @@ public class UseCaseProcessor implements Processor {
 
 		logger.debug("E/// Request: " + arg0.getIn().getBody().toString());
 		Object[] objectArray= arg0.getIn().getBody(Object[].class);
-		String operationName = (String)objectArray[0];
+		String operationName = (String) arg0.getIn().getHeader("operationName");
 	 	String msisdn =(String)objectArray[1];
 	 	Product product=(Product) objectArray[2]; 
 	 	List<Meta> metas = (List<Meta>) objectArray[3];
 		Map<String, String> map = covertToMap(msisdn, metas);
-		String correlationId = (String) arg0.getIn().getHeader("CORRELATIONID");
+		//String correlationId = (String) arg0.getIn().getHeader("CORRELATIONID");
+		String correlationId = (String) objectArray[0];
 		
 		logger.debug("E/// msisdn: " + msisdn);
 		logger.debug("E/// operationName: " + operationName);
@@ -49,13 +50,17 @@ public class UseCaseProcessor implements Processor {
 		List<FulfillmentProfile> fulfillmentProfiles = getProfiles(fulfillmentProfileIds);
 		
 		switch(operationName){
-		case "fulfill":fulfill(correlationId, msisdn, fulfillmentProfiles,product, map);
+		case "fulfill":
+			logger.debug("Use case identified as fulfill!!");
+			fulfill(correlationId, msisdn, fulfillmentProfiles,product, map);
 		               break;
 		case "reverse":reverse(fulfillmentProfiles,product, map);
 		               break;
 		case "query":query(fulfillmentProfiles,product, map);
 		             break;
-		case "prepare":prepare(fulfillmentProfiles,product, map);
+		case "prepare":
+			logger.debug("Use case identified as prepare!!");
+			prepare(correlationId, msisdn, fulfillmentProfiles,product, map);
 		                break;
 		case "cancel":cancel(fulfillmentProfiles,product, map);
 		               break;
@@ -67,7 +72,7 @@ public class UseCaseProcessor implements Processor {
 	@SuppressWarnings("rawtypes")
 	private List<FulfillmentProfile> getProfiles(
 			List<String> fulfillmentProfileIds) {
-		
+		logger.debug("Retrieving fulfillment profile for ProfileID: " + fulfillmentProfileIds);
 		List<FulfillmentProfile> profiles = new ArrayList<FulfillmentProfile>();
 		
 		try {
@@ -80,6 +85,7 @@ public class UseCaseProcessor implements Processor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		logger.debug("Returning profiles, Total " + profiles.size());
 		return profiles;
 	}
 
@@ -89,23 +95,67 @@ public class UseCaseProcessor implements Processor {
 
 		List<Product> products = new ArrayList<Product>();
 		logger.debug("E/// How many profiles we have: " + profiles.size() + " and correlationID is " + correlationId);
+		try {
 		for(FulfillmentProfile profile: profiles) {
 			logger.debug("E/// Product name: " + product.getName() + " " + map.size());
 			logger.debug("E/// Profile name: " + profile.getName() + " " + map.size());
-			products.addAll((profile.fulfill(product, map)));
+			//products.addAll((profile.fulfill(product, map)));
+			List<Product>prods = profile.fulfill(product, map);
+			for(Product prod:  prods) {
+				if(prod != null) {
+					products.add(prod);
+				}
+			}
+		}
+		} catch (Exception e) {
+			logger.error("Exception while fulfilment " +  e.getMessage() + "Exception: " + e);
+		}
+		
+		List<Meta> metas = new ArrayList<Meta>();
+		
+		logger.info("Sending fulfillment Response now");
+		
+		for(Product prod: products) {
+			if(prod!= null) {
+				if(prod.getName() != null)
+				logger.debug("Product:" +  prod.getName());
+				if(prod.getResourceName()!= null)
+					logger.debug("Resource:" +  prod.getResourceName());
+				logger.debug("Quota consumed:" +  prod.getQuotaConsumed());
+				logger.debug("Quote defined: " +  prod.getQuotaDefined());
+				logger.debug("Validity: " +  prod.getValidity());
+			}
+			
 		}
 		
 		//TODO: address this with graceful exception handling
-		sendFulfillResponse(correlationId, msisdn, null, products, null);
+		sendFulfillResponse(correlationId, msisdn, new TransactionStatus(), products, metas);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void prepare(List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
-
-		for(FulfillmentProfile profile: profiles) { 
-			profile.prepare(product, map);
+	private void prepare(String correlationId, String msisdn, List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
+		
+		List<Product> products = new ArrayList<Product>();
+		try {
+		for(FulfillmentProfile profile: profiles) {
+			logger.debug("E/// Product name: " + product.getName() + " " + map.size());
+			logger.debug("E/// Profile name: " + profile.getName() + " " + map.size());
+			//products.addAll((profile.fulfill(product, map)));
+			List<Product>prods = profile.prepare(product, map);
+			for(Product prod:  prods) {
+				if(prod != null) {
+					products.add(prod);
+				}
+			}
 		}
+		} catch (Exception e) {
+			logger.error("Exception while fulfilment " +  e.getMessage() + "Exception: " + e);
+		}
+
+		List<Meta> metas = new ArrayList<Meta>();
+		
 		//TODO: Post Response
+		sendPrepareResponse(correlationId, msisdn, new TransactionStatus(), products, metas);
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -149,5 +199,9 @@ public class UseCaseProcessor implements Processor {
 	
 	private void sendFulfillResponse(String correlationId, String msidn, TransactionStatus fault, List<Product> products, List<Meta> meta) {
 		FulfillmentServiceResolver.getFulfillmentResponseClient().fulfill(correlationId, fault, products, meta);
+	}
+	
+	private void sendPrepareResponse(String correlationId, String msisdn, TransactionStatus fault, List<Product> products, List<Meta> meta) {
+		FulfillmentServiceResolver.getFulfillmentResponseClient().prepare(correlationId, fault, products, meta);
 	}
 }

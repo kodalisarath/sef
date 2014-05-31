@@ -24,7 +24,7 @@ public class ProfileRegistry implements IProfileRegistry {
 	private String profileRegistryLocation = null;
 	private SecureSerializationHelper ssh = null;
 
-	Logger logger = LoggerFactory.getLogger(ProfileRegistry.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProfileRegistry.class);
 	
 	@SuppressWarnings("unchecked")
 	public ProfileRegistry() {
