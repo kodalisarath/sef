@@ -55,8 +55,8 @@
 			<ref bean="loggingOutInterceptor" />
 		</cxf:outInterceptors>
 	</cxf:cxfEndpoint>
-	<cxf:cxfEndpoint id="fulfillmentInterface"
-		serviceClass="com.ericsson.sef.bes.api.fulfillment.FullfillmentResponse" bus="cxf">
+	<cxf:cxfEndpoint id="fulfillmentResponseInterface"
+		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse" bus="cxf">
 
 		<cxf:properties>
 			<entry key="address" value="http://0.0.0.0:8080/services/ws/fulfillment" />
@@ -185,7 +185,7 @@
 		</route>
 		
 		<route>
-			<from uri="cxf:bean:fulfillmentInterface"/>
+			<from uri="cxf:bean:fulfillmentResponseInterface"/>
 			<camel:bean beanType="com.ericsson.raso.sef.bes.engine.fulfillment.response.FulfillResponseProcessor"></camel:bean>
 		</route>
 		<!-- End of the route -->

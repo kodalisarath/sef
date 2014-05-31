@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.AbstractTransaction;
@@ -14,6 +17,8 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 
 public class OrchestrationManager {
+	
+	private static final Logger logger = LoggerFactory.getLogger(OrchestrationManager.class); 
 
 	private ExecutorService						grinder					= SefCoreServiceResolver.getExecutorService(Constants.ORCHESTRATION.name());
 	private Map<String, AbstractTransaction>	nbUseCaseStore			= SefCoreServiceResolver.getCloudAwareCluster().getMap(
@@ -52,11 +57,16 @@ public class OrchestrationManager {
 	}
 	
 	public void promoteFulfillmentExecution(String southboundCorrelator, FulfillmentStepResult fulfillmentResult) {
+		logger.debug("Entering promoteFulfillmentExecution!!");
 		Orchestration requiredOrchestration = this.sbOrchestrationTaskMapper.get(southboundCorrelator);
 		this.sbRequestResultMapper.put(southboundCorrelator, fulfillmentResult);
-		if (requiredOrchestration != null)
+		if (requiredOrchestration != null) {
 			this.grinder.submit(requiredOrchestration);
-		else {
+			logger.debug("Orchestration found for correlation: " +  southboundCorrelator + 
+					"& submitted for further execution. Status: " + requiredOrchestration.getStatus() + " Mode: " + requiredOrchestration.getMode() + 
+					" Phase: " + requiredOrchestration.printPhasingProgress());
+		} else {
+			logger.debug("Orchestration not found for south bound correlatorID: " + southboundCorrelator);
 			//TODO: Logger - if the required Orchestration is already evicted, then no point complaining or throwing an exception!!
 		}
 	}
@@ -65,16 +75,17 @@ public class OrchestrationManager {
 	public void sendResponse(String nbCorrelator, Orchestration orchestration) {
 		AbstractTransaction usecase = this.nbUseCaseStore.get(nbCorrelator);
 		usecase.getResponse().setAtomicStepResults(orchestration.getAtomicStepResults());
-		
+		logger.debug("Use case response received!!");
 		// if the transaction had failed, then we will have to execute rollback in background....
 		if (orchestration.getStatus() != Status.DONE_SUCCESS && orchestration.getMode() == Mode.FORWARD) {
+			logger.debug("Use case failed. Rollback flow preparation");
 			Orchestration rollback = orchestration.getRollbackProfile();
 			orchestration.cleanupTransaction();
 			this.submit(usecase, rollback);
 		} else if(orchestration.getStatus() != Status.DONE_SUCCESS && orchestration.getMode() == Mode.ROLLBACK) {
 			orchestration.cleanupTransaction();
 		}
-		
+		logger.debug("Use case response to be sent");
 		//TODO: invoke response sending to the IResponse interface
 		usecase.sendResponse();
 		

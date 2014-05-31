@@ -116,7 +116,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		 * a. If purchase event, then ensure returning subscriptionId
 		 * b. For renewal, terminate, expiry, pre-renewal, pre-expiry 
 		 */
-		
+		logger.debug("Handle Subscription Event use case response to be sent now");
 		String subscriptionId = null;
 		List<Product> products = new ArrayList<Product>();
 		List<Meta> billingMetas = new ArrayList<Meta>();
@@ -132,12 +132,14 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 				products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
 			}
 		}
+		logger.debug("Invoking subscription response!!");
 		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
 		subscriptionClient.purchase(this.getRequestId(), 
 									new TransactionStatus("Tx-Engine", 501, "Success"), 
 									subscriptionId, 
 									products, 
 									billingMetas);
+		logger.debug("Subscription response posted");
 		
 	}
 	

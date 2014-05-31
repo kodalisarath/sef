@@ -11,6 +11,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
+import com.ericsson.raso.sef.bes.prodcat.tasks.FulfillmentMode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
@@ -33,6 +34,7 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		AtomicProduct atomicProduct = ((Fulfillment)this.getExecutionInputs()).getAtomicProduct();
 		String subscriberId = ((Fulfillment)this.getExecutionInputs()).getSubscriberId();
 		Map<String, Object> additionalInputs = ((Fulfillment)this.getExecutionInputs()).getAdditionalInputs();
+		FulfillmentMode mode = ((Fulfillment)this.getExecutionInputs()).getMode();
 		
 		//------------------------------------------------------------------------------------
 		// Remove these loggers post FT
@@ -53,9 +55,25 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		List<Meta> metas = converToList(additionalInputs);
 		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
 		
-		logger.debug("Major milestone.. going to fulfill the service provisioning");
+		logger.debug("Fulfilment execution mode: " + mode);
 		FulfillmentRequest request = ServiceResolver.getFulfillmentRequestClient();
-		request.fulfill(getStepCorrelator(), subscriberId, product, metas);
+		switch(mode) {
+		case PREPARE:
+			request.prepare(getStepCorrelator(), subscriberId, product, metas);
+			break;
+		case FULFILL:
+			request.fulfill(getStepCorrelator(), subscriberId, product, metas);
+			break;
+		case CANCEL:
+			request.cancel(getStepCorrelator(), subscriberId, product, metas);
+			break;
+		case QUERY:
+			request.query(getStepCorrelator(), subscriberId, product, metas);
+			break;
+		case REVERSE:
+			request.reverse(getStepCorrelator(), subscriberId, product, metas);
+			break;
+		}
 		logger.info("Fulfillment completed!!!.. going to update results");
 		
 		return new FulfillmentStepResult(null, null);
@@ -66,7 +84,7 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 			Map<String, AbstractStepResult> stepResultStore = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEP_STATUS.name());
 			stepResultStore.put(stepCorrelator, result);
 			Map<String, Orchestration> orchestrationStore = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.ORCHESTRATION_TASK_MAPPER.name());
-			orchestrationStore.get(stepResultStore);
+			orchestrationStore.get(stepCorrelator);
 			OrchestrationManager.getInstance().promoteFulfillmentExecution(stepCorrelator, result); 
 			return result;
 		}

@@ -119,6 +119,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 	@Override
 	public AbstractResponse call() throws Exception {
+		logger.info("Orchestration execution Status: " + this.status + " Phasing progress: " + printPhasingProgress());
 		try {
 		switch (this.status) {
 			case WAITING:
@@ -160,9 +161,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 				// proceed to scheduling...
 				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
-					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) 
+					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
+						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
 						this.promote2Persist();
-					else {
+					}	else {
 						this.status = Status.DONE_FAULT;
 						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
 					}
@@ -170,9 +172,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				
 				// proceed to persistence...
 				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
-					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) 
+					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
 						this.status = Status.DONE_SUCCESS;
-					else {
+						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
+					}	else {
 						this.status = Status.DONE_FAULT;
 						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
 					}
@@ -220,12 +223,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		this.status = Status.PROCESSING;
 		this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.PROCESSING);
 		
+		logger.debug("Fulfilment steps size: " + this.fulfillment.size());
+		
 		for (Object next: this.fulfillment) {
 			Step step = null;
 			if (next instanceof FulfillmentStep) {
 				step = (FulfillmentStep) next;
 			
 				if (this.sbRequestStepMapper.get(step.getStepCorrelator()) != null) {
+					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					// this means the task had been submitted earlier...
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					if (result != null) {
@@ -248,6 +254,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						isCurrentParallelAllCompleted = false; // allow the task to complete & check on the next one....
 					}
 				} else {
+					logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
 					isAllStepsCompleted = false;
 					// this means the task is not yet submitted...
 					if (!isCurrentParallelAllCompleted) {
@@ -261,6 +268,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					}
 				}
 			} else if (next instanceof SequentialExecution) {
+				logger.debug("promote2Fulfill(): found the fulfillment step is sequential will execute now");
 				isSerialModeNow = true;
 				
 				SequentialExecution sequencedSteps = (SequentialExecution) next;
@@ -471,13 +479,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			throw new TransactionException(northBoundCorrelator, "Charging Failed... Cannot proceed!!");
 		}	
 		
-		logger.debug("Prepare Fulfillment tasks to be executed now!!!. Total: " + this.prepareFulfillment.size());
+		
 		// then... get into fulfillment phase & fire out prepare queries....
 		this.phasingProgress.put(Phase.TX_PHASE_PREP_FULFILLMENT, Status.PROCESSING);
-		
+		logger.debug("Prepare Fulfillment tasks to be executed now!!!. Total: " + this.prepareFulfillment.size()
+				+ "Status: " + this.status.name() + "Phasing: " + printPhasingProgress());
 		Iterator iterator = this.prepareFulfillment.iterator();
 		while(iterator.hasNext()) {
 			Step prepare = (Step) iterator.next();
+			logger.debug("Prepare Fulfillment task correlationId: " + prepare.getStepCorrelator());
 			this.orchestrationTaskMapper.put(prepare.getStepCorrelator(), this);
 			this.sbRequestStepMapper.put(prepare.getStepCorrelator(), prepare);
 			this.sbRequestResultMapper.put(prepare.getStepCorrelator(), new FulfillmentStepResult(null, null));
@@ -769,28 +779,31 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			if (next instanceof Step) {
 				step = (Step) next;
 
-				AbstractStepResult result = this.sbRequestResultMapper.get(step.getResult());
+				// TODO: check with sathya
+				AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 				if (result == null) {
+					logger.debug("Null result found for the step... assuming phase incomplete");
 					return false;
 				} else {
+					logger.debug("Result has arrived for the step. Updating step");
 					step.setResult(result);
 					if (result.getResultantFault() != null) {
 						anyFault = true;
 						step.setFault(result.getResultantFault());
 					}
 					// check for types of steps....
-					if (step instanceof FulfillmentStep) {
-						if (((FulfillmentStepResult) result).getFulfillmentResult() == null || ((FulfillmentStepResult) result).getFulfillmentResult().isEmpty())
-							anyFailure = true;
-						
-					} else if (step instanceof PersistenceStep) {
-						if (((PersistenceStepResult) result).getPersistenceResult() == null)
-							anyFailure = true;
-						
-					} else if (step instanceof SchedulingStep) {
-						if (((SchedulingStepResult) result).getNotificationResult() == null || ((SchedulingStepResult) result).getNotificationResult() == false)
-							anyFailure = true;
-					}
+//					if (step instanceof FulfillmentStep) {
+//						if (((FulfillmentStepResult) result).getFulfillmentResult() == null || ((FulfillmentStepResult) result).getFulfillmentResult().isEmpty())
+//							anyFailure = true;
+//						
+//					} else if (step instanceof PersistenceStep) {
+//						if (((PersistenceStepResult) result).getPersistenceResult() == null)
+//							anyFailure = true;
+//						
+//					} else if (step instanceof SchedulingStep) {
+//						if (((SchedulingStepResult) result).getNotificationResult() == null || ((SchedulingStepResult) result).getNotificationResult() == false)
+//							anyFailure = true;
+//					}
 				}
 			}
 		}
@@ -829,6 +842,12 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		this.mode = mode;
 	}
 
+	public String printPhasingProgress() {
+		if(this.phasingProgress != null) {
+			return this.phasingProgress.toString();
+		}
+		return null;
+	}
 
 	enum Mode implements Serializable {
 		FORWARD,
