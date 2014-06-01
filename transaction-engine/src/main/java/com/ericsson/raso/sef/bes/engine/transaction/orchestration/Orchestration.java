@@ -145,8 +145,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				} else if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
-						this.processNotification();
-						this.promote2Schedule();
+//						this.processNotification();
+//						this.promote2Schedule();
+						//TODO: remove this when uncomment the above two tasks
+						this.status = Status.DONE_SUCCESS;
 					} else {
 						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
 							this.status = Status.DONE_FAULT;
@@ -159,27 +161,27 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					}
 				} 
 
-				// proceed to scheduling...
-				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
-					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
-						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
-						this.promote2Persist();
-					}	else {
-						this.status = Status.DONE_FAULT;
-						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
-					}
-				} 
-				
-				// proceed to persistence...
-				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
-					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
-						this.status = Status.DONE_SUCCESS;
-						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
-					}	else {
-						this.status = Status.DONE_FAULT;
-						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
-					}
-				} 
+//				// proceed to scheduling...
+//				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
+//					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
+//						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
+//						this.promote2Persist();
+//					}	else {
+//						this.status = Status.DONE_FAULT;
+//						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
+//					}
+//				} 
+//				
+//				// proceed to persistence...
+//				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
+//					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
+//						this.status = Status.DONE_SUCCESS;
+//						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
+//					}	else {
+//						this.status = Status.DONE_FAULT;
+//						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
+//					}
+//				} 
 				break;
 			case DONE_FAILED:
 				//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
@@ -194,7 +196,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		
 		if (this.status.name().startsWith("DONE_")) {
 			logger.debug("Orchestration completed with status: " + this.status.name());
-			this.processNotification();
+			//this.processNotification();
 			OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
 		}
 		
@@ -257,15 +259,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
 					isAllStepsCompleted = false;
 					// this means the task is not yet submitted...
-					if (!isCurrentParallelAllCompleted) {
-						// can submit all subsequent tasks  until hitting a serial mode...
-						if (!isSerialModeNow) {
-							this.orchestrationTaskMapper.put(step.getStepCorrelator(), this);
-							this.sbRequestStepMapper.put(step.getStepCorrelator(), step);
-							this.sbRequestResultMapper.put(step.getStepCorrelator(), null);
-							OrchestrationManager.getInstance().getGrinder().submit(step);
-						}
-					}
+					// can submit all subsequent tasks until hitting a serial
+					// mode...
+
+					this.orchestrationTaskMapper.put(step.getStepCorrelator(),this);
+					this.sbRequestStepMapper.put(step.getStepCorrelator(),step);
+					this.sbRequestResultMapper.put(step.getStepCorrelator(),new FulfillmentStepResult(null, null));
+					OrchestrationManager.getInstance().getGrinder().submit(step);
+					if (!isSerialModeNow)
+						break;
 				}
 			} else if (next instanceof SequentialExecution) {
 				logger.debug("promote2Fulfill(): found the fulfillment step is sequential will execute now");
@@ -571,13 +573,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			}
 		}
 		
+		logger.debug("Fulfillment tasks packed. Total parallel tasks: " + parallel.size());
+		logger.debug("Fulfillment tasks packed. Total Sequential tasks: " + sequence.size());
 		if (!parallel.isEmpty()) {
-			logger.debug("Fulfillment tasks packed. Total parallel tasks: " + parallel.size());
-			logger.debug("Fulfillment tasks packed. Total Sequential tasks: " + sequence.size());
-			parallel.add(sequence);
-			return parallel;
+		     if (!sequence.isEmpty())
+		    	 parallel.add(sequence);
+		     return parallel;
 		} else
-			return sequence;
+		     return sequence;
 	}
 	
 	
@@ -707,21 +710,21 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			
 		}
 		
-		Iterator itr3 = this.reverseFulfillment.iterator();
-		while(itr3.hasNext()) {
-			Step step = (Step) itr3.next();
-			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
-		}
-			
-		
-		for (Step step: this.schedules)
-			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
-		
-		for (Step step: this.persistence)
-			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
-		
-		for (Step step: this.notification)
-			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+//		Iterator itr3 = this.reverseFulfillment.iterator();
+//		while(itr3.hasNext()) {
+//			Step step = (Step) itr3.next();
+//			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+//		}
+//			
+//		
+//		for (Step step: this.schedules)
+//			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+//		
+//		for (Step step: this.persistence)
+//			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+//		
+//		for (Step step: this.notification)
+//			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
 		
 		return results;
 	}
