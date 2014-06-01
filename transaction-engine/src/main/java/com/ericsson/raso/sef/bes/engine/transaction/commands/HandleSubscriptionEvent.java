@@ -60,7 +60,9 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-		Offer prodcatOffer = catalog.getOfferById(((HandleSubscriptionEventRequest)this.getRequest()).getOfferId());
+		
+		//TODO: its hack specific to SMART. address this through calling discoverOfferByFederatedId in purchase processor
+		Offer prodcatOffer = catalog.getOfferByExternalHandle((((HandleSubscriptionEventRequest)this.getRequest()).getOfferId()));
 		logger.debug("Offer retrieved from catalog: " + prodcatOffer.getName());
 		
 		try {
