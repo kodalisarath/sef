@@ -35,8 +35,10 @@ public class FulfillResponseProcessor implements Processor {
 		Set<AtomicProduct> atomicProducts = new HashSet<AtomicProduct>();
 		
 		if(products != null) {
-		for(Product product: products) 
+		for(Product product: products) {
+			logger.debug("Product Quota defined: " +  product.getQuotaDefined() + " Quota consumed: " + product.getQuotaConsumed());
 			atomicProducts.add(TransactionServiceHelper.getApiEntity(product));
+		}
 		}
 		
 		//TODO: based on the transaction status set a transaction fault while posting back the step result
