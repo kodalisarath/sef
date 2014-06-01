@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -150,10 +151,12 @@ public abstract class TransactionServiceHelper {
 	}
 
 	public static Set<Product> translateProducts(Set<AtomicProduct> allAtomicProducts) {
-		Set<Product> products = new TreeSet<Product>();
+		Set<Product> products = new HashSet<Product>();
 		
-		for (AtomicProduct source: allAtomicProducts) 
+		if(allAtomicProducts!=null) {
+			for (AtomicProduct source: allAtomicProducts) 
 			products.add(TransactionServiceHelper.getApiEntity(source));
+		}
 		
 		return products;
 	}
@@ -222,6 +225,8 @@ public abstract class TransactionServiceHelper {
 		
 		return returned;
 	}
+	
+
 	public static AtomicProduct getApiEntity(Product other) {
 		AtomicProduct returned = new AtomicProduct(other.getName());
 		Calendar cal = Calendar.getInstance();
@@ -234,11 +239,14 @@ public abstract class TransactionServiceHelper {
 			AbstractQuotaCharacteristic quotaUnlimited=new UnlimitedQuota();
 			returned.setQuota(quotaUnlimited);
 		}else{
-			AbstractQuotaCharacteristic quotalimited=new LimitedQuota();
+			LimitedQuota quotalimited=new LimitedQuota();
+			quotalimited.setConsumedQuota(other.getQuotaConsumed());
+			quotalimited.setDefinedQuota(other.getQuotaDefined());
 			returned.setQuota(quotalimited);
 		}
 		return returned;
 	}
+	
 	public static com.ericsson.raso.sef.bes.prodcat.entities.Offer getProdcatEntity(Offer other) {
 		com.ericsson.raso.sef.bes.prodcat.entities.Offer returned = new com.ericsson.raso.sef.bes.prodcat.entities.Offer(other.getName());
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
