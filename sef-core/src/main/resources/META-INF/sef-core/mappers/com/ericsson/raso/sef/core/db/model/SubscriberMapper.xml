@@ -30,9 +30,6 @@
 		<result property="activeDate" column="active_date"/>
 		<result property="ratePlan" column="rate_plan"/>
 		<result property="customerSegment" column="customer_segment"/>
-		<result property="lastModified" column="last_modified"/>
-		<result property="created" column="created"/>
-		<result property="deleted" column="deleted"/>
 	</resultMap>
 
 	<resultMap id="SubscriberMetaResult" type="SubscriberMeta">
@@ -43,11 +40,10 @@
 		<result property="created" column="created"/>
 	</resultMap>
 	
-	<resultMap id="SubscriberHistoryResult" type="SubscriberHistory">
+	<resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
 		<id property="userId" column="user_id" />
 		<result property="eventTimestamp" column="event_timestamp" jdbcType="TIMESTAMP"/>
 		<result property="attributeName" column="attribute_name" />
-		<result property="attributeOldValue" column="attribute_old_value" />
 		<result property="attributeNewValue" column="attribute_new_value" />
 	</resultMap>
 	
@@ -56,9 +52,9 @@
 	</select>
 	
 	<insert id="createSubscriber" parameterType="Subscriber">
-		insert into subscriber (user_id,msisdn,created,deleted)
+		insert into subscriber (user_id,msisdn,registrationDate)
 		values
-		(#{userId},#{msisdn},#{created jdbcType=TIMESTAMP}, 0)
+		(#{userId},#{msisdn},#{registrationDate jdbcType=TIMESTAMP})
 	</insert>
 
 	<update id="deleteSubscriber" parameterType="String">

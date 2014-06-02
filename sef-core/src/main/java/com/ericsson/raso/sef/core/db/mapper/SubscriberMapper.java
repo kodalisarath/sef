@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.ericsson.raso.sef.core.db.model.SmSequence;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
-import com.ericsson.raso.sef.core.db.model.SubscriberHistory;
+import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
 import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 
 public interface SubscriberMapper {
@@ -29,9 +29,9 @@ public interface SubscriberMapper {
 
 	void updateSubscriberMeta(SubscriberMeta subscriberMeta);
 
-	void insertSubscriberHistory(SubscriberHistory subscriberHistory);
+	void insertSubscriberHistory(SubscriberAuditTrial subscriberHistory);
 	
-	Collection<SubscriberHistory> getSubscriberHistory(Map<String, Object> map);
+	Collection<SubscriberAuditTrial> getSubscriberHistory(Map<String, Object> map);
 	
 	SmSequence userSequence(String rand);
 	
