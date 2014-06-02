@@ -2,7 +2,7 @@ package com.ericsson.sef.bes.api.entities;
 
 public class TransactionStatus {
 	private String component;
-	private Integer code;
+	private Integer code = 0;
 	private String description;
 	
 	

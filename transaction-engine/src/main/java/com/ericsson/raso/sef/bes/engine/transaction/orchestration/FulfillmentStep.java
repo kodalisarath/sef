@@ -14,6 +14,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FulfillmentMode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
 
 public class FulfillmentStep extends Step<FulfillmentStepResult> {
@@ -23,7 +24,6 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	FulfillmentStep(String stepCorrelator, Fulfillment executionInputs) {
 		super(stepCorrelator, executionInputs);
 	}
-
 
 	
 	@Override
@@ -45,16 +45,19 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 //		logger.debug("Validity: " + atomicProduct.getValidity().getExpiryTimeInMillis());
 //		logger.debug("Quota: " + atomicProduct.getQuota().getDefinedQuota());
 		
-		
-		
-		com.ericsson.sef.bes.api.entities.Product product = new com.ericsson.sef.bes.api.entities.Product();
+		Product product = new Product();
+		logger.debug("Instantiated new product");
 		product.setName(atomicProduct.getName());
+		logger.debug("Product name " + atomicProduct.getName());
 		product.setResourceName(atomicProduct.getResource().getName());
+		logger.debug("Resource name " + atomicProduct.getResource().getName());
 		//product.setValidity(atomicProduct.getValidity().getExpiryTimeInMillis());
 		//product.setQuotaDefined(atomicProduct.getQuota().getDefinedQuota());
+		logger.debug("How many metas do we have: " + additionalInputs.size());
 		List<Meta> metas = converToList(additionalInputs);
 		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
 		
+		logger.debug("Do we still have metas here: " + metas.size());
 		logger.debug("Fulfilment execution mode: " + mode);
 		FulfillmentRequest request = ServiceResolver.getFulfillmentRequestClient();
 		switch(mode) {
@@ -92,18 +95,19 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 
 	private List<Meta> converToList(Map<String, Object> metas) {
 		List<Meta> metaList = new ArrayList<Meta>();
+		
+		logger.debug("We have: " + metas.size() + " here");
 		if(metas != null) {
-		for (String metaskey: metas.keySet()) {
-			Meta meta = new Meta();
-			if(metas.get(metaskey) instanceof String){
-				meta.setKey(metaskey);
+			for (String metaskey: metas.keySet()) {
+				logger.debug("Converting metas: " + metaskey.toString() + "-" + metas.get(metaskey).toString());
+				Meta meta = new Meta();
+		
+				meta.setKey((String)metaskey);
 				meta.setValue(metas.get(metaskey).toString());
 				metaList.add(meta);
 			}
 		}
-		}
 		return metaList;
 	}
 	
-
 }
