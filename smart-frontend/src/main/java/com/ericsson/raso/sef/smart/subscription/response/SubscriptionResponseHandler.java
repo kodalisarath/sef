@@ -3,6 +3,9 @@ package com.ericsson.raso.sef.smart.subscription.response;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Offer;
 import com.ericsson.sef.bes.api.entities.Product;
@@ -10,6 +13,9 @@ import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 public class SubscriptionResponseHandler implements ISubscriptionResponse {
+	
+	
+	private static final Logger logger = LoggerFactory.getLogger(SubscriptionResponseHandler.class);
 
 	@Override
 	public void discoverOffers(String requestCorrelator,
@@ -50,6 +56,7 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 	public void purchase(String requestCorrelator, TransactionStatus fault,
 			String subscriptionId, List<Product> products,
 			List<Meta> billingMetas) {
+		logger.debug("Fetching relavant response from correlation for updating the received response");
 		PurchaseResponse response = (PurchaseResponse) RequestCorrelationStore.get(requestCorrelator);
 		synchronized (response) {
 			response.setBillingMetas(billingMetas);
