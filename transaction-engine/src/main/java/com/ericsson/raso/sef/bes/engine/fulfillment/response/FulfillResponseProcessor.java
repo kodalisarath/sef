@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.StepExecutionException;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
@@ -33,17 +35,22 @@ public class FulfillResponseProcessor implements Processor {
 		logger.debug("Fulfillment response received for: " + correlationId);
 		
 		Set<AtomicProduct> atomicProducts = new HashSet<AtomicProduct>();
-		
-		if(products != null) {
-		for(Product product: products) {
-			logger.debug("Product Quota defined: " +  product.getQuotaDefined() + " Quota consumed: " + product.getQuotaConsumed());
-			atomicProducts.add(TransactionServiceHelper.getApiEntity(product));
+		FulfillmentStepResult result=null;
+		if(status != null  && status.getCode() > 0){
+			ResponseCode resonseCode = new ResponseCode(status.getCode(),status.getDescription());
+			StepExecutionException stepExecutionException = new StepExecutionException(status.getComponent(),resonseCode);
+			result = new FulfillmentStepResult(stepExecutionException, null);
+		}else{
+			if(products != null) {
+				for(Product product: products) {
+					logger.debug("Product Quota defined: " +  product.getQuotaDefined() + " Quota consumed: " + product.getQuotaConsumed());
+					atomicProducts.add(TransactionServiceHelper.getApiEntity(product));
+				}
+				}
+			//TODO: based on the transaction status set a transaction fault while posting back the step result
+			//TODO: fix the impedence of passing the metas from fulfillment to upstream. Fix required in FulfillmentStepResult. Approval pending Sathya
+			result = new FulfillmentStepResult(null, atomicProducts);
 		}
-		}
-		
-		//TODO: based on the transaction status set a transaction fault while posting back the step result
-		//TODO: fix the impedence of passing the metas from fulfillment to upstream. Fix required in FulfillmentStepResult. Approval pending Sathya
-		FulfillmentStepResult result = new FulfillmentStepResult(null, atomicProducts);
 		logger.debug("Fulfillment completed. Engaging orchestration manager to update the response for " +  correlationId);
 		OrchestrationManager.getInstance().promoteFulfillmentExecution(correlationId, result);
 		

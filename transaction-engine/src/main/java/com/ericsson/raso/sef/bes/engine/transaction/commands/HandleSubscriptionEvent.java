@@ -12,9 +12,6 @@ import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferForUserRequest;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.FetchOfferForUserResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleLifeCycleRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleSubscriptionEventRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleSubscriptionEventResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStep;
@@ -24,7 +21,6 @@ import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceSte
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
-import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
@@ -122,6 +118,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		String subscriptionId = null;
 		List<Product> products = new ArrayList<Product>();
 		List<Meta> billingMetas = new ArrayList<Meta>();
+		TransactionStatus txnStatus=null;
 		for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
 			if (result.getExecutionInputs().getType() == TaskType.PERSIST) {
 				Object saved = ((Persistence<?>)((PersistenceStep) result).getExecutionInputs()).getToSave();
@@ -131,13 +128,20 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 			}
 			
 			if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
-				products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+				if(result.getFault() != null){
+					txnStatus=new TransactionStatus();
+					txnStatus.setCode(result.getFault().getStatusCode().getCode());
+					txnStatus.setComponent(result.getFault().getComponent());
+					txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
+				}else{
+					products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+				}
 			}
 		}
 		logger.debug("Invoking subscription response!!");
 		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
 		subscriptionClient.purchase(this.getRequestId(), 
-									new TransactionStatus("Tx-Engine", 501, "Success"), 
+				                    txnStatus, 
 									subscriptionId, 
 									products, 
 									billingMetas);
