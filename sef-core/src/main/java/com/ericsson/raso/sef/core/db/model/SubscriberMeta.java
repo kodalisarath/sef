@@ -6,6 +6,10 @@ import com.ericsson.raso.sef.core.Meta;
 
 public class SubscriberMeta extends Meta {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3270466466601612918L;
 	private String userId;
 	private DateTime created;
 	private DateTime lastModified;

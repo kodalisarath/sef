@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.mapper.SubscriberMapper;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
-import com.ericsson.raso.sef.core.db.model.SubscriberHistory;
+import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
 import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 
@@ -28,7 +28,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 	@Override
 	@Transactional
 	public void createSubscriber(Subscriber subscriber) {
-		subscriber.setCreated(new DateTime());
 		subscriberMapper.createSubscriber(subscriber);
 	}
 
@@ -43,19 +42,17 @@ public class SubscriberServiceImpl implements SubscriberService {
 	@Transactional
 	public void updateSubscriber(Subscriber subscriber) {
 		Subscriber oldSubscriber = subscriberMapper.getSubscriberByUserId(subscriber.getUserId());
-		Collection<SubscriberHistory> hists = new ArrayList<SubscriberHistory>();
+		Collection<SubscriberAuditTrial> hists = new ArrayList<SubscriberAuditTrial>();
 		if(oldSubscriber.getContractState() != null && oldSubscriber.getContractState() != subscriber.getContractState()) {
-			SubscriberHistory history = new SubscriberHistory();
+			SubscriberAuditTrial history = new SubscriberAuditTrial();
 			history.setAttributeName(Subscriber.CONTRACT_STATE);
 			history.setAttributeNewValue(subscriber.getContractState().name());
-			history.setAttributeOldValue(oldSubscriber.getContractState().name());
 			history.setUserId(subscriber.getUserId());
 			history.setEventTimestamp(new DateTime());
 			hists.add(history);
 		}
-		subscriber.setLastModified(new DateTime());
 		subscriberMapper.updateSubscriber(subscriber);
-		for (SubscriberHistory subscriberHistory : hists) {
+		for (SubscriberAuditTrial subscriberHistory : hists) {
 			subscriberMapper.insertSubscriberHistory(subscriberHistory);
 		}
 		
@@ -73,7 +70,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 			keys[i++] = meta.getKey();
 		}
 		
-		Collection<SubscriberHistory> hists = new ArrayList<SubscriberHistory>();
+		Collection<SubscriberAuditTrial> hists = new ArrayList<SubscriberAuditTrial>();
 		
 		Collection<SubscriberMeta> oldMetas = this.getMetas(userId, keys);
 		for(Meta meta: metas) {
@@ -89,10 +86,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 			boolean isUpdate = false;
 			for(Meta oldmeta: oldMetas) {
 				if(subMeta.getKey().equals(oldmeta.getKey())) {
-					SubscriberHistory history = new SubscriberHistory();
+					SubscriberAuditTrial history = new SubscriberAuditTrial();
 					history.setAttributeName(meta.getKey());
 					history.setAttributeNewValue(meta.getValue());
-					history.setAttributeOldValue(oldmeta.getValue());
 					history.setUserId(userId);
 					history.setEventTimestamp(new DateTime());
 					hists.add(history);
@@ -106,10 +102,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 				subMeta.setLastModified(new DateTime());
 				subscriberMapper.updateSubscriberMeta(subMeta);
 			} else {
-				SubscriberHistory history = new SubscriberHistory();
+				SubscriberAuditTrial history = new SubscriberAuditTrial();
 				history.setAttributeName(meta.getKey());
 				history.setAttributeNewValue(meta.getValue());
-				history.setAttributeOldValue(null);
 				history.setUserId(userId);
 				history.setEventTimestamp(new DateTime());
 				hists.add(history);
@@ -120,7 +115,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 			}
 		}
 		
-		for (SubscriberHistory subscriberHistory : hists) {
+		for (SubscriberAuditTrial subscriberHistory : hists) {
 			subscriberMapper.insertSubscriberHistory(subscriberHistory);
 		}
 		
@@ -144,7 +139,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	}
 	
 	@Override
-	public Collection<SubscriberHistory> getSubscriberHistory(String userId, String... metaKeys) {
+	public Collection<SubscriberAuditTrial> getSubscriberHistory(String userId, String... metaKeys) {
 		if(metaKeys == null || metaKeys.length == 0 ) return Collections.emptyList();
 		
 		Map<String, Object> map = new HashMap<String, Object>();

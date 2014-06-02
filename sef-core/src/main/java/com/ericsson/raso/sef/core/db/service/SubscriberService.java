@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
-import com.ericsson.raso.sef.core.db.model.SubscriberHistory;
+import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
 import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 
 public interface SubscriberService {
@@ -19,7 +19,7 @@ public interface SubscriberService {
 	
 	Collection<SubscriberMeta> getMetas(String userId, String... metaKeys);
 	
-	Collection<SubscriberHistory> getSubscriberHistory(String userId, String... metaKeys);
+	Collection<SubscriberAuditTrial> getSubscriberHistory(String userId, String... metaKeys);
 	
 	Subscriber getSubscriber(String msisdn, String... metaKeys);
 	

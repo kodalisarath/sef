@@ -2,15 +2,13 @@ package com.ericsson.raso.sef.core.db.model;
 
 import org.joda.time.DateTime;
 
-public class SubscriberHistory {
+public class SubscriberAuditTrial {
 
 	private String userId;
 	private DateTime eventTimestamp;
 	private String attributeName;
-	private String attributeOldValue;
 	private String attributeNewValue;
-	private String changeByProviderId;
-	private String changeByServiceId;
+	private String changedByUser;
 
 	public String getUserId() {
 		return userId;
@@ -36,14 +34,6 @@ public class SubscriberHistory {
 		this.attributeName = attributeName;
 	}
 
-	public String getAttributeOldValue() {
-		return attributeOldValue;
-	}
-
-	public void setAttributeOldValue(String attributeOldValue) {
-		this.attributeOldValue = attributeOldValue;
-	}
-
 	public String getAttributeNewValue() {
 		return attributeNewValue;
 	}
@@ -52,20 +42,12 @@ public class SubscriberHistory {
 		this.attributeNewValue = attributeNewValue;
 	}
 
-	public String getChangeByProviderId() {
-		return changeByProviderId;
+	public String getChangedByUser() {
+		return changedByUser;
 	}
 
-	public void setChangeByProviderId(String changeByProviderId) {
-		this.changeByProviderId = changeByProviderId;
-	}
-
-	public String getChangeByServiceId() {
-		return changeByServiceId;
-	}
-
-	public void setChangeByServiceId(String changeByServiceId) {
-		this.changeByServiceId = changeByServiceId;
+	public void setChangedByUser(String changedByUser) {
+		this.changedByUser = changedByUser;
 	}
 
 }

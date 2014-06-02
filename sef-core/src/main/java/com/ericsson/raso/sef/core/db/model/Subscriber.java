@@ -2,75 +2,16 @@ package com.ericsson.raso.sef.core.db.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.joda.time.DateTime;
 
 //TODO: Cleanup all SMART specific metas into SMART Front-End Project....
 public class Subscriber {
 
-	public static final List<String> metaKeys;
-
 	public static final String MSISDN = "MSISDN";
 	public static final String CONTRACT_STATE = "contractState";
-	public static final String IsCFMOC = "IsCFMOC";
-	public static final String IsCollectCallAllowed = "IsCollectCallAllowed";
-	public static final String IsFirstCallPassed = "IsFirstCallPassed";
-	public static final String IsGPRSUsed = "IsGPRSUsed";
-	public static final String IsLastRechargeInfoStored = "IsLastRechargeInfoStored";
-	public static final String IsLastTransactionEnqUsed = "IsLastTransactionEnqUsed";
-	public static final String IsOperatorCollectCallAllowed = "IsOperatorCollectCallAllowed";
-	public static final String IsSmsAllowed = "IsSmsAllowed";
-	public static final String IsUSCAllowed = "IsUSCAllowed";
-	public static final String PreActiveEndDate = "preActiveEndDate";
-	public static final String PASALOAD_MONEY = "pasaload:money";
-	public static final String packaze = "package";
-	public static final String subscriberSite = "subscriber:site";
-	public static final String vValidFrom = "vValidFrom";
-	public static final String vInvalidFrom = "vInvalidFrom";
-	public static final String Key = "Key";
-	public static final String KeyType = "KeyType";
-	public static final String s_CRMTitle = "s_CRMTitle";
-	public static final String tagging = "tagging";
-	public static final String IsBalanceClearanceOnOutpayment = "IsBalanceClearanceOnOutpayment";
-	public static final String sOperatorCollectCallAllowed = "sOperatorCollectCallAllowed";
-	public static final String S_OfferId = "S_OfferId";
-	public static final String bValidFrom = "bValidFrom";
-	public static final String bInvalidFrom = "bInvalidFrom";
-	public static final String IsLocked = "IsLocked";
-
-	static {
-		metaKeys = new ArrayList<String>();
-		metaKeys.add(IsCFMOC);
-		metaKeys.add(IsCollectCallAllowed);
-		metaKeys.add(IsCollectCallAllowed);
-		metaKeys.add(IsFirstCallPassed);
-		metaKeys.add(IsGPRSUsed);
-		metaKeys.add(IsLastRechargeInfoStored);
-		metaKeys.add(IsLastTransactionEnqUsed);
-		metaKeys.add(IsOperatorCollectCallAllowed);
-		metaKeys.add(IsUSCAllowed);
-		metaKeys.add(IsSmsAllowed);
-		metaKeys.add(PreActiveEndDate);
-		metaKeys.add(PASALOAD_MONEY);
-		metaKeys.add(packaze);
-		metaKeys.add(subscriberSite);
-
-		metaKeys.add(vValidFrom);
-		metaKeys.add(vInvalidFrom);
-		metaKeys.add(Key);
-		metaKeys.add(KeyType);
-		metaKeys.add(s_CRMTitle);
-		metaKeys.add(tagging);
-		metaKeys.add(IsBalanceClearanceOnOutpayment);
-		metaKeys.add(sOperatorCollectCallAllowed);
-		metaKeys.add(S_OfferId);
-		metaKeys.add(bValidFrom);
-		metaKeys.add(bInvalidFrom);
-	}
+	
 
 	private String userId;
 	private String customerId;
@@ -85,16 +26,14 @@ public class Subscriber {
 	private String paymentParent;
 	private String billCycleDay;
 	private ContractState contractState;
-	private DateTime dateOfBirth;
+	private Date dateOfBirth;
 	private String gender;
 	private String prefferedLanguage;
-	private DateTime registrationDate;
-	private DateTime activeDate;
+	private Date registrationDate;
+	private Date activeDate;
 	private String ratePlan;
 	private String customerSegment;
-	private DateTime created;
-	private DateTime lastModified;
-	private Boolean deleted;
+	
 
 	private Collection<SubscriberMeta> metas;
 
@@ -194,11 +133,11 @@ public class Subscriber {
 		this.billCycleDay = billCycleDay;
 	}
 
-	public DateTime getDateOfBirth() {
+	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(DateTime dateOfBirth) {
+	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
@@ -218,19 +157,19 @@ public class Subscriber {
 		this.prefferedLanguage = prefferedLanguage;
 	}
 
-	public DateTime getRegistrationDate() {
+	public Date getRegistrationDate() {
 		return registrationDate;
 	}
 
-	public void setRegistrationDate(DateTime registrationDate) {
+	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 
-	public DateTime getActiveDate() {
+	public Date getActiveDate() {
 		return activeDate;
 	}
 
-	public void setActiveDate(DateTime activeDate) {
+	public void setActiveDate(Date activeDate) {
 		this.activeDate = activeDate;
 	}
 
@@ -267,30 +206,6 @@ public class Subscriber {
 
 	public void setContractState(ContractState contractState) {
 		this.contractState = contractState;
-	}
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
-	}
-
-	public DateTime getLastModified() {
-		return lastModified;
-	}
-
-	public void setLastModified(DateTime lastModified) {
-		this.lastModified = lastModified;
-	}
-
-	public DateTime getCreated() {
-		return created;
-	}
-
-	public void setCreated(DateTime created) {
-		this.created = created;
 	}
 
 	private Map<String, String> metaMap = new TreeMap<String, String>();

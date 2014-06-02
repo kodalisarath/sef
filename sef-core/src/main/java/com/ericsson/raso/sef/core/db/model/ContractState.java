@@ -1,7 +1,7 @@
 package com.ericsson.raso.sef.core.db.model;
 
 public enum ContractState {
-	PREACTIVE("PreActive"), ACTIVE("Active"), RECYCLED("Recycle"), GRACE("Grace"), READY_TO_DELETE("Ready To Delete"), NONE("None");
+	PREACTIVE("PRE_ACTIVE"), ACTIVE("ACTIVE"), RECYCLED("DEACTIVE"), BARRED("SUSPENDED"), GRACE("GRACE"), READY_TO_DELETE("READY_TO_DELETE"), NONE("None");
 	
 	private String name;
 
