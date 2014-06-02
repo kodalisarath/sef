@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
+import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentServiceResolver;
 import com.ericsson.raso.sef.fulfillment.profiles.FulfillmentProfile;
 import com.ericsson.sef.bes.api.entities.Meta;
@@ -93,6 +94,8 @@ public class UseCaseProcessor implements Processor {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void fulfill(String correlationId, String msisdn, List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
 
+		TransactionStatus status = new TransactionStatus();
+		
 		List<Product> products = new ArrayList<Product>();
 		logger.debug("E/// How many profiles we have: " + profiles.size() + " and correlationID is " + correlationId);
 		try {
@@ -107,8 +110,11 @@ public class UseCaseProcessor implements Processor {
 				}
 			}
 		}
-		} catch (Exception e) {
+		} catch (FulfillmentException e) {
 			logger.error("Exception while fulfilment " +  e.getMessage() + "Exception: " + e);
+			status.setComponent(e.getComponent());
+			status.setCode(e.getStatusCode().getCode());
+			status.setDescription(e.getStatusCode().getMessage());
 		}
 		
 		List<Meta> metas = new ArrayList<Meta>();
@@ -128,12 +134,13 @@ public class UseCaseProcessor implements Processor {
 			
 		}
 		
-		//TODO: address this with graceful exception handling
-		sendFulfillResponse(correlationId, msisdn, new TransactionStatus(), products, metas);
+		sendFulfillResponse(correlationId, msisdn, status, products, metas);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void prepare(String correlationId, String msisdn, List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
+		
+		TransactionStatus status = new TransactionStatus();
 		
 		List<Product> products = new ArrayList<Product>();
 		try {
@@ -148,8 +155,11 @@ public class UseCaseProcessor implements Processor {
 				}
 			}
 		}
-		} catch (Exception e) {
+		} catch (FulfillmentException e) {
 			logger.error("Exception while fulfilment " +  e.getMessage() + "Exception: " + e);
+			status.setComponent(e.getComponent());
+			status.setCode(e.getStatusCode().getCode());
+			status.setDescription(e.getStatusCode().getMessage());
 		}
 
 		List<Meta> metas = new ArrayList<Meta>();
@@ -161,8 +171,12 @@ public class UseCaseProcessor implements Processor {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void reverse(List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
 
+		try{
 		for(FulfillmentProfile profile: profiles) { 
 			profile.revert(product, map);
+		}
+		} catch(FulfillmentException e) {
+			
 		}
 		
 		//TODO: Post response
@@ -171,8 +185,12 @@ public class UseCaseProcessor implements Processor {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void query(List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
 
+		try {
 		for(FulfillmentProfile profile: profiles) { 
 			profile.query(product, map);
+		}
+		} catch(FulfillmentException e) {
+			
 		}
 		// TODO: Post response
 	}
@@ -180,8 +198,13 @@ public class UseCaseProcessor implements Processor {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void cancel(List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
 
+		try {
+			
 		for(FulfillmentProfile profile: profiles) { 
 			profile.revert(product, map);
+		}
+		} catch(FulfillmentException e) {
+			
 		}
 		//TODO: Post Response
 	}

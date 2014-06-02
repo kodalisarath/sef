@@ -3,6 +3,7 @@ package com.ericsson.raso.sef.fulfillment.profiles;
 import java.io.Serializable;
 import java.util.List;
 
+import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.raso.sef.ruleengine.Rule;
 
 public abstract class FulfillmentProfile<E> implements Serializable {
@@ -57,9 +58,9 @@ public abstract class FulfillmentProfile<E> implements Serializable {
 	}
 
 
-	public abstract List<E> fulfill(E e, java.util.Map<String, String> map);
-	public abstract List<E> prepare(E e, java.util.Map<String, String> map);
-	public abstract List<E> query(E e, java.util.Map<String, String> map);
-	public abstract List<E> revert(E e, java.util.Map<String, String> map);
+	public abstract List<E> fulfill(E e, java.util.Map<String, String> map) throws FulfillmentException;
+	public abstract List<E> prepare(E e, java.util.Map<String, String> map) throws FulfillmentException;
+	public abstract List<E> query(E e, java.util.Map<String, String> map) throws FulfillmentException;
+	public abstract List<E> revert(E e, java.util.Map<String, String> map) throws FulfillmentException;
 	
 }

@@ -16,9 +16,11 @@ import com.ericsson.raso.sef.client.air.response.DedicatedAccountInformation;
 import com.ericsson.raso.sef.client.air.response.OfferInformation;
 import com.ericsson.raso.sef.client.air.response.RefillResponse;
 import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
+import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class RefillProfile extends BlockingFulfillment<Product> {
@@ -74,7 +76,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 
 
 	@Override
-	public List<Product> fulfill(Product e, Map<String, String> map) {
+	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
 		
 		logger.debug("Fufill request for refill");
 		logger.debug("E/// Executing fulfillment request to air for...: " + e.getName());
@@ -110,7 +112,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			response = command.execute();
 		} catch (SmException e1) {
 			e1.printStackTrace();
-			//TODO: handle 114 response with different error code for alkansya
+			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
 		return createResponse(e, response);
 	}
@@ -164,7 +166,12 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			
 			Product product = new Product();
 			product.setResourceName(resource);
-			OfferInformation offerInformation = offerMap.get(resource);
+			//Assumption here is all abstracted resource Id are Integers represented in string format. logic specific to SMART
+			OfferInformation offerInformation = offerMap.get(Integer.parseInt(resource));
+			
+			if(offerInformation != null) {
+				logger.debug("Validity of offer: " + offerInformation.getExpiryDateTime());
+			}
 			
 			//prepare validity
 			if (offerInformation != null && offerInformation.getExpiryDateTime() != null) {
