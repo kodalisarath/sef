@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
@@ -38,6 +40,8 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 
 public class CARecharge implements Processor {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CARecharge.class);
 
 	@Override
 	public void process(Exchange arg0) throws SmException {
@@ -94,17 +98,21 @@ public class CARecharge implements Processor {
 				response.wait(10000L);
 			}
 		} catch(InterruptedException e) {
-			
+			logger.debug("sleep interrupted. may be response arrived!!!");
 		}
+		
+		logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 		
 		PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 		
-		if((purchaseResponse == null) || (purchaseResponse.getSubscriptionId() == null)) {
+		if(purchaseResponse == null) {
 			//request timed out but no response. possible request missing from correlation store
 			// there is no response time out error code in smart interface and hence throw internal server error
+			logger.debug("No response arrived???");
 			throw new SmException(ErrorCode.internalServerError);
 		}
 		
+		logger.debug("Response purchase received.. now creating front end response");
 		CommandResponseData responseData = createResponse(rechargeRequest.isTransactional(),purchaseResponse);
 		arg0.getOut().setBody(responseData);
 		
@@ -210,14 +218,19 @@ public class CARecharge implements Processor {
 		//convert resulted products to SMART response
 		
 		List<Product> products = response.getProducts();
+		if(products != null) {
 		for (Product product: products) {
 			StringElement stringElement = new StringElement();
 			String offer = product.getResourceName();
 			int offerId = Integer.parseInt(offer);
 			String name = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offer);
+			String walletName = name;
+			logger.debug("OfferID: " + offerId + "WalletName: " + name);
 			
-			long delta = product.getQuotaDefined() - product.getQuotaConsumed();
+			long delta = product.getQuotaConsumed() - product.getQuotaDefined();
 			long curr = product.getQuotaConsumed();
+			long validity = product.getValidity();
+			logger.debug("Current bal: " + curr + "Delta: " + delta + "Validity: " + validity);
 			if(offerId != SmartConstants.AIRTIME_OFFER_ID && offerId != SmartConstants.ALKANSYA_OFFER_ID) {
 				name += ":s_PeriodicBonus";
 			}
@@ -227,27 +240,32 @@ public class CARecharge implements Processor {
 				delta = 1;
 				curr = 1;
 			} else {
-				String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", name);
+				String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
+				logger.debug("Conversion factor for this offer: " + conversionFactor);
 				long confec= Long.parseLong(conversionFactor); 
 				delta = delta/confec;
 				curr = curr/confec;
 			}
 			
-			String val = name + ";" + delta + ";" + curr + ";" + getMillisToDate(product.getValidity());
+			String val = name + ";" + delta + ";" + curr + ";" + getMillisToDate(validity);
+			
+			logger.debug("Balance String: " + val);
 			
 			stringElement.setValue(val);
 			listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+		}
+		} else {
+			logger.info("No products found in the response");
 		}
 		
 		return responseData;
 	}
 	
-	private Date getMillisToDate(long millis) {
+	private String getMillisToDate(long millis) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(millis);
-		df.format(calendar.getTime());
-		return null;
+		return df.format(calendar.getTime());
 	}
 	
 	/*Method to convert a map to a list*/
