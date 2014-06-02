@@ -59,7 +59,7 @@
 		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse" bus="cxf">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/fulfillment" />
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/fulfillmentresponse" />
 		</cxf:properties>
 
 		<cxf:inInterceptors>
