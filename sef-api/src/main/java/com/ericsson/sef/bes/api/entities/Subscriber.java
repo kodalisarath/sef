@@ -27,9 +27,6 @@ public class Subscriber {
 	private Long				activeDate			= null;
 	private String				ratePlan			= null;
 	private String				customerSegment		= null;
-	private Long				created				= null;
-	private Long				lastModified		= null;
-	private Boolean				deleted				= null;
 	private Map<String, String>	metas				= null;
 
 	
@@ -197,30 +194,6 @@ public class Subscriber {
 
 	public void setCustomerSegment(String customerSegment) {
 		this.customerSegment = customerSegment;
-	}
-
-	public Long getCreated() {
-		return created;
-	}
-
-	public void setCreated(Long created) {
-		this.created = created;
-	}
-
-	public Long getLastModified() {
-		return lastModified;
-	}
-
-	public void setLastModified(Long lastModified) {
-		this.lastModified = lastModified;
-	}
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
 	}
 
 	public Map<String, String> getMetas() {
