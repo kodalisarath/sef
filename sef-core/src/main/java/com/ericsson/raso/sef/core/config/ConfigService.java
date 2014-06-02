@@ -8,7 +8,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ConfigService implements IConfig {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ConfigService.class);
 	
 	 Config conf=null;
 
@@ -87,17 +92,21 @@ public class ConfigService implements IConfig {
 	
 	
 	public String getValue(String sectionId, String propKey) {
-	
+		logger.debug("Fetch value for section: " +  sectionId + " key: " + propKey);
 		Section section = getSection(sectionId);
 		if(section != null) {
+			logger.debug("Found section: " +  sectionId);
 			List<Property> sectionProperties = getProperties(section);
 			if(sectionProperties != null) {
 				for (Property property: sectionProperties) {
-					if(property.getKey().equalsIgnoreCase(propKey))
+					if(property.getKey().equalsIgnoreCase(propKey)) {
+						logger.debug("found property: " + propKey + " with value: " + property.getValue());
 		        		return property.getValue();
+					}
 				}
 			}
 		}
+		logger.debug("section not found");
 		return null;
 	}
 	
