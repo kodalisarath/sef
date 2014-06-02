@@ -1,8 +1,14 @@
 package com.ericsson.raso.sef.core;
 
+import java.io.Serializable;
 
-public class ResponseCode implements StatusCode {
 
+public class ResponseCode implements StatusCode, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7491918730221871928L;
 	private int code;
 	private String message;
 	
