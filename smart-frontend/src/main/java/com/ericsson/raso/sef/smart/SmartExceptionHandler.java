@@ -26,42 +26,23 @@ public class SmartExceptionHandler implements Processor {
 	@Override
 	public void process(Exchange exchange) throws TisException {
 		TisException exception = null;
-		try {
+		
 			Throwable error = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-			log.error(error.getMessage(), error);
+			log.error("Recieved error of Type Throwable "+error.getMessage(), error);
 			
 			if (error instanceof SmException) {
 				SmException e = (SmException) error;
-				log.error(e.getStatusCode().toString(), e);
+				log.error("error is SmException instance "+e.getStatusCode().toString(), e);
 				exception = ExceptionUtil.toTisException(((SmException) error).getStatusCode());
 			} else {
-				log.error(error.getMessage(), error);
+				log.error("error is not a SmException instance "+error.getMessage(), error);
 				exception = ExceptionUtil.toTisException(ErrorCode.internalServerError);
 			}
 
-			ErrorInfo errorInfo = exception.getFaultInfo().getErrorInfo().get(0);
-			
-			JAXBContext context = getJaxbContext();
-			QName faultCode = new QName("http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/xsd/1", errorInfo.getCode());
-			SoapFault fault = new SoapFault(errorInfo.getText(), faultCode);
-			Element details = DOMUtils.readXml(new StringReader(DETAILS)).getDocumentElement();
-			context.createMarshaller().marshal(exception.getFaultInfo(), details);
-			fault.setDetail(details);
-			exchange.getOut().setBody(fault);
-			exchange.getOut().setFault(true);
-			//new SmartEDRProcessor().printError(exception.getFaultInfo().getErrorInfo().get(0));
-		} catch (Exception e) {
 			throw exception;
-		}
+			//new SmartEDRProcessor().printError(exception.getFaultInfo().getErrorInfo().get(0));
 	}
 	
-	private static JAXBContext jaxbContext;
-	
-	private JAXBContext getJaxbContext() throws Exception {
-		if(jaxbContext == null) {
-			jaxbContext = JAXBContext.newInstance("com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1");
-		}
-		return jaxbContext;
-	}
+
 	
 }

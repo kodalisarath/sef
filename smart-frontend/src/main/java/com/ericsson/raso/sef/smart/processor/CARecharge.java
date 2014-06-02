@@ -117,8 +117,13 @@ public class CARecharge implements Processor {
 		arg0.getOut().setBody(responseData);
 		
 		} catch(Exception e) {
-			e.printStackTrace();
-			throw new SmException(ErrorCode.internalSystemError);
+			if(e instanceof SmException){
+				throw e;
+			}else{
+				e.printStackTrace();
+				throw new SmException(ErrorCode.internalSystemError);
+			}
+			
 		}
 		
 	}
