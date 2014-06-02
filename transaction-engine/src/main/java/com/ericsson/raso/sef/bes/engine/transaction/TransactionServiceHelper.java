@@ -32,20 +32,15 @@ public abstract class TransactionServiceHelper {
 		Subscriber returned = new Subscriber();
 		
 		
-		returned.setActiveDate(subscriber.getActiveDate().getMillis());
 		returned.setBillCycleDay(subscriber.getBillCycleDay());
 		returned.setContractId(subscriber.getContractId());
 		returned.setContractState(subscriber.getContractState().getName());
-		returned.setCreated(subscriber.getCreated().getMillis());
 		returned.setCustomerId(subscriber.getCustomerId());
 		returned.setCustomerSegment(subscriber.getCustomerSegment());
-		returned.setDateOfBirth(subscriber.getDateOfBirth().getMillis());
-		returned.setDeleted(subscriber.getDeleted());
 		returned.setEmail(subscriber.getEmail());
 		returned.setGender(subscriber.getGender());
 		returned.setImeiSv(subscriber.getImeiSv());
 		returned.setImsi(subscriber.getImsi());
-		returned.setLastModified(subscriber.getLastModified().getMillis());
 		returned.setMetas(getMetas(subscriber.getMetas())); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
 		returned.setMsisdn(subscriber.getMsisdn());
 		returned.setPaymentParent(subscriber.getPaymentParent());
@@ -54,7 +49,7 @@ public abstract class TransactionServiceHelper {
 		returned.setPin(subscriber.getPin());
 		returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
 		returned.setRatePlan(subscriber.getRatePlan());
-		returned.setRegistrationDate(subscriber.getRegistrationDate().getMillis());
+		returned.setRegistrationDate(subscriber.getRegistrationDate().getTime());
 		returned.setUserId(subscriber.getUserId());
 		
 		return returned;
@@ -222,6 +217,7 @@ public abstract class TransactionServiceHelper {
 		returned.setResourceName(other.getResource().getName());
 		returned.setQuotaDefined(other.getQuota().getDefinedQuota());
 		returned.setQuotaConsumed(other.getQuota().getConsumedQuota());
+		returned.setValidity(other.getValidity().getExpiryTimeInMillis());
 		
 		return returned;
 	}
