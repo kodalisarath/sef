@@ -79,9 +79,9 @@ public class OrchestrationManager {
 		// if the transaction had failed, then we will have to execute rollback in background....
 		if (orchestration.getStatus() != Status.DONE_SUCCESS && orchestration.getMode() == Mode.FORWARD) {
 			logger.debug("Use case failed. Rollback flow preparation");
-			Orchestration rollback = orchestration.getRollbackProfile();
+//			Orchestration rollback = orchestration.getRollbackProfile();
 			orchestration.cleanupTransaction();
-			this.submit(usecase, rollback);
+//			this.submit(usecase, rollback);
 		} else if(orchestration.getStatus() != Status.DONE_SUCCESS && orchestration.getMode() == Mode.ROLLBACK) {
 			orchestration.cleanupTransaction();
 		}
