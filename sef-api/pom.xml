@@ -10,6 +10,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <osgi-import-packages>
         org.springframework.*,
+        com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.core.jaxws.*,
 		com.ericsson.raso.sef.core.config,
 		META-INF.sef-core
