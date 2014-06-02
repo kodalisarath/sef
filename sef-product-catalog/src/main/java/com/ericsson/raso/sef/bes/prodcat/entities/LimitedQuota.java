@@ -27,6 +27,14 @@ public final class LimitedQuota extends AbstractQuotaCharacteristic {
 		return (this.definedQuota - this.consumedQuota);
 	}
 
+	public void setDefinedQuota(long definedQuota) {
+		this.definedQuota = definedQuota;
+	}
+
+	public void setConsumedQuota(long consumedQuota) {
+		this.consumedQuota = consumedQuota;
+	}
+
 	@Override
 	public long consume(long units, boolean flexible) throws SubscriptionException {
 		if ((this.definedQuota - this.consumedQuota - units) > 0) {
