@@ -254,8 +254,10 @@ public class CARecharge implements Processor {
 			stringElement.setValue(val);
 			listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
 		}
-		} else {
+		} else if(response.getFault().getCode() > 0) {
 			logger.info("No products found in the response");
+			ResponseCode responseCode=new ResponseCode(response.getFault().getCode(), response.getFault().getDescription());
+			throw new SmException(responseCode);
 		}
 		
 		return responseData;
