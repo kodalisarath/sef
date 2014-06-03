@@ -14,6 +14,7 @@ public class Subscriber {
 	
 
 	private String userId;
+	private String accountId;
 	private String customerId;
 	private String contractId;
 	private String msisdn;
@@ -43,6 +44,13 @@ public class Subscriber {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	public String getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	public String getCustomerId() {

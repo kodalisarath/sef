@@ -16,7 +16,7 @@
 		<typeAlias alias="Permission" type="com.ericsson.raso.sef.core.db.model.Permission" />
 		<typeAlias alias="Subscriber" type="com.ericsson.raso.sef.core.db.model.Subscriber" />
 		<typeAlias alias="SubscriberMeta" type="com.ericsson.raso.sef.core.db.model.SubscriberMeta" />
-		<typeAlias alias="SubscriberHistory" type="com.ericsson.raso.sef.core.db.model.SubscriberHistory" />
+		<!-- <typeAlias alias="SubscriberHistory" type="com.ericsson.raso.sef.core.db.model.SubscriberHistory" /> -->
 		<typeAlias alias="ProviderSLARequest" type="com.ericsson.raso.sef.core.db.model.ProviderSLARequest" />
 		<typeAlias alias="Purchase" type="com.ericsson.raso.sef.core.db.model.Purchase" />
 		<typeAlias alias="PurchaseMeta" type="com.ericsson.raso.sef.core.db.model.PurchaseMeta" />
@@ -38,9 +38,10 @@
 		<typeAlias alias="CallingCircle" type="com.ericsson.raso.sef.core.db.model.CallingCircle" />
 		<typeAlias alias="JobDetail" type="com.ericsson.raso.sef.core.db.model.JobDetail" />
 		
-		<typeAlias alias="Actor" type="com.ericsson.raso.sef.core.db.mapper.Actor"/>
-		<typeAlias alias="User" type="com.ericsson.raso.sef.core.db.mapper.User"/>
-		<typeAlias alias="Group" type="com.ericsson.raso.sef.core.db.mapper.Group"/>
+		<typeAlias alias="Actor" type="com.ericsson.raso.sef.auth.Actor"/>
+		<typeAlias alias="User" type="com.ericsson.raso.sef.auth.User"/>
+		<typeAlias alias="Group" type="com.ericsson.raso.sef.auth.Group"/>
+		<typeAlias alias="Meta" type="com.ericsson.raso.sef.core.Meta"/>
 
 	</typeAliases>
 

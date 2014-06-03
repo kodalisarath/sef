@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ericsson.raso.sef.core.Meta;
@@ -18,7 +20,7 @@ import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 
 public class SubscriberServiceImpl implements SubscriberService {
-	
+	private static final Logger logger = LoggerFactory.getLogger(SubscriberServiceImpl.class);
 	private SubscriberMapper subscriberMapper;
 	
 	public void setSubscriberMapper(SubscriberMapper subscriberMapper) {
@@ -171,16 +173,25 @@ public class SubscriberServiceImpl implements SubscriberService {
 	}
 	
 	private Subscriber fetchSubscriberByUserId(String userId) {
-		Subscriber subscriber = subscriberMapper.getSubscriberByUserId(userId);
-		Collection<SubscriberMeta> subscriberMetas = fetchMetas(subscriber.getUserId());
-		for (Meta meta : subscriberMetas) {
-			SubscriberMeta sMeta = new SubscriberMeta();
-			sMeta.setUserId(subscriber.getUserId());
-			sMeta.setKey(meta.getKey());
-			sMeta.setValue(meta.getValue());
-			subscriber.getMetas().add(sMeta);
+		Subscriber subscriber =null;
+		try {
+			subscriber=subscriberMapper.getSubscriberByUserId(userId);
+			if(subscriber != null){
+				Collection<SubscriberMeta> subscriberMetas = fetchMetas(subscriber.getUserId());
+				logger.debug("Returned subscriber metas of length for userid:"+subscriber.getUserId() +"is"+ subscriberMetas.size());
+				for (Meta meta : subscriberMetas) {
+					SubscriberMeta sMeta = new SubscriberMeta();
+					sMeta.setUserId(subscriber.getUserId());
+					sMeta.setKey(meta.getKey());
+					sMeta.setValue(meta.getValue());
+					subscriber.getMetas().add(sMeta);
+				}
+			}
+		} catch (Exception e) {
+			logger.debug("Returned a sql error while getting subscriber by userid");
+			e.printStackTrace();
+			// TODO: handle exception
 		}
-		
 		return subscriber;
 	}
 	
@@ -189,6 +200,28 @@ public class SubscriberServiceImpl implements SubscriberService {
 	}
 
 	private void evictSubscriber(String userIdOrMsisdn) {
+		
+	}
+
+	@Override
+	public Subscriber getSubscriber(String msisdn) {
+		Subscriber subscriber=null;
+		try {
+			subscriber=subscriberMapper.getSubscriber(msisdn);
+			Collection<SubscriberMeta> metaCollections=fetchMetas(subscriber.getUserId());
+			for (Meta meta : metaCollections) {
+				SubscriberMeta sMeta = new SubscriberMeta();
+				sMeta.setUserId(subscriber.getUserId());
+				sMeta.setKey(meta.getKey());
+				sMeta.setValue(meta.getValue());
+				subscriber.getMetas().add(sMeta);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+	
+		return subscriber;
 		
 	}
 }
