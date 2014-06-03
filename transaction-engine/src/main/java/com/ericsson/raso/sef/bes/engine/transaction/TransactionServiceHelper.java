@@ -262,5 +262,83 @@ public abstract class TransactionServiceHelper {
 		return AtomicProducts;
 	}
 	
+	public static Map<String, String> getApiMap(Map<String, Object> map) {
+		Map<String, String> returned = new HashMap<String, String>();
+		
+		for (String key: map.keySet()) {
+			returned.put(key, "" + map.get(key));
+		}
+		
+		return returned;
+	}
+	
+	public static Map<String, Object> getNativeMap(Map<String, String> map) {
+		Map<String, Object> returned = new HashMap<String, Object>();
+		
+		for (String key: map.keySet()) {
+			returned.put(key, map.get(key));
+		}
+		
+		return returned;
+	}
+
+
+
+	public static com.ericsson.sef.bes.api.entities.Subscriber enrichSubscriber(com.ericsson.sef.bes.api.entities.Subscriber subscriber,
+			List<Product> products) {
+
+		for (Product product: products) {
+			Map<String, String> metas = product.getMetas();
+			// direct attributes...
+			subscriber.setActiveDate(Long.parseLong(metas.get(Constants.READ_SUBSCRIBER_ACTIVATION_DATE.name())));
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE.name(), metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE.name()));
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE.name(), metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE.name()));
+			
+			// account flags
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name()));
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG.name()));
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG.name()));
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG.name()));
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG.name()));
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG.name()));
+			subscriber.addMeta(Constants.READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG.name()));
+			
+			
+
+			for (String key: metas.keySet()) {
+				// service offerings
+				if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				// offer info...
+				if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_START_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+			}						
+		}
+		
+		
+		return subscriber;
+
+	}
+
+
+
+	
 
 }

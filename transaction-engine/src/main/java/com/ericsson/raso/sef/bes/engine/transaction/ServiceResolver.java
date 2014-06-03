@@ -4,11 +4,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberResponse;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
+import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 public class ServiceResolver implements ApplicationContextAware {

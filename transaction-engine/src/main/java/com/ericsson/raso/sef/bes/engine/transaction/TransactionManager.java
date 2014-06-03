@@ -146,7 +146,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 	@Override
 	public String readSubscriber(String requestId, String subscriberId) {
-		ReadSubscriber command = new ReadSubscriber(requestId, subscriberId);
+		ReadSubscriber command = new ReadSubscriber(requestId, subscriberId, null);
 		executor.submit(command);
 		return requestId;
 	}
