@@ -20,9 +20,12 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
+import com.ericsson.raso.sef.smart.commons.SmartServiceHelper;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.RechargeRequest;
@@ -68,6 +71,17 @@ public class CARecharge implements Processor {
 		
 		
 		//TODO: Subscriber validation/caching goes here
+		
+		SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
+		if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
+			logger.error("Subscriber is in recycle state.. cannot continue futher");
+			throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
+		}
+		
+		if(subInfo.isLocked()) {
+			logger.error("Subscriber is Barred/locked.. cannot continue further");
+			throw new SmException(ErrorCode.subscriberLocked);
+		}
 		
 		String eventClass = rechargeRequest.getEventClass();
 		if (eventClass.equals("predefined") || eventClass.equals("unli")) {

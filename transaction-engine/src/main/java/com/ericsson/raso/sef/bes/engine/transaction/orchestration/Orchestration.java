@@ -529,7 +529,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		ParallelExecution prepFulfill = new ParallelExecution();
 		
 		for (TransactionTask task: toProcess) {
-			if (task instanceof Fulfillment) {
+			if (task instanceof Fulfillment && ((Fulfillment)task).getMode() == FulfillmentMode.FULFILL) {
 				String southBoundRequestId = UniqueIdGenerator.generateId();
 				Fulfillment clonedTask = CloneHelper.deepClone((Fulfillment)task);
 				clonedTask.setMode(FulfillmentMode.PREPARE);

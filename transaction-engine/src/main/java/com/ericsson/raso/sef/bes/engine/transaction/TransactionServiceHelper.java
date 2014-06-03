@@ -288,21 +288,50 @@ public abstract class TransactionServiceHelper {
 	public static com.ericsson.sef.bes.api.entities.Subscriber enrichSubscriber(com.ericsson.sef.bes.api.entities.Subscriber subscriber,
 			List<Product> products) {
 
+		String value = null;
 		for (Product product: products) {
 			Map<String, String> metas = product.getMetas();
 			// direct attributes...
-			subscriber.setActiveDate(Long.parseLong(metas.get(Constants.READ_SUBSCRIBER_ACTIVATION_DATE.name())));
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE.name(), metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE.name()));
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE.name(), metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE.name()));
+			value = metas.get(Constants.READ_SUBSCRIBER_ACTIVATION_DATE.name());
+			if (value != null)
+				subscriber.setActiveDate(Long.parseLong(value));
+			
+			value = metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE.name(), value);
+			
+			value = metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE.name(), value);
 			
 			// account flags
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name()));
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG.name()));
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG.name()));
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG.name()));
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG.name()));
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG.name()));
-			subscriber.addMeta(Constants.READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG.name(), metas.get(Constants.READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG.name()));
+			value = metas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name(), value);
+			
+			value = metas.get(Constants.READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG.name(), value);
+			
+			value = metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG.name(), value);
+			
+			value = metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG.name(), value);
+			
+			value = metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG.name(), value);
+			
+			value = metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG.name(), value);
+			
+			value = metas.get(Constants.READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG.name());
+			if (value != null)
+				subscriber.addMeta(Constants.READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG.name(), value);
 			
 			
 
@@ -314,7 +343,7 @@ public abstract class TransactionServiceHelper {
 				if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG.name()))
 					subscriber.addMeta(key, metas.get(key));
 				
-				// offer info...
+				// account details offer info...
 				if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID.name()))
 					subscriber.addMeta(key, metas.get(key));
 				
@@ -328,6 +357,92 @@ public abstract class TransactionServiceHelper {
 					subscriber.addMeta(key, metas.get(key));
 				
 				if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				// dedicated accounts...
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_ID.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_VALUE_2.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_EXPIRY_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_START_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_PAM_SERVICE_ID.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_OFFER_ID.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_PRODUCT_ID.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_REAL_MONEY_FLAG.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_1.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_2.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_1.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_2.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_1.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_2.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_START_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_EXPIRY_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_1.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_2.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_UNIT_TYPE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_COMPOSITE_DA_FLAG.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				// balance & date offer info...
+				if (key.startsWith(Constants.READ_BALANCES_OFFER_INFO_OFFER_ID.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_OFFER_INFO_START_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_OFFER_INFO_START_DATE_TIME.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_OFFER_INFO_EXPIRY_DATE.name()))
+					subscriber.addMeta(key, metas.get(key));
+				
+				if (key.startsWith(Constants.READ_BALANCES_OFFER_INFO_EXPIRY_DATE_TIME.name()))
 					subscriber.addMeta(key, metas.get(key));
 				
 			}						

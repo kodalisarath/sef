@@ -45,8 +45,6 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 		super(name);
 	}
 	
-	
-	
 
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
@@ -104,9 +102,15 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 		Map<String, String> accountDetails = new HashMap<String, String>();
 		
 		// direct attributes...
-		accountDetails.put(READ_SUBSCRIBER_ACTIVATION_DATE, "" + response.getActivationDate().getTime());
-		accountDetails.put(READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE, "" + response.getSupervisionExpiryDate().getTime());
-		accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE, "" + response.getServiceFeeExpiryDate().getTime());
+		if (response.getActivationDate() != null)
+			accountDetails.put(READ_SUBSCRIBER_ACTIVATION_DATE, "" + response.getActivationDate().getTime());
+		
+		if (response.getSupervisionExpiryDate() != null)
+			accountDetails.put(READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE, "" + response.getSupervisionExpiryDate().getTime());
+		
+		if (response.getServiceFeeExpiryDate() != null)
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE, "" + response.getServiceFeeExpiryDate().getTime());
+		
 		logger.debug("Packed all date attributes...");
 		
 		// service offerings
@@ -119,13 +123,34 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 		
 		// account flags
 		AccountFlags accountFlags = response.getAccountFlags();
-		accountDetails.put(READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG, "" + accountFlags.isActivationStatusFlag());
-		accountDetails.put(READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG, "" + accountFlags.isNegativeBarringStatusFlag());
-		accountDetails.put(READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG, "" + accountFlags.isSupervisionPeriodWarningActiveFlag());
-		accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG, "" + accountFlags.isServiceFeePeriodWarningActiveFlag());
-		accountDetails.put(READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG, "" + accountFlags.isSupervisionPeriodExpiryFlag());
-		accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG, "" + accountFlags.isServiceFeePeriodExpiryFlag());
-		accountDetails.put(READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG, "" + accountFlags.isTwoStepActivationFlag());
+		Boolean flag = accountFlags.isActivationStatusFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG, "" + flag);
+		
+		flag = accountFlags.isNegativeBarringStatusFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG, "" + flag);
+		
+		flag = accountFlags.isSupervisionPeriodWarningActiveFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG, "" + flag);
+		
+		flag = accountFlags.isServiceFeePeriodWarningActiveFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG, "" + flag);
+		
+		flag = accountFlags.isSupervisionPeriodExpiryFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG, "" + flag);
+		
+		flag = accountFlags.isServiceFeePeriodExpiryFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG, "" + flag);
+		
+		flag = accountFlags.isTwoStepActivationFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG, "" + flag);
+		
 		logger.debug("Packed all account flags...");
 		
 		// offer info...
