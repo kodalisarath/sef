@@ -15,7 +15,11 @@ public abstract class NativeAirResponse implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	protected <T> T getParam(String key, Class<T> type) {
-		return (T) paramMap.get(key);
+		Object returned = paramMap.get(key);
+		if (returned != null)
+			return (T) returned;
+		else
+			return null;
 	}
 
 }
