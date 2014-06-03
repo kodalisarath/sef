@@ -1,6 +1,5 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +39,6 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME = "READ_SUBSCRIBER_START_DATE_TIME";
 	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME = "READ_SUBSCRIBER_EXPIRY_DATE_TIME";
 
-	private Map<String, String> flattenedCsProfile = null;
-	
 	private static final Logger logger = LoggerFactory.getLogger(ReadSubscriberProfile.class);
 	
 	public ReadSubscriberProfile(String name) {
@@ -140,7 +137,7 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
 			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
 		}
-		logger.debug("Packed all service offerings...");
+		logger.debug("Packed all offer info...");
 		
 	
 		product.setMetas(accountDetails);
