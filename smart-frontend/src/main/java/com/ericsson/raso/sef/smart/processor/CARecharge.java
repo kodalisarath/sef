@@ -45,6 +45,7 @@ public class CARecharge implements Processor {
 
 	@Override
 	public void process(Exchange arg0) throws SmException {
+		logger.debug("CA Recharge started");
 		
 		try{
 			
