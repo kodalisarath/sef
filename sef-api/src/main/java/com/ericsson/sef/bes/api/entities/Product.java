@@ -1,5 +1,7 @@
 package com.ericsson.sef.bes.api.entities;
 
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -14,6 +16,9 @@ public final class Product {
 	private long quotaDefined = -1;
 	private long quotaConsumed = -1;
 	private long validity = 0L;
+	
+	// added by esatnar for allowing FFE to send metas back to TXE.
+	private Map<String, String> metas = null;
 	
 	
 	public String getName() {
@@ -55,5 +60,15 @@ public final class Product {
 	public void setValidity(long validity) {
 		this.validity = validity;
 	}
+
+	public Map<String, String> getMetas() {
+		return metas;
+	}
+
+	public void setMetas(Map<String, String> metas) {
+		this.metas = metas;
+	}
+	
+	
 	
 }

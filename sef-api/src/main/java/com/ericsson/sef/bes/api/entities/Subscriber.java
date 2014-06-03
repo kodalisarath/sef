@@ -1,5 +1,6 @@
 package com.ericsson.sef.bes.api.entities;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -202,6 +203,13 @@ public class Subscriber {
 
 	public void setMetas(Map<String, String> metas) {
 		this.metas = metas;
+	}
+	
+	public void addMeta(String key, String value) {
+		if (this.metas == null)
+			this.metas = new HashMap<String, String>();
+		
+		this.metas.put(key, value);
 	}
 
 }
