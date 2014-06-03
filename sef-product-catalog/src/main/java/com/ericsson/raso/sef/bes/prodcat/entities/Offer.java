@@ -600,7 +600,7 @@ public class Offer implements Serializable {
 			} 
 			
 			LOGGER.debug("Adding a Fulfillment for: " + subscriberId + " with: " + clone);
-			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, null));
+			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, metas));
 		}
 		
 		if (isTrialAllowed) {
