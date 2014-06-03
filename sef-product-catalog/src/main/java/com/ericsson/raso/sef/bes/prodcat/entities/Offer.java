@@ -265,7 +265,7 @@ public class Offer implements Serializable {
 		Subscription subscription = null;
 		
 		if (metas == null || metas.isEmpty()) {
-			if (event != SubscriptionLifeCycleEvent.PURCHASE || event != SubscriptionLifeCycleEvent.DISCOVERY) {
+			if (event != SubscriptionLifeCycleEvent.PURCHASE && event != SubscriptionLifeCycleEvent.DISCOVERY) {
 				LOGGER.info("metas were not available and event[" + event + "] found. Cannot proceed without inputs!!");
 				throw new CatalogException("metas were not available and event[" + event + "] found. Cannot proceed without inputs!!");
 			} 
@@ -276,7 +276,7 @@ public class Offer implements Serializable {
 			subscriptionId = (String) metas.get(Constants.SUBSCRIPTION_ID.name());
 		
 		if (subscriptionId == null) {
-			if (event != SubscriptionLifeCycleEvent.PURCHASE || event != SubscriptionLifeCycleEvent.DISCOVERY) {
+			if (event != SubscriptionLifeCycleEvent.PURCHASE && event != SubscriptionLifeCycleEvent.DISCOVERY) {
 				LOGGER.info("subscriptionId is not populated in a subscription event[" + event + "]. Cannot proceed with assumptions");
 				throw new CatalogException("Subscription Identifier was null!!");
 			}
