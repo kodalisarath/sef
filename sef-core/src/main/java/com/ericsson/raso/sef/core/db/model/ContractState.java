@@ -12,4 +12,23 @@ public enum ContractState {
 	public String getName() {
 		return name;
 	}
+	
+	public static ContractState apiValue(String name) {
+
+		if(name.equalsIgnoreCase("PRE_ACTIVE")) {
+			return PREACTIVE;
+		} else if (name.equalsIgnoreCase("ACTIVE")) {
+			return ACTIVE;
+		} else if(name.equalsIgnoreCase("DEACTIVE")) {
+			return RECYCLED;
+		} else if(name.equalsIgnoreCase("SUSPENDED")) {
+			return BARRED;
+		} else if(name.equalsIgnoreCase("GRACE")) {
+			return GRACE;
+		} else if(name.equalsIgnoreCase("READY_TO_DELETE")) {
+			return READY_TO_DELETE;
+		} else {
+			return NONE;
+		}
+	}
 }
