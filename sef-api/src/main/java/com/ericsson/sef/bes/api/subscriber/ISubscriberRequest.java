@@ -12,7 +12,7 @@ import com.ericsson.sef.bes.api.entities.Subscriber;
 @WebService
 public interface ISubscriberRequest {
 	
-	public @WebMethod abstract String readSubscriber(String requestId, String subscriberId);
+	public @WebMethod abstract String readSubscriber(String requestId, String subscriberId, List<Meta> metas);
 	
 	public @WebMethod abstract String readSubscriberMeta(String requestId, String subscriberId, Set<String> metaNames);
 	
