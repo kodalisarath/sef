@@ -20,6 +20,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.LimitedQuota;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
 import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
+import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Offer;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.Subscriber;
@@ -337,8 +338,13 @@ public abstract class TransactionServiceHelper {
 
 	}
 
-
-
 	
+	public static Map<String, String> getMap(List<Meta> metas) {
+		Map<String, String> map = new HashMap<String, String>();
+		for(Meta meta: metas) {
+			map.put(meta.getKey(), meta.getValue());
+		}
+		return map;
+	}
 
 }

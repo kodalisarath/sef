@@ -1,13 +1,16 @@
 package com.ericsson.raso.sef.bes.engine.transaction.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.ericsson.raso.sef.core.Meta;
 
 
 
 public interface ISubscriberRequest {
 	
-	public abstract String readSubscriber(String requestId, String subscriberId);
+	public abstract String readSubscriber(String requestId, String subscriberId, Map<String, String> metas);
 	
 	public abstract String readSubscriberMeta(String requestId, String subscriberId, Set<String> metaNames);
 	
