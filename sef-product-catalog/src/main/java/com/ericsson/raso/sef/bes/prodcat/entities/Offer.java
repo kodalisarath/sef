@@ -261,36 +261,45 @@ public class Offer implements Serializable {
 	
 	public List<TransactionTask> execute(String subscriber, SubscriptionLifeCycleEvent event, boolean override, Map<String, Object> metas) throws CatalogException {
 
+		String subscriptionId = null;
 		Subscription subscription = null;
-		if (!metas.containsKey(Constants.SUBSCRIPTION_ID.name())) {
-			if (event != SubscriptionLifeCycleEvent.PURCHASE) {
-				LOGGER.info("subscriptionId is not found in a subscription event[" + event + "]. Cannot proceed with assumptions");
-				throw new CatalogException("Subscription Identifier is not provided. Cannot assume!!");
+		
+		if (metas == null || metas.isEmpty()) {
+			if (event != SubscriptionLifeCycleEvent.PURCHASE || event != SubscriptionLifeCycleEvent.DISCOVERY) {
+				LOGGER.info("metas were not available and event[" + event + "] found. Cannot proceed without inputs!!");
+				throw new CatalogException("metas were not available and event[" + event + "] found. Cannot proceed without inputs!!");
 			} 
+		}
+		
+		
+		if (metas != null)
+			subscriptionId = (String) metas.get(Constants.SUBSCRIPTION_ID.name());
+		
+		if (subscriptionId == null) {
+			if (event != SubscriptionLifeCycleEvent.PURCHASE || event != SubscriptionLifeCycleEvent.DISCOVERY) {
+				LOGGER.info("subscriptionId is not populated in a subscription event[" + event + "]. Cannot proceed with assumptions");
+				throw new CatalogException("Subscription Identifier was null!!");
+			}
 		} else {
-			String subscriptionId = (String) metas.get(Constants.SUBSCRIPTION_ID.name());
-			if (subscriptionId == null) {
-				if (event != SubscriptionLifeCycleEvent.PURCHASE) {
-					LOGGER.info("subscriptionId is not populated in a subscription event[" + event + "]. Cannot proceed with assumptions");
-					throw new CatalogException("Subscription Identifier was null!!");
-				}
-			} else {
-				try {
-					subscription = new FetchSubscription(subscriptionId).execute();
-					metas.put(Constants.SUBSCRIPTION_ENTITY.name(), subscription);
-				} catch (FrameworkException e) {
-					if (e instanceof CatalogException)
-						throw ((CatalogException) e);
-					throw new CatalogException("Unable to fetch subscription for: " + subscriptionId, e);
-				}
+			try {
+				subscription = new FetchSubscription(subscriptionId).execute();
+				metas.put(Constants.SUBSCRIPTION_ENTITY.name(), subscription);
+			} catch (FrameworkException e) {
+				if (e instanceof CatalogException)
+					throw ((CatalogException) e);
+				throw new CatalogException("Unable to fetch subscription for: " + subscriptionId, e);
 			}
 		}
+
 
 		
 		switch (event) {
 			case DISCOVERY:
-				// If an offer is already executing, then discovery is complete. Assuming to be a query on subscription status and consumption
-				return subscription.subscriptionQuery(subscriber, override, metas);
+				// If an offer is already executing, then discovery is complete. Assuming to be a query on subscription status and consumption; or it must be a Subscriber Workflow
+				if (subscriptionId == null)
+					return this.query(subscriber, metas);
+				else
+					return subscription.subscriptionQuery(subscriber, override, metas);
 			case PURCHASE:
 				return this.purchase(subscriber, override, metas);
 			case PRE_EXPIRY:
@@ -455,6 +464,16 @@ public class Offer implements Serializable {
 		return true;
 	}
 	
+	protected List<TransactionTask> query(String subscriberId, Map<String, Object> metas) {
+		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
+		
+		for (AtomicProduct product: this.getAllAtomicProducts()) {
+			tasks.add(new Fulfillment(FulfillmentMode.QUERY, product, subscriberId, metas));
+		}
+		return tasks;
+	}
+	
+	
 	
 	protected List<TransactionTask> purchase(String subscriberId, boolean override, Map<String, Object> metas) throws CatalogException {
 		long PURCHASE_TIMESTAMP = System.currentTimeMillis();
@@ -581,7 +600,7 @@ public class Offer implements Serializable {
 			} 
 			
 			LOGGER.debug("Adding a Fulfillment for: " + subscriberId + " with: " + clone);
-			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, metas));
+			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, null));
 		}
 		
 		if (isTrialAllowed) {
