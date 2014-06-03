@@ -1,7 +1,6 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,14 +61,14 @@ public class ReadBalancesProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("cs-air", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
 
 	}
 
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("cs-air", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
 	}
 
 
@@ -78,8 +77,15 @@ public class ReadBalancesProfile extends BlockingFulfillment<Product> {
 		
 		LOGGER.debug("Query request for read balances...");
 		
+		if (map == null || map.isEmpty())
+			throw new FulfillmentException("ffe", new ResponseCode(1001, "runtime parameters 'metas' missing in request!!"));
+		
+		
 		GetBalanceAndDateRequest request = new GetBalanceAndDateRequest();
-		request.setSubscriberNumber(map.get("SUSBCRIBER_ID"));
+		String subscriberId = map.get("SUSBCRIBER_ID");
+		if (subscriberId == null)
+			throw new FulfillmentException("ffe", new ResponseCode(1002, "runtime parameter 'SUBSCRIBER_ID' missing in request!!"));
+		request.setSubscriberNumber(subscriberId);
 		request.setSubscriberNumberNAI(1);
 		
 		GetBalanceAndDateResponse response = null;
@@ -98,7 +104,7 @@ public class ReadBalancesProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> revert(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("cs-air", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
 	}
 	
 	//TODO: Move to smart-commons
@@ -166,8 +172,4 @@ public class ReadBalancesProfile extends BlockingFulfillment<Product> {
 		products.add(product);
 		return products;
 	}
-	
-	
-	
-
 }

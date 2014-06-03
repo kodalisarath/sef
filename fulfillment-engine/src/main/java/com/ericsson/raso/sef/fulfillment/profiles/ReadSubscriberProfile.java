@@ -20,6 +20,8 @@ import com.ericsson.sef.bes.api.entities.Product;
 
 public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final long serialVersionUID = 5706705833688931767L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReadSubscriberProfile.class);
+	
 	
 	private static final String READ_SUBSCRIBER_ACTIVATION_DATE = "READ_SUBSCRIBER_ACTIVATION_DATE";
 	private static final String READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE = "READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE";
@@ -39,8 +41,6 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME = "READ_SUBSCRIBER_START_DATE_TIME";
 	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME = "READ_SUBSCRIBER_EXPIRY_DATE_TIME";
 
-	private static final Logger logger = LoggerFactory.getLogger(ReadSubscriberProfile.class);
-	
 	public ReadSubscriberProfile(String name) {
 		super(name);
 	}
@@ -48,24 +48,30 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("cs-air", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
 
 	}
 
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("cs-air", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
 	}
 
 
 	@Override
 	public List<Product> query(Product e, Map<String, String> map) throws FulfillmentException {
 		
-		logger.debug("Query request for read subscriber...");
+		LOGGER.debug("Query request for read subscriber...");
+		
+		if (map == null || map.isEmpty())
+			throw new FulfillmentException("ffe", new ResponseCode(1001, "runtime parameters 'metas' missing in request!!"));
 		
 		GetAccountDetailsRequest request = new GetAccountDetailsRequest();
-		request.setSubscriberNumber(map.get("SUSBCRIBER_ID"));
+		String subscriberId = map.get("SUSBCRIBER_ID");
+		if (subscriberId == null)
+			throw new FulfillmentException("ffe", new ResponseCode(1002, "runtime parameter 'SUBSCRIBER_ID' missing in request!!"));
+		request.setSubscriberNumber(subscriberId);
 		request.setSubscriberNumberNAI(1);
 		
 		GetAccountDetailsResponse response = null;
@@ -84,13 +90,13 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> revert(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("cs-air", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
 	}
 	
 	//TODO: Move to smart-commons
 	private List<Product> createResponse(Product p, GetAccountDetailsResponse response) {
 		
-		logger.debug("Convering CS - IL response");
+		LOGGER.debug("Convering CS - IL response");
 		List<Product> products = new ArrayList<Product>();
 		
 		Product product = new Product();
@@ -111,7 +117,7 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 		if (response.getServiceFeeExpiryDate() != null)
 			accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE, "" + response.getServiceFeeExpiryDate().getTime());
 		
-		logger.debug("Packed all date attributes...");
+		LOGGER.debug("Packed all date attributes...");
 		
 		// service offerings
 		int index = 0;
@@ -119,7 +125,7 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING_ID + "." + ++index, "" + serviceOffering.getServiceOfferingID());
 			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG + "." + index, "" + serviceOffering.isServiceOfferingActiveFlag());
 		}
-		logger.debug("Packed all service offerings...");
+		LOGGER.debug("Packed all service offerings...");
 		
 		// account flags
 		AccountFlags accountFlags = response.getAccountFlags();
@@ -151,7 +157,7 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 		if (flag != null)
 			accountDetails.put(READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG, "" + flag);
 		
-		logger.debug("Packed all account flags...");
+		LOGGER.debug("Packed all account flags...");
 		
 		// offer info...
 		index = 0;
@@ -162,7 +168,7 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
 			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
 		}
-		logger.debug("Packed all offer info...");
+		LOGGER.debug("Packed all offer info...");
 		
 	
 		product.setMetas(accountDetails);
