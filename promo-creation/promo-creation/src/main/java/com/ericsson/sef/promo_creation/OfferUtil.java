@@ -594,6 +594,10 @@ public class OfferUtil
 		lookupResourcesByName.put("CallText10Refill_1075", helper.createRefill("CallText10Refill_1075", "1075", 1, "1", CurrencyCode.PHP, new String [] {"1005","2103"}));
 		lookupResourcesByName.put("UnliAllText10Refill_1076", helper.createRefill("UnliAllText10Refill_1076", "1076", 1, "1", CurrencyCode.PHP, new String [] {"2103"}));
 		lookupResourcesByName.put("Katok25FreebiePromoRefill_KF25", helper.createRefill("Katok25FreebiePromoRefill_KF25", "KF25", 1, "1", CurrencyCode.PHP, new String [] {"2101"}));
+		
+		// Non Commercial Offer
+		
+		lookupResourcesByName.put("ReadSubscriberProfile", helper.createReadSubscriberProfile("ReadSubscriberProfile"));
 		// ----------------------------------------------------------
 		// --- add resources to all registry
 		// ----------------------------------------------------------
@@ -3623,6 +3627,15 @@ public class OfferUtil
 		offerResources.add(lookupResourcesByName.get("Katok25FreebiePromoRefill_KF25"));
 		offerResources.add(lookupResourcesByName.get("TimerOffer_2101"));
 		offer = helper.createCommercialOffer("Katok25FreebiePromo", "", "PHP", 1, planCodes, offerResources);
+		offerManager.createOffer(offer);
+		// ----------------------------------------------------------
+		// Offer.name=READ_SUBSCRIBER
+		// ----------------------------------------------------------
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("READ_SUBSCRIBER");
+		offerResources.add(lookupResourcesByName.get("ReadSubscriberProfile"));
+		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "ReadSubscriberProfile", planCodes, offerResources);
 		offerManager.createOffer(offer);
 
 	}

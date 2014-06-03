@@ -119,6 +119,22 @@ public class PromoHelper {
 		return resource;
 	}
 
+	public Resource createReadSubscriberProfile(String name) throws Exception {
+		
+		Resource resource = new Service(name);
+		
+		resource.setDescription("ReadSubscriberProfile");
+		resource.setConsumable(false);
+		resource.setDiscoverable(true);
+		
+		OfferProfile fulfillmentProfile = new OfferProfile(name);
+		
+		profileRegistry.createProfile(fulfillmentProfile);
+		
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;
+	}	
 	
 	public Offer createCommercialOffer(String name, String description, String currencyCode, Integer price, Set<String> planCodes, ArrayList<Resource> resources) throws Exception {
 
@@ -150,6 +166,36 @@ public class PromoHelper {
 		}
 		
 		return commercialOffer;
+		
+	}
+
+	public Offer createNonCommercialOffer(String name, String description, Set<String> planCodes,  ArrayList<Resource> resources) throws Exception {
+
+		Offer nonCommercialOffer = new Offer(name);
+		nonCommercialOffer.setDescription(description);
+		nonCommercialOffer.setAutoTermination(null);
+		nonCommercialOffer.setCommercial(false);
+		
+		System.out.println("Adding Product: " + nonCommercialOffer.getName());
+		
+		for (String planCode : planCodes) {
+			nonCommercialOffer.addExternalHandle(planCode);
+		}
+		
+		for (int i = 0; i < resources.size(); i++) {
+			
+			String productName = nonCommercialOffer.getName() + "_" + resources.get(i).getName();
+			AtomicProduct createNonCommercialProduct = new AtomicProduct(productName);
+			//createCommercialProduct.setCriteria(null);
+			createNonCommercialProduct.setResetQuotaOnRenewal(false);
+			// TODO createRefill.setMeta("TODO", forImplemenTation);
+			createNonCommercialProduct.setResource(resources.get(i));
+			System.out.println("Adding noncommercial product: " + productName);
+			
+			nonCommercialOffer.addProduct(createNonCommercialProduct);
+		}
+		
+		return nonCommercialOffer;
 		
 	}
 	
