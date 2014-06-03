@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +13,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriptionRequest;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 
 
@@ -145,8 +147,8 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 
 	@Override
-	public String readSubscriber(String requestId, String subscriberId) {
-		ReadSubscriber command = new ReadSubscriber(requestId, subscriberId, null);
+	public String readSubscriber(String requestId, String subscriberId, Map<String,String> metas) {
+		ReadSubscriber command = new ReadSubscriber(requestId, subscriberId, metas);
 		executor.submit(command);
 		return requestId;
 	}
