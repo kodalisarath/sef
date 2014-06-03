@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi" 
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+    <ctx:annotation-config />
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="dataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
+          <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+          <property name="url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=10.245.153.134)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.202.144.77)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=vltnt1.smart.com.ph)))" />
+          <property name="username" value="tnt" />
+          <property name="password" value="3r1c550n_IL" />
+          <property name="testWhileIdle" value="true"/>
+          <property name="testOnReturn" value="false"/>
+          <property name="validationQuery" value="select 1 from dual"/>
+          <property name="validationQueryTimeout" value="30000"/>
+          <property name="timeBetweenEvictionRunsMillis" value="5000"/>
+          <property name="maxActive" value="100"/>
+          <property name="maxIdle" value="80"/>
+          <property name="minIdle" value="10"/>
+          <property name="maxWait" value="10000"/>
+          <property name="initialSize" value="10"/>
+          <property name="removeAbandoned" value="true"/>
+          <property name="removeAbandonedTimeout" value="60"/>
+          <property name="logAbandoned" value="true"/>
+          <property name="minEvictableIdleTimeMillis" value="30000"/>
+     </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:META-INF/sef-core/SqlMapConfig.xml"/>
+        <property name="mapperLocations" value="classpath:META-INF/sef-core/mappers/**/SubscriberMapper.xml"/>
+    </bean>
+
+	<bean id="subscriberMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.raso.sef.core.db.mapper.SubscriberMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<!-- <bean id="callingCircleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.CallingCircleMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="ticketMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.TicketMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="purchaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.PurchaseMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="ticketUsageMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.TicketUsageMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="providerMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.ProviderMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="agreementMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.AgreementMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="commerceTrailMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.CommerceTrailMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="scheduledRequestMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.ScheduledRequestMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+ -->
+ 
+ 	<bean id="subscriberService" class="com.ericsson.raso.sef.core.db.service.internal.SubscriberServiceImpl">
+ 		<property name="subscriberMapper" ref="subscriberMapper"/> 
+ 	</bean> 
+	<!-- <bean id="roleManagerMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.RoleManagerMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="scheduleRequestService"
+		class="com.ericsson.raso.sef.core.db.service.internal.ScheduleRequestServiceImpl">
+		<property name="scheduledRequestMapper" ref="scheduledRequestMapper" />
+	</bean> -->
+</beans>

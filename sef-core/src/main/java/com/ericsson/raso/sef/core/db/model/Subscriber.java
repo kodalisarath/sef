@@ -12,7 +12,7 @@ public class Subscriber {
 	public static final String MSISDN = "MSISDN";
 	public static final String CONTRACT_STATE = "contractState";
 	
-
+	
 	private String userId;
 	private String accountId;
 	private String customerId;

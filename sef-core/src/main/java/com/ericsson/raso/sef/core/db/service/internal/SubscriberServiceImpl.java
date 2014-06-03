@@ -23,6 +23,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	private static final Logger logger = LoggerFactory.getLogger(SubscriberServiceImpl.class);
 	private SubscriberMapper subscriberMapper;
 	
+	
 	public void setSubscriberMapper(SubscriberMapper subscriberMapper) {
 		this.subscriberMapper = subscriberMapper;
 	}

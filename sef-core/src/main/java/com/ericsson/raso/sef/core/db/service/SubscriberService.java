@@ -24,6 +24,7 @@ public interface SubscriberService {
 	Subscriber getSubscriber(String msisdn, String... metaKeys);
 	
 	Subscriber getSubscriberByUserId(String userId);
+	
 	Subscriber getSubscriber(String msisdn);
 	
 }
