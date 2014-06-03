@@ -14,7 +14,7 @@ import com.ericsson.sef.bes.api.entities.Meta;
 
 public class ReadSubscriberProcessor implements Processor{
 	
-	private static final Logger logger = LoggerFactory.getLogger(ReadSubscriberMetaProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReadSubscriberProcessor.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -25,6 +25,7 @@ public class ReadSubscriberProcessor implements Processor{
 		String requestId = (String) objectArray[0];
 		String subscriberId = (String) objectArray[1];
 		List<Meta> metas = (List<Meta>) objectArray[2];
+		logger.debug("Before delegation...");
 		TransactionManager transactionManager = ServiceResolver.getTransactionManager();
 		transactionManager.readSubscriber(requestId, subscriberId, TransactionServiceHelper.getMap(metas));
 		

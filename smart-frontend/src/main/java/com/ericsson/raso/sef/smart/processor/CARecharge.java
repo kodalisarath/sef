@@ -50,86 +50,95 @@ public class CARecharge implements Processor {
 	public void process(Exchange arg0) throws SmException {
 		logger.debug("CA Recharge started");
 		
-		try{
+		try {
 			
 		
-		RechargeRequest rechargeRequest = (RechargeRequest) arg0.getIn().getBody();
-		
-		if (rechargeRequest.getEventClass() == null) {
-			throw new SmException(new ResponseCode(500, "Recharge Type is not defined"));
-		}
-		
-		// Prepare parameters for transaction engine purchase
-		String msisdn = rechargeRequest.getCustomerId();
-		String offerid= null;
-		String requestId = null;
-		Map<String, String> metas = null;
-		
-		if (msisdn == null) {
-			throw new SmException(new ResponseCode(8002, "CustomerId or AccesKey is not defined in input parameter"));
-		}
-		
-		
-		//TODO: Subscriber validation/caching goes here
-		
-		SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
-		if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
-			logger.error("Subscriber is in recycle state.. cannot continue futher");
-			throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
-		}
-		
-		if(subInfo.isLocked()) {
-			logger.error("Subscriber is Barred/locked.. cannot continue further");
-			throw new SmException(ErrorCode.subscriberLocked);
-		}
-		
-		String eventClass = rechargeRequest.getEventClass();
-		if (eventClass.equals("predefined") || eventClass.equals("unli")) {
-			metas = prepareRecharge(rechargeRequest);
-			offerid = rechargeRequest.getEventName();
-		} else if (eventClass.equals("flexible")) {
-			metas = prepareFlexibleRecharge(rechargeRequest);
-			offerid = rechargeRequest.getRatingInput1();
-		} else if (eventClass.equals("pasaload")) {
-			rechargeRequest.setRatingInput0("pasaload");
-			metas = prepareRecharge(rechargeRequest);
-			offerid = rechargeRequest.getEventName();
-		} else if (eventClass.equals("reversal")) {
-			metas = prepareReversalRecharge(rechargeRequest);
-			offerid = rechargeRequest.getEventName();;
-		} else {
-			throw new SmException(new ResponseCode(500, "Recharge Type is not defined"));
-		}
-		
-		requestId = RequestContextLocalStore.get().getRequestId();
-		ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
-		PurchaseResponse response = new PurchaseResponse();
-		List<Meta> listMeta=convertToList(metas);
-		String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
-		
-		try {
-			synchronized (response) {
-				RequestCorrelationStore.put(correlationId, response);
-				response.wait(10000L);
+			logger.debug("Getting exchange body....");
+			RechargeRequest rechargeRequest = (RechargeRequest) arg0.getIn().getBody();
+			logger.debug("Got it!");
+			
+			if (rechargeRequest.getEventClass() == null) {
+				throw new SmException(new ResponseCode(500, "Recharge Type is not defined"));
 			}
-		} catch(InterruptedException e) {
-			logger.debug("sleep interrupted. may be response arrived!!!");
-		}
+			
+			// Prepare parameters for transaction engine purchase
+			logger.debug("Prepare params for transaction....");
+			String msisdn = rechargeRequest.getCustomerId();
+			String offerid= null;
+			String requestId = null;
+			Map<String, String> metas = null;
+			
+			logger.debug("Finished preparing params....");
+			
+			if (msisdn == null) {
+				throw new SmException(new ResponseCode(8002, "CustomerId or AccesKey is not defined in input parameter"));
+			}
 		
-		logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 		
-		PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
-		
-		if(purchaseResponse == null) {
-			//request timed out but no response. possible request missing from correlation store
-			// there is no response time out error code in smart interface and hence throw internal server error
-			logger.debug("No response arrived???");
-			throw new SmException(ErrorCode.internalServerError);
-		}
-		
-		logger.debug("Response purchase received.. now creating front end response");
-		CommandResponseData responseData = createResponse(rechargeRequest.isTransactional(),purchaseResponse);
-		arg0.getOut().setBody(responseData);
+			//TODO: Subscriber validation/caching goes here
+			logger.debug("Getting subscriber info....");
+			SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
+			if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
+				logger.error("Subscriber is in recycle state.. cannot continue futher");
+				throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
+			}
+			logger.debug("Got past subs info....");
+			if(subInfo.isLocked()) {
+				logger.error("Subscriber is Barred/locked.. cannot continue further");
+				throw new SmException(ErrorCode.subscriberLocked);
+			}
+			
+			logger.debug("Getting event class....");
+			String eventClass = rechargeRequest.getEventClass();
+			if (eventClass.equals("predefined") || eventClass.equals("unli")) {
+				metas = prepareRecharge(rechargeRequest);
+				offerid = rechargeRequest.getEventName();
+			} else if (eventClass.equals("flexible")) {
+				metas = prepareFlexibleRecharge(rechargeRequest);
+				offerid = rechargeRequest.getRatingInput1();
+			} else if (eventClass.equals("pasaload")) {
+				rechargeRequest.setRatingInput0("pasaload");
+				metas = prepareRecharge(rechargeRequest);
+				offerid = rechargeRequest.getEventName();
+			} else if (eventClass.equals("reversal")) {
+				metas = prepareReversalRecharge(rechargeRequest);
+				offerid = rechargeRequest.getEventName();;
+			} else {
+				throw new SmException(new ResponseCode(500, "Recharge Type is not defined"));
+			}
+			
+			logger.debug("Got event class....");
+			requestId = RequestContextLocalStore.get().getRequestId();
+			ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
+			PurchaseResponse response = new PurchaseResponse();
+			List<Meta> listMeta=convertToList(metas);
+			String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
+			logger.debug("Got past event class....");
+			try {
+				synchronized (response) {
+					RequestCorrelationStore.put(correlationId, response);
+					response.wait(10000L);
+				}
+			} catch(InterruptedException e) {
+				logger.debug("sleep interrupted. may be response arrived!!!");
+			}
+			
+			logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
+			
+			PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+			
+			if(purchaseResponse == null) {
+				//request timed out but no response. possible request missing from correlation store
+				// there is no response time out error code in smart interface and hence throw internal server error
+				logger.debug("No response arrived???");
+				throw new SmException(ErrorCode.internalServerError);
+			}
+			
+			logger.debug("Get requestId: " + purchaseResponse.getRequestId());
+			
+			logger.debug("Response purchase received.. now creating front end response");
+			CommandResponseData responseData = createResponse(rechargeRequest.isTransactional(),purchaseResponse);
+			arg0.getOut().setBody(responseData);
 		
 		} catch(Exception e) {
 			if(e instanceof SmException){

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +51,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 			history.setAttributeName(Subscriber.CONTRACT_STATE);
 			history.setAttributeNewValue(subscriber.getContractState().name());
 			history.setUserId(subscriber.getUserId());
-			history.setEventTimestamp(new DateTime());
+			history.setEventTimestamp(new Date());
 			hists.add(history);
 		}
 		subscriberMapper.updateSubscriber(subscriber);
@@ -93,7 +93,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 					history.setAttributeName(meta.getKey());
 					history.setAttributeNewValue(meta.getValue());
 					history.setUserId(userId);
-					history.setEventTimestamp(new DateTime());
+					history.setEventTimestamp(new Date());
 					hists.add(history);
 					
 					isUpdate = true;
@@ -102,18 +102,18 @@ public class SubscriberServiceImpl implements SubscriberService {
 			}
 			
 			if(isUpdate) {
-				subMeta.setLastModified(new DateTime());
+				subMeta.setLastModified(new Date());
 				subscriberMapper.updateSubscriberMeta(subMeta);
 			} else {
 				SubscriberAuditTrial history = new SubscriberAuditTrial();
 				history.setAttributeName(meta.getKey());
 				history.setAttributeNewValue(meta.getValue());
 				history.setUserId(userId);
-				history.setEventTimestamp(new DateTime());
+				history.setEventTimestamp(new Date());
 				hists.add(history);
 
-				subMeta.setCreated(new DateTime());
-				subMeta.setLastModified(new DateTime());
+				subMeta.setCreated(new Date());
+				subMeta.setLastModified(new Date());
 				subscriberMapper.insertSubscriberMeta(subMeta);
 			}
 		}

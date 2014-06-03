@@ -1,11 +1,12 @@
 package com.ericsson.raso.sef.core.db.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
+
 
 public class SubscriberAuditTrial {
 
 	private String userId;
-	private DateTime eventTimestamp;
+	private Date eventTimestamp;
 	private String attributeName;
 	private String attributeNewValue;
 	private String changedByUser;
@@ -18,11 +19,11 @@ public class SubscriberAuditTrial {
 		this.userId = userId;
 	}
 
-	public DateTime getEventTimestamp() {
+	public Date getEventTimestamp() {
 		return eventTimestamp;
 	}
 
-	public void setEventTimestamp(DateTime eventTimestamp) {
+	public void setEventTimestamp(Date eventTimestamp) {
 		this.eventTimestamp = eventTimestamp;
 	}
 

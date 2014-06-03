@@ -1,6 +1,6 @@
 package com.ericsson.raso.sef.core.db.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 import com.ericsson.raso.sef.core.Meta;
 
@@ -11,8 +11,8 @@ public class SubscriberMeta extends Meta {
 	 */
 	private static final long serialVersionUID = -3270466466601612918L;
 	private String userId;
-	private DateTime created;
-	private DateTime lastModified;
+	private Date created;
+	private Date lastModified;
 
 	public String getUserId() {
 		return userId;
@@ -22,19 +22,19 @@ public class SubscriberMeta extends Meta {
 		this.userId = userId;
 	}
 
-	public DateTime getLastModified() {
+	public Date getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(DateTime lastModified) {
+	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
 	}
 
-	public DateTime getCreated() {
+	public Date getCreated() {
 		return created;
 	}
 
-	public void setCreated(DateTime created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 }

@@ -26,6 +26,7 @@
 		</osgi-dynamic-packages>
 		<osgi-import-packages>
 			oracle.jdbc.driver,
+			org.springframework.jdbc.core,
 			org.springframework.*,
 			org.apache.tomcat.dbcp.dbcp,
 			javax.sql,
@@ -35,7 +36,13 @@
 			org.w3c.dom,
 			org.apache.cxf.*,
 			com.hazelcast.config,
-			 com.hazelcast.core,
+			com.hazelcast.core,
+			org.mybatis.spring,
+			org.apache.ibatis.type,
+			org.mybatis.spring.mapper,
+			org.springframework.aop,
+			org.springframework.aop.framework,
+			org.aopalliance.aop,
 			org.slf4j
 		</osgi-import-packages>
 		<osgi-export-package>

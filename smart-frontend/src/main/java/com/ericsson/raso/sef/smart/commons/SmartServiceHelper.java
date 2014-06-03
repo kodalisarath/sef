@@ -19,8 +19,9 @@ public abstract class SmartServiceHelper {
 	
 	public static SubscriberInfo getAndRefreshSubscriber(String msisdn) {
 		
+		logger.debug("Entering getAndRefreshSubscriber.....");
 		String requestId = RequestContextLocalStore.get().getRequestId();
-		
+		logger.debug("Entering Request ID..... " + requestId);
 		SubscriberInfo subscriberInfo = new SubscriberInfo();
 		
 		List<Meta> metas = new ArrayList<Meta>();
@@ -28,6 +29,7 @@ public abstract class SmartServiceHelper {
 		meta.setKey("READ_SUBSCRIBER");
 		meta.setValue("READ_SUBSCRIBER");
 		metas.add(meta);
+		logger.debug("Entering SmartServiceResolver.....");
 		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
 		

@@ -10,51 +10,14 @@
 	
 	<typeAliases>
 		
-		<typeAlias alias="RolePermissionMappingDto" type="com.ericsson.raso.sef.core.db.model.RolePermissionMappingDto"/>
-		<typeAlias alias="RoleAssignDto" type="com.ericsson.raso.sef.core.db.model.RoleAssignDto" />
-		<typeAlias alias="Role" type="com.ericsson.raso.sef.core.db.model.Role" />
-		<typeAlias alias="Permission" type="com.ericsson.raso.sef.core.db.model.Permission" />
 		<typeAlias alias="Subscriber" type="com.ericsson.raso.sef.core.db.model.Subscriber" />
 		<typeAlias alias="SubscriberMeta" type="com.ericsson.raso.sef.core.db.model.SubscriberMeta" />
-		<!-- <typeAlias alias="SubscriberHistory" type="com.ericsson.raso.sef.core.db.model.SubscriberHistory" /> -->
-		<typeAlias alias="ProviderSLARequest" type="com.ericsson.raso.sef.core.db.model.ProviderSLARequest" />
-		<typeAlias alias="Purchase" type="com.ericsson.raso.sef.core.db.model.Purchase" />
-		<typeAlias alias="PurchaseMeta" type="com.ericsson.raso.sef.core.db.model.PurchaseMeta" />
-		<typeAlias alias="CommerceTrail" type="com.ericsson.raso.sef.core.db.model.CommerceTrail" />
-		<typeAlias alias="Ticket" type="com.ericsson.raso.sef.core.db.model.Ticket" />
-		<typeAlias alias="TicketMeta" type="com.ericsson.raso.sef.core.db.model.TicketMeta" />
-		<typeAlias alias="TicketUsage" type="com.ericsson.raso.sef.core.db.model.TicketUsage" />
-		<typeAlias alias="TicketUsageMeta" type="com.ericsson.raso.sef.core.db.model.TicketUsageMeta" />
-		<typeAlias alias="ScheduledRequest" type="com.ericsson.raso.sef.core.db.model.ScheduledRequest"/>
-		<typeAlias alias="ScheduledRequestMeta" type="com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta" />
-		<typeAlias alias="SmSequence" type="com.ericsson.raso.sef.core.db.model.SmSequence" />
-
-		<typeAlias alias="Provider" type="com.ericsson.raso.sef.core.db.model.Provider" />
-		<typeAlias alias="ProviderMeta" type="com.ericsson.raso.sef.core.db.model.ProviderMeta" />
-		<typeAlias alias="Agreement" type="com.ericsson.raso.sef.core.db.model.Agreement" />
-		<typeAlias alias="AgreementMeta" type="com.ericsson.raso.sef.core.db.model.AgreementMeta" />
-		<typeAlias alias="AgreementDto" type="com.ericsson.raso.sef.core.db.model.AgreementDto" />
-
-		<typeAlias alias="CallingCircle" type="com.ericsson.raso.sef.core.db.model.CallingCircle" />
-		<typeAlias alias="JobDetail" type="com.ericsson.raso.sef.core.db.model.JobDetail" />
-		
-		<typeAlias alias="Actor" type="com.ericsson.raso.sef.auth.Actor"/>
-		<typeAlias alias="User" type="com.ericsson.raso.sef.auth.User"/>
-		<typeAlias alias="Group" type="com.ericsson.raso.sef.auth.Group"/>
 		<typeAlias alias="Meta" type="com.ericsson.raso.sef.core.Meta"/>
 
 	</typeAliases>
 
 	<typeHandlers>
-		<typeHandler javaType="org.joda.time.DateTime" handler="com.ericsson.raso.sef.core.db.typehandler.DateTimeTypeHandler" />
 		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.ContractState" handler="com.ericsson.raso.sef.core.db.typehandler.ContractStateTypeHandler" />
-		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.CurrencyCode" handler="com.ericsson.raso.sef.core.db.typehandler.CurrencyCodeTypeHandler" />
-		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.PurchaseType" handler="com.ericsson.raso.sef.core.db.typehandler.PurchaseTypeTypeHandler" />
-		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.PurchaseState" handler="com.ericsson.raso.sef.core.db.typehandler.PurchaseStateTypeHandler" />
-		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent" handler="com.ericsson.raso.sef.core.db.typehandler.SubscriptionLifeCycleEventHandler" />
-		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus" handler="com.ericsson.raso.sef.core.db.typehandler.ScheduledRequestStatusTypeHandler" />
-		
-		<typeHandler javaType="com.ericsson.raso.sef.auth.Credential" handler="com.ericsson.raso.sef.auth.dbtypehandler.CredentialTypeHandler" />
 	</typeHandlers>
 	
 	

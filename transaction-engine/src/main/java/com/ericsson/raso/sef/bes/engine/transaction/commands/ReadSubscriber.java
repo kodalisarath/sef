@@ -49,17 +49,21 @@ public class ReadSubscriber extends AbstractTransaction {
 
 	@Override
 	public Boolean execute() throws TransactionException {
+		LOGGER.debug("Entering Read Subscriber somehow....");
 		
 		try {
 			Subscriber subscriber = new FetchSubscriber(((ReadSubscriberRequest)this.getRequest()).getSubscriberId()).execute();
+			LOGGER.debug("Dodged a maor bullet there...");
 			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper.getApiEntity(subscriber);
 			((ReadSubscriberResponse)this.getResponse()).setSubscriber(result);
 			
 			String readSubscriberWorkflowId = ((ReadSubscriberRequest)this.getRequest()).getMetas().get(Constants.READ_SUBSCRIBER.name());
 			if(readSubscriberWorkflowId != null) {
+				LOGGER.debug("somehow a workflow is also needed... wtf?!!!");
 				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 				Offer workflow = catalog.getOfferById(readSubscriberWorkflowId);
 				
+				LOGGER.debug("Guess what? found the workflow in prodcat too...");
 				if (workflow != null) {
 					List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 					tasks.addAll(workflow.execute(((ReadSubscriberRequest)this.getRequest()).getSubscriberId(), 
