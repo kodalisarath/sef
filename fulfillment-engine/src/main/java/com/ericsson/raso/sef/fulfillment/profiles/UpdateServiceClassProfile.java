@@ -7,7 +7,7 @@ import com.ericsson.sef.bes.api.entities.Product;
 
 public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
 
-	protected UpdateServiceClassProfile(String name) {
+	public UpdateServiceClassProfile(String name) {
 		super(name);
 	}
 
