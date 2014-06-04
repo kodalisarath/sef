@@ -33,4 +33,42 @@ public void setMetas(Map<String, String> metas) {
 public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
 	// TODO Auto-generated method stub
 	return null;
-}}
+}
+@Override
+public String toString() {
+	return "UpdateSubscriberRequest [subscriberId=" + subscriberId + ", metas="
+			+ metas + "]";
+}
+
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = super.hashCode();
+	result = prime * result + ((metas == null) ? 0 : metas.hashCode());
+	result = prime * result
+			+ ((subscriberId == null) ? 0 : subscriberId.hashCode());
+	return result;
+}
+
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (!super.equals(obj))
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	UpdateSubscriberRequest other = (UpdateSubscriberRequest) obj;
+	if (metas == null) {
+		if (other.metas != null)
+			return false;
+	} else if (!metas.equals(other.metas))
+		return false;
+	if (subscriberId == null) {
+		if (other.subscriberId != null)
+			return false;
+	} else if (!subscriberId.equals(other.subscriberId))
+		return false;
+	return true;
+}
+}

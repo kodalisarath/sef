@@ -36,6 +36,47 @@ public final class ReadSubscriberResponse extends AbstractResponse {
 		this.metas = metas;
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((metas == null) ? 0 : metas.hashCode());
+		result = prime * result
+				+ ((subscriber == null) ? 0 : subscriber.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ReadSubscriberResponse other = (ReadSubscriberResponse) obj;
+		if (metas == null) {
+			if (other.metas != null)
+				return false;
+		} else if (!metas.equals(other.metas))
+			return false;
+		if (subscriber == null) {
+			if (other.subscriber != null)
+				return false;
+		} else if (!subscriber.equals(other.subscriber))
+			return false;
+		return true;
+	}
+
+
+	@Override
+	public String toString() {
+		return "ReadSubscriberResponse [subscriber=" + subscriber + ", metas="
+				+ metas + "]";
+	}
+
 	
 	
 }

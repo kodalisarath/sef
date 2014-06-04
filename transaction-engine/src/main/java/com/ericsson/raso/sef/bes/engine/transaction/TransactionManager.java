@@ -117,7 +117,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	@Override
 	public String renew(String requestId, String subscriptionId, Boolean override, Map<String, Object> metas) {
 		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, null, null, subscriptionId, SubscriptionLifeCycleEvent.RENEWAL, override, metas);
-		executor.submit(command);
+		executor.submit(command);// TODO Auto-generated catch block
 		return requestId;
 	}
 
