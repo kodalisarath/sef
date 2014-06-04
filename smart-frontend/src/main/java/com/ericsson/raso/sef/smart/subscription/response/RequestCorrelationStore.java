@@ -14,4 +14,8 @@ public class RequestCorrelationStore {
 	public static AbstractSubscriptionResponse get(String requestId) {
 		return store.get(requestId);
 	}
+	
+	public static AbstractSubscriptionResponse remove(String requestId) {
+		return store.remove(requestId);
+	}
 }

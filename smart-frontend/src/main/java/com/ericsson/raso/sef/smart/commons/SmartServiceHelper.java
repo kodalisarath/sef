@@ -32,16 +32,8 @@ public abstract class SmartServiceHelper {
 		metas.add(meta);
 		logger.debug("Entering SmartServiceResolver.....");
 		
-		SefJaxWsProxyFactoryBean<ISubscriberRequest> proxy = new SefJaxWsProxyFactoryBean<ISubscriberRequest>();
-		proxy.setEndpointId(null);
-		ISubscriberRequest subscriberRequest = null;
-		try {
-			subscriberRequest = proxy.getObject();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		//ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
 		
 		try {

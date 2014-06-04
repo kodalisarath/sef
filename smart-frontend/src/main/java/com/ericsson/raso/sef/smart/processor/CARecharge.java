@@ -32,6 +32,7 @@ import com.ericsson.raso.sef.smart.usecase.RechargeRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
+import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ListParameter;
@@ -76,17 +77,19 @@ public class CARecharge implements Processor {
 		
 		
 			//TODO: Subscriber validation/caching goes here
-			logger.debug("Getting subscriber info....");
-			SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
-			if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
-				logger.error("Subscriber is in recycle state.. cannot continue futher");
-				throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
-			}
-			logger.debug("Got past subs info....");
-			if(subInfo.isLocked()) {
-				logger.error("Subscriber is Barred/locked.. cannot continue further");
-				throw new SmException(ErrorCode.subscriberLocked);
-			}
+//			logger.debug("Getting subscriber info....");
+//			SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
+//			if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
+//				logger.error("Subscriber is in recycle state.. cannot continue futher");
+//				throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
+//			}
+//			logger.debug("Got past subs info....");
+//			if(subInfo.isLocked()) {
+//				logger.error("Subscriber is Barred/locked.. cannot continue further");
+//				throw new SmException(ErrorCode.subscriberLocked);
+//			}
+			
+			
 			
 			logger.debug("Getting event class....");
 			String eventClass = rechargeRequest.getEventClass();
@@ -114,14 +117,24 @@ public class CARecharge implements Processor {
 			List<Meta> listMeta=convertToList(metas);
 			String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
 			logger.debug("Got past event class....");
+			RequestCorrelationStore.put(correlationId, response);
+			
+			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+			
 			try {
-				synchronized (response) {
-					RequestCorrelationStore.put(correlationId, response);
-					response.wait(10000L);
-				}
+			semaphore.init(0);
+			semaphore.acquire();
 			} catch(InterruptedException e) {
-				logger.debug("sleep interrupted. may be response arrived!!!");
+				
 			}
+//			try {
+//				synchronized (response) {
+//					RequestCorrelationStore.put(correlationId, response);
+//					response.wait(10000L);
+//				}
+//			} catch(InterruptedException e) {
+//				logger.debug("sleep interrupted. may be response arrived!!!");
+//			}
 			
 			logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 			
