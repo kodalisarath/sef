@@ -49,6 +49,10 @@
 		<result property="attributeName" column="attribute_name" />
 		<result property="attributeNewValue" column="attribute_new_value" />
 	</resultMap> -->
+	<resultMap id="MetaResult" type="Meta">
+	<result property="key" column="last_modified"/>
+	<result property="value" column="created"/> 
+	</resultMap>
 	<select id="userSequence" resultMap="SequenceResult" parameterType="String">
 		select user_id_sequence.nextval as seq, #{rand} as rand from dual
 	</select>
@@ -148,13 +152,16 @@
 <!--         </foreach> -->
 <!--         SELECT * FROM dual -->
 <!--     </insert> -->
-    
-    <insert id="bulkInsertSubscriber" parameterType="java.util.List">
+    <insert id="insertSubscriberMeta" parameterType="MetaResult">
+        insert into subscriber_meta (user_id, attribute_name, attribute_value, last_modified)
+		values (#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
+</insert>
+   <!--  <insert id="bulkInsertSubscriber" parameterType="java.util.List">
     	insert all
         <foreach collection="list" item="item" separator="" index="index">
         	into subscriber (user_id,msisdn,contract_state,customer_segment, created, deleted) values (#{item.userId},#{item.msisdn},#{item.contractState jdbcType=VARCHAR},#{item.customerSegment jdbcType=VARCHAR},#{item.created jdbcType=TIMESTAMP}, 0) LOG ERRORS REJECT LIMIT UNLIMITED
         	
         </foreach>
         SELECT * FROM dual
-	</insert>
+	</insert> -->
 </mapper>
