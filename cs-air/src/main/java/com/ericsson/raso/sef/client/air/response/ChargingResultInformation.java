@@ -1,7 +1,5 @@
 package com.ericsson.raso.sef.client.air.response;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class ChargingResultInformation extends NativeAirResponse {
