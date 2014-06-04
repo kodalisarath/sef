@@ -19,6 +19,10 @@ public final class DeleteSubscriberRequest extends AbstractRequest {
 	public void setSubscriberId(String subscriberId) {
 		this.subscriberId = subscriberId;
 	}
+	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 			
 

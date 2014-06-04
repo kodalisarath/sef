@@ -30,7 +30,9 @@ public final class HandleLifeCycleRequest extends AbstractRequest {
 	public void setMetas(Set<String> metas) {
 		this.metas = metas;
 	}
-
-			
+	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -7,7 +7,8 @@ public enum Constants {
 	/* 
 	 * All constants needed for Transaction & Orchestration 
 	 */
-	CREATE_SUSBCRIBER, 
+	CREATE_SUSBCRIBER,
+	UPDATE_SUBSCRIBER,
 	USECASES,
 	USE_CASE_EVAL,
 	ORCHESTRATION, 
