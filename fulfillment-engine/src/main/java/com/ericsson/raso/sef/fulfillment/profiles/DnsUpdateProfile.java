@@ -19,7 +19,7 @@ public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.a
 	private static final long	serialVersionUID	= -6927140819818049080L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(DnsUpdateProfile.class);
 
-	protected DnsUpdateProfile(String name) {
+	public DnsUpdateProfile(String name) {
 		super(name);
 	}
 

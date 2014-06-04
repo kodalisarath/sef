@@ -45,6 +45,7 @@ public class OfferUtil
 		// ----------------------------------------------------------
 		// --- creating all the resources
 		// ----------------------------------------------------------
+
 		lookupResourcesByName.put("TimerOffer_1054", helper.createTimerProfile("TimerOffer_1054",1054));
 		lookupResourcesByName.put("TimerOffer_1003", helper.createTimerProfile("TimerOffer_1003",1003));
 		lookupResourcesByName.put("GaanAllInOne15DedicatedAccount_54", helper.createDA ("GaanAllInOne15DedicatedAccount_54", 54, "1", "PHP"));
@@ -601,7 +602,12 @@ public class OfferUtil
 		
 		// Non Commercial Offer
 		
-		lookupResourcesByName.put("ReadSubscriberProfile", helper.createReadSubscriberProfile("ReadSubscriberProfile"));
+		lookupResourcesByName.put("DnsUpdateAF_Cmd", helper.createDnsUpdateProfile("DnsUpdateAF_Cmd", "DNS Update Profile"));
+		lookupResourcesByName.put("InstallSubscriberACIP_Cmd", helper.createCreateSubscriberProfile("InstallSubscriberACIP_Cmd", "Install Subscriber Request"));
+
+		lookupResourcesByName.put("GetAccountDetails_Cmd", helper.createGetAccountDetailsProfile("GetAccountDetails_Cmd", "Get Account Details"));
+		lookupResourcesByName.put("GetBalanceAndDate_Cmd", helper.createGetBalanceAndDateProfile("GetBalanceAndDate_Cmd", "Get Balance and Date"));
+		
 		// ----------------------------------------------------------
 		// --- add resources to all registry
 		// ----------------------------------------------------------
@@ -3633,15 +3639,26 @@ public class OfferUtil
 		offer = helper.createCommercialOffer("Katok25FreebiePromo", "", "PHP", 1, planCodes, offerResources);
 		offerManager.createOffer(offer);
 		// ----------------------------------------------------------
+		// Offer.name=CREATE_SUBSCRIBER
+		// ----------------------------------------------------------
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("CREATE_SUBSCRIBER");
+		offerResources.add(lookupResourcesByName.get("DnsUpdateAF_Cmd"));
+		offerResources.add(lookupResourcesByName.get("InstallSubscriberACIP_Cmd"));
+		offer = helper.createNonCommercialOffer("CREATE_SUBSCRIBER", "Create Subscriber", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		// ----------------------------------------------------------
 		// Offer.name=READ_SUBSCRIBER
 		// ----------------------------------------------------------
 		offerResources = new ArrayList<Resource>();
 		planCodes = new HashSet<String>();
 		planCodes.add("READ_SUBSCRIBER");
-		offerResources.add(lookupResourcesByName.get("ReadSubscriberProfile"));
-		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "ReadSubscriberProfile", planCodes, offerResources);
+		offerResources.add(lookupResourcesByName.get("GetAccountDetails_Cmd"));
+		offerResources.add(lookupResourcesByName.get("GetBalanceAndDate_Cmd"));
+		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "Read Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
-
+	
 	}
 
 	
@@ -3649,9 +3666,9 @@ public class OfferUtil
     {
 		OfferUtil offerUtil = new OfferUtil();
 
-		logger.info("Creating offer, profile, service catalog ...");
+		System.out.println("Creating offer, profile, service catalog ...");
 		offerUtil.createAllProductCatalog();
 		
-		logger.info("Done catalog creation");
+		System.out.println("Done catalog creation");
     }
 }

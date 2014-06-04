@@ -31,7 +31,7 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 	
 	private PamInformationList pamInformationList;
 	
-	protected CreateSubscriberProfile(String name) {
+	public CreateSubscriberProfile(String name) {
 		super(name);
 	}
 	
