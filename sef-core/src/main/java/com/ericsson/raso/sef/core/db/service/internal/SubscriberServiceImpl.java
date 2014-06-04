@@ -206,23 +206,26 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 	@Override
 	public Subscriber getSubscriber(String msisdn) {
-		Subscriber subscriber=null;
+		Subscriber subscriber = null;
 		try {
-			subscriber=subscriberMapper.getSubscriber(msisdn);
-			Collection<SubscriberMeta> metaCollections=fetchMetas(subscriber.getUserId());
-			for (Meta meta : metaCollections) {
-				SubscriberMeta sMeta = new SubscriberMeta();
-				sMeta.setUserId(subscriber.getUserId());
-				sMeta.setKey(meta.getKey());
-				sMeta.setValue(meta.getValue());
-				subscriber.getMetas().add(sMeta);
+			subscriber = subscriberMapper.getSubscriber(msisdn);
+			if (subscriber != null) {
+				Collection<SubscriberMeta> metaCollections = fetchMetas(subscriber
+						.getUserId());
+				for (Meta meta : metaCollections) {
+					SubscriberMeta sMeta = new SubscriberMeta();
+					sMeta.setUserId(subscriber.getUserId());
+					sMeta.setKey(meta.getKey());
+					sMeta.setValue(meta.getValue());
+					subscriber.getMetas().add(sMeta);
+				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			// TODO: handle exception
+			logger.error("Exception occured while querying subscriber entity ",
+					e);
 		}
-	
+
 		return subscriber;
-		
+
 	}
 }
