@@ -41,8 +41,6 @@ public class OfferProfile extends BlockingFulfillment<Product> {
 		if (map == null || map.isEmpty())
 			throw new FulfillmentException("ffe", new ResponseCode(1001, "runtime parameters 'metas' missing in request!!"));
 		
-		List<Product> products = new ArrayList<Product>();
-		
 		UpdateOfferRequest request = new UpdateOfferRequest();
 		request.setOfferID(this.offerID);
 		request.setOfferType(this.offerType);
