@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -67,6 +68,10 @@ public class DateUtil {
 	public static String convertDateToString(Date in, String pattern) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
 		return dateFormat.format(in);
+	}
+	public static Date convertStringToDate(String in, String pattern) throws ParseException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+		return dateFormat.parse(in);
 	}
 	
 	public static XMLGregorianCalendar convertDateToUTCtime(String dateStr) {
