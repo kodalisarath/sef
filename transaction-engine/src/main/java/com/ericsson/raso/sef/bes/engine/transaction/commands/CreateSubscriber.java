@@ -3,6 +3,9 @@ package com.ericsson.raso.sef.bes.engine.transaction.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
@@ -17,12 +20,14 @@ import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.sef.bes.api.entities.Subscriber;
+import com.ericsson.sef.bes.api.entities.TransactionStatus;
+import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
 public class CreateSubscriber extends AbstractTransaction {
 	private static final long	serialVersionUID	= 8085575039162225609L;
-	
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CreateSubscriber.class);
 	public CreateSubscriber(String requestId, Subscriber subscriber) {
 		super(requestId, new CreateSubscriberRequest(requestId, subscriber));
 		this.setResponse(new CreateSubscriberResponse(requestId));
@@ -34,25 +39,30 @@ public class CreateSubscriber extends AbstractTransaction {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 		
 		
-		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
-		
-		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-		Offer workflow = catalog.getOfferById(Constants.CREATE_SUSBCRIBER.name());
-		if (workflow != null) {
-			String subscriberId = ((CreateSubscriberRequest)this.getRequest()).getSubscriber().getMsisdn();
-			try {
-				tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, null));
-			} catch (CatalogException e) {
-				// TODO - Logger unable to fetch the workflow configured for the use-case
-				throw new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e);
+		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity;
+		try {
+			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
+			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
+			Offer workflow = catalog.getOfferById(Constants.CREATE_SUSBCRIBER.name());
+			if (workflow != null) {
+				String subscriberId = ((CreateSubscriberRequest)this.getRequest()).getSubscriber().getMsisdn();
+				try {
+					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, null));
+				} catch (CatalogException e) {
+					this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+				}
+				tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
+				
 			}
-			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
+			Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
+			
+			OrchestrationManager.getInstance().submit(this, execution);
+		} catch (FrameworkException e1) {
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));
 		}
 		
-		Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
 		
-		OrchestrationManager.getInstance().submit(this, execution);
 		
 		return true;
 	}
@@ -70,6 +80,18 @@ public class CreateSubscriber extends AbstractTransaction {
 		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
+		TransactionStatus txnStatus=null;
+		Boolean result = ((CreateSubscriberResponse)this.getResponse()).getResult();
+			
+		
+		LOGGER.debug("Invoking create subscriber response!!");
+		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
+		subscriberClient.createSubscriber(this.getRequestId(), 
+				                    txnStatus, 
+				                    result);
+		LOGGER.debug("create susbcriber response posted");
+
+		
 	}
 
 }

@@ -110,7 +110,21 @@
 		
 		<route>
 			<from uri="cxf:bean:subscriberResponse"/>
-			<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.ReadSubscriberProcessor"/>
+			<camel:doTry>
+				<camel:choice>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'createSubscriber'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.CreateSubscriberProcessor" />
+					</camel:when>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'readSubscriber'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.ReadSubscriberProcessor"/>
+					</camel:when>
+				</camel:choice>
+				<camel:doFinally>
+				<!-- Add exception handler -->
+				</camel:doFinally>
+			</camel:doTry>
 		</route>
 	</camelContext>
 	

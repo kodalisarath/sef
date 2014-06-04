@@ -8,21 +8,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.commands.CreateSubscriber;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.DeleteSubscriber;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.DiscoverOffers;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.DiscoverOffersForUser;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.FetchOffer;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.FetchOfferByHandleForUser;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.FetchOfferForUser;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.GetAdviceOfCharge;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.HandleLifeCycle;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.HandleSubscriptionEvent;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.QuerySubscription;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.ReadSubscriber;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.ReadSubscriberMeta;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.UpdateSubscriber;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriptionRequest;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.sef.bes.api.entities.Subscriber;
 
 
 public class TransactionManager implements ISubscriberRequest, ISubscriptionRequest {
@@ -113,7 +117,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	@Override
 	public String renew(String requestId, String subscriptionId, Boolean override, Map<String, Object> metas) {
 		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, null, null, subscriptionId, SubscriptionLifeCycleEvent.RENEWAL, override, metas);
-		executor.submit(command);
+		executor.submit(command);// TODO Auto-generated catch block
 		return requestId;
 	}
 
@@ -160,22 +164,27 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 	@Override
 	public String updateSubscriber(String requestId, String subscriberId, Map<String, String> metas) {
-		// TODO Auto-generated method stub
-		return null;
+	UpdateSubscriber command=new UpdateSubscriber(requestId,subscriberId,metas);
+	executor.submit(command);
+	return requestId;
 	}
 
 
 	@Override
 	public String deleteSubscriber(String requestId, String subscriberId) {
-		// TODO Auto-generated method stub
-		return null;
+		Subscriber subscriber=new Subscriber();
+		subscriber.setMsisdn(subscriberId);
+		DeleteSubscriber command=new DeleteSubscriber(requestId,subscriber);
+		executor.submit(command);
+		return requestId;
 	}
 
 
 	@Override
 	public String handleLifeCycle(String requestId, String subscriberId, String lifeCycleState, Map<String, String> metas) {
-		// TODO Auto-generated method stub
-		return null;
+		HandleLifeCycle command=new HandleLifeCycle(requestId,subscriberId,lifeCycleState,metas);
+		executor.submit(command);
+		return requestId;
 	}
 
 

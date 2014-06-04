@@ -1,13 +1,15 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
 
-import java.util.Date;
 
 public enum Constants {
 	
 	/* 
 	 * All constants needed for Transaction & Orchestration 
 	 */
-	CREATE_SUSBCRIBER, 
+	CREATE_SUSBCRIBER,
+	UPDATE_SUBSCRIBER,
+	HANDLE_LIFE_CYCLE,
+	DELETE_SUBSCRIBER,
 	USECASES,
 	USE_CASE_EVAL,
 	ORCHESTRATION, 
