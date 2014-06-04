@@ -140,16 +140,18 @@ public class SecureSerializationHelper {
 			throws FrameworkException {
 		try {
 			FileInputStream fis = new FileInputStream(fileLocation);
-			CipherInputStream cis = new CipherInputStream(fis,
-					this.decryptionCipher);
+			CipherInputStream cis = new CipherInputStream(fis, this.decryptionCipher);
 			ObjectInputStream ois = new ObjectInputStream(cis);
+			LOGGER.debug("Stream Chaining ready to read the contents....");
 
 			Serializable contents = (Serializable) ois.readObject();
-
+			LOGGER.debug("Read contents from the file: " + fileLocation);
+			
 			ois.close();
 			cis.close();
 			fis.close();
-
+			LOGGER.debug("Should I leave a memory leak?...");
+			
 			return contents;
 
 		} catch (FileNotFoundException e) {
