@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
+import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 
 
@@ -52,9 +54,10 @@ public final class CreateSubscriberRequest extends AbstractRequest {
 		this.subscriber = subscriber;
 	}
 
-	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
-		// TODO Auto-generated method stub
-		return null;
+	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() throws FrameworkException {
+		FetchSubscriber fetchSubscriber=new FetchSubscriber(this.subscriber.getImsi());
+		return fetchSubscriber.execute();
+		
 	}
 
 	

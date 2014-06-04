@@ -2,6 +2,9 @@ package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
 import java.util.Map;
 
+import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
+import com.ericsson.raso.sef.core.FrameworkException;
+
 
 public final class HandleLifeCycleRequest extends AbstractRequest {
 	private static final long	serialVersionUID	= -921884001442299482L;
@@ -24,9 +27,9 @@ public final class HandleLifeCycleRequest extends AbstractRequest {
 	}
 
 	
-	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
-		// TODO Auto-generated method stub
-		return null;
+	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() throws FrameworkException {
+		FetchSubscriber fetchSubscriber=new FetchSubscriber(this.subscriberId);
+		return fetchSubscriber.execute();
 	}
 
 	public Map<String,String> getMetas() {

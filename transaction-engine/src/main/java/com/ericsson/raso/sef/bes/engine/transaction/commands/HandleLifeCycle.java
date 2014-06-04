@@ -22,6 +22,7 @@ import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
@@ -42,25 +43,28 @@ public class HandleLifeCycle extends AbstractTransaction{
 		
 
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
-		
-		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = ((HandleLifeCycleRequest)this.getRequest()).persistableEntity();
-		tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
-		
-		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-		Offer workflow = catalog.getOfferById(Constants.HANDLE_LIFE_CYCLE.name());
-		if (workflow != null) {
-			String subscriberId = ((HandleLifeCycleRequest)this.getRequest()).getSubscriberId();
-			try {
-				tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true,new HashMap<String,Object>()));
-			} catch (CatalogException e) {
-				this.getResponse().setReturnFault( new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity;
+		try {
+			subscriberEntity = ((HandleLifeCycleRequest)this.getRequest()).persistableEntity();
+			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
+			
+			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
+			Offer workflow = catalog.getOfferById(Constants.HANDLE_LIFE_CYCLE.name());
+			if (workflow != null) {
+				String subscriberId = ((HandleLifeCycleRequest)this.getRequest()).getSubscriberId();
+				try {
+					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true,new HashMap<String,Object>()));
+				} catch (CatalogException e) {
+					this.getResponse().setReturnFault( new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+				}
 			}
+			
+			Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
+			
+			OrchestrationManager.getInstance().submit(this, execution);
+		} catch (FrameworkException e1) {
+			this.getResponse().setReturnFault( new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));
 		}
-		
-		Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
-		
-		OrchestrationManager.getInstance().submit(this, execution);
-		
 		return true;
 	
 		
