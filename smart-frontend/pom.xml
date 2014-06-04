@@ -36,7 +36,8 @@
     	org.apache.cxf.bus.spring,
     	org.eclipse.jetty.server.nio,
     	org.apache.camel,
-    	org.apache.cxf.helpers		
+    	org.apache.cxf.helpers,
+    	com.hazelcast.core
 		</osgi-import-packages>
 		<osgi-export-package>
 		wsdl,

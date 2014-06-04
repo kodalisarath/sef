@@ -120,6 +120,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) {
+		logger.debug("Preparing.......");
 		List<Product> products = new ArrayList<Product>();
 		return products;
 	}
@@ -234,6 +235,65 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			map.put(da.getDedicatedAccountID(), da);
 		}
 		return map;
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((refillProfileId == null) ? 0 : refillProfileId.hashCode());
+		result = prime * result
+				+ ((refillType == null) ? 0 : refillType.hashCode());
+		result = prime
+				* result
+				+ ((transactionAmount == null) ? 0 : transactionAmount
+						.hashCode());
+		result = prime
+				* result
+				+ ((transactionCurrency == null) ? 0 : transactionCurrency
+						.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RefillProfile other = (RefillProfile) obj;
+		if (refillProfileId == null) {
+			if (other.refillProfileId != null)
+				return false;
+		} else if (!refillProfileId.equals(other.refillProfileId))
+			return false;
+		if (refillType == null) {
+			if (other.refillType != null)
+				return false;
+		} else if (!refillType.equals(other.refillType))
+			return false;
+		if (transactionAmount == null) {
+			if (other.transactionAmount != null)
+				return false;
+		} else if (!transactionAmount.equals(other.transactionAmount))
+			return false;
+		if (transactionCurrency != other.transactionCurrency)
+			return false;
+		return true;
+	}
+
+
+	@Override
+	public String toString() {
+		return "RefillProfile [refillProfileId=" + refillProfileId
+				+ ", refillType=" + refillType + ", transactionAmount="
+				+ transactionAmount + ", transactionCurrency="
+				+ transactionCurrency + "]";
 	}
 
 }

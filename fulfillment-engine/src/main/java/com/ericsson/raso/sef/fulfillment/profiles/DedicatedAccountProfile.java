@@ -192,4 +192,77 @@ public class DedicatedAccountProfile extends BlockingFulfillment<Product> {
 		this.transactionCode = transactionCode;
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((dedicatedAccountID == null) ? 0 : dedicatedAccountID
+						.hashCode());
+		result = prime
+				* result
+				+ ((dedicatedAccountUnitType == null) ? 0
+						: dedicatedAccountUnitType.hashCode());
+		result = prime * result
+				+ ((transactionCode == null) ? 0 : transactionCode.hashCode());
+		result = prime
+				* result
+				+ ((transactionCurrency == null) ? 0 : transactionCurrency
+						.hashCode());
+		result = prime * result
+				+ ((transactionType == null) ? 0 : transactionType.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DedicatedAccountProfile other = (DedicatedAccountProfile) obj;
+		if (dedicatedAccountID == null) {
+			if (other.dedicatedAccountID != null)
+				return false;
+		} else if (!dedicatedAccountID.equals(other.dedicatedAccountID))
+			return false;
+		if (dedicatedAccountUnitType == null) {
+			if (other.dedicatedAccountUnitType != null)
+				return false;
+		} else if (!dedicatedAccountUnitType
+				.equals(other.dedicatedAccountUnitType))
+			return false;
+		if (transactionCode == null) {
+			if (other.transactionCode != null)
+				return false;
+		} else if (!transactionCode.equals(other.transactionCode))
+			return false;
+		if (transactionCurrency == null) {
+			if (other.transactionCurrency != null)
+				return false;
+		} else if (!transactionCurrency.equals(other.transactionCurrency))
+			return false;
+		if (transactionType == null) {
+			if (other.transactionType != null)
+				return false;
+		} else if (!transactionType.equals(other.transactionType))
+			return false;
+		return true;
+	}
+
+
+	@Override
+	public String toString() {
+		return "DedicatedAccountProfile [dedicatedAccountID="
+				+ dedicatedAccountID + ", dedicatedAccountUnitType="
+				+ dedicatedAccountUnitType + ", transactionCurrency="
+				+ transactionCurrency + ", transactionType=" + transactionType
+				+ ", transactionCode=" + transactionCode + "]";
+	}
+
 }

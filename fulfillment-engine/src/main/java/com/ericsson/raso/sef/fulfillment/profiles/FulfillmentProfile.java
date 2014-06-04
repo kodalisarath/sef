@@ -63,4 +63,5 @@ public abstract class FulfillmentProfile<E> implements Serializable {
 	public abstract List<E> query(E e, java.util.Map<String, String> map) throws FulfillmentException;
 	public abstract List<E> revert(E e, java.util.Map<String, String> map) throws FulfillmentException;
 	
+	public abstract String toString();
 }

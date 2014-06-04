@@ -156,7 +156,9 @@ public class ProfileRegistry implements IProfileRegistry {
 
 		if (this.profiles.isEmpty())
 			return null;
-
+		
+		logger.debug("I am at readProfile, do I still have what I need here: " + profile);
+		logger.debug("Profiles taken by this method: " + this.profiles.get(profile));
 		return this.profiles.get(profile);
 	}
 

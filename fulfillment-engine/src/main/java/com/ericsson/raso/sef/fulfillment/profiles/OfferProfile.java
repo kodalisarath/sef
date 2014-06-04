@@ -169,7 +169,42 @@ public class OfferProfile extends BlockingFulfillment<Product> {
 		this.offerType = offerType;
 	}
 
-		
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((offerID == null) ? 0 : offerID.hashCode());
+		result = prime * result
+				+ ((offerType == null) ? 0 : offerType.hashCode());
+		return result;
+	}
 
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OfferProfile other = (OfferProfile) obj;
+		if (offerID == null) {
+			if (other.offerID != null)
+				return false;
+		} else if (!offerID.equals(other.offerID))
+			return false;
+		if (offerType == null) {
+			if (other.offerType != null)
+				return false;
+		} else if (!offerType.equals(other.offerType))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "OfferProfile [offerID=" + offerID + ", offerType=" + offerType
+				+ "]";
+	}
+
 }

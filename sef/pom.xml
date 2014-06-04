@@ -2,18 +2,20 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.ericsson.sef</groupId>
+  <groupId>com.ericsson</groupId>
   <artifactId>sef</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>sef</name>
+  <name>Smart SEF</name>
   <url>http://maven.apache.org</url>
   
   <modules>
-		<module>fulfilment-engine</module>
-		<module>sef-core</module>
+  		<module>sef-core</module>
 		<module>sef-api</module>
+		<module>sef-product-catalog</module>
+		<module>smart-frontend</module>
+		<module>fulfilment-engine</module>
 		<module>transformation-engine</module>
 		<module>transaction-engine</module>
   </modules>

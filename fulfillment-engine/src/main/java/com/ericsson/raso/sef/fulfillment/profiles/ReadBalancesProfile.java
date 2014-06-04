@@ -172,4 +172,13 @@ public class ReadBalancesProfile extends BlockingFulfillment<Product> {
 		products.add(product);
 		return products;
 	}
+
+
+
+
+	@Override
+	public String toString() {
+		return "ReadBalancesProfile []";
+	}
+
 }

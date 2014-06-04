@@ -175,8 +175,11 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 		products.add(product);
 		return products;
 	}
-	
-	
-	
 
+
+	@Override
+	public String toString() {
+		return "ReadSubscriberProfile []";
+	}
+	
 }

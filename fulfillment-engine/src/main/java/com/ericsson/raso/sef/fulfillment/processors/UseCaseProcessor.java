@@ -25,7 +25,7 @@ import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class UseCaseProcessor implements Processor {
 
-	Logger logger = LoggerFactory.getLogger(UseCaseProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(UseCaseProcessor.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -48,23 +48,28 @@ public class UseCaseProcessor implements Processor {
 		Resource resource = serviceRegistry.readResource(product.getResourceName());
 		logger.debug("E/// productResourceName " + product.getResourceName());
 		List<String> fulfillmentProfileIds = resource.getFulfillmentProfiles();
+		logger.debug("E/// I have fulfillmentProfileIds here: " + fulfillmentProfileIds.size());
 		List<FulfillmentProfile> fulfillmentProfiles = getProfiles(fulfillmentProfileIds);
+		logger.debug("E/// I have fulfillmentProfiles here: " + fulfillmentProfiles);
 		
 		switch(operationName){
 		case "fulfill":
 			logger.debug("Use case identified as fulfill!!");
 			fulfill(correlationId, msisdn, fulfillmentProfiles,product, map);
-		               break;
-		case "reverse":reverse(fulfillmentProfiles,product, map);
-		               break;
-		case "query":query(fulfillmentProfiles,product, map);
-		             break;
+			break;
+		case "reverse":
+			reverse(fulfillmentProfiles,product, map);
+			break;
+		case "query":
+			query(fulfillmentProfiles,product, map);
+			break;
 		case "prepare":
 			logger.debug("Use case identified as prepare!!");
 			prepare(correlationId, msisdn, fulfillmentProfiles,product, map);
-		                break;
-		case "cancel":cancel(fulfillmentProfiles,product, map);
-		               break;
+			break;
+		case "cancel":
+			cancel(fulfillmentProfiles,product, map);
+			break;
 		default:  break;
 		}
 	}
@@ -73,13 +78,14 @@ public class UseCaseProcessor implements Processor {
 	@SuppressWarnings("rawtypes")
 	private List<FulfillmentProfile> getProfiles(
 			List<String> fulfillmentProfileIds) {
-		logger.debug("Retrieving fulfillment profile for ProfileID: " + fulfillmentProfileIds);
+		logger.debug("Retrieving fulfillment profiles for: " + fulfillmentProfileIds.size());
 		List<FulfillmentProfile> profiles = new ArrayList<FulfillmentProfile>();
 		
 		try {
 			for(String profile: fulfillmentProfileIds) {
-			
+				
 				FulfillmentProfile fulfillmentProfile =  FulfillmentServiceResolver.getProfileRegistry().readProfile(profile);
+				logger.debug("Profile found: " + fulfillmentProfile);
 				profiles.add(fulfillmentProfile);
 			}
 		} catch (CatalogException e) {
@@ -97,21 +103,21 @@ public class UseCaseProcessor implements Processor {
 		TransactionStatus status = new TransactionStatus();
 		
 		List<Product> products = new ArrayList<Product>();
-		logger.debug("E/// How many profiles we have: " + profiles.size() + " and correlationID is " + correlationId);
+		logger.debug("E/// How many profiles we have: " + profiles.size() + ", map size " + map.size() + " and correlationID is " + correlationId);
 		try {
-		for(FulfillmentProfile profile: profiles) {
-			logger.debug("E/// Product name: " + product.getName() + " " + map.size());
-			logger.debug("E/// Profile name: " + profile.getName() + " " + map.size());
-			//products.addAll((profile.fulfill(product, map)));
-			List<Product>prods = profile.fulfill(product, map);
-			for(Product prod:  prods) {
-				if(prod != null) {
-					products.add(prod);
+			for(FulfillmentProfile profile: profiles) {
+				logger.debug("E/// Product name: " + product.getName());
+				//logger.debug("E/// Profile name: " + profile.getName());
+				//products.addAll((profile.fulfill(product, map)));
+				List<Product>prods = profile.fulfill(product, map);
+				for(Product prod:  prods) {
+					if(prod != null) {
+						products.add(prod);
+					}
 				}
 			}
-		}
 		} catch (FulfillmentException e) {
-			logger.error("Exception while fulfilment " +  e.getMessage() + "Exception: " + e);
+			logger.error("Exception while fulfilment " + e.getStackTrace() + "" +  e.getMessage() + "Exception: " + e);
 			status.setComponent(e.getComponent());
 			status.setCode(e.getStatusCode().getCode());
 			status.setDescription(e.getStatusCode().getMessage());
@@ -143,18 +149,19 @@ public class UseCaseProcessor implements Processor {
 		TransactionStatus status = new TransactionStatus();
 		
 		List<Product> products = new ArrayList<Product>();
+		logger.debug("I think profiles are null here: " + profiles.size());
 		try {
-		for(FulfillmentProfile profile: profiles) {
-			logger.debug("E/// Product name: " + product.getName() + " " + map.size());
-			logger.debug("E/// Profile name: " + profile.getName() + " " + map.size());
-			//products.addAll((profile.fulfill(product, map)));
-			List<Product>prods = profile.prepare(product, map);
-			for(Product prod:  prods) {
-				if(prod != null) {
-					products.add(prod);
+			for(FulfillmentProfile profile: profiles) {
+				//logger.debug("E/// Product name: " + product.getName() + ", map size is: " + map.size());
+				logger.debug("Startin to prepare execute Profile: " + profile);
+				List<Product> prods = profile.prepare(product, map);
+				logger.debug("Lets see how many product has reached PREPARE: " + prods.size());
+				for(Product prod:  prods) {
+					if(prod != null) {
+						products.add(prod);
+					}
 				}
 			}
-		}
 		} catch (FulfillmentException e) {
 			logger.error("Exception while fulfilment " +  e.getMessage() + "Exception: " + e);
 			status.setComponent(e.getComponent());
