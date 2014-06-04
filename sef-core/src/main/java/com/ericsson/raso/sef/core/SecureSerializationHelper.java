@@ -20,7 +20,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 public class SecureSerializationHelper {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SecureSerializationHelper.class);
 
 	private String keyFileLocation = "C:\\Temp\\serialKey.sccm";
 
@@ -48,19 +53,22 @@ public class SecureSerializationHelper {
 	public boolean fileExists(String fileLocation) {
 		try {
 			FileInputStream fis = new FileInputStream(fileLocation);
+			fis.close();
+			fis = null;
 			return true;
 		} catch (FileNotFoundException e) {
-			// TODO logger
+			LOGGER.error("Requested file is not found!!", e);
+			return false;
+		} catch (IOException e) {
+			LOGGER.error("Requested file is not found!!", e);
 			return false;
 		}
-
 	}
 	
 	public byte[] encrypt(Object payload) throws FrameworkException {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			CipherOutputStream cos = new CipherOutputStream(baos,
-					this.encryptionCipher);
+			CipherOutputStream cos = new CipherOutputStream(baos,this.encryptionCipher);
 			ObjectOutputStream oos = new ObjectOutputStream(cos);
 
 			oos.writeObject(payload);
@@ -153,7 +161,7 @@ public class SecureSerializationHelper {
 	}
 
 	private void loadFromKeyFile() {
-		System.out.println("Loading Key File...");
+		LOGGER.debug("Loading Key File...");
 
 		try {
 			FileInputStream fis = new FileInputStream(this.keyFileLocation);
@@ -162,60 +170,54 @@ public class SecureSerializationHelper {
 			byte[] encryptionKey = (byte[]) ois.readObject();
 			byte[] initialVector = (byte[]) ois.readObject();
 
-			//TODO: Troubleshooting code
-			System.out.println("encryptionKey: " + this.printByteArray(encryptionKey));
-			System.out.println("initializationVector: " + this.printByteArray(initialVector));
-			//TODO: end of troubleshooting code
+			LOGGER.debug("encryptionKey: " + this.printByteArray(encryptionKey));
+			LOGGER.debug("initializationVector: " + this.printByteArray(initialVector));
 			
 			this.key = encryptionKey;
 
 			this.decryptionCipher = Cipher.getInstance("DES/CFB8/NoPadding");
-			this.decryptionCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key, "DES"),
-					new IvParameterSpec(initialVector));
-			System.out.println("decrypt cipher initialized from file...");
+			this.decryptionCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key, "DES"),	new IvParameterSpec(initialVector));
+			LOGGER.debug("decrypt cipher initialized from file...");
 
 			this.encryptionCipher = Cipher.getInstance("DES/CFB8/NoPadding");
 			this.encryptionCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key, "DES"),
 					new IvParameterSpec(initialVector));
-			System.out.println("encrypt cipher initialized from file...");
+			LOGGER.debug("encrypt cipher initialized from file...");
+			
+			ois.close();
+			fis.close();
+			ois = null;
+			fis = null;
 
 		} catch (FileNotFoundException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("loadKey Failed!! Unable to get algorithm!!" + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		} catch (IOException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		} catch (ClassNotFoundException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		} catch (NoSuchPaddingException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		} catch (InvalidKeyException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("loadKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		}
-		System.out.println("loadKey successful!!");
+		LOGGER.debug("loadKey successful!!");
 	}
 
 	private void createKeyFile() {
-		System.out.println("Creating Key File...");
+		LOGGER.debug("Creating Key File...");
 		try {
 			SecretKeySpec sks = new SecretKeySpec(key, "DES");
 			this.encryptionCipher = Cipher.getInstance("DES/CFB8/NoPadding");
 			this.encryptionCipher.init(Cipher.ENCRYPT_MODE, sks);
-			System.out.println("encrypt cipher initialized new...");
+			LOGGER.debug("encrypt cipher initialized new...");
 
 			this.decryptionCipher = Cipher.getInstance("DES/CFB8/NoPadding");
-			this.decryptionCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "DES"),
-					new IvParameterSpec(this.encryptionCipher.getIV()));
-			System.out.println("decrypt cipher initialized new...");
+			this.decryptionCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "DES"), new IvParameterSpec(this.encryptionCipher.getIV()));
+			LOGGER.debug("decrypt cipher initialized new...");
 
 			FileOutputStream fos = new FileOutputStream(this.keyFileLocation);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -229,29 +231,23 @@ public class SecureSerializationHelper {
 			fos = null;
 
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 
 		} catch (FileNotFoundException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 
 		} catch (IOException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 
 		} catch (NoSuchPaddingException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 
 		} catch (InvalidKeyException e) {
-			// TODO Logger - unable to get the algorithm... quite rare
-			System.out.println("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			System.out.println("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
+			LOGGER.error("createKey Failed!! " + e.getClass().getCanonicalName() + " = " + e.getMessage());
 		}
-		System.out.println("keyFile created!!");
+		LOGGER.debug("keyFile created!!");
 	}
 	
 	private static String printByteArray(byte[] payload) {
