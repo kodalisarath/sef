@@ -1060,10 +1060,10 @@ public class Offer implements Serializable {
 		return "<Offer name='" + name + "' description='" + description + "' version='" + version + "' offerState='" + offerState + "'"
 				+ " isCommercial='"	+ isCommercial + "' isRecurrent='" + isRecurrent + "' owner='" + owner + "' offerGroup='" + offerGroup 
 				+ "' exitOfferId='" + exitOfferId + "' externalHandles='" + externalHandles + "'> "
-				+ renewalPeriod.toString() +  trialPeriod.toString() + immediateTermination.toString()
-				+ autoTermination.toString() + minimumCommitment.toString() + "<products>" 
-				+ products + "</products> " + price.toString() + eligibility.toString() + accumulation.toString()
-				+ switching.toString() + " <whiteListedUsers='" + whiteListedUsers + "'/>" + history.toString() 
+				+ renewalPeriod +  trialPeriod + immediateTermination
+				+ autoTermination + minimumCommitment + "<products>" 
+				+ products + "</products> " + price + eligibility + accumulation
+				+ switching + " <whiteListedUsers='" + whiteListedUsers + "'/>" + history 
 				+ "<preExiry>" + preExiry + "</preExpiry> <preRenewal>" + preRenewal + "</preRenewal> </Offer>";
 	}
 	

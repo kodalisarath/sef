@@ -187,8 +187,10 @@ public final class Price extends MonetaryUnit {
 	public String toString() {
 		String xmlFormat =  "<Price> <cost>'" + cost + "</cost> <taxes>" + taxes + "</taxed> <ratingRules>" + ratingRules + "</ratingRules> <criteria>" + criteria
 				+ "</criteria> <context='";
-		for (String key: context.keySet()) {
-			xmlFormat += "<context key='" + key + "' value='" + this.context.get(key) + "' />";
+		if (context != null) {
+			for (String key: context.keySet()) {
+				xmlFormat += "<context key='" + key + "' value='" + this.context.get(key) + "' />";
+			}
 		}
 		xmlFormat += "</context> </Price>";
 		

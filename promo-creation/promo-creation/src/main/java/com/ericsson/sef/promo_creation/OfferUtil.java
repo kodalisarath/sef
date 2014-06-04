@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.OfferManager;
 import com.ericsson.raso.sef.bes.prodcat.ServiceRegistry;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
-
 
 /**
  * Hello world!
@@ -18,6 +20,8 @@ import com.ericsson.raso.sef.core.db.model.CurrencyCode;
  */
 public class OfferUtil 
 {
+	
+	private static final Logger logger = LoggerFactory.getLogger(OfferUtil.class);
 	
 	private OfferManager offerManager = null;
 	
@@ -3645,9 +3649,9 @@ public class OfferUtil
     {
 		OfferUtil offerUtil = new OfferUtil();
 
-		System.out.println ("Processing ...");
+		logger.info("Creating offer, profile, service catalog ...");
 		offerUtil.createAllProductCatalog();
 		
-		System.out.println ("Done ");
+		logger.info("Done catalog creation");
     }
 }

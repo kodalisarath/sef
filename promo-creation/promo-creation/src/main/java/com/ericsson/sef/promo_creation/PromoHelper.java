@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
@@ -24,6 +27,8 @@ import com.ericsson.raso.sef.fulfillment.profiles.RefillProfile;
 public class PromoHelper {
 	
 	ProfileRegistry profileRegistry = null;
+	
+	private static final Logger logger = LoggerFactory.getLogger(PromoHelper.class);
 	
 	public PromoHelper() {
 		profileRegistry = new ProfileRegistry();
@@ -145,7 +150,7 @@ public class PromoHelper {
 		commercialOffer.setPrice(new Price(currencyCode, price));
 		commercialOffer.setRenewalPeriod(new InfiniteTime());
 		
-		System.out.println("Adding Product: " + commercialOffer.getName());
+		// System.out.println("Adding Product: " + commercialOffer.getName());
 		
 		for (String planCode : planCodes) {
 			commercialOffer.addExternalHandle(planCode);
@@ -160,11 +165,13 @@ public class PromoHelper {
 			createCommercialProduct.setResetQuotaOnRenewal(false);
 			// TODO createRefill.setMeta("TODO", forImplemenTation);
 			createCommercialProduct.setResource(resources.get(i));
-			System.out.println("Adding commercial product: " + productName);
+			//System.out.println("Adding commercial product: " + productName);
 			
 			commercialOffer.addProduct(createCommercialProduct);
 		}
 		
+		// System.out.println(commercialOffer.toString());
+		logger.info("CommercialOffer: " + commercialOffer.toString());
 		return commercialOffer;
 		
 	}
@@ -176,7 +183,7 @@ public class PromoHelper {
 		nonCommercialOffer.setAutoTermination(null);
 		nonCommercialOffer.setCommercial(false);
 		
-		System.out.println("Adding Product: " + nonCommercialOffer.getName());
+		// System.out.println("Adding Product: " + nonCommercialOffer.getName());
 		
 		for (String planCode : planCodes) {
 			nonCommercialOffer.addExternalHandle(planCode);
@@ -190,8 +197,8 @@ public class PromoHelper {
 			createNonCommercialProduct.setResetQuotaOnRenewal(false);
 			// TODO createRefill.setMeta("TODO", forImplemenTation);
 			createNonCommercialProduct.setResource(resources.get(i));
-			System.out.println("Adding noncommercial product: " + productName);
-			
+			// System.out.println("Adding noncommercial product: " + productName);
+			logger.info("Non CommercialOffer: " + nonCommercialOffer.toString());
 			nonCommercialOffer.addProduct(createNonCommercialProduct);
 		}
 		
