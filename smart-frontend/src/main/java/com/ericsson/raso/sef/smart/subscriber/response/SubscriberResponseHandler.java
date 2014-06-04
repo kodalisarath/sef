@@ -78,8 +78,10 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 	@Override
 	public void updateSubscriber(String requestCorrelator,
 			TransactionStatus fault, Boolean result) {
-		// TODO Auto-generated method stub
-		
+		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
+		subInfo.setStatus(fault);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
+		semaphore.release();
 	}
 
 	@Override
