@@ -1,13 +1,14 @@
 package com.ericsson.raso.sef.core.db.mapper;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.model.SmSequence;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
-import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 
 public interface SubscriberMapper {
 	
@@ -21,13 +22,13 @@ public interface SubscriberMapper {
 	
 	void updateSubscriber(Subscriber subscriber);
 	
-	Collection<SubscriberMeta> getSubscriberMetas(Map<String, Object> map);
+	Collection<Meta> getSubscriberMetas(Map<String, Object> map);
 	
-	Collection<SubscriberMeta> getAllSubscriberMetas(String userId);
+	Collection<Meta> getAllSubscriberMetas(String userId);
 	
-	void insertSubscriberMeta(SubscriberMeta subscriberMeta);
+	void insertSubscriberMeta(Meta subscriberMeta, Date creationDate, Date modifiedDate);
 
-	void updateSubscriberMeta(SubscriberMeta subscriberMeta);
+	void updateSubscriberMeta(String userId, Meta subscriberMeta, Date date);
 
 	void insertSubscriberHistory(SubscriberAuditTrial subscriberHistory);
 	
@@ -35,7 +36,7 @@ public interface SubscriberMapper {
 	
 	SmSequence userSequence(String rand);
 	
-	void bulkInsertSubscriberMeta(List<SubscriberMeta> list);
+	void bulkInsertSubscriberMeta(List<Meta> list);
 	
 	void bulkInsertSubscriber(List<Subscriber> list);
 

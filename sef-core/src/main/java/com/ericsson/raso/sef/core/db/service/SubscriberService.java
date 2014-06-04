@@ -5,7 +5,6 @@ import java.util.Collection;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
-import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 
 public interface SubscriberService {
 

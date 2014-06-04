@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.ericsson.raso.sef.core.Meta;
+
 //TODO: Cleanup all SMART specific metas into SMART Front-End Project....
 public class Subscriber {
 
@@ -36,7 +38,7 @@ public class Subscriber {
 	private String customerSegment;
 	
 
-	private Collection<SubscriberMeta> metas;
+	private Collection<Meta> metas;
 
 	public String getUserId() {
 		return userId;
@@ -197,14 +199,14 @@ public class Subscriber {
 		this.customerSegment = customerSegment;
 	}
 
-	public Collection<SubscriberMeta> getMetas() {
+	public Collection<Meta> getMetas() {
 		if (metas == null) {
-			metas = new ArrayList<SubscriberMeta>();
+			metas = new ArrayList<Meta>();
 		}
 		return metas;
 	}
 
-	public void setMetas(Collection<SubscriberMeta> metas) {
+	public void setMetas(Collection<Meta> metas) {
 		this.metas = metas;
 	}
 
@@ -220,7 +222,7 @@ public class Subscriber {
 
 	public String getMetaValue(String key) {
 		if (metaMap.size() == 0 && metas != null) {
-			for (SubscriberMeta meta : metas) {
+			for (Meta meta : metas) {
 				if (meta.getValue() != null && meta.getValue().trim().length() > 0) {
 					metaMap.put(meta.getKey().toLowerCase(), meta.getValue());
 				}

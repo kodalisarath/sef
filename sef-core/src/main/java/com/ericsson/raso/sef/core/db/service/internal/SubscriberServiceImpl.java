@@ -16,7 +16,6 @@ import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.mapper.SubscriberMapper;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
-import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 
 public class SubscriberServiceImpl implements SubscriberService {
@@ -75,14 +74,13 @@ public class SubscriberServiceImpl implements SubscriberService {
 		
 		Collection<SubscriberAuditTrial> hists = new ArrayList<SubscriberAuditTrial>();
 		
-		Collection<SubscriberMeta> oldMetas = this.getMetas(userId, keys);
+		Collection<Meta> oldMetas = this.getMetas(userId, keys);
 		for(Meta meta: metas) {
 			if(meta.getValue() == null || meta.getValue().trim().length() == 0) {
 				continue;
 			}
 
-			SubscriberMeta subMeta = new SubscriberMeta();
-			subMeta.setUserId(userId);
+			Meta subMeta = new Meta();
 			subMeta.setKey(meta.getKey());
 			subMeta.setValue(meta.getValue());
 			
@@ -102,8 +100,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 			}
 			
 			if(isUpdate) {
-				subMeta.setLastModified(new Date());
-				subscriberMapper.updateSubscriberMeta(subMeta);
+				subscriberMapper.updateSubscriberMeta(userId, subMeta, new Date());
 			} else {
 				SubscriberAuditTrial history = new SubscriberAuditTrial();
 				history.setAttributeName(meta.getKey());
@@ -112,9 +109,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 				history.setEventTimestamp(new Date());
 				hists.add(history);
 
-				subMeta.setCreated(new Date());
-				subMeta.setLastModified(new Date());
-				subscriberMapper.insertSubscriberMeta(subMeta);
+				subscriberMapper.insertSubscriberMeta(subMeta, new Date(), new Date());
 			}
 		}
 		
@@ -126,7 +121,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	}
 
 	@Override
-	public Collection<SubscriberMeta> getMetas(String userId, String... metaKeys) {
+	public Collection<Meta> getMetas(String userId, String... metaKeys) {
 		Subscriber subscriber = fetchSubscriberByUserId(userId);
 		if(subscriber == null) return Collections.emptyList();
 		
@@ -161,13 +156,13 @@ public class SubscriberServiceImpl implements SubscriberService {
 	private Subscriber fetchSubscriberByMsisdn(String msisdn) {
 		Subscriber subscriber = subscriberMapper.getSubscriber(msisdn);
 		if(subscriber != null) {
-			Collection<SubscriberMeta> subscriberMetas = fetchMetas(subscriber.getUserId());
+			Collection<Meta> subscriberMetas = fetchMetas(subscriber.getUserId());
 			for (Meta meta : subscriberMetas) {
-				SubscriberMeta sMeta = new SubscriberMeta();
-				sMeta.setUserId(subscriber.getUserId());
+				Meta sMeta = new Meta();
 				sMeta.setKey(meta.getKey());
 				sMeta.setValue(meta.getValue());
 				subscriber.getMetas().add(sMeta);
+				subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
 			}
 		}
 		return subscriber;
@@ -178,14 +173,14 @@ public class SubscriberServiceImpl implements SubscriberService {
 		try {
 			subscriber=subscriberMapper.getSubscriberByUserId(userId);
 			if(subscriber != null){
-				Collection<SubscriberMeta> subscriberMetas = fetchMetas(subscriber.getUserId());
+				Collection<Meta> subscriberMetas = fetchMetas(subscriber.getUserId());
 				logger.debug("Returned subscriber metas of length for userid:"+subscriber.getUserId() +"is"+ subscriberMetas.size());
 				for (Meta meta : subscriberMetas) {
-					SubscriberMeta sMeta = new SubscriberMeta();
-					sMeta.setUserId(subscriber.getUserId());
+					Meta sMeta = new Meta();
 					sMeta.setKey(meta.getKey());
 					sMeta.setValue(meta.getValue());
 					subscriber.getMetas().add(sMeta);
+					subscriber.getMetas().add(new Meta("SUBCRIBER_ID", subscriber.getUserId()));
 				}
 			}
 		} catch (Exception e) {
@@ -196,7 +191,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		return subscriber;
 	}
 	
-	private Collection<SubscriberMeta> fetchMetas(String userId) {
+	private Collection<Meta> fetchMetas(String userId) {
 		return subscriberMapper.getAllSubscriberMetas(userId);
 	}
 
@@ -210,14 +205,14 @@ public class SubscriberServiceImpl implements SubscriberService {
 		try {
 			subscriber = subscriberMapper.getSubscriber(msisdn);
 			if (subscriber != null) {
-				Collection<SubscriberMeta> metaCollections = fetchMetas(subscriber
+				Collection<Meta> metaCollections = fetchMetas(subscriber
 						.getUserId());
 				for (Meta meta : metaCollections) {
-					SubscriberMeta sMeta = new SubscriberMeta();
-					sMeta.setUserId(subscriber.getUserId());
+					Meta sMeta = new Meta();
 					sMeta.setKey(meta.getKey());
 					sMeta.setValue(meta.getValue());
 					subscriber.getMetas().add(sMeta);
+					subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
 				}
 			}
 		} catch (Exception e) {
