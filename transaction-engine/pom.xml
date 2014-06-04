@@ -22,6 +22,7 @@
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
 		com.ericsson.raso.sef.core.db.model,
+		com.ericsson.raso.sef.core.db.service,
 		com.ericsson.raso.sef.logging,
 		com.ericsson.raso.sef.bes.prodcat,
 		com.ericsson.raso.sef.bes.prodcat.service,

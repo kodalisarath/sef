@@ -21,11 +21,11 @@ public class ReadSubscriberProcessor implements Processor{
 	public void process(Exchange arg0) throws Exception {
 		
 		logger.debug("Read Subscriber Profile request received!!");
-		Object[] objectArray = (Object[]) arg0.getIn().getBody(Object.class);
+		logger.debug("Before delegation...");
+		Object[] objectArray = (Object[]) arg0.getIn().getBody(Object[].class);
 		String requestId = (String) objectArray[0];
 		String subscriberId = (String) objectArray[1];
 		List<Meta> metas = (List<Meta>) objectArray[2];
-		logger.debug("Before delegation...");
 		TransactionManager transactionManager = ServiceResolver.getTransactionManager();
 		transactionManager.readSubscriber(requestId, subscriberId, TransactionServiceHelper.getMap(metas));
 		
