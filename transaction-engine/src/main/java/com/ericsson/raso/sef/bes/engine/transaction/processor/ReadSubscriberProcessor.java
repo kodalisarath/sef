@@ -27,7 +27,7 @@ public class ReadSubscriberProcessor implements Processor{
 		String subscriberId = (String) objectArray[1];
 		List<Meta> metas = (List<Meta>) objectArray[2];
 		TransactionManager transactionManager = ServiceResolver.getTransactionManager();
-		transactionManager.readSubscriber(requestId, subscriberId, TransactionServiceHelper.getMap(metas));
+		transactionManager.readSubscriber(requestId, subscriberId, TransactionServiceHelper.getApiMap(metas));
 		
 	}
 	

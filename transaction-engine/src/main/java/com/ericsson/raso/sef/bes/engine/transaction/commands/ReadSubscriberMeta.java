@@ -1,46 +1,20 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
-import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.QuerySubscriptionRequest;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.QuerySubscriptionResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberMetaRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberMetaResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStep;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceStep;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
-import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
-import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
-import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
-import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
-import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
-import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscription;
-import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
-import com.ericsson.raso.sef.bes.prodcat.tasks.TaskType;
-import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
-import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
-import com.ericsson.raso.sef.core.db.model.Subscriber;
-import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
-import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 

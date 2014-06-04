@@ -20,8 +20,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.HardDateTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.LimitedQuota;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
-import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
-import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.sef.bes.api.entities.Offer;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.Subscriber;
@@ -60,9 +59,9 @@ public abstract class TransactionServiceHelper {
 	
 	
 
-	private static Map<String, String> getMetas(Collection<SubscriberMeta> subscriberMetas) {
+	private static Map<String, String> getMetas(Collection<Meta> subscriberMetas) {
 		Map<String,String> map = new HashMap<String, String>();
-		for(SubscriberMeta meta: subscriberMetas) {
+		for(Meta meta: subscriberMetas) {
 			map.put(meta.getKey(), meta.getValue());
 		}
 		return map;
@@ -463,4 +462,15 @@ public abstract class TransactionServiceHelper {
 		return map;
 	}
 
+	public static Map<String, String> getApiMap(List<com.ericsson.sef.bes.api.entities.Meta> metas) {
+		Map<String, String> map = new HashMap<String, String>();
+		for(com.ericsson.sef.bes.api.entities.Meta meta: metas) {
+			map.put(meta.getKey(), meta.getValue());
+		}
+		return map;
+	}
+
+
+	
+	
 }
