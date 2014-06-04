@@ -34,15 +34,15 @@
 		values
 		(#{userId},#{accountId},#{msisdn},#{registrationDate jdbcType=TIMESTAMP},#{contractState},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment})
 	</insert>
-	<resultMap id="SubscriberMetaResult" type="SubscriberMeta">
-		<id property="userId" column="user_id" />
-		<result property="lastModified" column="last_modified"/>
-		<result property="created" column="created"/>
-	</resultMap>
-	<resultMap id="MetaResult" type="Meta">
-		<result property="key" column="last_modified"/>
-		<result property="value" column="created"/>
-	</resultMap>
+<!-- 	<resultMap id="SubscriberMetaResult" type="SubscriberMeta"> -->
+<!-- 		<id property="userId" column="user_id" /> -->
+<!-- 		<result property="lastModified" column="last_modified"/> -->
+<!-- 		<result property="created" column="created"/> -->
+<!-- 	</resultMap> -->
+<!-- 	<resultMap id="MetaResult" type="Meta"> -->
+<!-- 		<result property="key" column="last_modified"/> -->
+<!-- 		<result property="value" column="created"/> -->
+<!-- 	</resultMap> -->
 	<!-- <resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
 		<id property="userId" column="user_id" />
 		<result property="eventTimestamp" column="event_timestamp" jdbcType="TIMESTAMP"/>
@@ -95,33 +95,33 @@
 		where user_id = #{userId}
 	</update>
 
-	<select id="getSubscriberMetas" resultType="ArrayList" resultMap="SubscriberMetaResult" parameterType="Map">
-		select *
-		from
-		subscriber_meta s
-		where user_id = #{userId}
-		and lower(attribute_name) in 
-		<foreach item="item" index="index" collection="keys" open="(" separator="," close=")">
-			lower(#{item})
-		</foreach>
-	</select>
-	<select id="getAllSubscriberMetas" resultMap="SubscriberMetaResult" parameterType="String">
-		select *
-		from
-		subscriber_meta s
-		where user_id = #{userId}
-	</select>
-	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta">
-		insert into subscriber_meta (user_id, attribute_name, attribute_value, last_modified)
-		values
-		(#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
-	</insert>
+<!-- 	<select id="getSubscriberMetas" resultType="ArrayList" resultMap="SubscriberMetaResult" parameterType="Map"> -->
+<!-- 		select * -->
+<!-- 		from -->
+<!-- 		subscriber_meta s -->
+<!-- 		where user_id = #{userId} -->
+<!-- 		and lower(attribute_name) in  -->
+<!-- 		<foreach item="item" index="index" collection="keys" open="(" separator="," close=")"> -->
+<!-- 			lower(#{item}) -->
+<!-- 		</foreach> -->
+<!-- 	</select> -->
+<!-- 	<select id="getAllSubscriberMetas" resultMap="SubscriberMetaResult" parameterType="String"> -->
+<!-- 		select * -->
+<!-- 		from -->
+<!-- 		subscriber_meta s -->
+<!-- 		where user_id = #{userId} -->
+<!-- 	</select> -->
+<!-- 	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta"> -->
+<!-- 		insert into subscriber_meta (user_id, attribute_name, attribute_value, last_modified) -->
+<!-- 		values -->
+<!-- 		(#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified}) -->
+<!-- 	</insert> -->
 
-	<update id="updateSubscriberMeta" parameterType="SubscriberMeta">
-		update subscriber_meta set attribute_value = #{value jdbcType=VARCHAR}, last_modified=#{lastModified}
-		where user_id = #{userId}
-		and attribute_name = #{key}
-	</update>
+<!-- 	<update id="updateSubscriberMeta" parameterType="SubscriberMeta"> -->
+<!-- 		update subscriber_meta set attribute_value = #{value jdbcType=VARCHAR}, last_modified=#{lastModified} -->
+<!-- 		where user_id = #{userId} -->
+<!-- 		and attribute_name = #{key} -->
+<!-- 	</update> -->
 	
 	<!-- <insert id="insertSubscriberHistory" parameterType="SubscriberHistory">
 		insert into subscriber_history (user_id,event_timestamp, attribute_name, attribute_old_value, attribute_new_value)
@@ -140,14 +140,14 @@
 		</foreach>
 	</select> -->
 	
-	<insert id="bulkInsertSubscriberMeta" parameterType="java.util.List">
-		insert all
-        <foreach collection="list" item="item" separator="" index="index">
-        	into subscriber_meta (user_id, attribute_name, attribute_value, created) values (#{item.userId}, #{item.key}, #{item.value}, #{item.created}) LOG ERRORS REJECT LIMIT UNLIMITED
+<!-- 	<insert id="bulkInsertSubscriberMeta" parameterType="java.util.List"> -->
+<!-- 		insert all -->
+<!--         <foreach collection="list" item="item" separator="" index="index"> -->
+<!--         	into subscriber_meta (user_id, attribute_name, attribute_value, created) values (#{item.userId}, #{item.key}, #{item.value}, #{item.created}) LOG ERRORS REJECT LIMIT UNLIMITED -->
         	
-        </foreach>
-        SELECT * FROM dual
-    </insert>
+<!--         </foreach> -->
+<!--         SELECT * FROM dual -->
+<!--     </insert> -->
     
     <insert id="bulkInsertSubscriber" parameterType="java.util.List">
     	insert all
