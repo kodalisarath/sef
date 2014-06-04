@@ -7,7 +7,7 @@ import com.ericsson.sef.bes.api.entities.Product;
 
 public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 
-	protected DeleteSubscriberProfile(String name) {
+	public DeleteSubscriberProfile(String name) {
 		super(name);
 	}
 

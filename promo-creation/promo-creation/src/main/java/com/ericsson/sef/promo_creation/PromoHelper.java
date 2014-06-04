@@ -27,6 +27,7 @@ import com.ericsson.raso.sef.core.db.model.CurrencyCode;
 import com.ericsson.raso.sef.fulfillment.profiles.AddPeriodicAccountManagementDataProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.CreateSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.DedicatedAccountProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.DeleteSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.DnsUpdateProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.OfferProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry;
@@ -173,6 +174,44 @@ public class PromoHelper {
 		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;		
+	}
+	
+	public Resource createDeleteSuscriberProfile(String name, String description) throws Exception
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+		DeleteSubscriberProfile fulfillmentProfile = new DeleteSubscriberProfile(name);
+		
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;		
+	}	
+	
+	public Resource createDeleteDnsEntryProfile(String name, String description) throws Exception
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+//		DeleteDns fulfillmentProfile = new DeleteSubscriberProfile(name);
+//		
+//		profileRegistry.createProfile(fulfillmentProfile);
+//		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		
 		return resource;		
 	}	
