@@ -34,6 +34,8 @@ import com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry;
 import com.ericsson.raso.sef.fulfillment.profiles.ReadBalancesProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.ReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.RefillProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.UpdateServiceClassProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.UpdateSubscriberSegmentationProfile;
 
 @SuppressWarnings("unused")
 public class PromoHelper {
@@ -253,6 +255,62 @@ public class PromoHelper {
 		
 		return resource;		
 	}	
+	
+	public Resource createUpdateSubscriberSegmentationProfile(String name, String description) throws Exception
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+		UpdateSubscriberSegmentationProfile fulfillmentProfile = new UpdateSubscriberSegmentationProfile(name);
+		
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;
+	}
+	
+	public Resource createUpdateServiceClassProfile(String name, String description) throws Exception
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+		UpdateServiceClassProfile fulfillmentProfile = new UpdateServiceClassProfile(name);
+		
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;
+	}
+
+	public Resource createAddPeriodicAccountManagementProfile(String name, String description) throws Exception
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+		AddPeriodicAccountManagementDataProfile fulfillmentProfile = new AddPeriodicAccountManagementDataProfile(name);
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;
+	}
 	
 	public Offer createCommercialOffer(String name, String description, String currencyCode, Integer price, Set<String> planCodes, ArrayList<Resource> resources) throws Exception {
 

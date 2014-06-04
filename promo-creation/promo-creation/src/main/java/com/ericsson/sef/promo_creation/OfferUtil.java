@@ -608,6 +608,19 @@ public class OfferUtil
 		lookupResourcesByName.put("GetAccountDetails_Cmd", helper.createGetAccountDetailsProfile("GetAccountDetails_Cmd", "Get Account Details"));
 		lookupResourcesByName.put("GetBalanceAndDate_Cmd", helper.createGetBalanceAndDateProfile("GetBalanceAndDate_Cmd", "Get Balance and Date"));
 		
+		lookupResourcesByName.put("UpdateSubscriberSegmentation_Cmd", helper.createGetAccountDetailsProfile("UpdateSubscriberSegmentation_Cmd", "Update Subscriber Segmentation"));
+
+		lookupResourcesByName.put("PreloadUpdateServiceClass_Cmd", helper.createUpdateServiceClassProfile("PreloadUpdateServiceClass_Cmd", "Get Account Details"));
+		lookupResourcesByName.put("PreloadAddPAM_Cmd", helper.createAddPeriodicAccountManagementProfile("PreloadAddPAM_Cmd", "Get Balance and Date"));
+		lookupResourcesByName.put("PreloadUpdSubsSeg_Cmd", helper.createUpdateSubscriberSegmentationProfile("PreloadUpdSubsSeg_Cmd", "Get Account Details"));
+
+		lookupResourcesByName.put("SIMShelfLifeExtUpdSubsSeg_Cmd", helper.createUpdateSubscriberSegmentationProfile("SIMShelfLifeExtUpdSubsSeg_Cmd", "SIM Shelf Life Ext Upd Subs Seg"));
+		
+		lookupResourcesByName.put("EntireDeleteDeleteDns_Cmd", helper.createDeleteDnsEntryProfile("EntireDeleteDeleteDns_Cmd", "Delete DNS Entry"));
+		lookupResourcesByName.put("EntireDeleteDeleteSubs_Cmd", helper.createDeleteSuscriberProfile("EntireDeleteDeleteSubs_Cmd", "Delete Subscriber"));
+		
+		lookupResourcesByName.put("BarUpdSubsSeg_Cmd", helper.createUpdateSubscriberSegmentationProfile("BarUpdSubsSeg_Cmd", "Bar Update Subs Segmentation"));
+		
 		// ----------------------------------------------------------
 		// --- add resources to all registry
 		// ----------------------------------------------------------
@@ -3658,6 +3671,47 @@ public class OfferUtil
 		offerResources.add(lookupResourcesByName.get("GetBalanceAndDate_Cmd"));
 		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "Read Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
+		// ----------------------------------------------------------
+		// Offer.name=UpdateSubscriberSegmentation
+		// ----------------------------------------------------------
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("UpdateSubscriberSegmentation");
+		offerResources.add(lookupResourcesByName.get("UpdateSubscriberSegmentation_Cmd"));
+		offer = helper.createNonCommercialOffer("UpdateSubscriberSegmentation", "Update Subscriber Segmentation", planCodes, offerResources);
+		offerManager.createOffer(offer);	
+		// ----------------------------------------------------------
+		// Offer.name=SIMShelfLifeExt
+		// ----------------------------------------------------------
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("SIMShelfLifeExt");
+		offerResources.add(lookupResourcesByName.get("SIMShelfLifeExtUpdSubsSeg_Cmd"));
+		offer = helper.createNonCommercialOffer("SIMShelfLifeExt", "SIM Shelf Life Extension", planCodes, offerResources);
+		offerManager.createOffer(offer);	
+		// ----------------------------------------------------------
+		// Offer.name=Preload
+		// ----------------------------------------------------------
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("Preload");
+		offerResources.add(lookupResourcesByName.get("PreloadUpdateServiceClass_Cmd"));
+		offerResources.add(lookupResourcesByName.get("PreloadAddPAM_Cmd"));
+		offerResources.add(lookupResourcesByName.get("PreloadUpdSubsSeg_Cmd"));
+		offer = helper.createNonCommercialOffer("Preload", "Preload", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		// ----------------------------------------------------------
+		// Offer.name=EntireDelete
+		// ----------------------------------------------------------
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("EntireDelete");
+		offerResources.add(lookupResourcesByName.get("EntireDeleteDeleteDns_Cmd"));
+		offerResources.add(lookupResourcesByName.get("EntireDeleteDeleteSubs_Cmd"));
+		offer = helper.createNonCommercialOffer("EntireDelete", "Entire Delete", planCodes, offerResources);
+		offerManager.createOffer(offer);		
+//		BAR, BarUpdSubsSeg_Cmd
+//		ExtendGrace, 
 	
 	}
 
