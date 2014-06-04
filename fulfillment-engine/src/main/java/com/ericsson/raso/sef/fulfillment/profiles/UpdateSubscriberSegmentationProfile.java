@@ -72,6 +72,33 @@ public class UpdateSubscriberSegmentationProfile extends BlockingFulfillment<Pro
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((serviceOfferings == null) ? 0 : serviceOfferings.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UpdateSubscriberSegmentationProfile other = (UpdateSubscriberSegmentationProfile) obj;
+		if (serviceOfferings == null) {
+			if (other.serviceOfferings != null)
+				return false;
+		} else if (!serviceOfferings.equals(other.serviceOfferings))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		return null;
