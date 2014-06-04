@@ -58,12 +58,10 @@
 	
 	
 	<cxf:cxfEndpoint id="subscriberResponse"
-		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse"
-		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"
-		wsdlURL="classpath:wsdl/TisService.xml">
+		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriber" />
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
 		</cxf:properties>
 		
 	</cxf:cxfEndpoint>
@@ -108,6 +106,11 @@
 		<route>
 			<from uri="cxf:bean:subscriptionResponse"/>
 			<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PurchaseResponseProcessor"/>
+		</route>
+		
+		<route>
+			<from uri="cxf:bean:subscriberResponse"/>
+			<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.ReadSubscriberProcessor"/>
 		</route>
 	</camelContext>
 	
