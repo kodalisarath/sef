@@ -14,7 +14,7 @@ import com.ericsson.raso.sef.core.lb.LoadBalancerPool;
 import com.ericsson.raso.sef.core.lb.Member;
 
 public class AccountFinderRoute  {
-	
+	private String defaultSite;
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private LoadBalancerPool loadBalancerPool;
@@ -32,14 +32,16 @@ public class AccountFinderRoute  {
 	public DnsAddress getDns(String msisdn, String site) throws SmException {
 		DnsAddress dns = new DnsAddress();
 		dns.isUseTcp();
-		
-		if(site != null) {
+		if(site == null){
+			site=defaultSite;
+		}else{
+
 			Member member = loadBalancerPool.getMemberBySite(site);
 			if(member != null) {
 				dns.setIp(member.getAddress());
 			}
-		}
 		
+		}
 		return dns;
 	}
 	
@@ -61,7 +63,10 @@ public class AccountFinderRoute  {
 			String site = config.getValue(sectionName, "site");
 			String defaultsite = config.getValue(sectionName, "defaultSite");
 			boolean isDefault = false;
-			if(defaultsite != null && defaultsite.equalsIgnoreCase("true")) isDefault = true;
+			if(defaultsite != null && defaultsite.equalsIgnoreCase("true")){
+				isDefault = true;
+				defaultSite=site;
+			}
 			
 			Member member = new Member();
 			member.setRealm(realm);
