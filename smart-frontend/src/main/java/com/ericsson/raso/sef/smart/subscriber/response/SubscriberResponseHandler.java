@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
+import com.hazelcast.core.ISemaphore;
 
 public class SubscriberResponseHandler implements ISubscriberResponse {
 
@@ -67,8 +69,10 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 	@Override
 	public void createSubscriber(String requestCorrelator,
 			TransactionStatus fault, Boolean result) {
-		// TODO Auto-generated method stub
-		
+		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
+		subInfo.setStatus(fault);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
+		semaphore.release();
 	}
 
 	@Override

@@ -22,6 +22,16 @@ public class SmartConstants {
 	public static final String GRACE_PERIOD = "gracePeriod";
 	public static final String USECASE = "usecase";
 	
+	public static final String PREACTIVE_ENDDATE = "preActiveEndDate";
+	public static final String RESPONSE_PREACTIVE_ENDDATE = "PreActiveEndDate";
+	public static final String GRACE_ENDDATE = "graceEndDate";
+	public static final String RESPONSE_GRACE_ENDDATE = "GraceEndDate";
+	public static final String DATE_FORMAT = "dateFormat";
+	public static final String SUBSCRIBER = "subscriber";
+	public static final String PREACTIVE_PERIOD = "preActivePeriod";
+	public static final String MILLISEC_MULTIPLIER = "milliSecMultiplier";
+	public static final String CREDENTIALS = "userCredantials";
+	
 	public static final int AIRTIME_DA_ID = 1;
 	public static final int AIRTIME_OFFER_ID = 1001;
 	public static final int ALKANSYA_OFFER_ID = 1241;

@@ -15,4 +15,8 @@ public class SubscriberResponseStore {
 	public static AbstractSubscriberResponse get(String requestId) {
 		return store.get(requestId);
 	}
+	
+	public static AbstractSubscriberResponse remove(String requestId) {
+		return store.remove(requestId);
+	}
 }

@@ -3,6 +3,7 @@ package com.ericsson.raso.sef.smart.subscriber.response;
 import java.util.Map;
 
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class SubscriberInfo extends AbstractSubscriberResponse {
 
@@ -11,6 +12,8 @@ public class SubscriberInfo extends AbstractSubscriberResponse {
 	private ContractState localState;
 	private boolean isLocked = false;
 	private Map<String,String> metas;
+	private TransactionStatus status;
+	
 	public String getMsisdn() {
 		return msisdn;
 	}
@@ -41,7 +44,10 @@ public class SubscriberInfo extends AbstractSubscriberResponse {
 	public void setMetas(Map<String, String> metas) {
 		this.metas = metas;
 	}
-	
-	
-	
+	public TransactionStatus getStatus() {
+		return status;
+	}
+	public void setStatus(TransactionStatus status) {
+		this.status = status;
+	}
 }
