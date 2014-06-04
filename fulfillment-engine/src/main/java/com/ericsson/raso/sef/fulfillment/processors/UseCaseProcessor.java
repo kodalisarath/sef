@@ -73,8 +73,7 @@ public class UseCaseProcessor implements Processor {
 	
 	
 	@SuppressWarnings("rawtypes")
-	private List<FulfillmentProfile> getProfiles(
-			List<String> fulfillmentProfileIds) {
+	private List<FulfillmentProfile> getProfiles(List<String> fulfillmentProfileIds) {
 		logger.debug("Retrieving fulfillment profiles for: " + fulfillmentProfileIds.size());
 		List<FulfillmentProfile> profiles = new ArrayList<FulfillmentProfile>();
 		
@@ -86,8 +85,8 @@ public class UseCaseProcessor implements Processor {
 				profiles.add(fulfillmentProfile);
 			}
 		} catch (CatalogException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to fetch fulfillment profiles...");
+			return profiles;
 		}
 		logger.debug("Returning profiles, Total " + profiles.size());
 		return profiles;

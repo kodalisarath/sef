@@ -240,7 +240,6 @@ public class OfferContainer implements Serializable {
 		
 		logger.debug("E/// Getting latest version of this offer: " + id);
 		TreeMap<Integer, Offer> versionedOffer = this.offersById.get(id);
-		logger.debug("E/// How many offers?: " + versionedOffer.size());
 		if (versionedOffer != null) {
 			int latestVersion = versionedOffer.descendingKeySet().first();
 			offer = versionedOffer.get(latestVersion);
