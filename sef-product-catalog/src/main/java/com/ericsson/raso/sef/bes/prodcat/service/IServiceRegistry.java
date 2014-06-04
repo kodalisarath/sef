@@ -2,8 +2,6 @@ package com.ericsson.raso.sef.bes.prodcat.service;
 
 import java.util.List;
 
-import com.ericsson.raso.sef.auth.AuthorizeIfAllowedFor;
-import com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.entities.Owner;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;

@@ -1,9 +1,6 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -18,9 +15,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.Product;
 import com.ericsson.raso.sef.bes.prodcat.entities.ProductPackage;
 import com.ericsson.raso.sef.bes.prodcat.entities.State;
 import com.ericsson.raso.sef.bes.prodcat.tasks.GetActiveSubscriptionCountForOffer;
-import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.ruleengine.ExternDataUnitTask;
 
 public class OfferContainer implements Serializable {
 	private static final long serialVersionUID = -5036814035013312974L;

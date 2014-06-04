@@ -8,8 +8,6 @@ import java.util.TreeSet;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
-import com.ericsson.raso.sef.core.RequestContext;
-import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.ruleengine.Action;
 

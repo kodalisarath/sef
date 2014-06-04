@@ -2,7 +2,6 @@ package com.ericsson.raso.sef.bes.prodcat.db.mapper;
 
 import java.util.List;
 
-import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
 import com.ericsson.raso.sef.bes.prodcat.entities.SubscriptionHistory;
 

@@ -1,7 +1,5 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
-import java.text.SimpleDateFormat;
-
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 
 public class CommitUntilNDays extends AbstractMinimumCommitment {

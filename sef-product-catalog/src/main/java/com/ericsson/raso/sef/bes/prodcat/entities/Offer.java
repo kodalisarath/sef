@@ -19,7 +19,6 @@ import com.ericsson.raso.sef.bes.prodcat.policies.AbstractAccumulationPolicy;
 import com.ericsson.raso.sef.bes.prodcat.policies.AbstractSwitchPolicy;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Charging;
 import com.ericsson.raso.sef.bes.prodcat.tasks.ChargingMode;
-import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscription;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FulfillmentMode;

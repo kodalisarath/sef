@@ -1,18 +1,13 @@
 package com.ericsson.raso.sef.bes.prodcat.tasks;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import com.ericsson.raso.sef.bes.prodcat.Constants;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Product;
 import com.ericsson.raso.sef.bes.prodcat.entities.ProductPackage;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.core.RequestContext;
-import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.ruleengine.ExternDataUnitTask;
 
@@ -30,11 +25,8 @@ public class GetSubscribedQuotaForResource extends ExternDataUnitTask<Long> {
 
 	@Override
 	public Long execute() throws FrameworkException {
-		Subscriber subscriber = new FetchSubscriber(subscriberId).execute();
-		
-		//TODO: implement the following logic....
 		/*
-		 * 1. fetch all active subscriptions to offers with this resource ---------------------------------- THIS IS PENDING DB TIER
+		 * 1. fetch all active subscriptions to offers with this resource ---------------------------------- DONE
 		 * 2. identify all the atomic products under these offers pertinent to the resources --------------- DONE
 		 * 3. sum up the defined quota from these products ------------------------------------------------- DONE
 		 */

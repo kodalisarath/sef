@@ -1,6 +1,5 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,7 +65,6 @@ public enum SubscriptionLifeCycleState {
 	CLOSED;
 
 	public List<SubscriptionLifeCycleState> nextAllowedStates() {
-		List<SubscriptionLifeCycleState> nextStates = null;
 		SubscriptionLifeCycleState[] states = null;
 
 		switch (this) {

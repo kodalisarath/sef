@@ -1,6 +1,5 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
-import com.ericsson.raso.sef.bes.prodcat.entities.State;
-import com.ericsson.raso.sef.bes.prodcat.service.IOfferAdmin;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;

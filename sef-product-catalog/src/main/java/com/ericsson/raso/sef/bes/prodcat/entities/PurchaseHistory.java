@@ -2,17 +2,9 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-
-
-
-
-
-import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
-import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleState;
 
 public class PurchaseHistory implements Serializable {
 	private static final long serialVersionUID = -5283675964917191934L;
