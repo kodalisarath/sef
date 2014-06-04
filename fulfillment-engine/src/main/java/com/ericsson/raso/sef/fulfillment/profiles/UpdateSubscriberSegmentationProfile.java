@@ -22,7 +22,7 @@ public class UpdateSubscriberSegmentationProfile extends BlockingFulfillment<Pro
 	
 	List<ServiceOffering> serviceOfferings = new ArrayList<ServiceOffering>();
 	
-	protected UpdateSubscriberSegmentationProfile(String name) {
+	public UpdateSubscriberSegmentationProfile(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
 	}
