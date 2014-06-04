@@ -11,6 +11,7 @@ import com.hazelcast.config.XmlConfigBuilder;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
+import com.hazelcast.core.ISemaphore;
 
 public class CloudAwareClusterService implements CloudAwareCluster {
 
@@ -46,6 +47,11 @@ public class CloudAwareClusterService implements CloudAwareCluster {
 		return instance.getExecutorService(name);
 	}
 	
+	public ISemaphore getSemaphore(String name) {
+		ISemaphore controlSignal = instance.getSemaphore(name);
+		return controlSignal;
+	}
+	
 	public IAtomicLong getAtomicCounter(String name) {
 		return instance.getAtomicLong(name);
 	}
@@ -57,6 +63,7 @@ public class CloudAwareClusterService implements CloudAwareCluster {
 	public HazelcastInstance getInstance() {
 		return instance;
 	}
+	
 	
 	private String getFileSeparator() {
 		

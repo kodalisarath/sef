@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Lock;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
+import com.hazelcast.core.ISemaphore;
 
 public interface CloudAwareCluster {
 
@@ -21,5 +22,7 @@ public interface CloudAwareCluster {
 	public Lock getLock(String key);
 	
 	public HazelcastInstance getInstance();
+	
+	public ISemaphore getSemaphore(String name);
 	
 }
