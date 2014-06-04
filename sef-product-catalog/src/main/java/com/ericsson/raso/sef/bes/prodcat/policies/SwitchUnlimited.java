@@ -17,5 +17,11 @@ public final class SwitchUnlimited extends AbstractSwitchPolicy implements Seria
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "<Switch type='Unlimited' />";
+	}
+
+
 	
 }

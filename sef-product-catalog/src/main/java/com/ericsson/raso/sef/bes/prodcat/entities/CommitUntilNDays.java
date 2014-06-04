@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
+import java.text.SimpleDateFormat;
+
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 
 public class CommitUntilNDays extends AbstractMinimumCommitment {
@@ -60,6 +62,11 @@ public class CommitUntilNDays extends AbstractMinimumCommitment {
 		return true;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "<MinimumCommitment name='UntilNDays' days='" + this.days + "' />";
+	}
+
+
 
 }

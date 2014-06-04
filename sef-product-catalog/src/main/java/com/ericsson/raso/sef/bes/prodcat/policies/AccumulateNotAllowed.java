@@ -31,5 +31,11 @@ public final class AccumulateNotAllowed extends AbstractAccumulationPolicy imple
 		return false; // what? the super rejected already isnt it?
 	}
 
+	@Override
+	public String toString() {
+		return "<Accumulate type='NotAllowed' />";
+	}
+
+	
 	
 }

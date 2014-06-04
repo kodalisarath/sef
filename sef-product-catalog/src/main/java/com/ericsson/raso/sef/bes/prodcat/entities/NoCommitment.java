@@ -21,7 +21,12 @@ public final class NoCommitment extends AbstractMinimumCommitment {
 		return INFINITE;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "<MinimumCommitment name='None' />";
+	}
+
+
 	
 
 }

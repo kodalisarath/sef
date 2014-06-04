@@ -12,9 +12,8 @@ public final class TaxPercentage extends Tax {
 	@Override
 	public MonetaryUnit calculateTax(MonetaryUnit baseAmount) {
 		long taxAmount = ((baseAmount.getAmount() * taxPercentile) / 100);
-		return new MonetaryUnit(baseAmount.getIso4217CurrencyCode(), taxAmount) {
-			private static final long serialVersionUID = 10L;
-		};
+		return new Cost(baseAmount.getIso4217CurrencyCode(), taxAmount); 
+
 	}
 
 	public byte getTaxPercentile() {
@@ -54,6 +53,10 @@ public final class TaxPercentage extends Tax {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "<Tax type='" + this.getTaxation() + "' name='" + this.getName() + "' tax='" + taxPercentile + "' />";
+	}
 	
 	
 	

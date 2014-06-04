@@ -17,5 +17,11 @@ public final class SwitchThresholdAndSchedule extends AbstractSwitchPolicy imple
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "<Switch type='ThresholdAndSchedule' />";
+	}
+
+
 	
 }

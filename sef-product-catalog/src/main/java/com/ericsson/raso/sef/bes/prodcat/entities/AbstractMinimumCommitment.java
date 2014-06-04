@@ -54,6 +54,6 @@ public abstract class AbstractMinimumCommitment implements Serializable {
 		return true;
 	}
 
-	
+	public abstract String toString();
 	
 }

@@ -17,5 +17,10 @@ public final class AccumulateUnlimited extends AbstractAccumulationPolicy implem
 		return true;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "<Accumulate type='Unlimited' />";
+	}
+
+
 }

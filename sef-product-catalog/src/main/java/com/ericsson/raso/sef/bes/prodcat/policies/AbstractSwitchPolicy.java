@@ -39,4 +39,6 @@ public abstract class AbstractSwitchPolicy implements Action, Serializable {
 		NOT_ALLOWED;
 		
 	}
+	
+	public abstract String toString();
 }

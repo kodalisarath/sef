@@ -17,5 +17,10 @@ public final class AccumulateThresholdAndReject extends AbstractAccumulationPoli
 		return true;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "<Accumulate type='ThresholdAndReject' threshold='" +  "' />";
+	}
+
+	  
 }

@@ -1,6 +1,5 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -8,12 +7,20 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.bes.engine.transaction.commands.*;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.CreateSubscriber;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.DiscoverOffers;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.DiscoverOffersForUser;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.FetchOffer;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.FetchOfferByHandleForUser;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.FetchOfferForUser;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.GetAdviceOfCharge;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.HandleSubscriptionEvent;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.QuerySubscription;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.ReadSubscriber;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriptionRequest;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
-import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 
 
@@ -26,7 +33,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	
 	public TransactionManager() {
 		offerCatalog = com.ericsson.raso.sef.bes.prodcat.ServiceResolver.getOfferCatalog();
-		executor = SefCoreServiceResolver.getExecutorService("");
+		executor = SefCoreServiceResolver.getExecutorService(Constants.USE_CASE_EVAL.name());
 	}
 
 

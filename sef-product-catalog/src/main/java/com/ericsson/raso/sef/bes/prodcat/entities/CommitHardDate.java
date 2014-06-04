@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
@@ -46,7 +47,12 @@ public class CommitHardDate extends AbstractMinimumCommitment {
 		return true;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "<MinimumCommitment name='HardDate' date='" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(this.date) + "' />";
+	}
+
+
 	
 
 }

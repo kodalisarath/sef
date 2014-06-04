@@ -81,6 +81,11 @@ public abstract class Product implements Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "<Product name='" + name + "' owner='" + owner + "'> <criteria>" + criteria + "</criteria> </Product>";
+	}
+
 	
 	
 		

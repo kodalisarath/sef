@@ -90,6 +90,6 @@ public abstract class AbstractQuotaCharacteristic implements Serializable {
 		return true;
 	}
 	
-	
+	public abstract String toString();
 	
 }

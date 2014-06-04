@@ -61,6 +61,9 @@ public abstract class MonetaryUnit implements Serializable {
 		
 		return true;
 	}
+
+	@Override
+	public abstract String toString();
 	
 	
 

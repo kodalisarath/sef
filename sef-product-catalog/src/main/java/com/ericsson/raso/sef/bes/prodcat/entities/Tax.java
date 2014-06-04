@@ -73,4 +73,9 @@ public abstract class Tax implements Serializable {
 		TAX_ABSOLUTE;
 	}
 
+	@Override
+	public abstract String toString();
+	
+	
+
 }

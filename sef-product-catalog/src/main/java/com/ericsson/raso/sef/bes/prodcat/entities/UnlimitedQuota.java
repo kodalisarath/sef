@@ -28,4 +28,11 @@ public final class UnlimitedQuota extends AbstractQuotaCharacteristic {
 		return units;
 	}
 
+	@Override
+	public String toString() {
+		return "<UnlimitedQuota type='" + this.getType() + "' /> ";
+	}
+	
+	
+
 }

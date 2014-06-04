@@ -9,11 +9,14 @@ public final class TaxFree extends Tax {
 
 	@Override
 	public MonetaryUnit calculateTax(MonetaryUnit baseAmount) {
-		return new MonetaryUnit(baseAmount.getIso4217CurrencyCode(), 0) {
-			private static final long serialVersionUID = 10L;
-		};
+		return new Cost(baseAmount.getIso4217CurrencyCode(), 0); 
+
 	}
 
+	@Override
+	public String toString() {
+		return "<Tax type='" + this.getTaxation() + "' name='" + this.getName() + "' />";
+	}
 	
 	
 }

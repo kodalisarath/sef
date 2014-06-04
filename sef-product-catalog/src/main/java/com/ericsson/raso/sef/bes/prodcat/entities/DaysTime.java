@@ -49,6 +49,11 @@ public class DaysTime extends AbstractTimeCharacteristic {
 		
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "<TimeCharacteristic name='Days' numberOfDays='" + ((int)(this.numberOfHours/24)) + "'/>";
+	}
 	
 	
 

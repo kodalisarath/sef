@@ -82,6 +82,11 @@ public final class LimitedQuota extends AbstractQuotaCharacteristic {
 		
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "<LimitedQuota definedQuota='" + definedQuota + "' consumedQuota='" + consumedQuota + "' />";
+	}
 	
 	
 

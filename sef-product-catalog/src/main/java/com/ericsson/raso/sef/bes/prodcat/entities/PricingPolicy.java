@@ -64,6 +64,11 @@ public class PricingPolicy extends Policy {
 		}		
 	}
 
+	@Override
+	public String toString() {
+		return "<PricingPolicy>" + super.toString() + "</PricingPolicy>";
+	}
+
 
 	
 	

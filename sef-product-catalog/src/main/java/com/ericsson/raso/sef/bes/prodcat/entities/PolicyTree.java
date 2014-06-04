@@ -161,6 +161,15 @@ public final class PolicyTree implements Serializable {
 		
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		String xmlFormat = "<PolicyTree>";
+		for (SubscriberType key: policyChain.keySet())
+			xmlFormat += "<Policy subscriber='" + key + "' action='" + policyChain.get(key) + "' />";
+		xmlFormat += "</PolicyTree>";
+		return xmlFormat;
+	}
 	
 	
 	

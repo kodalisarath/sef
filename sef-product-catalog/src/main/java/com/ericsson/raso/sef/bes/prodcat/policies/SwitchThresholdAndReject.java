@@ -17,5 +17,11 @@ public final class SwitchThresholdAndReject extends AbstractSwitchPolicy impleme
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "<Switch type='ThresholdAndReject' />";
+	}
+
+
 	
 }

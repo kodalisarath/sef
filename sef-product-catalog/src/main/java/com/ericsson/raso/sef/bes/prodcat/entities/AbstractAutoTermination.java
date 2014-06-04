@@ -54,5 +54,6 @@ public abstract class AbstractAutoTermination implements Serializable {
 		return true;
 	}
 	
+	public abstract String toString();
 	
 }

@@ -59,6 +59,11 @@ public class TerminateAfterNRenewals extends AbstractAutoTermination {
 		return true;
 	}
 
-		
+	@Override
+	public String toString() {
+		return "<AutoTermination name='AfterNRenewals' renewals='" + this.renewals + "' />";
+	}
+
+	
 
 }

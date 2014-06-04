@@ -17,5 +17,10 @@ public final class AccumulateThresholdAndSchedule extends AbstractAccumulationPo
 		return true;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "<Accumulate type='ThresholdAndSchedule' threshold='" +  "' />";
+	}
+
+
 }

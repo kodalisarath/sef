@@ -87,6 +87,6 @@ public abstract class AbstractTimeCharacteristic implements Serializable {
 		return true;
 	}
 	
-	
+	public abstract String toString();
 
 }

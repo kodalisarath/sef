@@ -1055,6 +1055,22 @@ public class Offer implements Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "<Offer name='" + name + "' description='" + description + "' version='" + version + "' offerState='" + offerState + "'"
+				+ " isCommercial='"	+ isCommercial + "' isRecurrent='" + isRecurrent + "' owner='" + owner + "' offerGroup='" + offerGroup 
+				+ "' exitOfferId='" + exitOfferId + "' externalHandles='" + externalHandles + "'> "
+				+ renewalPeriod.toString() +  trialPeriod.toString() + immediateTermination.toString()
+				+ autoTermination.toString() + minimumCommitment.toString() + "<products>" 
+				+ products + "</products> " + price.toString() + eligibility.toString() + accumulation.toString()
+				+ switching.toString() + " <whiteListedUsers='" + whiteListedUsers + "'/>" + history.toString() 
+				+ "<preExiry>" + preExiry + "</preExpiry> <preRenewal>" + preRenewal + "</preRenewal> </Offer>";
+	}
+	
+	
+	
+	
+
 	
 		
 	

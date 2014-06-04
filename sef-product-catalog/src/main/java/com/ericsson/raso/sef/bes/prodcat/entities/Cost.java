@@ -8,5 +8,9 @@ public class Cost extends MonetaryUnit {
 		}
 
 
+		@Override
+		public String toString() {
+			return "<Cost iso4217CurrencyCode='" + this.getIso4217CurrencyCode() + "' amount='" + this.getAmount() + "'/>";
+		}
 		
 }

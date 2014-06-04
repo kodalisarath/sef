@@ -12,6 +12,10 @@ public final class InfiniteTime extends AbstractTimeCharacteristic {
 		return -1L;
 	}
 
-
+	@Override
+	public String toString() {
+		return "<TimeCharacteristic name='Infinite' />";
+	}
+	
 	
 }

@@ -60,6 +60,11 @@ public class TerminateAfterNDays extends AbstractAutoTermination {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "<AutoTermination name='AfterNDays' days='" + this.days + "' />";
+	}
+
 	
 	
 

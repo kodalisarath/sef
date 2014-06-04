@@ -54,6 +54,10 @@ public class HoursTime extends AbstractTimeCharacteristic {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "<TimeCharacteristic name='Hours' numberOfHours='" + this.numberOfHours + "'/>";
+	}
 	
 
 }
