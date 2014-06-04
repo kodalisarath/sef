@@ -32,7 +32,7 @@ public final class FetchSubscriber extends ExternDataUnitTask<Subscriber> {
 			SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
 			if (subscriberStore == null)
 				throw new CatalogException("Unable to fetch Subscriber Profile for further processing of the request!! Please check configuration");
-			subscriber = subscriberStore.getSubscriberByUserId(subscriberId);
+			subscriber = subscriberStore.getSubscriber(subscriberId);
 			
 			// now place it in Request Context...
 			context.getInProcess().put(Constants.SUBSCRIBER_ENTITY.name(), subscriber);
