@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -30,7 +31,17 @@ public abstract class SmartServiceHelper {
 		meta.setValue("READ_SUBSCRIBER");
 		metas.add(meta);
 		logger.debug("Entering SmartServiceResolver.....");
-		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		
+		SefJaxWsProxyFactoryBean<ISubscriberRequest> proxy = new SefJaxWsProxyFactoryBean<ISubscriberRequest>();
+		proxy.setEndpointId(null);
+		ISubscriberRequest subscriberRequest = null;
+		try {
+			subscriberRequest = proxy.getObject();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
 		
 		try {
