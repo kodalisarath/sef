@@ -1,13 +1,18 @@
 package com.ericsson.sef.bes.api.entities;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="subscriber")
-public class Subscriber {
+public class Subscriber implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -607847918549317897L;
 	private String				userId				= null;
 	private String				customerId			= null;
 	private String				contractId			= null;
