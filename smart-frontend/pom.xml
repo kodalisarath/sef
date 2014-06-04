@@ -23,6 +23,7 @@
     	com.ericsson.sef.bes.api.fulfillment,  	
     	com.ericsson.raso.sef.smart.*,
     	com.ericsson.raso.sef.core,
+    	com.ericsson.raso.sef.core.model,
 		com.ericsson.raso.sef.core.camelprocessors,
 		com.ericsson.raso.sef.auth.*,
 		com.ericsson.raso.sef.core.config,
