@@ -1,15 +1,15 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
-import java.util.Set;
+import java.util.Map;
 
 
 public final class HandleLifeCycleRequest extends AbstractRequest {
 	private static final long	serialVersionUID	= -921884001442299482L;
 	
 	private String subscriberId = null;
-	private Set<String>	metas = null;
+	private Map<String,String>	metas = null;
 
-	public HandleLifeCycleRequest(String requestCorrelator, String subscriberId, Set<String> metas) {
+	public HandleLifeCycleRequest(String requestCorrelator, String subscriberId, Map<String,String> metas) {
 		super(requestCorrelator);
 		this.subscriberId = subscriberId;
 		this.setMetas(metas);
@@ -23,16 +23,18 @@ public final class HandleLifeCycleRequest extends AbstractRequest {
 		this.subscriberId = subscriberId;
 	}
 
-	public Set<String> getMetas() {
-		return metas;
-	}
-
-	public void setMetas(Set<String> metas) {
-		this.metas = metas;
-	}
+	
 	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public Map<String,String> getMetas() {
+		return metas;
+	}
+
+	public void setMetas(Map<String,String> metas) {
+		this.metas = metas;
 	}
 
 }

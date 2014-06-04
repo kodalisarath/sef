@@ -45,7 +45,7 @@ public class DeleteSubscriber extends AbstractTransaction {
 		tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-		Offer workflow = catalog.getOfferById(Constants.CREATE_SUSBCRIBER.name());
+		Offer workflow = catalog.getOfferById(Constants.DELETE_SUBSCRIBER.name());
 		if (workflow != null) {
 			String subscriberId = ((DeleteSubscriberRequest)this.getRequest()).getSubscriberId();
 			try {
@@ -62,17 +62,6 @@ public class DeleteSubscriber extends AbstractTransaction {
 	}
 	
 	public void sendResponse() {
-		//TODO: implement this logic
-		/*
-		 * 1. when this method is called, it means that Orchestration Manager has executed all steps in the transaction. Either a respnse or
-		 * exception is available.
-		 * 
-		 * 2. The response will most likely be results/ responses/ exceptions from atomic steps in the transaction. This must be packed into
-		 * the response pojo structure pertinent to method signature of the response interface.
-		 * 
-		 * 3. once the response pojo entity is packed, the client for reponse interface must be invoked. the assumption is that response
-		 * interface will notify the right JVM waiting for this response thru a Object.wait
-		 */
 		TransactionStatus txnStatus=null;
 		Boolean result = ((DeleteSubscriberResponse)this.getResponse()).getResult();
 		LOGGER.debug("Invoking delete subscriber response!!");
