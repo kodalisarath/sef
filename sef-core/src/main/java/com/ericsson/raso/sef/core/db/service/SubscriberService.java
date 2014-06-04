@@ -17,7 +17,7 @@ public interface SubscriberService {
 	
 	void setMetas(String userId, Meta... metas);
 	
-	Collection<SubscriberMeta> getMetas(String userId, String... metaKeys);
+	Collection<Meta> getMetas(String userId, String... metaKeys);
 	
 	Collection<SubscriberAuditTrial> getSubscriberHistory(String userId, String... metaKeys);
 	

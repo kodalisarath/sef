@@ -17,6 +17,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.commands.GetAdviceOfCharge;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.HandleSubscriptionEvent;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.QuerySubscription;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.ReadSubscriber;
+import com.ericsson.raso.sef.bes.engine.transaction.commands.ReadSubscriberMeta;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.service.ISubscriptionRequest;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
@@ -88,12 +89,6 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	public String purchase(String requestId, String offerId, String subscriberId, Boolean override, Map<String, Object> metas) {
 		logger.debug("Entering TXManager.Purchase..........");
 		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, offerId, subscriberId, null, SubscriptionLifeCycleEvent.PURCHASE, override, metas);
-//		try {
-//			command.call();
-//		} catch (Exception e) {
-//			logger.error("Exception while executing Handle subscription event??" + e.getMessage());
-//			e.printStackTrace();
-//		}
 		executor.submit(command);
 		return requestId;
 	}
@@ -102,13 +97,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 	@Override
 	public String terminate(String requestId, String subscriptionId, Boolean override, Map<String, Object> metas) {
 		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, null, null, subscriptionId, SubscriptionLifeCycleEvent.TERMINATE, override, metas);
-		try {
-			command.call();
-		} catch (Exception e) {
-			logger.error("Exception while executing Handle subscription event??" + e.getMessage());
-			e.printStackTrace();
-		}
-//		executor.submit(command);
+		executor.submit(command);
 		return requestId;
 	}
 
@@ -163,8 +152,9 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 	@Override
 	public String readSubscriberMeta(String requestId, String subscriberId, Set<String> metaNames) {
-		// TODO Auto-generated method stub
-		return null;
+		ReadSubscriberMeta command = new ReadSubscriberMeta(requestId, subscriberId, metaNames);
+		executor.submit(command);
+		return requestId;
 	}
 
 
