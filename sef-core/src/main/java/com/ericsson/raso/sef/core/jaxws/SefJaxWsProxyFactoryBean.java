@@ -33,9 +33,9 @@ public class SefJaxWsProxyFactoryBean<T> implements FactoryBean<T> {
 	public T getObject() throws Exception {
 		JaxWsProxyFactoryBean jaxWsProxyFactoryBean = new JaxWsProxyFactoryBean();
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		String endpointAddress = config.getValue(endpointId, "address");
+//		String endpointAddress = config.getValue(endpointId, "address");
 
-		jaxWsProxyFactoryBean.setAddress(endpointAddress);
+		jaxWsProxyFactoryBean.setAddress(this.endpointId);
 		jaxWsProxyFactoryBean.setServiceClass(serviceType);
 
 		jaxWsProxyFactoryBean.create();
