@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.config.IConfig;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -62,7 +64,8 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 			
 			logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
 			//TODO: commented out until BC is ready. If you see this code commented beyond 5th June 2014, its a broken implementation 
-			//iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), Arrays.asList(meta));
+			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+			iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), Arrays.asList(meta));
 			
 			// 	 TODO:  To be completed after scheduler is ready
 			//String id = iSubscriberRequest.readSubscriber(requestId, request.getCustomerId());
