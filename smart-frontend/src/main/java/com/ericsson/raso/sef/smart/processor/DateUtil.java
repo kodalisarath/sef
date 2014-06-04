@@ -64,6 +64,11 @@ public class DateUtil {
 		}
 	}
 	
+	public static String convertDateToString(Date in, String pattern) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+		return dateFormat.format(in);
+	}
+	
 	public static XMLGregorianCalendar convertDateToUTCtime(String dateStr) {
 		try {
 			SimpleDateFormat format = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
