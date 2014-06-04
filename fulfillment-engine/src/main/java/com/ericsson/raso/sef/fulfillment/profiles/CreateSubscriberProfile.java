@@ -1,28 +1,24 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.client.af.command.AddDnsCommand;
-import com.ericsson.raso.sef.client.af.request.AddDnsRequest;
 import com.ericsson.raso.sef.client.air.command.DeleteSubscriberCommand;
 import com.ericsson.raso.sef.client.air.command.InstallSubscriberCommand;
 import com.ericsson.raso.sef.client.air.request.DeleteSubscriberRequest;
 import com.ericsson.raso.sef.client.air.request.InstallSubscriberRequest;
-import com.ericsson.raso.sef.core.RequestContext;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID	= 4571643634014244954L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateSubscriberProfile.class);
 
 	private Boolean messageCapabilityFlag;
@@ -37,6 +33,110 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 	
 	protected CreateSubscriberProfile(String name) {
 		super(name);
+	}
+	
+	
+	@Override
+	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
+		LOGGER.debug("Entering fulfill of CreateSubscriberProfile...");
+		CreateSubscriberProfile createSubscriberProfile= new CreateSubscriberProfile(originOperatorId);
+	
+		/*
+		 * The following piece of code is commented since DnsUpdateProfile is available and the same is expected to be wired as a 
+		 * Fulfillment Profile attached to a resource under a Workflow Offer.
+		 */
+		
+//		AddDnsRequest dnsRequest = new AddDnsRequest();
+//		dnsRequest.setMsisdn(map.get("msisdn"));		
+//		
+//		
+//		RequestContext requestContext = new RequestContext();
+//		
+//		String sdpId = requestContext.getInterfaceName();
+//		dnsRequest.setSdpId(sdpId);
+//		
+//		try {
+//			new AddDnsCommand(dnsRequest).execute();
+//		} catch (SmException e1) {
+//			LOGGER.error("Adding DNS Entry for the new subscriber failed!!", e1);
+//			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
+//		}
+		
+				
+		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
+		LOGGER.debug("Configred defaultServiceClass: " + defaultServiceClass);
+		
+		InstallSubscriberRequest request = new InstallSubscriberRequest();
+		if(createSubscriberProfile.getPromotionPlanId() != null) 
+			request.setPromotionPlanId(createSubscriberProfile.getPromotionPlanId());
+		
+		if(createSubscriberProfile.getLanguageIDNew() !=null) 
+			request.setLanguageIDNew(createSubscriberProfile.getLanguageIDNew());
+		
+		if(createSubscriberProfile.getMessageCapabilityFlag() != null) 
+			request.setMessageCapabilityFlag(createSubscriberProfile.getMessageCapabilityFlag());
+
+		if(request.getPamInformationList() != null) 
+			request.setPamInformationList(createSubscriberProfile.getPamInformationList().getPamInfolist());
+		
+		
+		request.setServiceClassNew(Integer.valueOf(defaultServiceClass));
+		
+		if(request.getTemporaryBlockedFlag() !=null) 
+			request.setTemporaryBlockedFlag(createSubscriberProfile.getTemporaryBlockedFlag());
+		
+		
+		if(request.getUssdEndOfCallNotificationID() !=null) 
+			request.setUssdEndOfCallNotificationID(createSubscriberProfile.getUssdEndOfCallNotificationID());
+		
+		request.setSubscriberNumber(map.get("msisdn"));
+		InstallSubscriberCommand instlCommand = new InstallSubscriberCommand(request);
+		LOGGER.debug("Packed the request for execution...");
+		
+		try {
+			instlCommand.execute();
+		} catch (SmException e1) {
+			LOGGER.error("Installing new subscriber failed!!", e1);
+			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
+		}
+		LOGGER.debug("Subscriber installed in CS-AIR");
+		
+		List<Product> returned = new ArrayList<Product>();
+		returned.add(e);
+		return returned;	
+	}
+
+	@Override
+	public List<Product> prepare(Product e, Map<String, String> map) {
+		List<Product> returned = new ArrayList<Product>();
+		returned.add(e);
+		return returned;	
+	}
+
+	@Override
+	public List<Product> query(Product e, Map<String, String> map) {
+		List<Product> returned = new ArrayList<Product>();
+		returned.add(e);
+		return returned;	
+	}
+
+	@Override
+	public List<Product> revert(Product e, Map<String, String> map) {
+		CreateSubscriberProfile createSubscriberProfile= new CreateSubscriberProfile(originOperatorId);
+		DeleteSubscriberRequest request = new DeleteSubscriberRequest();
+		request.setSubscriberNumber(map.get("msisdn"));
+		request.setOriginOperatorId(createSubscriberProfile.getOriginOperatorId());
+		try {
+			new DeleteSubscriberCommand(request).execute();
+		} catch (SmException e1) {
+			LOGGER.error("Exception when calling execute" + e1);
+		}
+		
+		LOGGER.debug("Subscriber install rolledback in CS-AIR");
+		
+		List<Product> returned = new ArrayList<Product>();
+		returned.add(e);
+		return returned;	
 	}
 	
 	public Boolean getMessageCapabilityFlag() {
@@ -103,97 +203,6 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		this.pamInformationList = pamInformationList;
 	}
 
-	@Override
-	public List<Product> fulfill(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		
-		CreateSubscriberProfile createSubscriberProfile= new CreateSubscriberProfile(originOperatorId);
-		
-		AddDnsRequest dnsRequest = new AddDnsRequest();
-		dnsRequest.setMsisdn(map.get("msisdn"));		
-		
-		
-		RequestContext requestContext = new RequestContext();
-		
-		String sdpId = requestContext.getInterfaceName();
-		dnsRequest.setSdpId(sdpId);
-		
-		try {
-			new AddDnsCommand(dnsRequest).execute();
-		} catch (SmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-				
-		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
-		
-		//String defaultServiceClass = FederationProfileContext.getProperty(FederationProfileContext.DEFAULT_SERVICE_CLASS);
-		
-		InstallSubscriberRequest request = new InstallSubscriberRequest();
-		if(createSubscriberProfile.getPromotionPlanId() != null) {
-			request.setPromotionPlanId(createSubscriberProfile.getPromotionPlanId());
-		}
-		
-		if(createSubscriberProfile.getLanguageIDNew() !=null) {
-			request.setLanguageIDNew(createSubscriberProfile.getLanguageIDNew());
-		}
-		
-		if(createSubscriberProfile.getMessageCapabilityFlag() != null) {
-			request.setMessageCapabilityFlag(createSubscriberProfile.getMessageCapabilityFlag());
-		}
-		if(request.getPamInformationList() != null) {
-			request.setPamInformationList(createSubscriberProfile.getPamInformationList().getPamInfolist());
-		}
-		
-		request.setServiceClassNew(Integer.valueOf(defaultServiceClass));
-		
-		if(request.getTemporaryBlockedFlag() !=null) {
-			request.setTemporaryBlockedFlag(createSubscriberProfile.getTemporaryBlockedFlag());
-		}
-		
-		if(request.getUssdEndOfCallNotificationID() !=null) {
-			request.setUssdEndOfCallNotificationID(createSubscriberProfile.getUssdEndOfCallNotificationID());
-		}
-		request.setSubscriberNumber(map.get("msisdn"));
-		InstallSubscriberCommand instlCommand = new InstallSubscriberCommand(request);
-		try {
-			instlCommand.execute();
-		} catch (SmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		return null;
-	}
-
-	@Override
-	public List<Product> prepare(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Product> query(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Product> revert(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		CreateSubscriberProfile createSubscriberProfile= new CreateSubscriberProfile(originOperatorId);
-		DeleteSubscriberRequest request = new DeleteSubscriberRequest();
-		request.setSubscriberNumber(map.get("msisdn"));
-		request.setOriginOperatorId(createSubscriberProfile.getOriginOperatorId());
-		try {
-			new DeleteSubscriberCommand(request).execute();
-		} catch (SmException e1) {
-			LOGGER.error("Exception when calling execute"+e1);
-		}
-		
-		return null;
-	}
 	
 	@Override
 	public int hashCode() {

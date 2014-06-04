@@ -35,7 +35,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	private String transactionAmount;
 	private CurrencyCode transactionCurrency;
 
-	private static final Logger logger = LoggerFactory.getLogger(RefillProfile.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RefillProfile.class);
 	
 	public RefillProfile(String name) {
 		super(name);
@@ -78,8 +78,8 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
 		
-		logger.debug("Fufill request for refill");
-		logger.debug("E/// Executing fulfillment request to air for...: " + e.getName());
+		LOGGER.debug("Fufill request for refill");
+
 		RefillRequest refillRequest = new RefillRequest();
 		refillRequest.setSubscriberNumber(map.get("msisdn"));
 		refillRequest.setRefProfID(this.refillProfileId);
@@ -111,16 +111,18 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		try {
 			response = command.execute();
 		} catch (SmException e1) {
-			e1.printStackTrace();
+			LOGGER.error("Refill execution failed!!", e1);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
+		
+		LOGGER.debug("Refill successful. Preparing response to return.");
 		return createResponse(e, response);
 	}
 
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) {
-		logger.debug("Preparing.......");
+		LOGGER.debug("Preparing.......");
 		List<Product> products = new ArrayList<Product>();
 		return products;
 	}
@@ -142,7 +144,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	//TODO: Move to smart-commons
 	private List<Product> createResponse(Product p, RefillResponse response) {
 		
-		logger.debug("Convering CS - IL response");
+		LOGGER.debug("Convering CS - IL response");
 		List<Product> products = new ArrayList<Product>();
 		
 		//Fetch accounts before and after refill 
@@ -160,7 +162,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 
 		Map<Integer, OfferInformation> offerMap = toOfferMap(offerInformationList);
 
-		logger.debug("Retrieved refill balance information");
+		LOGGER.debug("Retrieved refill balance information");
 		// For each CS offer Id associated to the refill prepare balance statement.. Product represent the recharged balance & validity
 		if(this.getAbstractResources() != null) {
 		for(String resource: this.getAbstractResources()) {
@@ -171,7 +173,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			OfferInformation offerInformation = offerMap.get(Integer.parseInt(resource));
 			
 			if(offerInformation != null) {
-				logger.debug("Validity of offer: " + offerInformation.getExpiryDateTime());
+				LOGGER.debug("Validity of offer: " + offerInformation.getExpiryDateTime());
 			}
 			
 			//prepare validity
@@ -184,11 +186,11 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			// Fetch DA and prepare balances
 			String daID = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_offerMapping", resource);
 			if (daID == null) {
-				logger.debug("Associated DA not found.. continuing with next offer");
+				LOGGER.debug("Associated DA not found.. continuing with next offer");
 				continue;
 			}
 			
-			logger.debug("Proceeding with balance population");
+			LOGGER.debug("Proceeding with balance population");
 			DedicatedAccountInformation beforeDa = beforeDaMap.get(Integer.valueOf(daID));
 			DedicatedAccountInformation afterDa = afterDaMap.get(Integer.valueOf(daID));
 
@@ -214,9 +216,9 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			products.add(product);
 		}
 		} else {
-			logger.debug("No associated offers found. Empty response will be sent");
+			LOGGER.debug("No associated offers found. Empty response will be sent");
 		}
-		logger.debug("Total products in response" + products.size());
+		LOGGER.debug("Total products in response" + products.size());
 		return products;
 	}
 	
