@@ -32,27 +32,63 @@ public abstract class TransactionServiceHelper {
 	
 	public static Subscriber getApiEntity(com.ericsson.raso.sef.core.db.model.Subscriber subscriber) {
 		Subscriber returned = new Subscriber();
-		
-		returned.setBillCycleDay(subscriber.getBillCycleDay());
-		returned.setContractId(subscriber.getContractId());
-		returned.setContractState(subscriber.getContractState().getName());
-		returned.setCustomerId(subscriber.getCustomerId());
-		returned.setCustomerSegment(subscriber.getCustomerSegment());
-		returned.setEmail(subscriber.getEmail());
-		returned.setGender(subscriber.getGender());
-		returned.setImeiSv(subscriber.getImeiSv());
-		returned.setImsi(subscriber.getImsi());
-		returned.setMetas(getMetas(subscriber.getMetas())); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
-		returned.setMsisdn(subscriber.getMsisdn());
-		returned.setPaymentParent(subscriber.getPaymentParent());
-		returned.setPaymentResponsible(subscriber.getPaymentResponsible());
-		returned.setPaymentType(subscriber.getPaymentType());
-		returned.setPin(subscriber.getPin());
-		returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
-		returned.setRatePlan(subscriber.getRatePlan());
-		returned.setRegistrationDate(subscriber.getRegistrationDate().getTime());
-		returned.setUserId(subscriber.getUserId());
-		
+		if(subscriber.getBillCycleDay() != null){
+			returned.setBillCycleDay(subscriber.getBillCycleDay());
+		}
+		if(subscriber.getContractId() != null){
+			returned.setContractId(subscriber.getContractId());	
+		}
+		if(subscriber.getContractState() != null){
+			returned.setContractState(subscriber.getContractState().getName());	
+		}
+		if(subscriber.getCustomerId() != null){
+			returned.setCustomerId(subscriber.getCustomerId());
+		}
+		if(subscriber.getCustomerSegment() != null){
+			returned.setCustomerSegment(subscriber.getCustomerSegment());
+		}
+		if(subscriber.getEmail() != null){
+			returned.setEmail(subscriber.getEmail());
+		}
+		if(subscriber.getGender() != null){
+			returned.setGender(subscriber.getGender());
+		}
+		if(subscriber.getImeiSv() != null){
+			returned.setImeiSv(subscriber.getImeiSv());
+		}
+		if(subscriber.getImsi() != null){
+			returned.setImsi(subscriber.getImsi());
+		}
+		if(subscriber.getMetas() != null){
+			returned.setMetas(getMetas(subscriber.getMetas())); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
+		}
+		if(subscriber.getMsisdn() != null){
+			returned.setMsisdn(subscriber.getMsisdn());
+		}
+		if(subscriber.getPaymentParent() != null){
+			returned.setPaymentParent(subscriber.getPaymentParent());
+		}
+		if(subscriber.getPaymentResponsible() != null){
+			returned.setPaymentResponsible(subscriber.getPaymentResponsible());
+		}
+		if(subscriber.getPaymentType() != null){
+			returned.setPaymentType(subscriber.getPaymentType());
+		}
+		if(subscriber.getPin() != null){
+			returned.setPin(subscriber.getPin());
+		}
+		if(subscriber.getPrefferedLanguage() != null){
+			returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
+		}
+		if(subscriber.getRatePlan() != null){
+			returned.setRatePlan(subscriber.getRatePlan());
+		}
+		if(subscriber.getRegistrationDate() != null){
+			returned.setRegistrationDate(subscriber.getRegistrationDate().getTime());
+		}
+		if(subscriber.getUserId() != null){
+			returned.setUserId(subscriber.getUserId());
+		}
 		return returned;
 		
 	}
