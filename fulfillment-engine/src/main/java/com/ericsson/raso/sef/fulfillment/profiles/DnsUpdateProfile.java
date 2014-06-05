@@ -36,7 +36,7 @@ public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.a
 		
 		DnsUpdateProfile dnsUpdateProfile = new DnsUpdateProfile(zname);
 		AddDnsRequest dnsRequest = new AddDnsRequest();
-		dnsRequest.setMsisdn(map.get("msisdn"));
+		dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
 		dnsRequest.setDclass(dnsUpdateProfile.getDclass());
 		dnsRequest.setDtype(dnsUpdateProfile.getDtype());
 		dnsRequest.setRdata(dnsUpdateProfile.getRdata());
@@ -48,10 +48,10 @@ public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.a
 		
 		try {
 			new AddDnsCommand(dnsRequest).execute();
+			LOGGER.debug("Installed new subscriber in CS-AF DNS");
 		} catch (SmException e1) {
 			LOGGER.error("Failed AddDnsCommand execute" + e1);
 		}
-		LOGGER.debug("Installed new subscriber in CS-AF DNS");
 		 
 		List<Product> returned = new ArrayList<Product>();
 		returned.add(e);
