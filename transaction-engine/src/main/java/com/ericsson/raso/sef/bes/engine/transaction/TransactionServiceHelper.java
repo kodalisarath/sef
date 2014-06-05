@@ -59,27 +59,52 @@ public abstract class TransactionServiceHelper {
 	
 	public static com.ericsson.raso.sef.core.db.model.Subscriber getPersistableEntity(Subscriber subscriber) {
 		com.ericsson.raso.sef.core.db.model.Subscriber returned = new com.ericsson.raso.sef.core.db.model.Subscriber();
-		
-		returned.setAccountId(subscriber.getCustomerId());
-		returned.setCustomerId(subscriber.getCustomerId());
-		returned.setContractId(subscriber.getContractId());
+		if(subscriber.getCustomerId() != null){
+			returned.setAccountId(subscriber.getCustomerId());
+			returned.setCustomerId(subscriber.getCustomerId());
+		}
+		if(subscriber.getContractId() != null){
+			returned.setContractId(subscriber.getContractId());
+		}
+		if(subscriber.getCustomerSegment() != null){
+			returned.setCustomerSegment(subscriber.getCustomerSegment());
+		}
 		if(subscriber.getContractState() != null){
 			returned.setContractState(ContractState.valueOf(subscriber.getContractState()));
 		}
-		returned.setCustomerSegment(subscriber.getCustomerSegment());
-		returned.setEmail(subscriber.getEmail());
-		returned.setImeiSv(subscriber.getImeiSv());
-		returned.setImsi(subscriber.getImsi());
-		returned.setMetas(getMetas(subscriber.getMetas()));
-		returned.setMsisdn(subscriber.getMsisdn());
-		returned.setPin(subscriber.getPin());
-		returned.setPaymentType(subscriber.getPaymentType());
-		returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
-		returned.setRatePlan(subscriber.getRatePlan());
-		returned.setRegistrationDate(new Date(subscriber.getRegistrationDate()));
-		returned.setUserId(subscriber.getUserId());
-		
-		
+		if(subscriber.getEmail() != null){
+			returned.setEmail(subscriber.getEmail());
+		}
+		if(subscriber.getImeiSv() != null){
+			returned.setImeiSv(subscriber.getImeiSv());
+		}
+		if(subscriber.getImsi() != null){
+			returned.setImsi(subscriber.getImsi());
+		}
+		if(subscriber.getMetas() != null){
+			returned.setMetas(getMetas(subscriber.getMetas()));
+		}
+		if(subscriber.getMsisdn() != null){
+			returned.setMsisdn(subscriber.getMsisdn());
+		}
+		if(subscriber.getPin() != null){
+			returned.setPin(subscriber.getPin());
+		}
+		if(subscriber.getPaymentType() != null){
+			returned.setPaymentType(subscriber.getPaymentType());
+		}
+		if(subscriber.getPrefferedLanguage() != null){
+			returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
+		}
+		if(subscriber.getRatePlan() != null){
+			returned.setRatePlan(subscriber.getRatePlan());
+		}
+		if(subscriber.getRegistrationDate() != null){
+			returned.setRegistrationDate(new Date(subscriber.getRegistrationDate()));
+		}
+		if(subscriber.getUserId() != null){
+			returned.setUserId(subscriber.getUserId());	
+		}
 		return returned;
 	}
 	
