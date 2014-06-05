@@ -13,6 +13,7 @@ import com.ericsson.sef.bes.api.entities.Meta;
 
 public class UpdateSubscriberProcessor implements Processor{
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void process(Exchange arg0) throws Exception {
 		Object[] objectArray = (Object[]) arg0.getIn().getBody(Object[].class);
