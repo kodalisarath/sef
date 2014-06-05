@@ -49,6 +49,9 @@
 	<result property="key" column="last_modified"/>
 	<result property="value" column="created"/> 
 	</resultMap>
+	<select id="userSequence" resultMap="SequenceResult" parameterType="String">
+		select user_id_sequence.nextval as seq, #{rand} as rand from dual
+	</select>
 	
 	<update id="deleteSubscriber" parameterType="String">
 		update subscriber set deleted = #{userId}
