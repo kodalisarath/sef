@@ -12,7 +12,7 @@
 		
 		<typeAlias alias="Subscriber" type="com.ericsson.raso.sef.core.db.model.Subscriber" />
 		<typeAlias alias="Meta" type="com.ericsson.raso.sef.core.Meta"/>
-
+		<typeAlias alias="SubscriberAuditTrial" type="com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial"/>
 	</typeAliases>
 
 	<typeHandlers>
