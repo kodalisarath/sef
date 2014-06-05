@@ -1,5 +1,4 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,7 +32,6 @@ public abstract class TransactionServiceHelper {
 	
 	public static Subscriber getApiEntity(com.ericsson.raso.sef.core.db.model.Subscriber subscriber) {
 		Subscriber returned = new Subscriber();
-		
 		
 		returned.setBillCycleDay(subscriber.getBillCycleDay());
 		returned.setContractId(subscriber.getContractId());
