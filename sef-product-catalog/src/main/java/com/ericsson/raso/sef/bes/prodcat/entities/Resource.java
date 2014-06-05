@@ -215,8 +215,19 @@ public abstract class Resource implements Serializable {
 	public boolean addDependantOnMe(Resource other) {
 		if (this.dependantOnMe == null)
 			this.dependantOnMe = new ArrayList<Resource>();
-
-		return (this.dependantOnMe.add(other) && other.dependantOnThem.add(this));
+		
+		boolean ok = this.dependantOnMe.add(other);
+		if (ok)
+		{
+			// other.dependantOnMe could be null
+			if (other.dependantOnThem == null)
+			{
+				other.dependantOnThem = new ArrayList<Resource> ();
+			}
+			ok = other.dependantOnThem.add(this);
+		}
+		return ok;
+		//return (this.dependantOnMe.add(other) && other.dependantOnThem.add(this));
 	}
 
 	public boolean removeDependantOnMe(Resource other) {

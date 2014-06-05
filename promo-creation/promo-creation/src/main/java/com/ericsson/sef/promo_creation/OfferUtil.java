@@ -3661,7 +3661,7 @@ public class OfferUtil
 		Resource dOnMeRes =  lookupResourcesByName.get("DnsUpdateAF_Cmd");
 		Resource dOnRes = lookupResourcesByName.get("InstallSubscriberACIP_Cmd");
 		// Handle dependant On/Me
-		dOnRes.addDependantOn(dOnMeRes);
+		dOnMeRes.addDependantOnMe(dOnRes);
 
 		offerResources.add(dOnMeRes);
 		offerResources.add(dOnRes);
