@@ -2,6 +2,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
@@ -165,19 +166,29 @@ public final class AtomicProduct extends Product implements Serializable, Compar
 
 	@Override
 	public int compareTo(AtomicProduct o) {
-		if (this.quota != null && o.quota != null) {
+		if (this.quota != null && o.quota != null)
 			if (this.quota.getDefinedQuota() > o.quota.getDefinedQuota())
 				return 1;
 			else
 				return -1;
-		} else if (this.validity != null && o.validity != null) {
-			if (this.validity.getExpiryTimeInMillis() > o.validity.getExpiryTimeInMillis())
+		else if (this.quota != null && o.quota == null)
+			return 1;
+		else if (this.quota == null && o.quota != null)
+			return -1;
+		else if (this.quota == null && o.quota == null) {
+			if (this.validity != null && o.validity != null) {
+				if (this.validity.getExpiryTimeInMillis() > o.validity.getExpiryTimeInMillis())
+					return 1;
+				else
+					return -1;
+			} else if (this.validity != null && o.validity == null)
 				return 1;
 			else
 				return -1;
-		} else {
-			return this.getName().compareTo(getName());
 		}
+		
+		return new Random().nextInt();
+		
 	}
 
 
