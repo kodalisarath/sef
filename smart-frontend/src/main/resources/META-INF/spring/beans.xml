@@ -88,6 +88,10 @@
 	<bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
 	<bean id="CARecharge" class="com.ericsson.raso.sef.smart.processor.CARecharge" />
 	<bean id="createOrWriteCustomer" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteCustomerProcessor"/>
+	<bean id="createOrWriteServiceAccessKey" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteServiceAccessKey"/>
+	<bean id="createOrWriteRop" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteRop"/>
+	<bean id="versionCreateOrWriteRop" class="com.ericsson.raso.sef.smart.processor.VersionCreateOrWriteRop"/>
+	<bean id="bucketCreateOrWriteRop" class="com.ericsson.raso.sef.smart.processor.BucketCreateOrWriteRop"/>
 	
 	<camelContext id="com.ericsson.raso.sef.smart.smartInterface" xmlns="http://camel.apache.org/schema/spring">
 		<route>
