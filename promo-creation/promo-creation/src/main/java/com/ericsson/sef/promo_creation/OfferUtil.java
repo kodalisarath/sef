@@ -3657,8 +3657,15 @@ public class OfferUtil
 		offerResources = new ArrayList<Resource>();
 		planCodes = new HashSet<String>();
 		planCodes.add("CREATE_SUBSCRIBER");
-		offerResources.add(lookupResourcesByName.get("DnsUpdateAF_Cmd"));
-		offerResources.add(lookupResourcesByName.get("InstallSubscriberACIP_Cmd"));
+		
+		Resource dOnMeRes =  lookupResourcesByName.get("DnsUpdateAF_Cmd");
+		Resource dOnRes = lookupResourcesByName.get("InstallSubscriberACIP_Cmd");
+		// Handle dependant On/Me
+		dOnRes.addDependantOn(dOnMeRes);
+
+		offerResources.add(dOnMeRes);
+		offerResources.add(dOnRes);
+		
 		offer = helper.createNonCommercialOffer("CREATE_SUBSCRIBER", "Create Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
 		// ----------------------------------------------------------

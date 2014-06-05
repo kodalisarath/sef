@@ -320,28 +320,26 @@ public class PromoHelper {
 		commercialOffer.setCommercial(false);
 		commercialOffer.setPrice(new Price(currencyCode, price));
 		commercialOffer.setRenewalPeriod(new InfiniteTime());
+		commercialOffer.setOfferState(State.PUBLISHED);
 		
-		// System.out.println("Adding Product: " + commercialOffer.getName());
+		System.out.println("Adding Product: " + commercialOffer.getName() + " with " + resources.size());
 		
 		for (String planCode : planCodes) {
 			commercialOffer.addExternalHandle(planCode);
 		}
 		
 		
-		for (int i = 0; i < resources.size(); i++) {
+		for (Resource resource: resources) {
 			
-			String productName = commercialOffer.getName() + "_" + resources.get(i).getName();
+			String productName = commercialOffer.getName() + "_" + resource.getName();
 			AtomicProduct createCommercialProduct = new AtomicProduct(productName);
-			//createCommercialProduct.setCriteria(null);
 			createCommercialProduct.setResetQuotaOnRenewal(false);
-			// TODO createRefill.setMeta("TODO", forImplemenTation);
-			createCommercialProduct.setResource(resources.get(i));
-			//System.out.println("Adding commercial product: " + productName);
+			createCommercialProduct.setResource(resource);
 			
 			commercialOffer.addProduct(createCommercialProduct);
 		}
 		
-		// System.out.println("Adding Commercial Offer: " + commercialOffer.toString());
+		System.out.println("Adding Commercial Offer: " + commercialOffer.getName());
 		// logger.info("CommercialOffer: " + commercialOffer.toString());
 		return commercialOffer;
 		
@@ -349,6 +347,7 @@ public class PromoHelper {
 
 	public Offer createNonCommercialOffer(String name, String description, Set<String> planCodes,  ArrayList<Resource> resources) throws Exception {
 
+			System.out.println(resources.size());
 			Offer nonCommercialOffer = new Offer(name);
 			nonCommercialOffer.setAutoTermination(new NoTermination());
 			nonCommercialOffer.setRenewalPeriod(new InfiniteTime());
@@ -366,13 +365,14 @@ public class PromoHelper {
 			for (Resource resource: resources) {
 				
 				String productName = nonCommercialOffer.getName() + "_" + resource.getName();
+				System.out.println(productName);
 				AtomicProduct createNonCommercialProduct = new AtomicProduct(productName);
 				createNonCommercialProduct.setQuota(new UnlimitedQuota());
 				createNonCommercialProduct.setResource(resource);
 				
 				nonCommercialOffer.addProduct(createNonCommercialProduct);
 			}
-			logger.info("Non CommercialOffer: " + nonCommercialOffer.toString());
+			System.out.println("Non CommercialOffer: " + nonCommercialOffer.toString());
 			return nonCommercialOffer;
 	}
 	
