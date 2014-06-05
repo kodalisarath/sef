@@ -7,15 +7,17 @@ import com.ericsson.sef.bes.api.entities.Product;
 
 public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6336329642133594137L;
+
+
 	public DeleteSubscriberProfile(String name) {
 		super(name);
 	}
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+	
 	private String originOperatorId;
 	
 	
