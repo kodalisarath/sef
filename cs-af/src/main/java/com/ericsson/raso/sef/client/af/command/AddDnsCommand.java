@@ -28,6 +28,8 @@ public class AddDnsCommand implements Command<Void> {
 		try {
 			DnsAddress dns = DnsServiceResolver.getAccountFinderRoute().getDns(request.getMsisdn(), request.getSiteId());
 			log.debug("Found the dnsClient to execute the command: " + dns);
+			
+			log.debug("Checking the DNS Request: " + request);
 			String msisdn = request.getMsisdn();
 			String lastDigit = msisdn.substring(msisdn.length() - 1);
 			String restMsisdn = msisdn.substring(0, msisdn.length() - 1);
