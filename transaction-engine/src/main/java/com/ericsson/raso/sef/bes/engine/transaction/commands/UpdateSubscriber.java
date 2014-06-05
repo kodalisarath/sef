@@ -10,12 +10,14 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberResponse;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
 public class UpdateSubscriber extends AbstractTransaction{
+	
 	private static final long serialVersionUID = 7686721923498952231L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateSubscriber.class);
 	
@@ -31,10 +33,19 @@ public class UpdateSubscriber extends AbstractTransaction{
 		
 		try {
 			subscriberEntity = ((UpdateSubscriberRequest)this.getRequest()).persistableEntity();
-			LOGGER.debug("Got Persistable Entity: Subscriber..." + subscriberEntity.toString());
+			
+			if(subscriberEntity == null) {
+				LOGGER.error("Subscriber not found in database" );
+				
+				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(102,"Subscriber not found")));
+				sendResponse();
+				return false;
+			}
+			LOGGER.debug("Got Persistable Entity: Subscriber...");
 				
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));
+			sendResponse();
 			return false;
 		}
 		
@@ -47,6 +58,8 @@ public class UpdateSubscriber extends AbstractTransaction{
 		subscriberStore.updateSubscriber(subscriberEntity);
 		LOGGER.debug("Update Subscriber successfull!!");
 		
+		sendResponse();
+		
 		return true;
 	}
 
@@ -54,7 +67,14 @@ public class UpdateSubscriber extends AbstractTransaction{
 	public void sendResponse() {
 		
 		TransactionStatus txnStatus=null;
-       Boolean result = ((UpdateSubscriberResponse)this.getResponse()).getResult();
+		
+		TransactionException fault = this.getResponse().getReturnFault();
+				txnStatus = new TransactionStatus();
+				txnStatus.setCode(fault.getStatusCode().getCode());
+				txnStatus.setDescription(fault.getMessage());
+				txnStatus.setComponent(fault.getComponent());
+	
+		boolean result = ((UpdateSubscriberResponse)this.getResponse()).getResult();
 		LOGGER.debug("Invoking update subscriber response!!");
 		ISubscriberResponse subscriberClient=ServiceResolver.getSubscriberResponseClient();
 		subscriberClient.updateSubscriber(this.getRequestId(),txnStatus,result);
