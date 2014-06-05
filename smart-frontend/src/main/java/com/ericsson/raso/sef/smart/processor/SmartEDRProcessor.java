@@ -45,7 +45,7 @@ public abstract class SmartEDRProcessor implements Processor {
 
 	public static Logger log = LoggerFactory.getLogger("smartFE");
 	
-	public static final ThreadLocal<SmartEdr> edrLocal = new ThreadLocal<SmartEdr>() {};
+	public static final ThreadLocal<SmartEdr> edrLocal = new ThreadLocal<SmartEdr>() {}; //TODO: ThreadLocal will fail in the IL Rebuild Design!!!
     
     public static class SmartEdr {
     	public SmartEdr() {
