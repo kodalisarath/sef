@@ -1062,7 +1062,7 @@ public class Offer implements Serializable {
 				+ renewalPeriod +  trialPeriod + immediateTermination
 				+ autoTermination + minimumCommitment + "<products>" 
 				+ products + "</products> " + price + eligibility + accumulation
-				+ switching + " <whiteListedUsers='" + whiteListedUsers + "'/>" + history 
+				+ switching + " <whiteListedUsers value='" + whiteListedUsers + "'/>" + history 
 				+ "<preExiry>" + preExiry + "</preExpiry> <preRenewal>" + preRenewal + "</preRenewal> </Offer>";
 	}
 	
