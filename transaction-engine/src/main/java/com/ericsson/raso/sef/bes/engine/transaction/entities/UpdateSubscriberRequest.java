@@ -2,12 +2,15 @@ package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
 import com.ericsson.raso.sef.core.FrameworkException;
 
 
 public final class UpdateSubscriberRequest extends AbstractRequest {private static final long	serialVersionUID	= 5113481758520068651L;
-
+private static final Logger LOGGER = LoggerFactory.getLogger(UpdateSubscriberRequest.class);
 private String subscriberId = null;
 private Map<String, String>	metas = null;
 
@@ -34,6 +37,7 @@ public void setMetas(Map<String, String> metas) {
 }
 
 public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() throws FrameworkException {
+	LOGGER.debug("Called persistableEntity method and querying for subscriber"+this.subscriberId);
 	FetchSubscriber fetchSubscriber=new FetchSubscriber(this.subscriberId);
 	return fetchSubscriber.execute();
 }

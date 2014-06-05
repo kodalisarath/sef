@@ -215,9 +215,6 @@ public abstract class Resource implements Serializable {
 
 
 	public boolean addDependantOn(Resource other) {
-		if (this.dependantOnThem.contains(other) || other.dependantOnMe.contains(this))
-			return false;
-		
 		synchronized (this) {
 			synchronized (other) {
 				if (this.dependantOnThem == null)
@@ -225,6 +222,9 @@ public abstract class Resource implements Serializable {
 				
 				if (other.dependantOnThem == null)
 					other.dependantOnThem = new ArrayList<Resource>();
+				
+				if (this.dependantOnThem.contains(other) || other.dependantOnMe.contains(this))
+					return false;
 				
 				this.dependantOnThem.add(other);
 				other.dependantOnMe.add(this);				
@@ -253,9 +253,6 @@ public abstract class Resource implements Serializable {
 	}
 
 	public boolean addDependantOnMe(Resource other) {
-		if (this.dependantOnMe.contains(other) || other.dependantOnThem.contains(this))
-			return false;
-		
 		synchronized (this) {
 			synchronized (other) {
 				if (this.dependantOnMe == null)
@@ -263,6 +260,9 @@ public abstract class Resource implements Serializable {
 				
 				if (other.dependantOnThem == null)
 					other.dependantOnThem = new ArrayList<Resource>();
+				
+				if (this.dependantOnMe.contains(other) || other.dependantOnThem.contains(this))
+					return false;
 				
 				this.dependantOnMe.add(other);
 				other.dependantOnThem.add(this);				
