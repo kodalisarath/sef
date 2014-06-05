@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class CreateSubscriber extends AbstractTransaction {
 			if (workflow != null) {
 				String subscriberId = ((CreateSubscriberRequest)this.getRequest()).getSubscriber().getMsisdn();
 				try {
-					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, null));
+					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, new HashMap<String, Object>()));
 				} catch (CatalogException e) {
 					this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
 				}

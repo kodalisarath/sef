@@ -31,7 +31,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 		
 		try {
 			subscriberEntity = ((UpdateSubscriberRequest)this.getRequest()).persistableEntity();
-			LOGGER.debug("Got Persistable Entity: Subscriber...");
+			LOGGER.debug("Got Persistable Entity: Subscriber..." + subscriberEntity.toString());
 				
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));

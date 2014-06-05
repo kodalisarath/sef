@@ -34,24 +34,23 @@ public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.a
 	public List<Product> fulfill(Product e, Map<String, String> map) {
 		LOGGER.debug("Starting to fulfill installing subscriber in CS-AF...");
 		
-		DnsUpdateProfile dnsUpdateProfile = new DnsUpdateProfile(zname);
 		AddDnsRequest dnsRequest = new AddDnsRequest();
-		dnsRequest.setMsisdn(map.get("msisdn"));
-		dnsRequest.setDclass(dnsUpdateProfile.getDclass());
-		dnsRequest.setDtype(dnsUpdateProfile.getDtype());
-		dnsRequest.setRdata(dnsUpdateProfile.getRdata());
-		dnsRequest.setTtl(dnsUpdateProfile.getTtl());
-		dnsRequest.setZname(dnsUpdateProfile.getZname());
+		dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
+		dnsRequest.setDclass(this.getDclass());
+		dnsRequest.setDtype(this.getDtype());
+		dnsRequest.setRdata(this.getRdata());
+		dnsRequest.setTtl(this.getTtl());
+		dnsRequest.setZname(this.getZname());
 		
 		String sdpId= (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
 		dnsRequest.setSdpId(sdpId);
 		
 		try {
 			new AddDnsCommand(dnsRequest).execute();
+			LOGGER.debug("Installed new subscriber in CS-AF DNS");
 		} catch (SmException e1) {
 			LOGGER.error("Failed AddDnsCommand execute" + e1);
 		}
-		LOGGER.debug("Installed new subscriber in CS-AF DNS");
 		 
 		List<Product> returned = new ArrayList<Product>();
 		returned.add(e);
@@ -78,7 +77,7 @@ public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.a
 		
 		DnsUpdateProfile dnsUpdateProfile=new DnsUpdateProfile(zname);
 		DeleteDnsRequest deleteDnsRequest = new DeleteDnsRequest();
-		deleteDnsRequest.setMsisdn(map.get("msisdn"));
+		deleteDnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
 		deleteDnsRequest.setDclass(dnsUpdateProfile.getDclass());
 		deleteDnsRequest.setDtype(dnsUpdateProfile.getDtype());
 		deleteDnsRequest.setSiteId(null);

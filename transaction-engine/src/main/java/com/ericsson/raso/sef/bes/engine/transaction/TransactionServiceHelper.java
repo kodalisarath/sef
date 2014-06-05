@@ -524,10 +524,13 @@ public abstract class TransactionServiceHelper {
 		return map;
 	}
 
-	public static Map<String, String> getApiMap(List<com.ericsson.sef.bes.api.entities.Meta> metas) {
+	public static Map<String, String> getApiMap(
+			List<com.ericsson.sef.bes.api.entities.Meta> metas) {
 		Map<String, String> map = new HashMap<String, String>();
-		for(com.ericsson.sef.bes.api.entities.Meta meta: metas) {
-			map.put(meta.getKey(), meta.getValue());
+		if (metas != null) {
+			for (com.ericsson.sef.bes.api.entities.Meta meta : metas) {
+				map.put(meta.getKey(), meta.getValue());
+			}
 		}
 		return map;
 	}

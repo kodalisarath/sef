@@ -215,8 +215,19 @@ public abstract class Resource implements Serializable {
 	public boolean addDependantOnMe(Resource other) {
 		if (this.dependantOnMe == null)
 			this.dependantOnMe = new ArrayList<Resource>();
-
-		return (this.dependantOnMe.add(other) && other.dependantOnThem.add(this));
+		
+		boolean ok = this.dependantOnMe.add(other);
+		if (ok)
+		{
+			// other.dependantOnMe could be null
+			if (other.dependantOnThem == null)
+			{
+				other.dependantOnThem = new ArrayList<Resource> ();
+			}
+			ok = other.dependantOnThem.add(this);
+		}
+		return ok;
+		//return (this.dependantOnMe.add(other) && other.dependantOnThem.add(this));
 	}
 
 	public boolean removeDependantOnMe(Resource other) {
@@ -237,7 +248,19 @@ public abstract class Resource implements Serializable {
 		if (this.dependantOnThem == null)
 			this.dependantOnThem = new ArrayList<Resource>();
 
-		return (this.dependantOnThem.add(other) && other.dependantOnMe.add(this));
+		boolean ok = this.dependantOnThem.add(other);
+		if (ok)
+		{
+			// other.dependantOnMe could be null
+			if (other.dependantOnMe == null)
+			{
+				other.dependantOnMe = new ArrayList<Resource> ();
+			}
+			ok = other.dependantOnMe.add(this);
+		}
+		return ok;
+		
+		// return (this.dependantOnThem.add(other) && other.dependantOnMe.add(this));
 	}
 
 	public boolean removeDependantOn(Resource other) {
@@ -329,11 +352,11 @@ public abstract class Resource implements Serializable {
 		result = prime * result + ((concreteChildren == null) ? 0 : concreteChildren.hashCode());
 		result = prime * result + ((consumptionUnitName == null) ? 0 : consumptionUnitName.hashCode());
 		result = prime * result + ((cost == null) ? 0 : cost.hashCode());
-		result = prime * result + ((dependantOnMe == null) ? 0 : dependantOnMe.hashCode());
-		result = prime * result + ((dependantOnThem == null) ? 0 : dependantOnThem.hashCode());
+		//result = prime * result + ((dependantOnMe == null) ? 0 : dependantOnMe.hashCode());
+		//result = prime * result + ((dependantOnThem == null) ? 0 : dependantOnThem.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + (int) (enforcedMaxQuota ^ (enforcedMaxQuota >>> 32));
-		result = prime * result + (int) (enforcedMinQuota ^ (enforcedMinQuota >>> 32));
+		result = prime * result + (int) (enforcedMaxQuota );
+		result = prime * result + (int) (enforcedMinQuota);
 		result = prime * result + ((fulfillmentProfiles == null) ? 0 : fulfillmentProfiles.hashCode());
 		result = prime * result + (isAbstract ? 1231 : 1237);
 		result = prime * result + (isConsumable ? 1231 : 1237);

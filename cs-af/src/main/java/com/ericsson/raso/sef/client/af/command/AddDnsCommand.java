@@ -27,22 +27,27 @@ public class AddDnsCommand implements Command<Void> {
 	public Void execute() throws SmException {
 		try {
 			DnsAddress dns = DnsServiceResolver.getAccountFinderRoute().getDns(request.getMsisdn(), request.getSiteId());
+			log.debug("Found the dnsClient to execute the command: " + dns);
+			
+			log.debug("Checking the DNS Request: " + request);
 			String msisdn = request.getMsisdn();
 			String lastDigit = msisdn.substring(msisdn.length() - 1);
 			String restMsisdn = msisdn.substring(0, msisdn.length() - 1);
 			String updateMsisdn = restMsisdn + '.' + lastDigit;
-			String rData = request.getSdpId() + request.getRdata();
+			String rData = "PIDCSDP01" + request.getRdata();
 			
 			Name zone = Name.fromString(lastDigit + request.getZname());
 			Update update = new Update(zone);
 			update.add(Name.fromString(updateMsisdn + request.getZname()), request.getDtype(),  request.getTtl(), rData);
-
-			Resolver res = new SimpleResolver(dns.getIp());
+			
+			log.debug("Preparing the DNS Client to issue command over the network...");
+			//TODO: Super crime if you this ip post 6th June
+			Resolver res = new SimpleResolver("10.245.139.132");
 			res.setTCP(dns.isUseTcp());
 			
-			log.info("DNS Add entry: "  + update.toString());
+			log.info("DNS Command to execute: "  + update.toString());
 			res.send(update);
-			log.info("dns updated for msisdn: " + msisdn);
+			log.info("DNS provisioned wih user: " + msisdn);
 		} catch (Exception e) {
 			log.error("Error while firing DNS command.", e);
 			throw new SmException("cs-af", e);
