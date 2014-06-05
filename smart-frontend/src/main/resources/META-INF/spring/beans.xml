@@ -83,7 +83,7 @@
 <!-- 	<bean id="smartEdr" class="com.ericsson.raso.sef.smart.processor.SmartEDRProcessor" />	 -->
 	<bean id="requestIdGenerator" class="com.ericsson.raso.sef.smart.processor.RequestIdProcessor" />
 	<bean id="usecaseProcessor" class="com.ericsson.raso.sef.smart.usecase.UsecaseProcessor" />
-<!-- 	<bean id="smartInEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdrInProcessor" />	 -->
+<!-- 	<bean id="smartInEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdxrInProcessor" />	 -->
 <!-- 	<bean id="smartOutEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdrOutProcessor" />	 -->
 	<bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
 	<bean id="CARecharge" class="com.ericsson.raso.sef.smart.processor.CARecharge" />

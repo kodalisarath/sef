@@ -30,6 +30,7 @@
 		com.ericsson.raso.sef.bes.prodcat.tasks,
 		com.ericsson.sef.bes.api.subscriber,
 		com.ericsson.sef.bes.api.fulfillment,
+		oracle.jdbc.driver,
 		org.apache.cxf.bus.spring,
 		org.eclipse.jetty.server.nio,
 		org.apache.camel,
