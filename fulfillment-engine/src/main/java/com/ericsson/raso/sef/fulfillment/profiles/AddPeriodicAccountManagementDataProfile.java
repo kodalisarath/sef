@@ -7,14 +7,15 @@ import com.ericsson.sef.bes.api.entities.Product;
 
 public class AddPeriodicAccountManagementDataProfile extends BlockingFulfillment<Product>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4076483025272606651L;
+
 	public AddPeriodicAccountManagementDataProfile(String name) {
 		super(name);
 	}
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private PamInformationList pamInformationList;
 	
 	public PamInformationList getPamInformationList() {
