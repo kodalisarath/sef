@@ -89,7 +89,7 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		if(request.getUssdEndOfCallNotificationID() !=null) 
 			request.setUssdEndOfCallNotificationID(createSubscriberProfile.getUssdEndOfCallNotificationID());
 		
-		request.setSubscriberNumber(map.get("msisdn"));
+		request.setSubscriberNumber(map.get("SUBSCRIBER_ID"));
 		InstallSubscriberCommand instlCommand = new InstallSubscriberCommand(request);
 		LOGGER.debug("Packed the request for execution...");
 		
@@ -124,7 +124,7 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 	public List<Product> revert(Product e, Map<String, String> map) {
 		CreateSubscriberProfile createSubscriberProfile= new CreateSubscriberProfile(originOperatorId);
 		DeleteSubscriberRequest request = new DeleteSubscriberRequest();
-		request.setSubscriberNumber(map.get("msisdn"));
+		request.setSubscriberNumber(map.get("SUBSCRIBER_ID"));
 		request.setOriginOperatorId(createSubscriberProfile.getOriginOperatorId());
 		try {
 			new DeleteSubscriberCommand(request).execute();

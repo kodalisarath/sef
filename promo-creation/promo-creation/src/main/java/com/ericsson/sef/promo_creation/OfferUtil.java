@@ -3661,15 +3661,17 @@ public class OfferUtil
 		Resource dnsRes =  lookupResourcesByName.get("DnsUpdateAF_Cmd");
 		Resource acipRes = lookupResourcesByName.get("InstallSubscriberACIP_Cmd");
 		// Handle dependant On/Me
-		acipRes.addDependantOn(dnsRes);
+
 		dnsRes.addDependantOnMe(acipRes);
+		
+		offerResources.add(acipRes);
+		offerResources.add(dnsRes);
 		
 		serviceRegistry.updateResource(dnsRes);
 		serviceRegistry.updateResource(acipRes);	
 
 		
-		offerResources.add(acipRes);
-		offerResources.add(dnsRes);
+
 		
 		offer = helper.createNonCommercialOffer("CREATE_SUBSCRIBER", "Create Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
