@@ -3662,6 +3662,8 @@ public class OfferUtil
 		Resource acipRes = lookupResourcesByName.get("InstallSubscriberACIP_Cmd");
 		// Handle dependant On/Me
 		acipRes.addDependantOnMe(dnsRes);
+		serviceRegistry.updateResource(acipRes);
+		serviceRegistry.updateResource(dnsRes);
 
 		
 		offerResources.add(acipRes);
