@@ -34,14 +34,20 @@ public class AddDnsCommand implements Command<Void> {
 			String lastDigit = msisdn.substring(msisdn.length() - 1);
 			String restMsisdn = msisdn.substring(0, msisdn.length() - 1);
 			String updateMsisdn = restMsisdn + '.' + lastDigit;
-			String rData = request.getSdpId() + request.getRdata();
+			String rData = "PIDCSDP01" + request.getRdata();
 			
 			Name zone = Name.fromString(lastDigit + request.getZname());
 			Update update = new Update(zone);
 			update.add(Name.fromString(updateMsisdn + request.getZname()), request.getDtype(),  request.getTtl(), rData);
 
+<<<<<<< HEAD
 			log.debug("Preparing the DNS Client to issue command over the network..., shooting to " + dns.getIp());
 			Resolver res = new SimpleResolver(dns.getIp());
+=======
+			log.debug("Preparing the DNS Client to issue command over the network...");
+			//TODO: Super crime if you this ip post 6th June
+			Resolver res = new SimpleResolver("10.245.139.132");
+>>>>>>> a0fb5971d99befd029b4b36a3ded3e901042fe38
 			res.setTCP(dns.isUseTcp());
 			
 			log.info("DNS Command to execute: "  + update.toString());
