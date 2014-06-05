@@ -19,7 +19,9 @@ import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
-	private static final long serialVersionUID = 5706705833688931767L;
+	private static final long serialVersionUID = -7488149893022619584L;
+
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReadSubscriberProfile.class);
 	
 	
