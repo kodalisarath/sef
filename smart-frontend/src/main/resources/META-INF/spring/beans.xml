@@ -26,10 +26,14 @@
 <!-- 	<bean id="licenseInterceptor" class="com.ericsson.raso.sef.auth.integration.LicenseThrottleInterceptor" /> -->
 <!-- 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" /> -->
 	
-	
 	<cxf:cxfEndpoint id="smartInterface"
-		serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface"
-		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/">
+	  serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface"
+	  xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"
+	  wsdlURL="classpath:wsdl/TisService.xml" bus="cxf">
+	
+<!-- 	<cxf:cxfEndpoint id="smartInterface" -->
+<!-- 		serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface" -->
+<!-- 		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"> -->
 		<!-- wsdlURL="classpath:wsdl/TisService.xml" -->
 
 		<cxf:properties>
@@ -89,9 +93,9 @@
 	
 	
 	<bean id="CARecharge" class="com.ericsson.raso.sef.smart.processor.CARecharge" />
-	<bean id="balanceAdjustment" class="com.ericsson.sm.smart.processor.BalanceAdjustment" />	
-	<bean id="modifyPackageItem" class="com.ericsson.sm.smart.processor.ModifyPackageItem" />	
-	<bean id="readCustomerInfoCharge" class="com.ericsson.sm.smart.processor.ReadCustomerInfoCharge" />	
+	<bean id="balanceAdjustment" class="com.ericsson.raso.sef.smart.processor.BalanceAdjustment" />	
+	<bean id="modifyPackageItem" class="com.ericsson.raso.sef.smart.processor.ModifyPackageItem" />	
+	<bean id="readCustomerInfoCharge" class="com.ericsson.raso.sef.smart.processor.ReadCustomerInfoCharge" />	
 	
 	
 	<bean id="createOrWriteCustomer" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteCustomerProcessor"/>

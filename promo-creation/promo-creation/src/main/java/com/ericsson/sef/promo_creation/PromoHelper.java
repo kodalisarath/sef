@@ -2,6 +2,7 @@ package com.ericsson.sef.promo_creation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -335,7 +336,7 @@ public class PromoHelper {
 			AtomicProduct createCommercialProduct = new AtomicProduct(productName);
 			createCommercialProduct.setResetQuotaOnRenewal(false);
 			createCommercialProduct.setResource(resource);
-			
+			createCommercialProduct.setValidity(new InfiniteTime());
 			commercialOffer.addProduct(createCommercialProduct);
 		}
 		
@@ -368,7 +369,9 @@ public class PromoHelper {
 				System.out.println(productName);
 				AtomicProduct createNonCommercialProduct = new AtomicProduct(productName);
 				createNonCommercialProduct.setQuota(new UnlimitedQuota());
+				//createNonCommercialProduct.setValidity(new DaysTime());
 				createNonCommercialProduct.setResource(resource);
+				createNonCommercialProduct.setValidity(new InfiniteTime());
 				
 				nonCommercialOffer.addProduct(createNonCommercialProduct);
 			}

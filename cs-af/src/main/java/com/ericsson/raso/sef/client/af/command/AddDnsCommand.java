@@ -40,7 +40,7 @@ public class AddDnsCommand implements Command<Void> {
 			Update update = new Update(zone);
 			update.add(Name.fromString(updateMsisdn + request.getZname()), request.getDtype(),  request.getTtl(), rData);
 
-			log.debug("Preparing the DNS Client to issue command over the network...");
+			log.debug("Preparing the DNS Client to issue command over the network..., shooting to " + dns.getIp());
 			Resolver res = new SimpleResolver(dns.getIp());
 			res.setTCP(dns.isUseTcp());
 			
