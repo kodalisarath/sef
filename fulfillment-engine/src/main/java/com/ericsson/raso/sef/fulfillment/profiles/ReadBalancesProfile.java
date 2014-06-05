@@ -82,7 +82,7 @@ public class ReadBalancesProfile extends BlockingFulfillment<Product> {
 		
 		
 		GetBalanceAndDateRequest request = new GetBalanceAndDateRequest();
-		String subscriberId = map.get("SUSBCRIBER_ID");
+		String subscriberId = map.get("SUBSCRIBER_ID");
 		if (subscriberId == null)
 			throw new FulfillmentException("ffe", new ResponseCode(1002, "runtime parameter 'SUBSCRIBER_ID' missing in request!!"));
 		request.setSubscriberNumber(subscriberId);

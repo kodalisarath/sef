@@ -45,7 +45,7 @@ public class OfferProfile extends BlockingFulfillment<Product> {
 		request.setOfferID(this.offerID);
 		request.setOfferType(this.offerType);
 		
-		String requestParam = map.get("SUSBCRIBER_ID");
+		String requestParam = map.get("SUBSCRIBER_ID");
 		if (requestParam == null)
 			throw new FulfillmentException("ffe", new ResponseCode(1002, "runtime parameter 'SUBSCRIBER_ID' missing in request!!"));
 		request.setSubscriberNumber(requestParam);

@@ -341,11 +341,11 @@ public abstract class Resource implements Serializable {
 		result = prime * result + ((concreteChildren == null) ? 0 : concreteChildren.hashCode());
 		result = prime * result + ((consumptionUnitName == null) ? 0 : consumptionUnitName.hashCode());
 		result = prime * result + ((cost == null) ? 0 : cost.hashCode());
-		result = prime * result + ((dependantOnMe == null) ? 0 : dependantOnMe.hashCode());
-		result = prime * result + ((dependantOnThem == null) ? 0 : dependantOnThem.hashCode());
+		//result = prime * result + ((dependantOnMe == null) ? 0 : dependantOnMe.hashCode());
+		//result = prime * result + ((dependantOnThem == null) ? 0 : dependantOnThem.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + (int) (enforcedMaxQuota ^ (enforcedMaxQuota >>> 32));
-		result = prime * result + (int) (enforcedMinQuota ^ (enforcedMinQuota >>> 32));
+		result = prime * result + (int) (enforcedMaxQuota );
+		result = prime * result + (int) (enforcedMinQuota);
 		result = prime * result + ((fulfillmentProfiles == null) ? 0 : fulfillmentProfiles.hashCode());
 		result = prime * result + (isAbstract ? 1231 : 1237);
 		result = prime * result + (isConsumable ? 1231 : 1237);

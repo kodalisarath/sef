@@ -48,7 +48,7 @@ public class DedicatedAccountProfile extends BlockingFulfillment<Product> {
 			throw new FulfillmentException("ffe", new ResponseCode(1001, "runtime parameters 'metas' missing in request!!"));
 		
 		UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
-		String requestParam = map.get("SUSBCRIBER_ID");
+		String requestParam = map.get("SUBSCRIBER_ID");
 		if (requestParam == null)
 			throw new FulfillmentException("ffe", new ResponseCode(1002, "runtime parameter 'SUBSCRIBER_ID' missing in request!!"));
 		request.setSubscriberNumber(requestParam);
