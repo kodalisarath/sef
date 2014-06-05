@@ -56,6 +56,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	
 	private static Map<String, Step> sbRequestStepMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEPS.name());
 	
+	private static Map<String, Status> sbExecutionStatus = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STATUS.name());
 	
 
 	
@@ -232,7 +233,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			if (next instanceof FulfillmentStep) {
 				step = (FulfillmentStep) next;
 			
-				if (this.sbRequestStepMapper.get(step.getStepCorrelator()) != null) {
+				if (this.sbExecutionStatus.get(step.getStepCorrelator()) == status.PROCESSING) {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					// this means the task had been submitted earlier...
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
@@ -241,13 +242,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						if (result.getResultantFault() != null) {
 							step.setFault(result.getResultantFault());
 							anyFault = true;	
+							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
 						}
 						if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
 							anyFailure = true;
-						step.setResult(result);
+							step.setResult(result);
 						
 						if (anyFault || anyFailure) {
 							this.status = Status.DONE_FAULT;
+							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED);
 							break;
 						}
 					} else {
@@ -255,7 +258,9 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						isAllStepsCompleted = false;
 						isCurrentParallelAllCompleted = false; // allow the task to complete & check on the next one....
 					}
-				} else {
+				}
+				
+				if (this.sbExecutionStatus.get(step.getStepCorrelator()) == Status.WAITING){
 					logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
 					isAllStepsCompleted = false;
 					// this means the task is not yet submitted...
@@ -265,6 +270,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					this.orchestrationTaskMapper.put(step.getStepCorrelator(),this);
 					this.sbRequestStepMapper.put(step.getStepCorrelator(),step);
 					this.sbRequestResultMapper.put(step.getStepCorrelator(),new FulfillmentStepResult(null, null));
+					this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
 					OrchestrationManager.getInstance().getGrinder().submit(step);
 					if (!isSerialModeNow)
 						break;
