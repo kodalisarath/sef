@@ -6,7 +6,7 @@ public enum Constants {
 	/* 
 	 * All constants needed for Transaction & Orchestration 
 	 */
-	CREATE_SUSBCRIBER,
+	CREATE_SUBSCRIBER,
 	UPDATE_SUBSCRIBER,
 	HANDLE_LIFE_CYCLE,
 	DELETE_SUBSCRIBER,

@@ -281,6 +281,10 @@ public class OfferContainer implements Serializable {
 		return offers;
 	}
 
+	public TreeMap<String, TreeMap<Integer, Offer>> getOffersById() {
+		return offersById;
+	}
+
 	
 	
 }

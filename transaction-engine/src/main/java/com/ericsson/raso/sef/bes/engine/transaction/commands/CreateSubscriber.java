@@ -43,7 +43,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		try {
 			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
 			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-			Offer workflow = catalog.getOfferById(Constants.CREATE_SUSBCRIBER.name());
+			Offer workflow = catalog.getOfferById(Constants.CREATE_SUBSCRIBER.name());
 			if (workflow != null) {
 				String subscriberId = ((CreateSubscriberRequest)this.getRequest()).getSubscriber().getMsisdn();
 				try {
