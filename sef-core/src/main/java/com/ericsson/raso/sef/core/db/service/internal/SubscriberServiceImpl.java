@@ -192,6 +192,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	}
 	
 	private Collection<Meta> fetchMetas(String userId) {
+		logger.debug("Inside the method to fetch metas");
 		return subscriberMapper.getAllSubscriberMetas(userId);
 	}
 
@@ -204,9 +205,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 		Subscriber subscriber = null;
 		try {
 			subscriber = subscriberMapper.getSubscriber(msisdn);
+              logger.debug("subscriber returned on calling  a mapper "+subscriber);
 			if (subscriber != null) {
 				Collection<Meta> metaCollections = fetchMetas(subscriber
 						.getUserId());
+				logger.debug("Returned metas for the subscriber of size"+metaCollections.size());
 				for (Meta meta : metaCollections) {
 					Meta sMeta = new Meta();
 					sMeta.setKey(meta.getKey());
@@ -219,7 +222,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 			logger.error("Exception occured while querying subscriber entity ",
 					e);
 		}
-
 		return subscriber;
 
 	}
