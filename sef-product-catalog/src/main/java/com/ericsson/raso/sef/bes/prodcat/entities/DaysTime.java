@@ -5,27 +5,27 @@ public class DaysTime extends AbstractTimeCharacteristic {
 
 	private static final int DAYS2MILLIS = 86400000; // (24 hours * 60 mins * 60 secs * 1000 millis)
 
-	private long numberOfHours = -1L;
+	private long expiryInMillis = -1L;
 
 	public DaysTime(int days) {
 		super(Type.DAYS);
 
-		this.numberOfHours = (days * DAYS2MILLIS);
+		this.expiryInMillis = (days * DAYS2MILLIS);
 	}
 
 	@Override
 	public long getExpiryTimeInMillis() {
 		if (this.getActivationTime() == DISCOVERY_MODE)
-			return this.numberOfHours;
+			return (this.expiryInMillis + System.currentTimeMillis());
 		else
-			return (this.getActivationTime() + this.numberOfHours);
+			return (this.getActivationTime() + this.expiryInMillis);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + (int) (numberOfHours ^ (numberOfHours >>> 32));
+		result = prime * result + (int) (expiryInMillis ^ (expiryInMillis >>> 32));
 		return result;
 	}
 
@@ -44,7 +44,7 @@ public class DaysTime extends AbstractTimeCharacteristic {
 			return false;
 		
 		DaysTime other = (DaysTime) obj;
-		if (numberOfHours != other.numberOfHours)
+		if (expiryInMillis != other.expiryInMillis)
 			return false;
 		
 		return true;
@@ -52,7 +52,7 @@ public class DaysTime extends AbstractTimeCharacteristic {
 
 	@Override
 	public String toString() {
-		return "<TimeCharacteristic name='Days' numberOfDays='" + ((int)(this.numberOfHours/24)) + "'/>";
+		return "<TimeCharacteristic name='Days' numberOfDays='" + ((int)(this.expiryInMillis/24)) + "'/>";
 	}
 	
 	

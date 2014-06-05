@@ -20,7 +20,7 @@ public class HoursTime extends AbstractTimeCharacteristic {
 	@Override
 	public long getExpiryTimeInMillis() {
 		if (this.getActivationTime() == DISCOVERY_MODE)
-			return this.numberOfHours;
+			return (this.numberOfHours * HOURS2MILLIS) + System.currentTimeMillis();
 		else
 			return (this.getActivationTime() + this.numberOfHours);
 	}
