@@ -1,8 +1,19 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ericsson.raso.sef.client.air.command.UpdateServiceClassCommand;
+import com.ericsson.raso.sef.client.air.request.UpdateServiceClassRequest;
+import com.ericsson.raso.sef.core.Command;
+import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
@@ -11,10 +22,7 @@ public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
 		super(name);
 	}
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(UpdateServiceClassProfile.class);
 
 	private String serviceClassAction;
 
@@ -27,15 +35,38 @@ public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
 	}
 
 	@Override
-	public List<Product> fulfill(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
+		
+		logger.info("Entering fullfill method of updateServiceClassProfile");
+		if (map == null || map.isEmpty())
+			throw new FulfillmentException("ffe", new ResponseCode(1001, "runtime parameters 'metas' missing in request!!"));
+		
+		String msisdn = map.get("msisdn");
+		String packag = map.get("package");
+		String pack = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_welcomePackMapping", packag);
+		
+		List<Product> products = new ArrayList<Product>();
+		logger.debug("Invoking CS to update service class");
+		UpdateServiceClassRequest request = new UpdateServiceClassRequest();
+		request.setSubscriberNumber(msisdn);
+		request.setServiceClassAction(this.serviceClassAction);
+		request.setServiceClassNew(Integer.parseInt(pack));
+		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
+		request.setServiceClassCurrent(Integer.valueOf(defaultServiceClass));		
+		Command<?> cmd = new UpdateServiceClassCommand(request);
+		try {
+			cmd.execute();
+		} catch (SmException e1) {
+			logger.debug("Exception in execution of ucip request. Code: " + e1.getStatusCode().getCode() + e1.getStatusCode().getMessage());
+			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getMessage()));	
+		}
+		return products;
 	}
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Product> products = new ArrayList<Product>();
+		return products;
 	}
 
 	@Override
