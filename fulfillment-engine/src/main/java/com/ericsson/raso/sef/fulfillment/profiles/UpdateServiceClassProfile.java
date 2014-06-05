@@ -17,8 +17,13 @@ import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3209549693082338094L;
 
-	protected UpdateServiceClassProfile(String name) {
+	public UpdateServiceClassProfile(String name) {
 		super(name);
 	}
 
