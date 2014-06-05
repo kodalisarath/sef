@@ -92,7 +92,8 @@
 	<bean id="createOrWriteRop" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteRop"/>
 	<bean id="versionCreateOrWriteRop" class="com.ericsson.raso.sef.smart.processor.VersionCreateOrWriteRop"/>
 	<bean id="bucketCreateOrWriteRop" class="com.ericsson.raso.sef.smart.processor.BucketCreateOrWriteRop"/>
-	
+	<bean id="modifyCustomerGrace" class="com.ericsson.raso.sef.smart.processor.ModifyCustomerGrace"></bean>
+	<bean id="modifyCustomerPreActive" class="com.ericsson.raso.sef.smart.processor.ModifyCustomerPreActive"></bean>
 	<camelContext id="com.ericsson.raso.sef.smart.smartInterface" xmlns="http://camel.apache.org/schema/spring">
 		<route>
 			<from uri="cxf:bean:smartInterface" />
