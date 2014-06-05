@@ -63,7 +63,9 @@ public abstract class TransactionServiceHelper {
 		returned.setAccountId(subscriber.getCustomerId());
 		returned.setCustomerId(subscriber.getCustomerId());
 		returned.setContractId(subscriber.getContractId());
-		returned.setContractState(ContractState.valueOf(subscriber.getContractState()));
+		if(subscriber.getContractState() != null){
+			returned.setContractState(ContractState.valueOf(subscriber.getContractState()));
+		}
 		returned.setCustomerSegment(subscriber.getCustomerSegment());
 		returned.setEmail(subscriber.getEmail());
 		returned.setImeiSv(subscriber.getImeiSv());
