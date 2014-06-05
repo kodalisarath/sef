@@ -32,9 +32,11 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		try{
 		logger.debug("Preparing for fulfillment");
 		AtomicProduct atomicProduct = ((Fulfillment)this.getExecutionInputs()).getAtomicProduct();
+		logger.debug("fetching subscriber id from fulfilment input");
 		String subscriberId = ((Fulfillment)this.getExecutionInputs()).getSubscriberId();
 		Map<String, Object> additionalInputs = ((Fulfillment)this.getExecutionInputs()).getAdditionalInputs();
 		FulfillmentMode mode = ((Fulfillment)this.getExecutionInputs()).getMode();
+		
 		
 		//------------------------------------------------------------------------------------
 		// Remove these loggers post FT
