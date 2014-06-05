@@ -55,7 +55,7 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		logger.debug("Resource name " + atomicProduct.getResource().getName());
 		//product.setValidity(atomicProduct.getValidity().getExpiryTimeInMillis());
 		//product.setQuotaDefined(atomicProduct.getQuota().getDefinedQuota());
-		logger.debug("How many metas do we have: " + additionalInputs.size());
+		//logger.debug("How many metas do we have: " + additionalInputs.size());
 		List<Meta> metas = converToList(additionalInputs);
 		//TODO: Impedence on the interface to accept object. refactoring required in product catalog
 		
