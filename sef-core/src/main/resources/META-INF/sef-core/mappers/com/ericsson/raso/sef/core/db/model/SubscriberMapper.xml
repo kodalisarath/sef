@@ -39,16 +39,12 @@
 <!-- 		<result property="lastModified" column="last_modified"/> -->
 <!-- 		<result property="created" column="created"/> -->
 <!-- 	</resultMap> -->
-<!-- 	<resultMap id="MetaResult" type="Meta"> -->
-<!-- 		<result property="key" column="last_modified"/> -->
-<!-- 		<result property="value" column="created"/> -->
-<!-- 	</resultMap> -->
-	<!-- <resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
+	<resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
 		<id property="userId" column="user_id" />
 		<result property="eventTimestamp" column="event_timestamp" jdbcType="TIMESTAMP"/>
 		<result property="attributeName" column="attribute_name" />
 		<result property="attributeNewValue" column="attribute_new_value" />
-	</resultMap> -->
+	</resultMap>
 	<resultMap id="MetaResult" type="Meta">
 	<result property="key" column="last_modified"/>
 	<result property="value" column="created"/> 

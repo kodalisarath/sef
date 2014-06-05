@@ -30,6 +30,7 @@
 		com.ericsson.raso.sef.logging,
 		com.ericsson.raso.sef.core.jaxws.*,
 		org.apache.cxf.binding.soap,
+		com.ericsson.raso.sef.core.db.model,
 		org.slf4j.*,
     	META-INF.cxf,
     	org.apache.cxf.interceptor,

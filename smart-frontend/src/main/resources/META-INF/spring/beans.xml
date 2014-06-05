@@ -18,6 +18,7 @@
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
 	
 	<bean id="smartContext" class="com.ericsson.raso.sef.smart.SmartServiceResolver"/>
+	
 
 <!-- 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" /> -->
 <!-- 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" /> -->
@@ -86,6 +87,7 @@
 <!-- 	<bean id="smartOutEdr" class="com.ericsson.raso.sef.smart.processor.SmartEdrOutProcessor" />	 -->
 	<bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
 	<bean id="CARecharge" class="com.ericsson.raso.sef.smart.processor.CARecharge" />
+	<bean id="createOrWriteCustomer" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteCustomerProcessor"/>
 	
 	<camelContext id="com.ericsson.raso.sef.smart.smartInterface" xmlns="http://camel.apache.org/schema/spring">
 		<route>
