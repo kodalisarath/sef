@@ -166,8 +166,10 @@ public final class AtomicProduct extends Product implements Serializable, Compar
 
 	@Override
 	public int compareTo(AtomicProduct o) {
-		// TODO Auto-generated method stub
-		return 0;
+		if (this.quota.getDefinedQuota() > o.quota.getDefinedQuota())
+			return 1;
+		else
+			return -1;
 	}
 
 	
