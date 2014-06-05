@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.core.db.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -9,8 +10,12 @@ import java.util.TreeMap;
 import com.ericsson.raso.sef.core.Meta;
 
 //TODO: Cleanup all SMART specific metas into SMART Front-End Project....
-public class Subscriber {
+public class Subscriber implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 875848050925514465L;
 	public static final String MSISDN = "MSISDN";
 	public static final String CONTRACT_STATE = "contractState";
 	
