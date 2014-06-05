@@ -1,6 +1,6 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -21,6 +21,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.LimitedQuota;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
 import com.ericsson.raso.sef.core.Meta;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.sef.bes.api.entities.Offer;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.Subscriber;
@@ -31,7 +32,6 @@ public abstract class TransactionServiceHelper {
 	
 	public static Subscriber getApiEntity(com.ericsson.raso.sef.core.db.model.Subscriber subscriber) {
 		Subscriber returned = new Subscriber();
-		
 		
 		returned.setBillCycleDay(subscriber.getBillCycleDay());
 		returned.setContractId(subscriber.getContractId());
@@ -57,7 +57,42 @@ public abstract class TransactionServiceHelper {
 		
 	}
 	
+	public static com.ericsson.raso.sef.core.db.model.Subscriber getPersistableEntity(Subscriber subscriber) {
+		com.ericsson.raso.sef.core.db.model.Subscriber returned = new com.ericsson.raso.sef.core.db.model.Subscriber();
+		
+		returned.setAccountId(subscriber.getCustomerId());
+		returned.setCustomerId(subscriber.getCustomerId());
+		returned.setContractId(subscriber.getContractId());
+		returned.setContractState(ContractState.valueOf(subscriber.getContractState()));
+		returned.setCustomerSegment(subscriber.getCustomerSegment());
+		returned.setEmail(subscriber.getEmail());
+		returned.setImeiSv(subscriber.getImeiSv());
+		returned.setImsi(subscriber.getImsi());
+		returned.setMetas(getMetas(subscriber.getMetas()));
+		returned.setMsisdn(subscriber.getMsisdn());
+		returned.setPin(subscriber.getPin());
+		returned.setPaymentType(subscriber.getPaymentType());
+		returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
+		returned.setRatePlan(subscriber.getRatePlan());
+		returned.setRegistrationDate(new Date(subscriber.getRegistrationDate()));
+		returned.setUserId(subscriber.getUserId());
+		
+		
+		return returned;
+	}
 	
+	
+	private static Collection<Meta> getMetas(Map<String,String> metaMap) {
+		Collection<Meta> metas = new ArrayList<Meta>();
+		if (metaMap != null) {
+			for (String key : metaMap.keySet()) {
+				Meta meta = new Meta();
+				meta.setKey(key);
+				meta.setValue(metaMap.get(key));
+			}
+		}
+		return metas;
+	}
 
 	private static Map<String, String> getMetas(Collection<Meta> subscriberMetas) {
 		Map<String,String> map = new HashMap<String, String>();
