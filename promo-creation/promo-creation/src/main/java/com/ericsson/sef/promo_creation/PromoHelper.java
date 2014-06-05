@@ -363,16 +363,16 @@ public class PromoHelper {
 				nonCommercialOffer.addExternalHandle(planCode);
 			}
 			
-			for (int i = 0; i < resources.size(); i++) {
+			for (Resource resource: resources) {
 				
-				String productName = nonCommercialOffer.getName() + "_" + resources.get(i).getName();
+				String productName = nonCommercialOffer.getName() + "_" + resource.getName();
 				AtomicProduct createNonCommercialProduct = new AtomicProduct(productName);
 				createNonCommercialProduct.setQuota(new UnlimitedQuota());
-				createNonCommercialProduct.setResource(resources.get(i));
-				// logger.info("Non CommercialOffer: " + nonCommercialOffer.toString());
+				createNonCommercialProduct.setResource(resource);
+				
 				nonCommercialOffer.addProduct(createNonCommercialProduct);
 			}
-			
+			logger.info("Non CommercialOffer: " + nonCommercialOffer.toString());
 			return nonCommercialOffer;
 	}
 	
