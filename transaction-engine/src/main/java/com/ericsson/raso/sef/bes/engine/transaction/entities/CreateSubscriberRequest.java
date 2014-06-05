@@ -55,7 +55,7 @@ public final class CreateSubscriberRequest extends AbstractRequest {
 	}
 
 	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() throws FrameworkException {
-		FetchSubscriber fetchSubscriber=new FetchSubscriber(this.subscriber.getImsi());
+		FetchSubscriber fetchSubscriber=new FetchSubscriber(this.subscriber.getMsisdn());
 		return fetchSubscriber.execute();
 		
 	}
