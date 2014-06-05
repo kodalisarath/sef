@@ -212,69 +212,81 @@ public abstract class Resource implements Serializable {
 		return concreteChildren;
 	}
 
-	public boolean addDependantOnMe(Resource other) {
-		if (this.dependantOnMe == null)
-			this.dependantOnMe = new ArrayList<Resource>();
-		
-		boolean ok = this.dependantOnMe.add(other);
-		if (ok)
-		{
-			// other.dependantOnMe could be null
-			if (other.dependantOnThem == null)
-			{
-				other.dependantOnThem = new ArrayList<Resource> ();
-			}
-			ok = other.dependantOnThem.add(this);
-		}
-		return ok;
-		//return (this.dependantOnMe.add(other) && other.dependantOnThem.add(this));
-	}
 
-	public boolean removeDependantOnMe(Resource other) {
-		if (this.dependantOnMe == null)
+
+	public boolean addDependantOn(Resource other) {
+		if (this.dependantOnThem.contains(other) || other.dependantOnMe.contains(this))
 			return false;
-
-		this.dependantOnMe.remove(other);
-		if (this.dependantOnMe.isEmpty())
-			this.dependantOnMe = null;
-
-		other.dependantOnThem.remove(this);
-		if (other.dependantOnThem.isEmpty())
-			other.dependantOnThem = null;
+		
+		synchronized (this) {
+			synchronized (other) {
+				if (this.dependantOnThem == null)
+					this.dependantOnThem = new ArrayList<Resource>();
+				
+				if (other.dependantOnThem == null)
+					other.dependantOnThem = new ArrayList<Resource>();
+				
+				this.dependantOnThem.add(other);
+				other.dependantOnMe.add(this);				
+			}
+		}		
 		return true;
 	}
 
-	public boolean addDependantOn(Resource other) {
-		if (this.dependantOnThem == null)
-			this.dependantOnThem = new ArrayList<Resource>();
-
-		boolean ok = this.dependantOnThem.add(other);
-		if (ok)
-		{
-			// other.dependantOnMe could be null
-			if (other.dependantOnMe == null)
-			{
-				other.dependantOnMe = new ArrayList<Resource> ();
+	public boolean removeDependantOn(Resource other) {
+		synchronized (this) {
+			synchronized (other) {
+				if (this.dependantOnThem != null) {
+					this.dependantOnThem.remove(other);
+					if (this.dependantOnThem.isEmpty())
+						this.dependantOnThem = null;
+				}
+				
+				if (other.dependantOnMe == null) {
+					other.dependantOnMe.remove(this);
+					if (other.dependantOnMe.isEmpty())
+						other.dependantOnThem = null;
+				}
 			}
-			ok = other.dependantOnMe.add(this);
 		}
-		return ok;
-		
-		// return (this.dependantOnThem.add(other) && other.dependantOnMe.add(this));
+		return true;
 	}
 
-	public boolean removeDependantOn(Resource other) {
-		if (this.dependantOnThem == null)
+	public boolean addDependantOnMe(Resource other) {
+		if (this.dependantOnMe.contains(other) || other.dependantOnThem.contains(this))
 			return false;
+		
+		synchronized (this) {
+			synchronized (other) {
+				if (this.dependantOnMe == null)
+					this.dependantOnMe = new ArrayList<Resource>();
+				
+				if (other.dependantOnThem == null)
+					other.dependantOnThem = new ArrayList<Resource>();
+				
+				this.dependantOnMe.add(other);
+				other.dependantOnThem.add(this);				
+			}
+		}		
+		return true;
+	}
 
-		this.dependantOnThem.remove(other);
-		if (this.dependantOnThem.isEmpty())
-			this.dependantOnThem = null;
-
-		other.dependantOnMe.remove(this);
-		if (other.dependantOnMe.isEmpty())
-			other.dependantOnMe = null;
-
+	public boolean removeDependantOnMe(Resource other) {
+		synchronized (this) {
+			synchronized (other) {
+				if (this.dependantOnMe != null) {
+					this.dependantOnMe.remove(other);
+					if (this.dependantOnMe.isEmpty())
+						this.dependantOnMe = null;
+				}
+				
+				if (other.dependantOnThem == null) {
+					other.dependantOnThem.remove(this);
+					if (other.dependantOnThem.isEmpty())
+						other.dependantOnThem = null;
+				}
+			}
+		}
 		return true;
 	}
 
