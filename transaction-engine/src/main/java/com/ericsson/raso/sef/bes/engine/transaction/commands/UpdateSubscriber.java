@@ -69,6 +69,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 		TransactionStatus txnStatus=null;
 		TransactionException fault = this.getResponse().getReturnFault();
 		if(fault != null){
+			LOGGER.debug("Gonna check for nulls,code is "+fault.getStatusCode()+"Description is "+fault.getMessage()+"Component is"+fault.getComponent());
 			txnStatus = new TransactionStatus();
 			txnStatus.setCode(fault.getStatusCode().getCode());
 			txnStatus.setDescription(fault.getMessage());
