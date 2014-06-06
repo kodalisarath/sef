@@ -245,7 +245,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				Status executionStatus = this.sbExecutionStatus.get(step.stepCorrelator);
 				logger.debug("Execution Status <" + step.stepCorrelator + ", " + executionStatus + ">");
 
-				if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
+				if (executionStatus.name().startsWith("DONE_")) {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
@@ -781,18 +781,13 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				logger.debug("Checking " + step.getStepCorrelator() + "Step: " + step.toString());
 
 				AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
-				if (result.getResultantFault() == null ) {
-					if (step instanceof FulfillmentStep) {
-						if (((FulfillmentStepResult)result).getFulfillmentResult() != null) {
-							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_SUCCESS);
-							completion++;
-							logger.debug("Step:" + step.stepCorrelator + " is complete with success!!");
-						}
-					}
+				Status executionStatus = this.sbExecutionStatus.get(step.stepCorrelator);
+				if (executionStatus != null && executionStatus.name().startsWith("DONE_")) {
+					completion++;
+					logger.debug("Step:" + step.stepCorrelator + " is complete with " + executionStatus);
 				} else {
 					anyFault = true;
 					step.setFault(result.getResultantFault());
-					this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
 					completion++;
 					logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
 				}
