@@ -2,6 +2,9 @@ package com.ericsson.raso.sef.smart.usecase;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ListParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
@@ -10,7 +13,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringElement;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 
 public class RechargeRequest extends SmartRequest {
-	
+	private static final Logger logger = LoggerFactory.getLogger(RechargeRequest.class);
 	private static final String EVENT_NAME = "EventName";
 	private static final String EVENT_INFO = "EventInfo";
 	private static final String EVENT_CLASS = "EventClass";
@@ -121,8 +124,10 @@ public class RechargeRequest extends SmartRequest {
 	@Override
 	public void prepareRequest(Operation operation) {
 		List<Object> parameters = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		logger.debug("parameters recieved of size"+parameters.size());
 		for (Object param : parameters) {
 			if(param instanceof StringParameter) {
+				logger.debug("param is of StringParameter");
 				StringParameter parameter = (StringParameter) param;
 				if(parameter.getName().equalsIgnoreCase(CUSTOMER_ID)) {
 					this.setCustomerId(parameter.getValue().trim());
@@ -136,6 +141,7 @@ public class RechargeRequest extends SmartRequest {
 					this.setEventInfo(parameter.getValue().trim());
 				}  
 			} else if(param instanceof ListParameter) {
+				logger.debug("param is of ListParameter");
 				ListParameter listParameter = (ListParameter) param;
 				if(listParameter.getName().equalsIgnoreCase(RATING_INPUT)) {
 					List<Object> list = listParameter.getElementOrBooleanElementOrByteElement();
@@ -168,11 +174,13 @@ public class RechargeRequest extends SmartRequest {
 					}
 				}
 			} else if(param instanceof IntParameter) {
+				logger.debug("param is of IntParameter");
 				IntParameter parameter = (IntParameter) param;
 				if(parameter.getName().equalsIgnoreCase(AMOUNT_OF_UNITS)) {
 					this.setAmountOfUnits(Long.valueOf(parameter.getValue()));
 				}
 			} else if(param instanceof LongParameter) {
+				logger.debug("param is of LongParameter");
 				LongParameter parameter = (LongParameter) param;
 				if(parameter.getName().equalsIgnoreCase(AMOUNT_OF_UNITS)) {
 					this.setAmountOfUnits(parameter.getValue());

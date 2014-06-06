@@ -65,8 +65,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 	@Override
 	@Transactional
 	public void setMetas(String userId, List<Meta> metas) {
+		logger.debug("Method setMetas is  called");
 		if(metas == null || metas.size() == 0) return;
-		
+       		
 		String[] keys = new String[metas.size()];
 		int i = 0;
 		for(Meta meta: metas) {
@@ -76,6 +77,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		Collection<SubscriberAuditTrial> hists = new ArrayList<SubscriberAuditTrial>();
 		
 		Collection<Meta> oldMetas = this.getMetas(userId, keys);
+		logger.debug("old metas values are of size "+oldMetas.size());
+
 		for(Meta meta: metas) {
 			if(meta.getValue() == null || meta.getValue().trim().length() == 0) {
 				continue;
@@ -84,7 +87,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 			Meta subMeta = new Meta();
 			subMeta.setKey(meta.getKey());
 			subMeta.setValue(meta.getValue());
-			
 			boolean isUpdate = false;
 			for(Meta oldmeta: oldMetas) {
 				if(subMeta.getKey().equals(oldmeta.getKey())) {
@@ -99,10 +101,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 					break;
 				}
 			}
-			
+			logger.debug("checking iff isUpdate is true:   "+isUpdate);
 			if(isUpdate) {
 				subscriberMapper.updateSubscriberMeta(userId, subMeta, new Date());
 			} else {
+				logger.debug("Inseting a new Subscriber meta  "+isUpdate);
 				SubscriberAuditTrial history = new SubscriberAuditTrial();
 				history.setAttributeName(meta.getKey());
 				history.setAttributeNewValue(meta.getValue());
