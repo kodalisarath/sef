@@ -18,7 +18,7 @@
 		<result property="imsi" column="imsi"/>
 		<result property="imeiSv" column="imei_sv"/>
 		<result property="paymentType" column="payment_type"/>
-		<result property="paymentResponsible" column="payment_responsible"/>
+		<result property="paymentResponsible" column="paymentresponsible"/>
 		<result property="paymentParent" column="payment_parent"/>
 		<result property="billCycleDay" column="billcycle_day"/>
 		<result property="dateOfBirth" column="date_of_birth"/>
@@ -86,7 +86,7 @@ values (#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
 			imsi=#{imsi jdbcType=VARCHAR},
 			imei_sv=#{imeiSv jdbcType=VARCHAR},
 			payment_type=#{paymentType jdbcType=VARCHAR},
-			payment_responsible=#{paymentResponsible jdbcType=VARCHAR},
+			paymentresponsible=#{paymentResponsible jdbcType=VARCHAR},
 			billcycle_day=#{billCycleDay jdbcType=VARCHAR},
 			date_of_birth=#{dateOfBirth jdbcType=TIMESTAMP},
 			gender=#{gender jdbcType=VARCHAR},
