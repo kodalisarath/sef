@@ -1,5 +1,9 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -7,12 +11,14 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberResponse;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
+import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
@@ -56,8 +62,8 @@ public class UpdateSubscriber extends AbstractTransaction{
 			return false;
 		}
 		subscriberStore.updateSubscriber(subscriberEntity);
+		subscriberStore.setMetas(subscriberEntity.getUserId(),TransactionServiceHelper.getList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
 		LOGGER.debug("Update Subscriber successfull!!");
-		//((UpdateSubscriberResponse)this.getResponse()).setResult(true);
 		sendResponse();
 		
 		return true;

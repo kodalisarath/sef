@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.core.db.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
@@ -14,7 +15,7 @@ public interface SubscriberService {
 	
 	void deleteSubscriber(String userId);
 	
-	void setMetas(String userId, Meta... metas);
+	void setMetas(String userId, List<Meta> metas);
 	
 	Collection<Meta> getMetas(String userId, String... metaKeys);
 	

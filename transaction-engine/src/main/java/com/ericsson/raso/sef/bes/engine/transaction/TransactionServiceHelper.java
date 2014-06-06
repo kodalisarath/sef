@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -536,7 +537,6 @@ public abstract class TransactionServiceHelper {
 				
 				if (key.startsWith(Constants.READ_BALANCES_OFFER_INFO_START_DATE_TIME.name()))
 					subscriber.addMeta(key, metas.get(key));
-				
 				if (key.startsWith(Constants.READ_BALANCES_OFFER_INFO_EXPIRY_DATE.name()))
 					subscriber.addMeta(key, metas.get(key));
 				
@@ -559,6 +559,17 @@ public abstract class TransactionServiceHelper {
 		}
 		return map;
 	}
+	public static List<Meta> getList(Map<String,String> metas) {
+		List<Meta> metaList=new ArrayList<Meta>();
+		for(String key: metas.keySet()) {
+			Meta meta=new Meta();
+			meta.setKey(key);
+			meta.setValue(metas.get(key));
+			metaList.add(meta);
+		}
+		return metaList;
+	}
+	
 
 	public static Map<String, String> getApiMap(
 			List<com.ericsson.sef.bes.api.entities.Meta> metas) {

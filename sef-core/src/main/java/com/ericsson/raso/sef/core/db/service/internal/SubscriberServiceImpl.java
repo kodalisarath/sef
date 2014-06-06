@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -63,10 +64,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 	@Override
 	@Transactional
-	public void setMetas(String userId, Meta... metas) {
-		if(metas == null || metas.length == 0) return;
+	public void setMetas(String userId, List<Meta> metas) {
+		if(metas == null || metas.size() == 0) return;
 		
-		String[] keys = new String[metas.length];
+		String[] keys = new String[metas.size()];
 		int i = 0;
 		for(Meta meta: metas) {
 			keys[i++] = meta.getKey();
