@@ -92,7 +92,6 @@ values (#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
 			gender=#{gender jdbcType=VARCHAR},
 			preferred_language=#{prefferedLanguage jdbcType=VARCHAR},
 			registration_date=#{registrationDate jdbcType=TIMESTAMP},
-			last_modified=#{lastModified jdbcType=TIMESTAMP},
 			active_date=#{activeDate jdbcType=TIMESTAMP},
 			rate_plan=#{ratePlan jdbcType=VARCHAR}
 		</set>
