@@ -23,7 +23,6 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
-import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -31,6 +30,8 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 public class CreateSubscriber extends AbstractTransaction {
 	private static final long	serialVersionUID	= 8085575039162225609L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateSubscriber.class);
+	
+	
 	public CreateSubscriber(String requestId, Subscriber subscriber) {
 		super(requestId, new CreateSubscriberRequest(requestId, subscriber));
 		this.setResponse(new CreateSubscriberResponse(requestId));
@@ -102,6 +103,17 @@ public class CreateSubscriber extends AbstractTransaction {
 
 		
 		LOGGER.debug("Invoking create subscriber response!!");
+		if (this.getResponse() != null) {
+			if (this.getResponse().getAtomicStepResults() != null) {
+				for (AbstractStepResult stepResult: this.getResponse().getAtomicStepResults().values()) {
+					if (stepResult.getResultantFault() != null) {
+						txnStatus.setComponent(stepResult.getResultantFault().getComponent());
+						txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
+						txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
+					}
+				}
+			}
+		}
 		
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
 		if (subscriberClient != null) {
