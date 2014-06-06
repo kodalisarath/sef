@@ -136,7 +136,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			case PROCESSING:
 				
 				if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
-					logger.debug("Entering " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
+					logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) 
 						this.promote2Fulfill();
 					else {
@@ -266,7 +266,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					// this means the task is not yet submitted...
 					// can submit all subsequent tasks until hitting a serial
 					// mode...
-
+					logger.debug("Submitting next task: " + step.stepCorrelator + ": " + step);
+					
 					this.orchestrationTaskMapper.put(step.getStepCorrelator(),this);
 					this.sbRequestStepMapper.put(step.getStepCorrelator(),step);
 					this.sbRequestResultMapper.put(step.getStepCorrelator(),new FulfillmentStepResult(null, null));
@@ -282,20 +283,18 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				SequentialExecution sequencedSteps = (SequentialExecution) next;
 				Iterator<FulfillmentStep> fulfillments = sequencedSteps.iterator();
 				while (fulfillments.hasNext()) {
-					Step fulfillment = fulfillments.next();
+					Step fulfillmentStep = fulfillments.next();
 					
-					if (this.sbRequestStepMapper.get(fulfillment.getStepCorrelator()) != null) {
+					if (this.sbExecutionStatus.get(fulfillmentStep.getStepCorrelator()) == Status.PROCESSING) {
 						// this means the task had been submitted earlier...
-						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillment.getStepCorrelator());
+						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
 						if (result != null) {
 							// this means the task has been executed
 							if (result.getResultantFault() != null) {
-								fulfillment.setFault(result.getResultantFault());
+								fulfillmentStep.setFault(result.getResultantFault());
 								anyFault = true;
 							}
-							if (((FulfillmentStepResult)result).getFulfillmentResult() == null ||  ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
-								anyFailure = true;
-							fulfillment.setResult(result);
+							fulfillmentStep.setResult(result);
 							
 							if (anyFault || anyFailure) {
 								this.status = Status.DONE_FAULT;
@@ -306,14 +305,18 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 							isSequenceCompleted = false; // allow the task to complete & check on the next one....
 							isAllStepsCompleted = false;
 						}
-					} else {
+					} 
+					
+					if (this.sbExecutionStatus.get(fulfillmentStep.getStepCorrelator()) == Status.WAITING) {
 						isSequenceCompleted = false;
 						isAllStepsCompleted = false;
 						// this means the task is not yet submitted...
-						this.orchestrationTaskMapper.put(fulfillment.getStepCorrelator(), this);
-						this.sbRequestStepMapper.put(fulfillment.getStepCorrelator(), fulfillment);
-						this.sbRequestResultMapper.put(fulfillment.getStepCorrelator(), null);
-						OrchestrationManager.getInstance().getGrinder().submit(fulfillment);
+						logger.debug("Submitting sequential task: " + fulfillmentStep.stepCorrelator + ": " + fulfillmentStep);
+						this.orchestrationTaskMapper.put(fulfillmentStep.getStepCorrelator(), this);
+						this.sbRequestStepMapper.put(fulfillmentStep.getStepCorrelator(), fulfillmentStep);
+						this.sbRequestResultMapper.put(fulfillmentStep.getStepCorrelator(), null);
+						this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
+						OrchestrationManager.getInstance().getGrinder().submit(fulfillmentStep);
 						break;
 					}
 				}
@@ -499,9 +502,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.orchestrationTaskMapper.put(prepare.getStepCorrelator(), this);
 			this.sbRequestStepMapper.put(prepare.getStepCorrelator(), prepare);
 			this.sbRequestResultMapper.put(prepare.getStepCorrelator(), new FulfillmentStepResult(null, null));
+			this.sbExecutionStatus.put(prepare.stepCorrelator, Status.PROCESSING);
 			OrchestrationManager.getInstance().getGrinder().submit(prepare);
 		}
-		logger.debug("Prepare fulfilment completed");
+		logger.debug("Prepare fulfilment initiated...");
 						
 	}
 

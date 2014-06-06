@@ -32,6 +32,9 @@ public class OrchestrationManager {
 																				Constants.TRANSACTION_STEP_STATUS.name());
 	private Map<String, Step>					sbRequestStepMapper		= SefCoreServiceResolver.getCloudAwareCluster().getMap(
 																				Constants.TRANSACTION_STEPS.name());
+	
+	private static Map<String, Status> sbExecutionStatus = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STATUS.name());
+	
 
 	private static OrchestrationManager instance = null;
 	
@@ -60,6 +63,12 @@ public class OrchestrationManager {
 		logger.debug("Entering promoteFulfillmentExecution!!");
 		Orchestration requiredOrchestration = this.sbOrchestrationTaskMapper.get(southboundCorrelator);
 		this.sbRequestResultMapper.put(southboundCorrelator, fulfillmentResult);
+		
+		if (fulfillmentResult.getResultantFault() != null)
+			this.sbExecutionStatus.put(southboundCorrelator, Status.DONE_FAULT);
+		else
+			this.sbExecutionStatus.put(southboundCorrelator, Status.DONE_SUCCESS);
+		
 		if (requiredOrchestration != null) {
 			this.grinder.submit(requiredOrchestration);
 			logger.debug("Orchestration found for correlation: " +  southboundCorrelator + 
