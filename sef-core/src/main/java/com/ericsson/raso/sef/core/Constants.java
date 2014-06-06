@@ -16,7 +16,7 @@ public class Constants {
 	public static final String TRANSPARENT_META2 = "transparentMeta2";
 	public static final String TRANSPARENT_META3 = "transparentMeta3";
 	//TO:DO remove after fixing an issue with Hazlecast
-	public static final String CARecharge="CArecharge";
+	public static final String SMFE_TXE_CORRELLATOR="CorrelationStore";
 	
 	
 	//Flattened out metas returned from back end for subscriber profile
