@@ -7,10 +7,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.client.af.command.AddDnsCommand;
+import com.ericsson.raso.sef.client.af.command.DeleteDnsCommand;
+import com.ericsson.raso.sef.client.af.request.AddDnsRequest;
+import com.ericsson.raso.sef.client.af.request.DeleteDnsRequest;
 import com.ericsson.raso.sef.client.air.command.DeleteSubscriberCommand;
 import com.ericsson.raso.sef.client.air.command.InstallSubscriberCommand;
 import com.ericsson.raso.sef.client.air.request.DeleteSubscriberRequest;
 import com.ericsson.raso.sef.client.air.request.InstallSubscriberRequest;
+import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
@@ -21,6 +26,14 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final long	serialVersionUID	= 4571643634014244954L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateSubscriberProfile.class);
 
+	// CS-AF specific
+	private String zname;
+	private String rdata;
+	private int dtype;
+	private int dclass;
+	private int ttl;
+
+	// ACIP specific
 	private Boolean messageCapabilityFlag;
 	private Integer promotionPlanId;
 	private Integer serviceClassNew;
@@ -41,26 +54,29 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		LOGGER.debug("Entering fulfill of CreateSubscriberProfile...");
 		CreateSubscriberProfile createSubscriberProfile= new CreateSubscriberProfile(originOperatorId);
 	
-		/*
-		 * The following piece of code is commented since DnsUpdateProfile is available and the same is expected to be wired as a 
-		 * Fulfillment Profile attached to a resource under a Workflow Offer.
-		 */
+		List<Product> returned = new ArrayList<Product>();
 		
-//		AddDnsRequest dnsRequest = new AddDnsRequest();
-//		dnsRequest.setMsisdn(map.get("msisdn"));		
-//		
-//		
-//		RequestContext requestContext = new RequestContext();
-//		
-//		String sdpId = requestContext.getInterfaceName();
-//		dnsRequest.setSdpId(sdpId);
-//		
-//		try {
-//			new AddDnsCommand(dnsRequest).execute();
-//		} catch (SmException e1) {
-//			LOGGER.error("Adding DNS Entry for the new subscriber failed!!", e1);
-//			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
-//		}
+		
+		// AF Install - function here
+		AddDnsRequest dnsRequest = new AddDnsRequest();
+		dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
+		dnsRequest.setDclass(this.getDclass());
+		dnsRequest.setDtype(this.getDtype());
+		dnsRequest.setRdata(this.getRdata());
+		dnsRequest.setTtl(this.getTtl());
+		dnsRequest.setZname(this.getZname());
+		
+		
+		String sdpId= (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
+		dnsRequest.setSdpId(sdpId);
+		
+		try {
+			new AddDnsCommand(dnsRequest).execute();
+			LOGGER.debug("Installed new subscriber in CS-AF DNS");
+		} catch (SmException e1) {
+			LOGGER.error("Failed AddDnsCommand execute" + e1);
+			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
+		}
 		
 				
 		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
@@ -100,9 +116,8 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
 		LOGGER.debug("Subscriber installed in CS-AIR");
-		
-		List<Product> returned = new ArrayList<Product>();
 		returned.add(e);
+		
 		return returned;	
 	}
 
@@ -122,23 +137,95 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> revert(Product e, Map<String, String> map) {
+		LOGGER.debug("Starting rollback of CS-AF installed subscriber...");
+		
+		List<Product> returned = new ArrayList<Product>();
+		
+		DnsUpdateProfile dnsUpdateProfile=new DnsUpdateProfile(zname);
+		DeleteDnsRequest deleteDnsRequest = new DeleteDnsRequest();
+		deleteDnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
+		deleteDnsRequest.setDclass(dnsUpdateProfile.getDclass());
+		deleteDnsRequest.setDtype(dnsUpdateProfile.getDtype());
+		deleteDnsRequest.setSiteId(null);
+		deleteDnsRequest.setTtl(dnsUpdateProfile.getTtl());
+		deleteDnsRequest.setZname(dnsUpdateProfile.getZname());
+		
+		try {
+			new DeleteDnsCommand(deleteDnsRequest).execute();
+			LOGGER.debug("Installed subcriber in CS-AF is now rolledback...");
+		} catch (SmException e1) {
+			LOGGER.error("SmException while calling DeleteDnsCommand execute" + e1);
+		}
+		
+		
+		LOGGER.debug("Starting rollback of CS-AIR installed subscriber...");
+		
 		CreateSubscriberProfile createSubscriberProfile= new CreateSubscriberProfile(originOperatorId);
 		DeleteSubscriberRequest request = new DeleteSubscriberRequest();
 		request.setSubscriberNumber(map.get("SUBSCRIBER_ID"));
 		request.setOriginOperatorId(createSubscriberProfile.getOriginOperatorId());
 		try {
 			new DeleteSubscriberCommand(request).execute();
+			LOGGER.debug("Subscriber install rolledback in CS-AIR");
 		} catch (SmException e1) {
 			LOGGER.error("Exception when calling execute" + e1);
 		}
 		
-		LOGGER.debug("Subscriber install rolledback in CS-AIR");
 		
-		List<Product> returned = new ArrayList<Product>();
 		returned.add(e);
 		return returned;	
 	}
 	
+	public String getZname() {
+		return zname;
+	}
+
+
+	public void setZname(String zname) {
+		this.zname = zname;
+	}
+
+
+	public String getRdata() {
+		return rdata;
+	}
+
+
+	public void setRdata(String rdata) {
+		this.rdata = rdata;
+	}
+
+
+	public int getDtype() {
+		return dtype;
+	}
+
+
+	public void setDtype(int dtype) {
+		this.dtype = dtype;
+	}
+
+
+	public int getDclass() {
+		return dclass;
+	}
+
+
+	public void setDclass(int dclass) {
+		this.dclass = dclass;
+	}
+
+
+	public int getTtl() {
+		return ttl;
+	}
+
+
+	public void setTtl(int ttl) {
+		this.ttl = ttl;
+	}
+
+
 	public Boolean getMessageCapabilityFlag() {
 		return messageCapabilityFlag;
 	}
@@ -203,38 +290,27 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		this.pamInformationList = pamInformationList;
 	}
 
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((languageIDNew == null) ? 0 : languageIDNew.hashCode());
-		result = prime
-				* result
-				+ ((messageCapabilityFlag == null) ? 0 : messageCapabilityFlag
-						.hashCode());
-		result = prime
-				* result
-				+ ((originOperatorId == null) ? 0 : originOperatorId.hashCode());
-		result = prime
-				* result
-				+ ((pamInformationList == null) ? 0 : pamInformationList
-						.hashCode());
-		result = prime * result
-				+ ((promotionPlanId == null) ? 0 : promotionPlanId.hashCode());
-		result = prime * result
-				+ ((serviceClassNew == null) ? 0 : serviceClassNew.hashCode());
-		result = prime
-				* result
-				+ ((temporaryBlockedFlag == null) ? 0 : temporaryBlockedFlag
-						.hashCode());
-		result = prime
-				* result
-				+ ((ussdEndOfCallNotificationID == null) ? 0
-						: ussdEndOfCallNotificationID.hashCode());
+		result = prime * result + dclass;
+		result = prime * result + dtype;
+		result = prime * result + ((languageIDNew == null) ? 0 : languageIDNew.hashCode());
+		result = prime * result + ((messageCapabilityFlag == null) ? 0 : messageCapabilityFlag.hashCode());
+		result = prime * result + ((originOperatorId == null) ? 0 : originOperatorId.hashCode());
+		result = prime * result + ((pamInformationList == null) ? 0 : pamInformationList.hashCode());
+		result = prime * result + ((promotionPlanId == null) ? 0 : promotionPlanId.hashCode());
+		result = prime * result + ((rdata == null) ? 0 : rdata.hashCode());
+		result = prime * result + ((serviceClassNew == null) ? 0 : serviceClassNew.hashCode());
+		result = prime * result + ((temporaryBlockedFlag == null) ? 0 : temporaryBlockedFlag.hashCode());
+		result = prime * result + ttl;
+		result = prime * result + ((ussdEndOfCallNotificationID == null) ? 0 : ussdEndOfCallNotificationID.hashCode());
+		result = prime * result + ((zname == null) ? 0 : zname.hashCode());
 		return result;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -245,6 +321,10 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		if (getClass() != obj.getClass())
 			return false;
 		CreateSubscriberProfile other = (CreateSubscriberProfile) obj;
+		if (dclass != other.dclass)
+			return false;
+		if (dtype != other.dtype)
+			return false;
 		if (languageIDNew == null) {
 			if (other.languageIDNew != null)
 				return false;
@@ -270,6 +350,11 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 				return false;
 		} else if (!promotionPlanId.equals(other.promotionPlanId))
 			return false;
+		if (rdata == null) {
+			if (other.rdata != null)
+				return false;
+		} else if (!rdata.equals(other.rdata))
+			return false;
 		if (serviceClassNew == null) {
 			if (other.serviceClassNew != null)
 				return false;
@@ -280,26 +365,32 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 				return false;
 		} else if (!temporaryBlockedFlag.equals(other.temporaryBlockedFlag))
 			return false;
+		if (ttl != other.ttl)
+			return false;
 		if (ussdEndOfCallNotificationID == null) {
 			if (other.ussdEndOfCallNotificationID != null)
 				return false;
-		} else if (!ussdEndOfCallNotificationID
-				.equals(other.ussdEndOfCallNotificationID))
+		} else if (!ussdEndOfCallNotificationID.equals(other.ussdEndOfCallNotificationID))
+			return false;
+		if (zname == null) {
+			if (other.zname != null)
+				return false;
+		} else if (!zname.equals(other.zname))
 			return false;
 		return true;
 	}
-	
+
+
 	@Override
 	public String toString() {
-		return "CreateSubscriberProfile [messageCapabilityFlag="
-				+ messageCapabilityFlag + ", promotionPlanId="
-				+ promotionPlanId + ", serviceClassNew=" + serviceClassNew
-				+ ", languageIDNew=" + languageIDNew
-				+ ", temporaryBlockedFlag=" + temporaryBlockedFlag
-				+ ", ussdEndOfCallNotificationID="
-				+ ussdEndOfCallNotificationID + ", originOperatorId="
-				+ originOperatorId + ", pamInformationList="
-				+ pamInformationList + "]";
+		return "CreateSubscriberProfile [zname=" + zname + ", rdata=" + rdata + ", dtype=" + dtype + ", dclass=" + dclass + ", ttl=" + ttl
+				+ ", messageCapabilityFlag=" + messageCapabilityFlag + ", promotionPlanId=" + promotionPlanId + ", serviceClassNew="
+				+ serviceClassNew + ", languageIDNew=" + languageIDNew + ", temporaryBlockedFlag=" + temporaryBlockedFlag
+				+ ", ussdEndOfCallNotificationID=" + ussdEndOfCallNotificationID + ", originOperatorId=" + originOperatorId
+				+ ", pamInformationList=" + pamInformationList + "]";
 	}
+
+	
+
 
 }
