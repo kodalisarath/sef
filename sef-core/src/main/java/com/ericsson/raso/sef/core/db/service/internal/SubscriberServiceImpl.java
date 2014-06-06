@@ -212,14 +212,16 @@ public class SubscriberServiceImpl implements SubscriberService {
 				logger.debug("Returned metas for the subscriber of size"+metaCollections.size());
 				for (Meta meta : metaCollections) {
 					Meta sMeta = new Meta();
-					sMeta.setKey(meta.getKey());
-					sMeta.setValue(meta.getValue());
-					subscriber.getMetas().add(sMeta);
+					if(meta != null){
+						sMeta.setKey(meta.getKey());
+						sMeta.setValue(meta.getValue());
+						subscriber.getMetas().add(sMeta);
+					}
 					subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
 				}
 			}
 		} catch (Exception e) {
-			logger.error("Exception occured while querying subscriber entity ",
+			logger.error("Exception occured while querying subscriber entity",
 					e);
 		}
 		return subscriber;
