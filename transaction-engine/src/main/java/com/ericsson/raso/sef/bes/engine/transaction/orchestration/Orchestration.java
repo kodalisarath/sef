@@ -56,13 +56,13 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	
 	
 
-	private static Map<String, Orchestration> orchestrationTaskMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.ORCHESTRATION_TASK_MAPPER.name());
+	private static final Map<String, Orchestration> orchestrationTaskMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.ORCHESTRATION_TASK_MAPPER.name());
 	
-	private static Map<String, AbstractStepResult> sbRequestResultMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEP_STATUS.name());
+	private static final Map<String, AbstractStepResult> sbRequestResultMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEP_STATUS.name());
 	
-	private static Map<String, Step> sbRequestStepMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEPS.name());
+	private static final Map<String, Step> sbRequestStepMapper = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEPS.name());
 	
-	private static Map<String, Status> sbExecutionStatus = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STATUS.name());
+	private static final Map<String, Status> sbExecutionStatus = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STATUS.name());
 	
 
 	
@@ -249,11 +249,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
-					logger.debug("Confirming the state of completed step: " + step.stepCorrelator + " = " + this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED));
+					logger.debug("Confirming the state of completed step: " + step.stepCorrelator + " = " + this.sbExecutionStatus.get(step.stepCorrelator));
 
 				}
 				
-				if (executionStatus == null || executionStatus == Status.WAITING){
+				if (executionStatus == null || executionStatus == Status.WAITING) {
 					logger.info("Attemptin to safely submit to execution for: " + step.stepCorrelator);
 					synchronized(this) {
 						logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
