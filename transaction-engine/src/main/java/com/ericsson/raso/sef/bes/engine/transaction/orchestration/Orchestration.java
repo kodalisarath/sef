@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private Mode							mode					= Mode.FORWARD;
 	private Map<Phase, Status>				phasingProgress			= null;
 	private TransactionException			executionFault			= null;
+	private Semaphore criticalPath = new Semaphore(1);
 	
 	
 
@@ -246,26 +248,34 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 				if (executionStatus == null || executionStatus == Status.WAITING) {
 					logger.debug("Attemptin to safely submit to execution for: " + step.stepCorrelator);
-					synchronized(this) {
-						logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
-						isAllStepsCompleted = false;
-						// this means the task is not yet submitted...
-						// can submit all subsequent tasks until hitting a serial
-						// mode...
-						logger.debug("Submitting next task: " + step.stepCorrelator + ": " + step);
 
-						this.orchestrationTaskMapper.put(step.getStepCorrelator(),this);
-						this.sbRequestStepMapper.put(step.getStepCorrelator(),step);
-						this.sbRequestResultMapper.put(step.getStepCorrelator(),new FulfillmentStepResult(null, null));
-						this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
-						OrchestrationManager.getInstance().getGrinder().submit(step);
-						logger.debug("Submission successful for: " + step.stepCorrelator);
-						if (!isSerialModeNow)
-							break;
+					// start of critical path
+					try {
+						this.criticalPath.acquire();
+					} catch (InterruptedException e) {
+						logger.error("Interrupted while attempting a critical path. Consistency guarantee compromised. Halting the Orchestration!!");
+						this.status = Status.DONE_FAULT;
+						break;
 					}
-				}
-				
-				if (executionStatus.name().startsWith("DONE_")) {
+					logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
+					isAllStepsCompleted = false;
+					// this means the task is not yet submitted...
+					// can submit all subsequent tasks until hitting a serial
+					// mode...
+					logger.debug("Submitting next task: " + step.stepCorrelator + ": " + step);
+
+					this.orchestrationTaskMapper.put(step.getStepCorrelator(),this);
+					this.sbRequestStepMapper.put(step.getStepCorrelator(),step);
+					this.sbRequestResultMapper.put(step.getStepCorrelator(),new FulfillmentStepResult(null, null));
+					this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
+					OrchestrationManager.getInstance().getGrinder().submit(step);
+					logger.debug("Submission successful for: " + step.stepCorrelator);
+					if (!isSerialModeNow)
+						break;
+
+					this.criticalPath.release();
+					// end of critical path
+				} else if (executionStatus.name().startsWith("DONE_")) {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
@@ -286,26 +296,35 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					
 					if (executionStatus == null || executionStatus == Status.WAITING) {
 						logger.info("Attemptin to safely submit to execution for: " + step.stepCorrelator);
-						synchronized (this) {
-							isAllStepsCompleted = false;
-							// this means the task is not yet submitted...
-							logger.debug("Submitting sequential task: " + fulfillmentStep.stepCorrelator + ": " + fulfillmentStep);
-							this.orchestrationTaskMapper.put(fulfillmentStep.getStepCorrelator(), this);
-							this.sbRequestStepMapper.put(fulfillmentStep.getStepCorrelator(), fulfillmentStep);
-							this.sbRequestResultMapper.put(fulfillmentStep.getStepCorrelator(), null);
-							this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
-							OrchestrationManager.getInstance().getGrinder().submit(fulfillmentStep);
-							logger.debug("Submission successful for: " + step.stepCorrelator);
+
+						// start of critical path
+						try {
+							this.criticalPath.acquire();
+						} catch (InterruptedException e) {
+							logger.error("Interrupted while attempting a critical path. Consistency guarantee compromised. Halting the Orchestration!!");
+							this.status = Status.DONE_FAULT;
 							break;
 						}
-					}
-					
-					if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
+						isAllStepsCompleted = false;
+						// this means the task is not yet submitted...
+						logger.debug("Submitting sequential task: " + fulfillmentStep.stepCorrelator + ": " + fulfillmentStep);
+						this.orchestrationTaskMapper.put(fulfillmentStep.getStepCorrelator(), this);
+						this.sbRequestStepMapper.put(fulfillmentStep.getStepCorrelator(), fulfillmentStep);
+						this.sbRequestResultMapper.put(fulfillmentStep.getStepCorrelator(), null);
+						this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
+						OrchestrationManager.getInstance().getGrinder().submit(fulfillmentStep);
+						logger.debug("Submission successful for: " + step.stepCorrelator);
+
+						this.criticalPath.release();
+						// end of critical path
+
+						break;
+
+					} else if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
 						logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
 						
 						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " + this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED));
-
 					}
 					
 					
