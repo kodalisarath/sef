@@ -157,6 +157,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //						this.processNotification();
 //						this.promote2Schedule();
 						//TODO: remove this when uncomment the above two tasks
+						this.promote2Persist();
 						this.status = Status.DONE_SUCCESS;
 					} else {
 						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
@@ -170,7 +171,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						}
 					}
 				} 
-
+				logger.debug("Seems to be out fulfillment...are we going to schedule?");
 //				// proceed to scheduling...
 //				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
 //					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
@@ -182,8 +183,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //					}
 //				} 
 //				
+				logger.debug("Seems to be crossing schedule.... are we going to persistence?");
 				// proceed to persistence...
 				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
+					logger.debug("Yes.. we will do persistence...");
 					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
 						this.status = Status.DONE_SUCCESS;
 						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
