@@ -69,6 +69,13 @@ public final class Future extends TransactionTask  {
 	public void setSchedule(Long schedule) {
 		this.schedule = schedule;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Future [mode=" + mode + ", event=" + event + ", offerId=" + offerId + ", subscriberId=" + subscriberId + ", schedule="
+				+ schedule + "]";
+	}
 	
 	
 

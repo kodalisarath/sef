@@ -57,6 +57,14 @@ public final class Persistence<Object> extends TransactionTask {
 		this.subscriberId = subscriberId;
 	}
 
+
+
+
+	@Override
+	public String toString() {
+		return "Persistence [mode=" + mode + ", toSave=" + toSave + ", subscriberId=" + subscriberId + "]";
+	}
+
 	
 	
 }

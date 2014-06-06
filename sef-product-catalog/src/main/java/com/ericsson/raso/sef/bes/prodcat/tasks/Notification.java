@@ -58,6 +58,12 @@ public final class Notification extends TransactionTask {
 	}
 
 
+	@Override
+	public String toString() {
+		return "Notification [mode=" + mode + ", offerId=" + offerId + ", subscriberId=" + subscriberId + ", eventId=" + eventId + "]";
+	}
+
+
 	
 		
 		

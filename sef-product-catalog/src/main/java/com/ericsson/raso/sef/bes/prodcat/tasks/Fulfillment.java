@@ -96,4 +96,10 @@ public final class Fulfillment extends TransactionTask {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Fulfillment [mode=" + mode + ", atomicProduct=" + atomicProduct + ", subscriberId=" + subscriberId + ", additionalInputs="
+				+ additionalInputs + "]";
+	}
+
 }

@@ -47,6 +47,13 @@ public final class Charging extends TransactionTask {
 		this.subscriberId = subscriberId;
 	}
 
+
+
+	@Override
+	public String toString() {
+		return "Charging [mode=" + mode + ", charging=" + charging + ", subscriberId=" + subscriberId + "]";
+	}
+
 	
 	
 }
