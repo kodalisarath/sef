@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,115 +32,121 @@ public abstract class TransactionServiceHelper {
 	
 	public static Subscriber getApiEntity(com.ericsson.raso.sef.core.db.model.Subscriber subscriber) {
 		Subscriber returned = new Subscriber();
-		if(subscriber.getBillCycleDay() != null){
-			returned.setBillCycleDay(subscriber.getBillCycleDay());
+		if(subscriber != null){
+			if(subscriber.getBillCycleDay() != null){
+				returned.setBillCycleDay(subscriber.getBillCycleDay());
+			}
+			if(subscriber.getContractId() != null){
+				returned.setContractId(subscriber.getContractId());	
+			}
+			if(subscriber.getContractState() != null){
+				returned.setContractState(subscriber.getContractState().getName());	
+			}
+			if(subscriber.getCustomerId() != null){
+				returned.setCustomerId(subscriber.getCustomerId());
+			}
+			if(subscriber.getCustomerSegment() != null){
+				returned.setCustomerSegment(subscriber.getCustomerSegment());
+			}
+			if(subscriber.getEmail() != null){
+				returned.setEmail(subscriber.getEmail());
+			}
+			if(subscriber.getGender() != null){
+				returned.setGender(subscriber.getGender());
+			}
+			if(subscriber.getImeiSv() != null){
+				returned.setImeiSv(subscriber.getImeiSv());
+			}
+			if(subscriber.getImsi() != null){
+				returned.setImsi(subscriber.getImsi());
+			}
+			if(subscriber.getMetas() != null){
+				returned.setMetas(getMetas(subscriber.getMetas())); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
+			}
+			if(subscriber.getMsisdn() != null){
+				returned.setMsisdn(subscriber.getMsisdn());
+			}
+			if(subscriber.getPaymentParent() != null){
+				returned.setPaymentParent(subscriber.getPaymentParent());
+			}
+			if(subscriber.getPaymentResponsible() != null){
+				returned.setPaymentResponsible(subscriber.getPaymentResponsible());
+			}
+			if(subscriber.getPaymentType() != null){
+				returned.setPaymentType(subscriber.getPaymentType());
+			}
+			if(subscriber.getPin() != null){
+				returned.setPin(subscriber.getPin());
+			}
+			if(subscriber.getPrefferedLanguage() != null){
+				returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
+			}
+			if(subscriber.getRatePlan() != null){
+				returned.setRatePlan(subscriber.getRatePlan());
+			}
+			if(subscriber.getRegistrationDate() != null){
+				returned.setRegistrationDate(subscriber.getRegistrationDate().getTime());
+			}
+			if(subscriber.getUserId() != null){
+				returned.setUserId(subscriber.getUserId());
+			}
 		}
-		if(subscriber.getContractId() != null){
-			returned.setContractId(subscriber.getContractId());	
-		}
-		if(subscriber.getContractState() != null){
-			returned.setContractState(subscriber.getContractState().getName());	
-		}
-		if(subscriber.getCustomerId() != null){
-			returned.setCustomerId(subscriber.getCustomerId());
-		}
-		if(subscriber.getCustomerSegment() != null){
-			returned.setCustomerSegment(subscriber.getCustomerSegment());
-		}
-		if(subscriber.getEmail() != null){
-			returned.setEmail(subscriber.getEmail());
-		}
-		if(subscriber.getGender() != null){
-			returned.setGender(subscriber.getGender());
-		}
-		if(subscriber.getImeiSv() != null){
-			returned.setImeiSv(subscriber.getImeiSv());
-		}
-		if(subscriber.getImsi() != null){
-			returned.setImsi(subscriber.getImsi());
-		}
-		if(subscriber.getMetas() != null){
-			returned.setMetas(getMetas(subscriber.getMetas())); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
-		}
-		if(subscriber.getMsisdn() != null){
-			returned.setMsisdn(subscriber.getMsisdn());
-		}
-		if(subscriber.getPaymentParent() != null){
-			returned.setPaymentParent(subscriber.getPaymentParent());
-		}
-		if(subscriber.getPaymentResponsible() != null){
-			returned.setPaymentResponsible(subscriber.getPaymentResponsible());
-		}
-		if(subscriber.getPaymentType() != null){
-			returned.setPaymentType(subscriber.getPaymentType());
-		}
-		if(subscriber.getPin() != null){
-			returned.setPin(subscriber.getPin());
-		}
-		if(subscriber.getPrefferedLanguage() != null){
-			returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
-		}
-		if(subscriber.getRatePlan() != null){
-			returned.setRatePlan(subscriber.getRatePlan());
-		}
-		if(subscriber.getRegistrationDate() != null){
-			returned.setRegistrationDate(subscriber.getRegistrationDate().getTime());
-		}
-		if(subscriber.getUserId() != null){
-			returned.setUserId(subscriber.getUserId());
-		}
+		
 		return returned;
 		
 	}
 	
 	public static com.ericsson.raso.sef.core.db.model.Subscriber getPersistableEntity(Subscriber subscriber) {
 		com.ericsson.raso.sef.core.db.model.Subscriber returned = new com.ericsson.raso.sef.core.db.model.Subscriber();
-		if(subscriber.getCustomerId() != null){
-			returned.setAccountId(subscriber.getCustomerId());
-			returned.setCustomerId(subscriber.getCustomerId());
+		if(subscriber != null){
+			if(subscriber.getCustomerId() != null){
+				returned.setAccountId(subscriber.getCustomerId());
+				returned.setCustomerId(subscriber.getCustomerId());
+			}
+			if(subscriber.getContractId() != null){
+				returned.setContractId(subscriber.getContractId());
+			}
+			if(subscriber.getCustomerSegment() != null){
+				returned.setCustomerSegment(subscriber.getCustomerSegment());
+			}
+			if(subscriber.getContractState() != null){
+				returned.setContractState(ContractState.valueOf(subscriber.getContractState()));
+			}
+			if(subscriber.getEmail() != null){
+				returned.setEmail(subscriber.getEmail());
+			}
+			if(subscriber.getImeiSv() != null){
+				returned.setImeiSv(subscriber.getImeiSv());
+			}
+			if(subscriber.getImsi() != null){
+				returned.setImsi(subscriber.getImsi());
+			}
+			if(subscriber.getMetas() != null){
+				returned.setMetas(getMetas(subscriber.getMetas()));
+			}
+			if(subscriber.getMsisdn() != null){
+				returned.setMsisdn(subscriber.getMsisdn());
+			}
+			if(subscriber.getPin() != null){
+				returned.setPin(subscriber.getPin());
+			}
+			if(subscriber.getPaymentType() != null){
+				returned.setPaymentType(subscriber.getPaymentType());
+			}
+			if(subscriber.getPrefferedLanguage() != null){
+				returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
+			}
+			if(subscriber.getRatePlan() != null){
+				returned.setRatePlan(subscriber.getRatePlan());
+			}
+			if(subscriber.getRegistrationDate() != null){
+				returned.setRegistrationDate(new Date(subscriber.getRegistrationDate()));
+			}
+			if(subscriber.getUserId() != null){
+				returned.setUserId(subscriber.getUserId());	
+			}
 		}
-		if(subscriber.getContractId() != null){
-			returned.setContractId(subscriber.getContractId());
-		}
-		if(subscriber.getCustomerSegment() != null){
-			returned.setCustomerSegment(subscriber.getCustomerSegment());
-		}
-		if(subscriber.getContractState() != null){
-			returned.setContractState(ContractState.valueOf(subscriber.getContractState()));
-		}
-		if(subscriber.getEmail() != null){
-			returned.setEmail(subscriber.getEmail());
-		}
-		if(subscriber.getImeiSv() != null){
-			returned.setImeiSv(subscriber.getImeiSv());
-		}
-		if(subscriber.getImsi() != null){
-			returned.setImsi(subscriber.getImsi());
-		}
-		if(subscriber.getMetas() != null){
-			returned.setMetas(getMetas(subscriber.getMetas()));
-		}
-		if(subscriber.getMsisdn() != null){
-			returned.setMsisdn(subscriber.getMsisdn());
-		}
-		if(subscriber.getPin() != null){
-			returned.setPin(subscriber.getPin());
-		}
-		if(subscriber.getPaymentType() != null){
-			returned.setPaymentType(subscriber.getPaymentType());
-		}
-		if(subscriber.getPrefferedLanguage() != null){
-			returned.setPrefferedLanguage(subscriber.getPrefferedLanguage());
-		}
-		if(subscriber.getRatePlan() != null){
-			returned.setRatePlan(subscriber.getRatePlan());
-		}
-		if(subscriber.getRegistrationDate() != null){
-			returned.setRegistrationDate(new Date(subscriber.getRegistrationDate()));
-		}
-		if(subscriber.getUserId() != null){
-			returned.setUserId(subscriber.getUserId());	
-		}
+	
 		return returned;
 	}
 	
