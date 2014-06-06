@@ -166,6 +166,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						
 						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 							this.promote2Fulfill();
+							
 						}
 					}
 				} 
@@ -181,16 +182,16 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //					}
 //				} 
 //				
-//				// proceed to persistence...
-//				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
-//					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
-//						this.status = Status.DONE_SUCCESS;
-//						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
-//					}	else {
-//						this.status = Status.DONE_FAULT;
-//						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
-//					}
-//				} 
+				// proceed to persistence...
+				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
+					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
+						this.status = Status.DONE_SUCCESS;
+						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
+					}	else {
+						this.status = Status.DONE_FAULT;
+						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
+					}
+				} 
 				break;
 			case DONE_FAILED:
 				//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
@@ -335,7 +336,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		
 		if (isAllStepsCompleted) {
 			this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_SUCCESS);
-			this.phasingProgress.put(Phase.TX_PHASE_SCHEDULE, Status.PROCESSING);
+			//this.phasingProgress.put(Phase.TX_PHASE_SCHEDULE, Status.PROCESSING);          //TODO: revert back to scheduler
+			this.phasingProgress.put(Phase.TX_PHASE_PERSISTENCE, Status.PROCESSING);          
 		}
 		logger.debug("exiting promote2Fulfill()");
 	}
