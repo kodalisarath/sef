@@ -57,7 +57,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 		}
 		subscriberStore.updateSubscriber(subscriberEntity);
 		LOGGER.debug("Update Subscriber successfull!!");
-		
+		//((UpdateSubscriberResponse)this.getResponse()).setResult(true);
 		sendResponse();
 		
 		return true;
@@ -67,19 +67,18 @@ public class UpdateSubscriber extends AbstractTransaction{
 	public void sendResponse() {
 		
 		TransactionStatus txnStatus=null;
-		
 		TransactionException fault = this.getResponse().getReturnFault();
-				txnStatus = new TransactionStatus();
-				txnStatus.setCode(fault.getStatusCode().getCode());
-				txnStatus.setDescription(fault.getMessage());
-				txnStatus.setComponent(fault.getComponent());
-	
+		if(fault != null){
+			txnStatus = new TransactionStatus();
+			txnStatus.setCode(fault.getStatusCode().getCode());
+			txnStatus.setDescription(fault.getMessage());
+			txnStatus.setComponent(fault.getComponent());
+		}
 		boolean result = ((UpdateSubscriberResponse)this.getResponse()).getResult();
 		LOGGER.debug("Invoking update subscriber response!!");
 		ISubscriberResponse subscriberClient=ServiceResolver.getSubscriberResponseClient();
 		subscriberClient.updateSubscriber(this.getRequestId(),txnStatus,result);
 		LOGGER.debug("update susbcriber response posted");
-		
 	}
 
 
