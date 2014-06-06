@@ -86,23 +86,10 @@ public class CreateSubscriber extends AbstractTransaction {
 		 */
 		
 		Boolean result = ((CreateSubscriberResponse)this.getResponse()).getResult();
-		TransactionStatus txnStatus = new TransactionStatus();
-		if (this.getResponse() != null &&  this.getResponse().getAtomicStepResults() != null) {
-			for (AbstractStepResult stepResult: this.getResponse().getAtomicStepResults().values()) {
-				if (stepResult != null) {
-					FrameworkException fault = stepResult.getResultantFault();
-					if (fault != null) {
-						txnStatus.setComponent(fault.getComponent());
-						txnStatus.setCode(fault.getStatusCode().getCode());
-						txnStatus.setDescription(fault.getStatusCode().getMessage());
-						break;
-					}
-				}
-			}
-		}
-
+		LOGGER.debug("CreateSubscriber::=> Functional Result: " + result);
 		
 		LOGGER.debug("Invoking create subscriber response!!");
+		TransactionStatus txnStatus = new TransactionStatus();
 		if (this.getResponse() != null) {
 			if (this.getResponse().getAtomicStepResults() != null) {
 				for (AbstractStepResult stepResult: this.getResponse().getAtomicStepResults().values()) {
@@ -110,11 +97,14 @@ public class CreateSubscriber extends AbstractTransaction {
 						txnStatus.setComponent(stepResult.getResultantFault().getComponent());
 						txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
 						txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
+						LOGGER.debug("CreateSubscriber::=> Transaction Status: " + txnStatus);
+						break;
 					}
 				}
 			}
 		}
 		
+		LOGGER.debug("About to send request...");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
 		if (subscriberClient != null) {
 			subscriberClient.createSubscriber(this.getRequestId(), 
