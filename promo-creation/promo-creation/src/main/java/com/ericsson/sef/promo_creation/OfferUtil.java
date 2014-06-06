@@ -602,8 +602,8 @@ public class OfferUtil
 		
 		// Non Commercial Offer
 		
-		lookupResourcesByName.put("DnsUpdateAF_Cmd", helper.createDnsUpdateProfile("DnsUpdateAF_Cmd", "DNS Update Profile"));
-		lookupResourcesByName.put("InstallSubscriberACIP_Cmd", helper.createCreateSubscriberProfile("InstallSubscriberACIP_Cmd", "Install Subscriber Request"));
+		//lookupResourcesByName.put("DnsUpdateAF_Cmd", helper.createDnsUpdateProfile("DnsUpdateAF_Cmd", "DNS Update Profile"));
+		lookupResourcesByName.put("CreateSubscriber", helper.createCreateSubscriberProfile("CreateSubscriber", "Create a new Subscriber"));
 
 		lookupResourcesByName.put("GetAccountDetails_Cmd", helper.createGetAccountDetailsProfile("GetAccountDetails_Cmd", "Get Account Details"));
 		lookupResourcesByName.put("GetBalanceAndDate_Cmd", helper.createGetBalanceAndDateProfile("GetBalanceAndDate_Cmd", "Get Balance and Date"));
@@ -3658,20 +3658,9 @@ public class OfferUtil
 		planCodes = new HashSet<String>();
 		planCodes.add("CREATE_SUBSCRIBER");
 		
-		Resource dnsRes =  lookupResourcesByName.get("DnsUpdateAF_Cmd");
-		Resource acipRes = lookupResourcesByName.get("InstallSubscriberACIP_Cmd");
-		// Handle dependant On/Me
-
-		dnsRes.addDependantOnMe(acipRes);
-		
-		offerResources.add(acipRes);
+		Resource dnsRes =  lookupResourcesByName.get("CreateSubscriber");
+		//Resource acipRes = lookupResourcesByName.get("InstallSubscriberACIP_Cmd");
 		offerResources.add(dnsRes);
-		
-		serviceRegistry.updateResource(dnsRes);
-		serviceRegistry.updateResource(acipRes);	
-
-		
-
 		
 		offer = helper.createNonCommercialOffer("CREATE_SUBSCRIBER", "Create Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
