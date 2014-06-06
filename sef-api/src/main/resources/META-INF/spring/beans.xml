@@ -11,11 +11,21 @@
 		<property name="endpointId" value="subscriber-request-client"/>
 	</bean>
 	
+	<bean id="subscriberResponseClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
+		<property name="serviceType" value="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse"/>
+		<property name="endpointId" value="subscriber-response-client"/>
+	</bean>	
+	
 	<bean id="subscriptionRequestClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
 		<property name="serviceType" value="com.ericsson.sef.bes.api.subscription.ISubscriptionRequest"/>
 		<property name="endpointId" value="subscription-request-client"/>
 	</bean>
-
+	
+	<bean id="subscriptionResponseClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
+		<property name="serviceType" value="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse" />
+		<property name="endpointId" value="subscription-response-client"/>
+	</bean>
+	
  	<bean id="fulfillmentResponseClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
 		<property name="serviceType" value="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse"/>
 		<property name="endpointId" value="fulfillment-response-client"/>
@@ -25,16 +35,7 @@
 		<property name="serviceType" value="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest"/>
 		<property name="endpointId" value="fulfillment-request-client"/>
 	</bean>
-	
-	<bean id="subscriberResponseClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
-		<property name="serviceType" value="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse"/>
-		<property name="endpointId" value="subscriber-response-client"/>
-	</bean>
-	
-	<bean id="subscriptionResponseClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
-		<property name="serviceType" value="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse" />
-		<property name="endpointId" value="subscription-response-client"/>
-	</bean>
+
 
 
 </beans>
