@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -36,7 +38,7 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		DummyProcessor.response(exchange);
 		
 	}
-	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) {
+	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) throws SmException {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
@@ -51,6 +53,10 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		if(subscriberInfo.getStatus().getCode() > 0){
+			ResponseCode responseCode=new ResponseCode(subscriberInfo.getStatus().getCode() , subscriberInfo.getStatus().getDescription());
+			throw new SmException(responseCode);
+		}
 		return subscriberInfo;
 	}
 	
