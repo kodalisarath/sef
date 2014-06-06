@@ -32,7 +32,7 @@ public class UpdateSubscriberProcessor implements Processor{
 				map.put(meta.getKey(), meta.getValue());
 			}
 		}
-		return null;
+		return map;
 		
 	}
 
