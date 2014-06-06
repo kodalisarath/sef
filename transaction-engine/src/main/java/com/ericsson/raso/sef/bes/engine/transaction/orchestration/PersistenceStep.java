@@ -14,5 +14,11 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 		// TODO implement code when there is a client for Fulfillment Engine available
 		return new PersistenceStepResult(null, ((Persistence<?>)this.getExecutionInputs()).getToSave());
 	}
+	
+	@Override
+	public String toString() {
+		return "<PersistenceStep executionInputs='" + getExecutionInputs() + "' getResult='" + getResult() + "/>";
+	}
+
 
 }

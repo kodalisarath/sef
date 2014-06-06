@@ -14,5 +14,12 @@ public class SchedulingStep extends Step<SchedulingStepResult> {
 		// TODO implement code when there is a client for Notification Engine available
 		return new SchedulingStepResult(null, true);
 	}
+	
+	@Override
+	public String toString() {
+		return "<SchedulingStep executionInputs='" + getExecutionInputs() + "' getResult='" + getResult() + "/>";
+	}
+
+
 
 }

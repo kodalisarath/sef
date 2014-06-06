@@ -62,8 +62,8 @@ public class OrchestrationManager {
 	public void promoteFulfillmentExecution(String southboundCorrelator, FulfillmentStepResult fulfillmentResult) {
 		logger.debug("Entering promoteFulfillmentExecution!!");
 		Orchestration requiredOrchestration = this.sbOrchestrationTaskMapper.get(southboundCorrelator);
-		this.sbRequestResultMapper.put(southboundCorrelator, fulfillmentResult);
 		
+		this.sbRequestResultMapper.put(southboundCorrelator, fulfillmentResult);
 		if (fulfillmentResult.getResultantFault() != null)
 			this.sbExecutionStatus.put(southboundCorrelator, Status.DONE_FAULT);
 		else

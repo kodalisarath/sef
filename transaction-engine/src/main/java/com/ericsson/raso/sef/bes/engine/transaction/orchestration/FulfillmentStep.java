@@ -111,5 +111,13 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		}
 		return metaList;
 	}
+
+
+	@Override
+	public String toString() {
+		return "<FulfillmentStep executionInputs='" + getExecutionInputs() + "' getResult='" + getResult() + "/>";
+	}
+	
+	
 	
 }

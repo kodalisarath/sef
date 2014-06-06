@@ -143,7 +143,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						this.status = Status.DONE_FAULT;
 						this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
 					}
-				} else if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
+				} else  if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
 //						this.processNotification();
@@ -783,51 +783,53 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		}
 		
 		
-		boolean isAllStepsComplete = true;
+		boolean isAllStepsComplete = false;
 		boolean anyFailure = false;
 		boolean anyFault = false;
 		
+		int completion = 0;
 		for (Object next: toCheck) {
 			Step step = null;
 			if (next instanceof Step) {
 				step = (Step) next;
+				
+				logger.debug("Checking " + step.getStepCorrelator() + "Step: " + step.toString());
 
-				// TODO: check with sathya
 				AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
-				if (result == null) {
-					logger.debug("Null result found for the step... assuming phase incomplete");
-					return false;
-				} else {
-					logger.debug("Result has arrived for the step. Updating step");
-					step.setResult(result);
-					if (result.getResultantFault() != null) {
-						anyFault = true;
-						step.setFault(result.getResultantFault());
+				if (result.getResultantFault() == null ) {
+					if (step instanceof FulfillmentStep) {
+						if (((FulfillmentStepResult)result).getFulfillmentResult() != null) {
+							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_SUCCESS);
+							completion++;
+							logger.debug("Step:" + step.stepCorrelator + " is complete with success!!");
+						}
 					}
-					// check for types of steps....
-//					if (step instanceof FulfillmentStep) {
-//						if (((FulfillmentStepResult) result).getFulfillmentResult() == null || ((FulfillmentStepResult) result).getFulfillmentResult().isEmpty())
-//							anyFailure = true;
-//						
-//					} else if (step instanceof PersistenceStep) {
-//						if (((PersistenceStepResult) result).getPersistenceResult() == null)
-//							anyFailure = true;
-//						
-//					} else if (step instanceof SchedulingStep) {
-//						if (((SchedulingStepResult) result).getNotificationResult() == null || ((SchedulingStepResult) result).getNotificationResult() == false)
-//							anyFailure = true;
-//					}
+				} else {
+					anyFault = true;
+					step.setFault(result.getResultantFault());
+					this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
+					completion++;
+					logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
 				}
 			}
 		}
+		
+		logger.info("Total Steps in this phase: " + toCheck.size() + "  & completion is: " + completion);
+		
+		isAllStepsComplete = (toCheck.size() == completion);
+		
+		if (isAllStepsComplete) {
+			logger.debug("May be we wait for some more time for all to complete");
+			return false;
+		}
+		
 		if (isAllStepsComplete && !anyFailure && !anyFault) {
 			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_SUCCESS.name());
 			this.phasingProgress.put(phase, Status.DONE_SUCCESS);
 		} else if (isAllStepsComplete && anyFailure && !anyFault) {
 			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_FAILED.name());
 			this.phasingProgress.put(phase, Status.DONE_FAILED);
-		}
-		else if (isAllStepsComplete && anyFault) {
+		} else if (isAllStepsComplete && anyFault) {
 			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_FAULT.name());
 			this.phasingProgress.put(phase, status.DONE_FAULT);
 		} else {

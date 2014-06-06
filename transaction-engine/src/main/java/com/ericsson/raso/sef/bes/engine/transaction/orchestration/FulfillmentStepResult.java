@@ -26,6 +26,16 @@ public class FulfillmentStepResult extends AbstractStepResult {
 		this.fulfillmentResult = fulfillmentResult;
 	}
 
+
+	@Override
+	public boolean validateResult() {
+		// TODO implement when service logic is needed; for now true is good enough
+		if (this.fulfillmentResult == null) 
+			return false;
+		else
+			return true;
+	}
+
 	
 
 		

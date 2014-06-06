@@ -22,5 +22,13 @@ public class NotificationStepResult extends AbstractStepResult {
 		this.notificationResult = notificationResult;
 	}
 
-	
+	@Override
+	public boolean validateResult() {
+		// TODO implement when service logic is needed; for now true is good enough
+		if (this.notificationResult == null) 
+			return false;
+		else
+			return true;
+	}
+
 }

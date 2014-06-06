@@ -23,5 +23,13 @@ public class PersistenceStepResult extends AbstractStepResult {
 		this.persistenceResult = persistenceResult;
 	}
 
-	
+	@Override
+	public boolean validateResult() {
+		// TODO implement when service logic is needed; for now true is good enough
+		if (this.persistenceResult == null) 
+			return false;
+		else
+			return true;
+	}
+
 }

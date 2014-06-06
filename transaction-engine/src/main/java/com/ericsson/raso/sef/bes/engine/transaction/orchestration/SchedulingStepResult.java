@@ -22,5 +22,14 @@ public class SchedulingStepResult extends AbstractStepResult {
 		this.schedulingResult = scheduleResult;
 	}
 
+	@Override
+	public boolean validateResult() {
+		// TODO implement when service logic is needed; for now true is good enough
+		if (this.schedulingResult == null) 
+			return false;
+		else
+			return true;
+	}
+
 	
 }

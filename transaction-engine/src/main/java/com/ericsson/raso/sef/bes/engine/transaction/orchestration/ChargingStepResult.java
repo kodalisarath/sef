@@ -22,6 +22,16 @@ public class ChargingStepResult extends AbstractStepResult {
 	public void setChargedAmount(MonetaryUnit chargedAmount) {
 		this.chargedAmount = chargedAmount;
 	}
+
+
+	@Override
+	public boolean validateResult() {
+		// TODO implement when service logic is needed; for now true is good enough
+		if (this.chargedAmount == null) 
+			return false;
+		else
+			return true;
+	}
 	
 	
 	

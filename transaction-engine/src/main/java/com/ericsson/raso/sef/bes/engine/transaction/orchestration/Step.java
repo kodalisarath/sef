@@ -57,5 +57,7 @@ public abstract class Step<T> implements Serializable, Callable<Object>, Compara
 	public int compareTo(Step<T> t) {
 		return t.stepCorrelator.compareTo(this.stepCorrelator);
 	}
+	
+	public abstract String toString();
 
 }

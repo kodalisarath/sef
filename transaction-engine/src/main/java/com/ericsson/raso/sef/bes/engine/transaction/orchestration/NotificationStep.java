@@ -14,5 +14,12 @@ public class NotificationStep extends Step<NotificationStepResult> {
 		// TODO implement code when there is a client for Notification Engine available
 		return new NotificationStepResult(null, true);
 	}
+	
+	@Override
+	public String toString() {
+		return "<NotificationStep executionInputs='" + getExecutionInputs() + "' getResult='" + getResult() + "/>";
+	}
+
+
 
 }

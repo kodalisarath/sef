@@ -2,7 +2,7 @@ package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 
 import java.io.Serializable;
 
-public class AbstractStepResult implements Serializable {
+public abstract class AbstractStepResult implements Serializable {
 	private static final long	serialVersionUID	= -2540018090411449909L;
 
 	private StepExecutionException resultantFault = null;
@@ -24,6 +24,7 @@ public class AbstractStepResult implements Serializable {
 	}
 
 
+	public abstract boolean validateResult();
 	
 	
 }

@@ -15,4 +15,10 @@ public class ChargingStep extends Step<ChargingStepResult> {
 		return new ChargingStepResult(null, ((Charging)this.getExecutionInputs()).getCharging());
 	}
 
+	@Override
+	public String toString() {
+		return "<ChargingStep executionInputs='" + getExecutionInputs() + "' getResult='" + getResult() + "/>";
+	}
+
+	
 }
