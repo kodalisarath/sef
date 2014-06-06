@@ -242,32 +242,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			Step step = null;
 			if (next instanceof FulfillmentStep) {
 				step = (FulfillmentStep) next;
-				Status executionStatus = this.sbExecutionStatus.get(step.getStepCorrelator());
+				Status executionStatus = this.sbExecutionStatus.get(step.stepCorrelator);
 				logger.debug("Execution Status <" + step.stepCorrelator + ", " + executionStatus + ">");
 
-				if (executionStatus == status.PROCESSING) {
+				if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
-					if (result.getResultantFault() != null) {
-						step.setFault(result.getResultantFault());
-						anyFault = true;	
-						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
-						step.setResult(result);
-					}
-					
-					//TODO: rethink this logic...
-					//if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
-					//	anyFailure = true;
-					
-					if (anyFault || anyFailure) {
-						this.status = Status.DONE_FAULT;
-						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED);
-						isAllStepsCompleted = false;
-						break;
-					} else
-						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_SUCCESS);
-					
+					logger.debug("Confirming the state of completed step: " + step.stepCorrelator + " = " + this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED));
 
 				}
 				
@@ -300,30 +282,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					Step fulfillmentStep = fulfillments.next();
 					Status executionStatus = this.sbExecutionStatus.get(step.getStepCorrelator());
 					
-					if (executionStatus == Status.PROCESSING) {
+					if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
 						logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
-						if (result.getResultantFault() != null) {
-							fulfillmentStep.setFault(result.getResultantFault());
-							anyFault = true;
-							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
-							fulfillmentStep.setResult(result);
-						}
-
-						//TODO: rethink this logic...
-						//if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
-						//	anyFailure = true;
 						
-						if (anyFault || anyFailure) {
-							this.status = Status.DONE_FAULT;
-							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED);
-							isAllStepsCompleted = false;
-							break;
-						} else
-							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_SUCCESS);
-						
+						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " + this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED));
 
-					} 
+					}
+					
 					
 					if (executionStatus == null || executionStatus == Status.WAITING) {
 						logger.info("Attemptin to safely submit to execution for: " + step.stepCorrelator);

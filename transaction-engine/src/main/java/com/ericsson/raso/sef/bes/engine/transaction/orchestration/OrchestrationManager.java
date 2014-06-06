@@ -3,7 +3,6 @@ package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.commands.AbstractTransaction;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration.Mode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
