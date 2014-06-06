@@ -87,10 +87,14 @@ public class CreateSubscriber extends AbstractTransaction {
 		
 		LOGGER.debug("Invoking create subscriber response!!");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
-		subscriberClient.createSubscriber(this.getRequestId(), 
-				                    txnStatus, 
-				                    result);
-		LOGGER.debug("create susbcriber response posted");
+		if (subscriberClient != null) {
+			subscriberClient.createSubscriber(this.getRequestId(), 
+					txnStatus, 
+					result);
+			LOGGER.debug("create susbcriber response posted");
+		} else {
+			LOGGER.error("Unable to acquire client access to response interface. Request will time-out in the consumer side!!");
+		}
 
 		
 	}
