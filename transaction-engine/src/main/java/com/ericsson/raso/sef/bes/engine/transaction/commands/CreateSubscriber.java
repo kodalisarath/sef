@@ -70,7 +70,7 @@ public class CreateSubscriber extends AbstractTransaction {
 	
 	@Override
 	public void sendResponse() {
-		//TODO: implement this logic
+		// TODO: implement this logic
 		/*
 		 * 1. when this method is called, it means that Orchestration Manager has executed all steps in the transaction. Either a respnse or
 		 * exception is available.

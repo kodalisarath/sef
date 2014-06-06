@@ -25,7 +25,7 @@ public class InstallSubscriberCommand extends AbstractAirCommand<InstallSubscrib
 			CsAirContext.getAirClient().execute(request, response);
 		} catch (XmlRpcException e) {
 			logger.debug("XMLRpc execution failure", e);
-			throw new SmException(CsAirContext.getSection(), new ResponseCode(e.code, e.getMessage()), e.linkedException);
+			//throw new SmException(CsAirContext.getSection(), new ResponseCode(e.code, e.getMessage()), e.linkedException);
 		}
 		return response;
 	}

@@ -1,15 +1,15 @@
 package com.ericsson.raso.sef.bes.prodcat.tasks;
 
 
-public final class Persistence<T> extends TransactionTask {
+public final class Persistence<Object> extends TransactionTask {
 	private static final long serialVersionUID = -4255775283459415035L;
 
 	private PersistenceMode mode = null;
 
-	private T toSave = null;
+	private Object toSave = null;
 	private String subscriberId = null;
 	
-	public Persistence(PersistenceMode mode, T entity, String subscriberId) {
+	public Persistence(PersistenceMode mode, Object entity, String subscriberId) {
 		super(TaskType.PERSIST);
 		this.mode = mode;
 		this.toSave = entity;
@@ -33,14 +33,14 @@ public final class Persistence<T> extends TransactionTask {
 
 
 
-	public T getToSave() {
+	public Object getToSave() {
 		return toSave;
 	}
 
 
 
 
-	public void setToSave(T toSave) {
+	public void setToSave(Object toSave) {
 		this.toSave = toSave;
 	}
 

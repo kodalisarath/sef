@@ -5,12 +5,12 @@ import java.util.concurrent.Callable;
 
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 
-public abstract class Step<T> implements Serializable, Callable<Object>, Comparable<Step<T>> {
+public abstract class Step<Object> implements Serializable, Callable<Object>, Comparable<Step<Object>> {
 	private static final long	serialVersionUID	= -4938200229157969953L;
 	
 	protected String stepCorrelator = null;
 	private TransactionTask executionInputs = null;
-	private T result = null;
+	private Object result = null;
 	private StepExecutionException fault = null;
 	
 	
@@ -22,11 +22,11 @@ public abstract class Step<T> implements Serializable, Callable<Object>, Compara
 		this.executionInputs = executionInputs;
 	}
 	
-	public abstract T execute();
+	public abstract Object execute();
 	
 
 	@Override
-	public T call() throws Exception {
+	public Object call() throws Exception {
 		return this.execute();
 	}
 
@@ -38,11 +38,11 @@ public abstract class Step<T> implements Serializable, Callable<Object>, Compara
 		return executionInputs;
 	}
 
-	public T getResult() {
+	public Object getResult() {
 		return result;
 	}
 
-	public void setResult(T result) {
+	public void setResult(Object result) {
 		this.result = result;
 	}
 
@@ -54,10 +54,8 @@ public abstract class Step<T> implements Serializable, Callable<Object>, Compara
 		this.fault = fault;
 	}
 	
-	public int compareTo(Step<T> t) {
+	public int compareTo(Step<Object> t) {
 		return t.stepCorrelator.compareTo(this.stepCorrelator);
 	}
-	
-	public abstract String toString();
 
 }

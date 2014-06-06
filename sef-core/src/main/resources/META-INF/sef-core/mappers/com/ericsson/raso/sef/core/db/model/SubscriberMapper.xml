@@ -49,9 +49,10 @@
 	<result property="key" column="last_modified"/>
 	<result property="value" column="created"/> 
 	</resultMap>
-	<select id="userSequence" resultMap="SequenceResult" parameterType="String">
+	<!-- <select id="userSequence" resultMap="SequenceResult" parameterType="String">
 		select user_id_sequence.nextval as seq, #{rand} as rand from dual
-	</select>
+	</select> -->
+	
 	
 	<update id="deleteSubscriber" parameterType="String">
 		update subscriber set deleted = #{userId}
@@ -69,7 +70,10 @@
 		from subscriber s
 		where s.user_id = #{userId}
 	</select>
-
+	<insert id="insertSubscriberMeta" parameterType="Meta">
+      insert into subscriber_meta (user_id, attribute_name, attribute_value, last_modified)
+values (#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified}) 
+</insert>
 	<update id="updateSubscriber" parameterType="Subscriber">
 		update subscriber 
 		<set>
@@ -94,6 +98,12 @@
 		</set>
 		where user_id = #{userId}
 	</update>
+	<insert id="insertSubscriberHistory" parameterType="SubscriberAuditTrial">
+		insert into subscriber_history (user_id,event_timestamp, attribute_name, attribute_old_value, attribute_new_value)
+		values
+		(#{userId}, #{eventTimestamp}, #{attributeName},  #{attributeNewValue jdbcType=VARCHAR},#{changedByUser jdbccType=VARCHAR})
+	</insert>
+	
 
 <!-- 	<select id="getSubscriberMetas" resultType="ArrayList" resultMap="SubscriberMetaResult" parameterType="Map"> -->
 <!-- 		select * -->
