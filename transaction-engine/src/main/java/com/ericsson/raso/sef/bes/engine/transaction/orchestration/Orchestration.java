@@ -242,9 +242,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			Step step = null;
 			if (next instanceof FulfillmentStep) {
 				step = (FulfillmentStep) next;
-				logger.debug("Execution Status <" + step.stepCorrelator + ", " + this.sbExecutionStatus.get(step.getStepCorrelator()) + ">");
+				Status executionStatus = this.sbExecutionStatus.get(step.getStepCorrelator());
+				logger.debug("Execution Status <" + step.stepCorrelator + ", " + executionStatus + ">");
 
-				if (this.sbExecutionStatus.get(step.getStepCorrelator()) == status.PROCESSING) {
+				if (executionStatus == status.PROCESSING) {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
@@ -252,21 +253,22 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						step.setFault(result.getResultantFault());
 						anyFault = true;	
 						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
+						step.setResult(result);
 					}
 					
 					if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
 						anyFailure = true;
-					step.setResult(result);
-
+					
 					if (anyFault || anyFailure) {
 						this.status = Status.DONE_FAULT;
 						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED);
+						isAllStepsCompleted = false;
 						break;
 					}
 
 				}
 				
-				if (this.sbExecutionStatus.get(step.getStepCorrelator()) == Status.WAITING){
+				if (executionStatus == null || executionStatus == Status.WAITING){
 					logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
 					isAllStepsCompleted = false;
 					// this means the task is not yet submitted...
@@ -290,8 +292,9 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				Iterator<FulfillmentStep> fulfillments = sequencedSteps.iterator();
 				while (fulfillments.hasNext()) {
 					Step fulfillmentStep = fulfillments.next();
+					Status executionStatus = this.sbExecutionStatus.get(step.getStepCorrelator());
 					
-					if (this.sbExecutionStatus.get(fulfillmentStep.getStepCorrelator()) == Status.PROCESSING) {
+					if (executionStatus == Status.PROCESSING) {
 						// this means the task had been submitted earlier...
 						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
 						if (result != null) {
@@ -299,8 +302,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 							if (result.getResultantFault() != null) {
 								fulfillmentStep.setFault(result.getResultantFault());
 								anyFault = true;
+								fulfillmentStep.setResult(result);
 							}
-							fulfillmentStep.setResult(result);
 							
 							if (anyFault || anyFailure) {
 								this.status = Status.DONE_FAULT;
@@ -311,7 +314,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						}
 					} 
 					
-					if (this.sbExecutionStatus.get(fulfillmentStep.getStepCorrelator()) == Status.WAITING) {
+					if (executionStatus == null || executionStatus == Status.WAITING) {
 						isAllStepsCompleted = false;
 						// this means the task is not yet submitted...
 						logger.debug("Submitting sequential task: " + fulfillmentStep.stepCorrelator + ": " + fulfillmentStep);
