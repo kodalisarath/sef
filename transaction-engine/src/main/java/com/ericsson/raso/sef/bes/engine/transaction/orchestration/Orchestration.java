@@ -236,20 +236,20 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		for (Object next: this.fulfillment) {
 			logger.debug("Quick Type Check: fulfillment.next() ==> " + next.getClass().getCanonicalName());
 			
+			isSerialModeNow = (this.fulfillment instanceof SequentialExecution);
+			logger.debug("Execution Mode Serial? " + isSerialModeNow);
+			
 			Step step = null;
 			if (next instanceof FulfillmentStep) {
 				step = (FulfillmentStep) next;
-				
 				logger.debug("Execution Status <" + step.stepCorrelator + ", " + this.sbExecutionStatus.get(step.getStepCorrelator()) + ">");
 
 				if (this.sbExecutionStatus.get(step.getStepCorrelator()) == status.PROCESSING) {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
-					// this means the task had been submitted earlier...
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
 					if (result.getResultantFault() != null) {
-						// this means the task has been executed
-							step.setFault(result.getResultantFault());
+						step.setFault(result.getResultantFault());
 						anyFault = true;	
 						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
 					}
