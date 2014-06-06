@@ -227,8 +227,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.PROCESSING);
 		
 		logger.debug("Fulfilment steps size: " + this.fulfillment.size());
+		logger.debug("Visualize Fulfillment Steps (temp) in profile: " + this.fulfillment);
 		
 		for (Object next: this.fulfillment) {
+			logger.debug("Quick Type Check: fulfillment.next() ==> " + next.getClass().getCanonicalName());
+			
 			Step step = null;
 			if (next instanceof FulfillmentStep) {
 				step = (FulfillmentStep) next;
