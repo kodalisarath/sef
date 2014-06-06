@@ -227,8 +227,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.PROCESSING);
 		
 		logger.debug("Fulfilment steps size: " + this.fulfillment.size());
+		logger.debug("Visualize Fulfillment Steps (temp) in profile: " + this.fulfillment);
 		
 		for (Object next: this.fulfillment) {
+			logger.debug("Quick Type Check: fulfillment.next() ==> " + next.getClass().getCanonicalName());
+			
 			Step step = null;
 			if (next instanceof FulfillmentStep) {
 				step = (FulfillmentStep) next;
@@ -784,7 +787,6 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		
 		
 		boolean isAllStepsComplete = false;
-		boolean anyFailure = false;
 		boolean anyFault = false;
 		
 		int completion = 0;
@@ -818,17 +820,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		
 		isAllStepsComplete = (toCheck.size() == completion);
 		
-		if (isAllStepsComplete) {
+		if (!isAllStepsComplete) {
 			logger.debug("May be we wait for some more time for all to complete");
 			return false;
 		}
 		
-		if (isAllStepsComplete && !anyFailure && !anyFault) {
+		if (isAllStepsComplete && !anyFault) {
 			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_SUCCESS.name());
 			this.phasingProgress.put(phase, Status.DONE_SUCCESS);
-		} else if (isAllStepsComplete && anyFailure && !anyFault) {
-			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_FAILED.name());
-			this.phasingProgress.put(phase, Status.DONE_FAILED);
 		} else if (isAllStepsComplete && anyFault) {
 			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_FAULT.name());
 			this.phasingProgress.put(phase, status.DONE_FAULT);
