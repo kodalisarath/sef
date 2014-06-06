@@ -528,8 +528,12 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.sbExecutionStatus.put(prepare.stepCorrelator, Status.PROCESSING);
 			OrchestrationManager.getInstance().getGrinder().submit(prepare);
 		}
+
 		logger.debug("Prepare fulfilment initiated...");
-						
+		
+		if(this.prepareFulfillment.size() < 1) {
+			promote2Fulfill();
+		}
 	}
 
  	private List<ChargingStep> extractChargingSteps(List<TransactionTask> tasks) {

@@ -337,6 +337,8 @@ public class PromoHelper {
 			createCommercialProduct.setResetQuotaOnRenewal(false);
 			createCommercialProduct.setResource(resource);
 			createCommercialProduct.setValidity(new InfiniteTime());
+			commercialOffer.setOfferState(State.TESTING);
+			commercialOffer.setOfferState(State.PUBLISHED);
 			commercialOffer.addProduct(createCommercialProduct);
 		}
 		
@@ -352,12 +354,11 @@ public class PromoHelper {
 			Offer nonCommercialOffer = new Offer(name);
 			nonCommercialOffer.setAutoTermination(new NoTermination());
 			nonCommercialOffer.setRenewalPeriod(new InfiniteTime());
+			nonCommercialOffer.setOfferState(State.TESTING);
 			nonCommercialOffer.setOfferState(State.PUBLISHED);
 			nonCommercialOffer.setRecurrent(false);
 			nonCommercialOffer.setTrialPeriod(new InfiniteTime());
 			nonCommercialOffer.setCommercial(false);
-			
-			// System.out.println("Adding Non-Commercial Offer: " + nonCommercialOffer.toString());
 			
 			for (String planCode : planCodes) {
 				nonCommercialOffer.addExternalHandle(planCode);
@@ -369,7 +370,6 @@ public class PromoHelper {
 				System.out.println(productName);
 				AtomicProduct createNonCommercialProduct = new AtomicProduct(productName);
 				createNonCommercialProduct.setQuota(new UnlimitedQuota());
-				//createNonCommercialProduct.setValidity(new DaysTime());
 				createNonCommercialProduct.setResource(resource);
 				createNonCommercialProduct.setValidity(new InfiniteTime());
 				
