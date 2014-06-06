@@ -124,7 +124,8 @@ public class CARecharge implements Processor {
 			semaphore.init(0);
 			semaphore.acquire();
 			} catch(InterruptedException e) {
-				
+				e.printStackTrace();
+				logger.debug("Exception while sleep     :"+e.getMessage());
 			}
 //			try {
 //				synchronized (response) {
