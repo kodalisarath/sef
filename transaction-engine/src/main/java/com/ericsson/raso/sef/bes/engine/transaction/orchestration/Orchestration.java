@@ -256,15 +256,18 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						step.setResult(result);
 					}
 					
-					if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
-						anyFailure = true;
+					//TODO: rethink this logic...
+					//if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
+					//	anyFailure = true;
 					
 					if (anyFault || anyFailure) {
 						this.status = Status.DONE_FAULT;
 						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED);
 						isAllStepsCompleted = false;
 						break;
-					}
+					} else
+						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_SUCCESS);
+					
 
 				}
 				
@@ -295,25 +298,31 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					Status executionStatus = this.sbExecutionStatus.get(step.getStepCorrelator());
 					
 					if (executionStatus == Status.PROCESSING) {
-						// this means the task had been submitted earlier...
+						logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
-						if (result != null) {
-							// this means the task has been executed
-							if (result.getResultantFault() != null) {
-								fulfillmentStep.setFault(result.getResultantFault());
-								anyFault = true;
-								fulfillmentStep.setResult(result);
-							}
-							
-							if (anyFault || anyFailure) {
-								this.status = Status.DONE_FAULT;
-								break;
-							}
-						} else {
-							isAllStepsCompleted = false;
+						if (result.getResultantFault() != null) {
+							fulfillmentStep.setFault(result.getResultantFault());
+							anyFault = true;
+							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
+							fulfillmentStep.setResult(result);
 						}
+
+						//TODO: rethink this logic...
+						//if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
+						//	anyFailure = true;
+						
+						if (anyFault || anyFailure) {
+							this.status = Status.DONE_FAULT;
+							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED);
+							isAllStepsCompleted = false;
+							break;
+						} else
+							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_SUCCESS);
+						
+
 					} 
 					
+										
 					if (executionStatus == null || executionStatus == Status.WAITING) {
 						isAllStepsCompleted = false;
 						// this means the task is not yet submitted...
