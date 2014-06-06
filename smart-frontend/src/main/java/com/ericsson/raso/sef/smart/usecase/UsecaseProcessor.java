@@ -17,6 +17,7 @@ public class UsecaseProcessor implements Processor {
 		
 		logger.debug("Entering SMFE frontend request received");
 		CommandRequestData commandRequestData = exchange.getIn().getBody(CommandRequestData.class);
+		logger.debug("Exchange in UseCaseProcessor: " + exchange);
 		boolean isTRansactional = commandRequestData.getCommand().getTransaction()!=null;
 		Operation operation = commandRequestData.getCommand().getOperation();
 		if(isTRansactional) {
@@ -31,6 +32,7 @@ public class UsecaseProcessor implements Processor {
 		request.prepareRequest(operation);
 		
 		exchange.getIn().setBody(request);
+
 		usecase.getRequestProcessor().process(exchange);
 		logger.debug("Usecase identified and delegated");
 	}
