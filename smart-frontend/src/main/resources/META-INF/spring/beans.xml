@@ -163,6 +163,7 @@
 				<camel:doFinally>
 				<!-- Add exception handler -->
 				</camel:doFinally>
+				
 			</camel:doTry>
 		</route>
 	</camelContext>
