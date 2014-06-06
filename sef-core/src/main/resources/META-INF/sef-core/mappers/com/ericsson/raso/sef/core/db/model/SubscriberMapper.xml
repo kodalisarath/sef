@@ -113,12 +113,12 @@ values (#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
 <!-- 			lower(#{item}) -->
 <!-- 		</foreach> -->
 <!-- 	</select> -->
-<!-- 	<select id="getAllSubscriberMetas" resultMap="SubscriberMetaResult" parameterType="String"> -->
-<!-- 		select * -->
-<!-- 		from -->
-<!-- 		subscriber_meta s -->
-<!-- 		where user_id = #{userId} -->
-<!-- 	</select> -->
+	<select id="getAllSubscriberMetas" resultMap="MetaResult" parameterType="String">
+		select *
+		from
+		subscriber_meta s
+		where user_id = #{userId}
+	</select>
 <!-- 	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta"> -->
 <!-- 		insert into subscriber_meta (user_id, attribute_name, attribute_value, last_modified) -->
 <!-- 		values -->
