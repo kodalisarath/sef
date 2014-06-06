@@ -272,20 +272,23 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				}
 				
 				if (executionStatus == null || executionStatus == Status.WAITING){
-					logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
-					isAllStepsCompleted = false;
-					// this means the task is not yet submitted...
-					// can submit all subsequent tasks until hitting a serial
-					// mode...
-					logger.debug("Submitting next task: " + step.stepCorrelator + ": " + step);
-					
-					this.orchestrationTaskMapper.put(step.getStepCorrelator(),this);
-					this.sbRequestStepMapper.put(step.getStepCorrelator(),step);
-					this.sbRequestResultMapper.put(step.getStepCorrelator(),new FulfillmentStepResult(null, null));
-					this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
-					OrchestrationManager.getInstance().getGrinder().submit(step);
-					if (!isSerialModeNow)
-						break;
+					logger.info("Attemptin to safely submit to execution for: " + step.stepCorrelator);
+					synchronized(this) {
+						logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
+						isAllStepsCompleted = false;
+						// this means the task is not yet submitted...
+						// can submit all subsequent tasks until hitting a serial
+						// mode...
+						logger.debug("Submitting next task: " + step.stepCorrelator + ": " + step);
+
+						this.orchestrationTaskMapper.put(step.getStepCorrelator(),this);
+						this.sbRequestStepMapper.put(step.getStepCorrelator(),step);
+						this.sbRequestResultMapper.put(step.getStepCorrelator(),new FulfillmentStepResult(null, null));
+						this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
+						OrchestrationManager.getInstance().getGrinder().submit(step);
+						if (!isSerialModeNow)
+							break;
+					}
 				}
 			} else if (next instanceof SequentialExecution) {
 				logger.debug("promote2Fulfill(): found the fulfillment step is sequential will execute now");
@@ -322,18 +325,20 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 					} 
 					
-										
 					if (executionStatus == null || executionStatus == Status.WAITING) {
-						isAllStepsCompleted = false;
-						// this means the task is not yet submitted...
-						logger.debug("Submitting sequential task: " + fulfillmentStep.stepCorrelator + ": " + fulfillmentStep);
-						this.orchestrationTaskMapper.put(fulfillmentStep.getStepCorrelator(), this);
-						this.sbRequestStepMapper.put(fulfillmentStep.getStepCorrelator(), fulfillmentStep);
-						this.sbRequestResultMapper.put(fulfillmentStep.getStepCorrelator(), null);
-						this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
-						OrchestrationManager.getInstance().getGrinder().submit(fulfillmentStep);
-						break;
-					}
+						logger.info("Attemptin to safely submit to execution for: " + step.stepCorrelator);
+						synchronized (this) {
+							isAllStepsCompleted = false;
+							// this means the task is not yet submitted...
+							logger.debug("Submitting sequential task: " + fulfillmentStep.stepCorrelator + ": " + fulfillmentStep);
+							this.orchestrationTaskMapper.put(fulfillmentStep.getStepCorrelator(), this);
+							this.sbRequestStepMapper.put(fulfillmentStep.getStepCorrelator(), fulfillmentStep);
+							this.sbRequestResultMapper.put(fulfillmentStep.getStepCorrelator(), null);
+							this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
+							OrchestrationManager.getInstance().getGrinder().submit(fulfillmentStep);
+							break;
+						}
+					}					
 				}
 			}
 		}
