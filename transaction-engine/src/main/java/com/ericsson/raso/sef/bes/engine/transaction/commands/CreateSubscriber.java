@@ -12,6 +12,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberResponse;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
@@ -22,6 +23,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -81,11 +83,26 @@ public class CreateSubscriber extends AbstractTransaction {
 		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
-		TransactionStatus txnStatus=null;
+		
 		Boolean result = ((CreateSubscriberResponse)this.getResponse()).getResult();
-			
+		TransactionStatus txnStatus = new TransactionStatus();
+		if (this.getResponse() != null &&  this.getResponse().getAtomicStepResults() != null) {
+			for (AbstractStepResult stepResult: this.getResponse().getAtomicStepResults().values()) {
+				if (stepResult != null) {
+					FrameworkException fault = stepResult.getResultantFault();
+					if (fault != null) {
+						txnStatus.setComponent(fault.getComponent());
+						txnStatus.setCode(fault.getStatusCode().getCode());
+						txnStatus.setDescription(fault.getStatusCode().getMessage());
+						break;
+					}
+				}
+			}
+		}
+
 		
 		LOGGER.debug("Invoking create subscriber response!!");
+		
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
 		if (subscriberClient != null) {
 			subscriberClient.createSubscriber(this.getRequestId(), 

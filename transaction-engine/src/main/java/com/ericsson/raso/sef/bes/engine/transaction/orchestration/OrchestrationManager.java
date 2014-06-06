@@ -93,7 +93,7 @@ public class OrchestrationManager {
 			orchestration.cleanupTransaction();
 		}
 		logger.debug("Use case response to be sent");
-		//TODO: invoke response sending to the IResponse interface
+
 		usecase.sendResponse();
 		
 		nbTransactionStore.remove(nbCorrelator);
