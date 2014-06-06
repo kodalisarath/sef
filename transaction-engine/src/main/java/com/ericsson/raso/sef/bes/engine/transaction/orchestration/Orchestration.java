@@ -167,11 +167,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						
 						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 							this.promote2Fulfill();
-							
 						}
 					}
 				} 
-				logger.debug("Seems to be out fulfillment...are we going to schedule?");
+				logger.debug("Seems to be out fulfillment...are we going to schedule?\n State: " + this.printPhasingProgress());
 //				// proceed to scheduling...
 //				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
 //					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
@@ -183,7 +182,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //					}
 //				} 
 //				
-				logger.debug("Seems to be crossing schedule.... are we going to persistence?");
+				logger.debug("Seems to be crossing schedule.... are we going to persistence?\n State: " + this.printPhasingProgress());
 				// proceed to persistence...
 				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
 					logger.debug("Yes.. we will do persistence...");
@@ -310,6 +309,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 							break;
 						}
 						isAllStepsCompleted = false;
+						
 						// this means the task is not yet submitted...
 						logger.debug("Submitting sequential task: " + fulfillmentStep.stepCorrelator + ": " + fulfillmentStep);
 						this.orchestrationTaskMapper.put(fulfillmentStep.getStepCorrelator(), this);
@@ -337,6 +337,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			}
 		}
 		
+		logger.debug("isAllStepsCompleted?" + isAllStepsCompleted);
+		
 		if (isAllStepsCompleted) {
 			this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_SUCCESS);
 			//this.phasingProgress.put(Phase.TX_PHASE_SCHEDULE, Status.PROCESSING);          //TODO: revert back to scheduler
@@ -348,16 +350,20 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 	private void promote2Persist() {
 		this.phasingProgress.put(Phase.TX_PHASE_PERSISTENCE, Status.PROCESSING);
+		logger.debug("Already in persistence...");
 		
 		boolean isAllPersistenceComplete = true;
 		for (PersistenceStep persistence: this.persistence) {
 			PersistenceStepResult result = null;
 			
 			try {
+				logger.debug("Executing persistence for:" + persistence);
 				result = persistence.call();
 				persistence.setResult(result);
 				this.sbRequestResultMapper.put(persistence.getStepCorrelator(), result);
+				logger.debug("Execution graceful...");
 			} catch (Exception e) {
+				logger.debug("Execution blew up on the face!!!", e);
 				StepExecutionException fault = new StepExecutionException("Persistence Step Failed", e);
 				result = new PersistenceStepResult(fault, null);
 				result.setResultantFault(fault);
@@ -374,6 +380,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		} else {
 			this.status = Status.DONE_FAULT;
 		}
+		logger.debug("Final status: " + this.printPhasingProgress());
 	}
 
 	private void promote2Schedule() {
