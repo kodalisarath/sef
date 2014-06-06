@@ -157,7 +157,7 @@
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'updateSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.ReadSubscriberProcessor"/>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.UpdateSubscriberProcessor"/>
 					</camel:when>
 				</camel:choice>
 				<camel:doFinally>
