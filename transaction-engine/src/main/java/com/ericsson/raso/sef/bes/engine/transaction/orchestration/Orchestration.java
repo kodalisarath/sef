@@ -337,7 +337,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		if (isAllStepsCompleted) {
 			this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_SUCCESS);
 			//this.phasingProgress.put(Phase.TX_PHASE_SCHEDULE, Status.PROCESSING);          //TODO: revert back to scheduler
-			this.phasingProgress.put(Phase.TX_PHASE_PERSISTENCE, Status.PROCESSING);          
+			this.phasingProgress.put(Phase.TX_PHASE_PERSISTENCE, Status.PROCESSING);  
+			logger.debug("Orchestration Phase promoted to : " + this.phasingProgress);
 		}
 		logger.debug("exiting promote2Fulfill()");
 	}
