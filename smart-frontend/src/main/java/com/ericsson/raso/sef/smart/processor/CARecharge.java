@@ -138,7 +138,9 @@ public class CARecharge implements Processor {
 			
 			logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 			
-			PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+			PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.CARecharge);
+			
+			//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 			logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 			if(purchaseResponse == null) {
 				//request timed out but no response. possible request missing from correlation store

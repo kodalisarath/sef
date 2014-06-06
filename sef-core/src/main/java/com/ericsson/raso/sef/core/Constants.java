@@ -15,6 +15,8 @@ public class Constants {
 	public static final String TRANSPARENT_META1 = "transparentMeta1";
 	public static final String TRANSPARENT_META2 = "transparentMeta2";
 	public static final String TRANSPARENT_META3 = "transparentMeta3";
+	//TO:DO remove after fixing an issue with Hazlecast
+	public static final String CARecharge="CArecharge";
 	
 	
 	//Flattened out metas returned from back end for subscriber profile
