@@ -48,7 +48,7 @@ public abstract class SmartServiceHelper {
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " +  correlationId);
 		
 		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
-		
+		logger.debug("Subscriber response store"+subscriberInfo);
 		updateSubscriberState(subscriberInfo);
 		
 		return subscriberInfo;
