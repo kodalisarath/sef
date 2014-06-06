@@ -1,31 +1,37 @@
 package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.PessimisticLockingFailureException;
 
+import com.ericsson.raso.sef.bes.engine.transaction.CloneHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.Phase;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
-import com.ericsson.raso.sef.bes.engine.transaction.commands.AbstractTransaction;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractResponse;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
-import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
-import com.ericsson.raso.sef.bes.prodcat.tasks.*;
-import com.ericsson.raso.sef.bes.engine.transaction.CloneHelper;
+import com.ericsson.raso.sef.bes.prodcat.tasks.Charging;
+import com.ericsson.raso.sef.bes.prodcat.tasks.ChargingMode;
+import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
+import com.ericsson.raso.sef.bes.prodcat.tasks.FulfillmentMode;
+import com.ericsson.raso.sef.bes.prodcat.tasks.Future;
+import com.ericsson.raso.sef.bes.prodcat.tasks.FutureMode;
+import com.ericsson.raso.sef.bes.prodcat.tasks.Notification;
+import com.ericsson.raso.sef.bes.prodcat.tasks.NotificationMode;
+import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
+import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
 
@@ -217,8 +223,6 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		logger.debug("Entering promote2Fulfill()....");
 		
 		boolean isAllStepsCompleted = true;
-		boolean isCurrentParallelAllCompleted = true;
-		boolean isSequenceCompleted = true;
 		boolean isSerialModeNow = false;
 		boolean anyFailure = false;
 		boolean anyFault = false;
@@ -235,32 +239,31 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			Step step = null;
 			if (next instanceof FulfillmentStep) {
 				step = (FulfillmentStep) next;
-			
+				
+				logger.debug("Execution Status <" + step.stepCorrelator + ", " + this.sbExecutionStatus.get(step.getStepCorrelator()) + ">");
+
 				if (this.sbExecutionStatus.get(step.getStepCorrelator()) == status.PROCESSING) {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					// this means the task had been submitted earlier...
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
-					if (result != null) {
+					
+					if (result.getResultantFault() != null) {
 						// this means the task has been executed
-						if (result.getResultantFault() != null) {
 							step.setFault(result.getResultantFault());
-							anyFault = true;	
-							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
-						}
-						if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
-							anyFailure = true;
-							step.setResult(result);
-						
-						if (anyFault || anyFailure) {
-							this.status = Status.DONE_FAULT;
-							this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED);
-							break;
-						}
-					} else {
-						// this means the task is not yet completed its execution in fulfillment engine....
-						isAllStepsCompleted = false;
-						isCurrentParallelAllCompleted = false; // allow the task to complete & check on the next one....
+						anyFault = true;	
+						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAULT);
 					}
+					
+					if (((FulfillmentStepResult)result).getFulfillmentResult() == null || ((FulfillmentStepResult)result).getFulfillmentResult().isEmpty())
+						anyFailure = true;
+					step.setResult(result);
+
+					if (anyFault || anyFailure) {
+						this.status = Status.DONE_FAULT;
+						this.sbExecutionStatus.put(step.stepCorrelator, Status.DONE_FAILED);
+						break;
+					}
+
 				}
 				
 				if (this.sbExecutionStatus.get(step.getStepCorrelator()) == Status.WAITING){
@@ -304,14 +307,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 								break;
 							}
 						} else {
-							// this means the task is not yet completed its execution in fulfillment engine....
-							isSequenceCompleted = false; // allow the task to complete & check on the next one....
 							isAllStepsCompleted = false;
 						}
 					} 
 					
 					if (this.sbExecutionStatus.get(fulfillmentStep.getStepCorrelator()) == Status.WAITING) {
-						isSequenceCompleted = false;
 						isAllStepsCompleted = false;
 						// this means the task is not yet submitted...
 						logger.debug("Submitting sequential task: " + fulfillmentStep.stepCorrelator + ": " + fulfillmentStep);
