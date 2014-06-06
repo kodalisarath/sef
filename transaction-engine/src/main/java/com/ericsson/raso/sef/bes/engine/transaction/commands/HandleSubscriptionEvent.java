@@ -134,7 +134,9 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 					txnStatus.setComponent(result.getFault().getComponent());
 					txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
 				}else{
-					products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+					if((((FulfillmentStep) result).getResult()) != null) {
+						products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+					}
 				}
 			}
 		}
