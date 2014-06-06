@@ -102,7 +102,6 @@ values (#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
 		values
 		(#{userId}, #{eventTimestamp}, #{attributeName},  #{attributeNewValue jdbcType=VARCHAR},#{changedByUser jdbccType=VARCHAR})
 	</insert>
-	
 
 <!-- 	<select id="getSubscriberMetas" resultType="ArrayList" resultMap="SubscriberMetaResult" parameterType="Map"> -->
 <!-- 		select * -->
