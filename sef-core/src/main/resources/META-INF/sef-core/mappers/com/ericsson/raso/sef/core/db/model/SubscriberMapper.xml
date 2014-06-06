@@ -102,6 +102,12 @@ values (#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
 		values
 		(#{userId}, #{eventTimestamp}, #{attributeName},  #{attributeNewValue jdbcType=VARCHAR},#{changedByUser jdbccType=VARCHAR})
 	</insert>
+	
+	<update id="updateSubscriberMeta" parameterType="Meta">
+	update subscriber_meta set attribute_value = #{value jdbcType=VARCHAR}, last_modified=#{lastModified}
+    where user_id = #{userId} 
+	and attribute_name = #{key} 
+</update> 
 
 <!-- 	<select id="getSubscriberMetas" resultType="ArrayList" resultMap="SubscriberMetaResult" parameterType="Map"> -->
 <!-- 		select * -->
