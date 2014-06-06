@@ -245,14 +245,6 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				Status executionStatus = this.sbExecutionStatus.get(step.stepCorrelator);
 				logger.debug("Execution Status <" + step.stepCorrelator + ", " + executionStatus + ">");
 
-				if (executionStatus.name().startsWith("DONE_")) {
-					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
-					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
-					
-					logger.debug("Confirming the state of completed step: " + step.stepCorrelator + " = " + this.sbExecutionStatus.get(step.stepCorrelator));
-
-				}
-				
 				if (executionStatus == null || executionStatus == Status.WAITING) {
 					logger.info("Attemptin to safely submit to execution for: " + step.stepCorrelator);
 					synchronized(this) {
@@ -268,10 +260,21 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						this.sbRequestResultMapper.put(step.getStepCorrelator(),new FulfillmentStepResult(null, null));
 						this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
 						OrchestrationManager.getInstance().getGrinder().submit(step);
+						logger.debug("Submission successful for: " + step.stepCorrelator);
 						if (!isSerialModeNow)
 							break;
 					}
 				}
+				
+				if (executionStatus.name().startsWith("DONE_")) {
+					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
+					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
+					
+					logger.debug("Confirming the state of completed step: " + step.stepCorrelator + " = " + this.sbExecutionStatus.get(step.stepCorrelator));
+
+				}
+				
+				
 			} else if (next instanceof SequentialExecution) {
 				logger.debug("promote2Fulfill(): found the fulfillment step is sequential will execute now");
 				isSerialModeNow = true;
@@ -281,15 +284,6 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				while (fulfillments.hasNext()) {
 					Step fulfillmentStep = fulfillments.next();
 					Status executionStatus = this.sbExecutionStatus.get(step.getStepCorrelator());
-					
-					if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
-						logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
-						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
-						
-						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " + this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED));
-
-					}
-					
 					
 					if (executionStatus == null || executionStatus == Status.WAITING) {
 						logger.info("Attemptin to safely submit to execution for: " + step.stepCorrelator);
@@ -302,9 +296,21 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 							this.sbRequestResultMapper.put(fulfillmentStep.getStepCorrelator(), null);
 							this.sbExecutionStatus.put(step.stepCorrelator, Status.PROCESSING);
 							OrchestrationManager.getInstance().getGrinder().submit(fulfillmentStep);
+							logger.debug("Submission successful for: " + step.stepCorrelator);
 							break;
 						}
-					}					
+					}
+					
+					if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
+						logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
+						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
+						
+						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " + this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED));
+
+					}
+					
+					
+					
 				}
 			}
 		}
