@@ -209,8 +209,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		
 		return null;
 		} catch(Exception e) {
-			logger.error("Exception in orchestration. Exception Message: " + e.getMessage() + "Exception: " + e);
-			e.printStackTrace();
+			logger.error("Exception in orchestration. Exception Message: " + e.getMessage() + "Exception: " + e, e);
 			this.status = Status.DONE_FAULT;
 			this.executionFault = new TransactionException(northBoundCorrelator, "Fault occured during orchestration");
 			OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
@@ -246,7 +245,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				logger.debug("Execution Status <" + step.stepCorrelator + ", " + executionStatus + ">");
 
 				if (executionStatus == null || executionStatus == Status.WAITING) {
-					logger.info("Attemptin to safely submit to execution for: " + step.stepCorrelator);
+					logger.debug("Attemptin to safely submit to execution for: " + step.stepCorrelator);
 					synchronized(this) {
 						logger.debug("promote2Fulfill(): found the fulfillment step is yet to be submitted!! will submit them now");
 						isAllStepsCompleted = false;
