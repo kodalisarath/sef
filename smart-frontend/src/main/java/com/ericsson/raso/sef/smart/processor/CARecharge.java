@@ -5,7 +5,6 @@ package com.ericsson.raso.sef.smart.processor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,7 +138,7 @@ public class CARecharge implements Processor {
 			logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 			
 			PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
-			
+			logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 			if(purchaseResponse == null) {
 				//request timed out but no response. possible request missing from correlation store
 				// there is no response time out error code in smart interface and hence throw internal server error
@@ -154,7 +153,10 @@ public class CARecharge implements Processor {
 			arg0.getOut().setBody(responseData);
 		
 		} catch(Exception e) {
+			logger.debug("In Excecption block" );
+			e.printStackTrace();
 			if(e instanceof SmException){
+				logger.debug("exception is an instance of SmException");
 				throw e;
 			}else{
 				e.printStackTrace();
