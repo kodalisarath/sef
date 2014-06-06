@@ -14,12 +14,14 @@ public class CreateSubscriberProcessor implements Processor{
 	
 	@Override
 	public void process(Exchange arg0) throws Exception {
+		logger.debug("Entering CreateSubscriberProcessor");
 		Object[] objectArray = (Object[]) arg0.getIn().getBody(Object[].class);
 		String requestId = (String)objectArray[0];
 		com.ericsson.sef.bes.api.entities.Subscriber subscriber = (com.ericsson.sef.bes.api.entities.Subscriber)objectArray[1];
 		logger.debug("Checking subscriber in CreateSubscriberProcessor: " + subscriber);
 		//Subscriber subscriberTransaction= ServiceResolver.parseToCoreSubscriber(subscriber.value);
 		TransactionManager transactionManager = ServiceResolver.getTransactionManager();
+		logger.debug("Request ID and Subscriber ID" + requestId + " " + subscriber);
 		transactionManager.createSubscriber(requestId, subscriber);
 		
 	}
