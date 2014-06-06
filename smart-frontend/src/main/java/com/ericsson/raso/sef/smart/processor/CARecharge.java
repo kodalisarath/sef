@@ -138,7 +138,7 @@ public class CARecharge implements Processor {
 			
 			logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 			
-			PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.CARecharge);
+			PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
 			
 			//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 			logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
