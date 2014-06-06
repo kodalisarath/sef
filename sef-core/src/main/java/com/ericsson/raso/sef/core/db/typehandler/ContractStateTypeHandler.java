@@ -26,19 +26,19 @@ public class ContractStateTypeHandler extends BaseTypeHandler<ContractState> {
     @Override
     public ContractState getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String name = rs.getString(columnName);
-        return (name == null) ? null : ContractState.valueOf(name);
+        return (name == null) ? null : ContractState.apiValue(name);
     }
 
     @Override
     public ContractState getNullableResult(ResultSet rs, int column) throws SQLException {
         String name = rs.getString(column);
-        return (name == null) ? null : ContractState.valueOf(name);
+        return (name == null) ? null : ContractState.apiValue(name);
     }
 
     @Override
     public ContractState getNullableResult(CallableStatement callableStatement, int i) throws SQLException {
         String name = callableStatement.getString(i);
-        return (name == null) ? null : ContractState.valueOf(name);
+        return (name == null) ? null : ContractState.apiValue(name);
     }
 
 }
