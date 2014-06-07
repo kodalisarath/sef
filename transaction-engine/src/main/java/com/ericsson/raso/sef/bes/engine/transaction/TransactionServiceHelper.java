@@ -395,7 +395,10 @@ public abstract class TransactionServiceHelper {
 
 	public static com.ericsson.sef.bes.api.entities.Subscriber enrichSubscriber(com.ericsson.sef.bes.api.entities.Subscriber subscriber,
 			List<Product> products) {
-
+		
+		if(products == null)
+			return subscriber;
+		
 		String value = null;
 		for (Product product: products) {
 			Map<String, String> metas = product.getMetas();

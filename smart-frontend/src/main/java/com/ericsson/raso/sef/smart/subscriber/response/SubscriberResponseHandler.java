@@ -3,6 +3,9 @@ package com.ericsson.raso.sef.smart.subscriber.response;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.ContractState;
@@ -13,6 +16,8 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 import com.hazelcast.core.ISemaphore;
 
 public class SubscriberResponseHandler implements ISubscriberResponse {
+	
+	private static final Logger logger = LoggerFactory.getLogger(SubscriberResponseHandler.class);
 
 	@Override
 	public void readSubscriber(String requestCorrelator,
@@ -28,12 +33,19 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		
 		//get the subscriber status from back end
 		String activationStatus = subscriberMetas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG);
-		boolean isActive = Boolean.parseBoolean(activationStatus);
+		
+		boolean isActive = false;
+		if(activationStatus != null) {
+			logger.warn("No activation status flag received from the back end");
+			isActive = Boolean.parseBoolean(activationStatus);
+		}
+		
 		if(isActive) {
 			subscriberInfo.setRemoteState(ContractState.ACTIVE);
 		} else {
 			subscriberInfo.setRemoteState(ContractState.PREACTIVE);
 		}
+		
 		
 		//check if subscriber in recycle state
 		
@@ -41,7 +53,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		
 		for(int i=0; i<32; i++) {
 			String recycleStatus = subscriberMetas.get(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID+"." + i);
-			if(recycleStatus.equalsIgnoreCase("2")) {
+			if(recycleStatus != null && recycleStatus.equalsIgnoreCase("2")) {
 				String recycleActivationStatus = subscriberMetas.get(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG +"." + i);
 				recycleStat = Boolean.parseBoolean(recycleActivationStatus);
 			}
@@ -55,7 +67,10 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		if(subscriberInfo.getRemoteState() == ContractState.ACTIVE) {
 			
 		}
-		 subscriberInfo.notify();
+		
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
+		semaphore.release();
+		
 		}
 	}
 

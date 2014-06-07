@@ -42,7 +42,7 @@ public final class FetchSubscriber extends ExternDataUnitTask<Subscriber> {
 			// now place it in Request Context...
 			context.getInProcess().put(Constants.SUBSCRIBER_ENTITY.name(), subscriber);
 		}
-		LOGGER.debug("Returning a subscriber "+subscriber);
+		LOGGER.debug("Returning a subscriber "+subscriber.getContractState());
 		return subscriber;
 	}
 	
