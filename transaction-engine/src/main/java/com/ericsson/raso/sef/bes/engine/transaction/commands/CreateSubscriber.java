@@ -87,7 +87,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		
 		
 		LOGGER.debug("Invoking create subscriber response!!");
-		Boolean result = null;
+		boolean result = true;
 		TransactionStatus txnStatus = new TransactionStatus();
 		if (this.getResponse() != null) {
 			if (this.getResponse().getAtomicStepResults() != null) {
@@ -104,7 +104,7 @@ public class CreateSubscriber extends AbstractTransaction {
 			}
 		}
 		
-		if (result == null)
+		if (result != false)
 			result = true;
 		LOGGER.debug("CreateSubscriber::=> Functional Result: " + result);
 		
