@@ -61,6 +61,7 @@ public class OrchestrationManager {
 		logger.debug("Entering promoteFulfillmentExecution!!");
 		Orchestration requiredOrchestration = this.sbOrchestrationTaskMapper.get(southboundCorrelator);
 		
+		logger.debug("Sanity Check FFE: SBCorrelator=" + southboundCorrelator + ", fulfillmentResult=" + fulfillmentResult);
 		this.sbRequestResultMapper.put(southboundCorrelator, fulfillmentResult);
 		if (fulfillmentResult.getResultantFault() != null)
 			this.sbExecutionStatus.put(southboundCorrelator, Status.DONE_FAULT);
