@@ -65,7 +65,23 @@ public class SubscriberServiceImpl implements SubscriberService {
 	@Override
 	@Transactional
 	public void updateSubscriber(Subscriber subscriber) {
+		logger.debug("Inside the update method querying the db for subscriber with userid="+subscriber.getUserId());
+		
 		Subscriber oldSubscriber = subscriberMapper.getSubscriberByUserId(subscriber.getUserId());
+		logger.debug("Query successful for existing subscriber");
+		
+		logger.debug("Printing existing subscriber fields");
+		logger.debug("msisdn= "+oldSubscriber.getMsisdn()+"    "+
+		"Account id  ="+oldSubscriber.getAccountId()+"    "+
+		"Contractid ="+oldSubscriber.getContractId()+"  "+
+		"Contract state  ="+oldSubscriber.getContractState()+" "+
+		"Pin   ="+oldSubscriber.getPin()+"  "+"IMSI ="+oldSubscriber.getImsi()+" "+
+		"Email ="+oldSubscriber.getEmail()+"  "+"Payment Type  ="+oldSubscriber.getPaymentType()+"   "+
+		"Payment Responsible ="+oldSubscriber.getPaymentResponsible()+"  "+"Payment Parent"+
+		oldSubscriber.getPaymentParent()+"  "+"Bill life cycle day ="+oldSubscriber.getBillCycleDay()+
+		"DOB  ="+oldSubscriber.getDateOfBirth()+"Preferred Language  "+oldSubscriber.getPrefferedLanguage()+
+		" Registration date "+oldSubscriber.getRegistrationDate()+" "+"Active Date ="+oldSubscriber.getActiveDate()+
+		" Rate Plan="+oldSubscriber.getRatePlan()+"Customer Segment= "+oldSubscriber.getCustomerSegment()+"  IMEI_SV="+oldSubscriber.getImeiSv());
 		Collection<SubscriberAuditTrial> hists = new ArrayList<SubscriberAuditTrial>();
 		if(oldSubscriber.getContractState() != null && oldSubscriber.getContractState() != subscriber.getContractState()) {
 			SubscriberAuditTrial history = new SubscriberAuditTrial();
@@ -75,10 +91,37 @@ public class SubscriberServiceImpl implements SubscriberService {
 			history.setEventTimestamp(new Date());
 			hists.add(history);
 		}
+		
+		logger.debug("now going to update subscriber");
 		subscriberMapper.updateSubscriber(subscriber);
+		
+logger.debug("Inside the update method querying the db for subscriber with userid="+subscriber.getUserId());
+		
+		Subscriber updatedSubscriber = subscriberMapper.getSubscriberByUserId(subscriber.getUserId());
+		logger.debug("After updating table ");
+		
+		logger.debug("Printing Updated subscriber fields");
+		logger.debug("msisdn= "+updatedSubscriber.getMsisdn()+"    "+
+		"Account id  ="+updatedSubscriber.getAccountId()+"    "+
+		"Contractid   ="+updatedSubscriber.getContractId()+"  "+
+		"Contract state  ="+updatedSubscriber.getContractState()+" "+
+		"Pin   ="+updatedSubscriber.getPin()+"  "+"IMSI ="+updatedSubscriber.getImsi()+" "+
+		"Email ="+updatedSubscriber.getEmail()+"  "+"Payment Type  ="+updatedSubscriber.getPaymentType()+"   "+
+		"Payment Responsible ="+updatedSubscriber.getPaymentResponsible()+"     "+"Payment Parent"+
+		updatedSubscriber.getPaymentParent()+"       "+"Bill life cycle day ="+updatedSubscriber.getBillCycleDay()+
+		"DOB  ="+updatedSubscriber.getDateOfBirth()+"     Preferred Language  "+updatedSubscriber.getPrefferedLanguage()+
+		" Registration date "+updatedSubscriber.getRegistrationDate()+" "+"Active Date ="+updatedSubscriber.getActiveDate()+
+		" Rate Plan="+updatedSubscriber.getRatePlan()+"      Customer Segment= "+updatedSubscriber.getCustomerSegment()+"  IMEI_SV="+updatedSubscriber.getImeiSv());
+		
+		
+		
+		
 		for (SubscriberAuditTrial subscriberHistory : hists) {
 			subscriberMapper.insertSubscriberHistory(subscriberHistory);
 		}
+		
+		
+		
 		
 		evictSubscriber(subscriber.getUserId());
 	}
@@ -180,6 +223,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 	
 	private Subscriber fetchSubscriberByMsisdn(String msisdn) {
 		Subscriber subscriber = subscriberMapper.getSubscriber(msisdn);
+		logger.debug("Extracted fields ");
+		
+		logger.debug("userid= "+subscriber.getUserId()+"    "+"Account id"+subscriber.getAccountId());
 		if(subscriber != null) {
 			Collection<Meta> subscriberMetas = fetchMetas(subscriber.getUserId());
 			for (Meta meta : subscriberMetas) {
