@@ -50,6 +50,10 @@ public final class AtomicProduct extends Product implements Serializable, Compar
 	public Map<String, Object> getMetas() {
 		return this.metas;
 	}
+	
+	public void setMetas(Map<String, Object> metas) {
+		this.metas = metas;
+	}
 
 	public AbstractQuotaCharacteristic getQuota() {
 		return quota;
