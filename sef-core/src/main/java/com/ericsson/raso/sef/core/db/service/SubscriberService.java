@@ -9,7 +9,7 @@ import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
 
 public interface SubscriberService {
 
-	void createSubscriber(Subscriber subscriber);
+	void createSubscriber(Subscriber subscriber) throws Exception;
 	
 	void updateSubscriber(Subscriber subscriber);
 	

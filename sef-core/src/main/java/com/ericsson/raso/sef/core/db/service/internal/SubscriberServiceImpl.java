@@ -30,7 +30,31 @@ public class SubscriberServiceImpl implements SubscriberService {
 	
 	@Override
 	@Transactional
-	public void createSubscriber(Subscriber subscriber) {
+	public void createSubscriber(Subscriber subscriber) throws Exception {
+       
+		if(subscriber.getMsisdn() != null){
+			
+			 if(subscriber.getUserId() == null){
+					subscriber.setUserId(subscriber.getMsisdn());
+				 }
+				 if(subscriber.getAccountId() == null){
+					 subscriber.setAccountId(subscriber.getMsisdn());
+				 }
+				 if(subscriber.getCustomerId() == null){
+					 subscriber.setCustomerId(subscriber.getMsisdn());
+				 }
+		        if(subscriber.getContractId() == null){
+					 subscriber.setContractId(subscriber.getMsisdn());
+				 }
+		        if(subscriber.getPin() == null){
+					 subscriber.setPin(subscriber.getMsisdn());
+				 }
+			 
+		 }else{
+			 //TO:DO Proper exception handling need to be implimented
+			 throw new Exception("MSISDN is null here,cannot process further");
+			 
+		 }
 		subscriberMapper.createSubscriber(subscriber);
 	}
 
