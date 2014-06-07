@@ -145,8 +145,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				
 				if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
-					if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) 
-						this.promote2Fulfill();
+					if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) { 
+						//this.promote2Fulfill();
+						logger.debug("Stifled the persistence to stop executing in preventing the thread model to break...");
+						this.status = Status.DONE_SUCCESS; //TODO: uncomment this when Vinay has fixed the bug in DB TIER....
+					}
 					else {
 						this.status = Status.DONE_FAULT;
 						this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
@@ -357,7 +360,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			PersistenceStepResult result = null;
 			
 			try {
-				logger.debug("Executing persistence for:" + persistence);
+				logger.debug("Executing persistence for:" + persistence.getClass().getCanonicalName() + ":= " + persistence);
 				result = persistence.call();
 				persistence.setResult(result);
 				this.sbRequestResultMapper.put(persistence.getStepCorrelator(), result);
