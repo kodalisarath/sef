@@ -146,7 +146,6 @@ public class ReadSubscriber extends AbstractTransaction {
 									subscriber);
 		LOGGER.debug("read susbcriber response posted");
 
-		
 	}
 	
 }
