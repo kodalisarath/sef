@@ -15,6 +15,8 @@ import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRes
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceStep;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
@@ -91,8 +93,15 @@ public class CreateSubscriber extends AbstractTransaction {
 		TransactionStatus txnStatus = new TransactionStatus();
 		if (this.getResponse() != null) {
 			if (this.getResponse().getAtomicStepResults() != null) {
-				for (AbstractStepResult stepResult: this.getResponse().getAtomicStepResults().values()) {
-					if (stepResult.getResultantFault() != null) {
+				for (Step<?> step: this.getResponse().getAtomicStepResults().keySet()) {
+					AbstractStepResult stepResult = this.getResponse().getAtomicStepResults().get(step);
+					if (stepResult == null) {
+						if (step instanceof PersistenceStep) //TODO: this is temporary fix until DB Tier is fixed. Vinay is working on the same.  
+							continue;
+						else {
+							LOGGER.debug("quick check for type:" + step);
+						}
+					} else if (stepResult.getResultantFault() != null) {
 						txnStatus.setComponent(stepResult.getResultantFault().getComponent());
 						txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
 						txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
