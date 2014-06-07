@@ -345,6 +345,8 @@ public abstract class TransactionServiceHelper {
 			quotalimited.setDefinedQuota(other.getQuotaDefined());
 			returned.setQuota(quotalimited);
 		}
+		
+		returned.setMetas(getNativeMap(other.getMetas()));
 		return returned;
 	}
 	
