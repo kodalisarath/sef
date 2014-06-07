@@ -33,19 +33,34 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						LOGGER.debug("About to query Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
 						returned = subscriberService.getSubscriber(((Subscriber) persistentEntity).getMsisdn());
 						LOGGER.debug("Fetched Entity for query.");
-						this.getResult().setPersistenceResult(returned);
+						
+						if (this.getResult() == null) {
+							this.setResult(new PersistenceStepResult(null, returned));
+						} else
+							this.getResult().setPersistenceResult(returned);
+						
 						break;
 					case REMOVE:
 						LOGGER.debug("Deleting Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
 						subscriberService.deleteSubscriber(((Subscriber) persistentEntity).getMsisdn());
 						LOGGER.debug("Subscriber deleted.");
-						this.getResult().setPersistenceResult(true);
+						
+						if (this.getResult() == null) {
+							this.setResult(new PersistenceStepResult(null, true));
+						} else
+							this.getResult().setPersistenceResult(true);
+						
 						break;
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
 						subscriberService.createSubscriber((Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
 						LOGGER.debug("Subscriber saved.");
-						this.getResult().setPersistenceResult(true);
+						
+						if (this.getResult() == null) {
+							this.setResult(new PersistenceStepResult(null, true));
+						} else
+							this.getResult().setPersistenceResult(true);
+						
 						break;
 					default:
 
@@ -59,19 +74,35 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						LOGGER.debug("About to query Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = (Subscription) persistentEntity; 											//TODO: implement...
 						LOGGER.debug("Fetched Entity for query.");
-						this.getResult().setPersistenceResult(returned);
+						
+						if (this.getResult() == null) {
+							this.setResult(new PersistenceStepResult(null, returned));
+						} else
+							this.getResult().setPersistenceResult(returned);
+						
 						break;
 					case REMOVE:
 						LOGGER.debug("Deleting Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = true;																		//TODO: implement...
 						LOGGER.debug("Subscriber deleted.");
-						this.getResult().setPersistenceResult(true);
+						
+						if (this.getResult() == null) {
+							this.setResult(new PersistenceStepResult(null, true));
+						} else
+							this.getResult().setPersistenceResult(true);
+						
 						break;
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = true;																		//TODO: implement...
 						LOGGER.debug("Subscriber saved.");
-						this.getResult().setPersistenceResult(true);
+						
+						
+						if (this.getResult() == null) {
+							this.setResult(new PersistenceStepResult(null, true));
+						} else
+							this.getResult().setPersistenceResult(true);
+
 						break;
 					default:
 
