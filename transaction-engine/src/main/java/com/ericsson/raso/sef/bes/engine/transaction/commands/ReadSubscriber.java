@@ -126,7 +126,6 @@ public class ReadSubscriber extends AbstractTransaction {
 						txnStatus.setDescription(step.getFault().getStatusCode().getMessage());
 						break;
 					}else{
-						
 							//products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) step).getResult().getFulfillmentResult()));
 							FulfillmentStepResult stepResult = (FulfillmentStepResult)this.getResponse().getAtomicStepResults().get(step);
 						if(stepResult != null) {
