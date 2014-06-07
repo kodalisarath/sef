@@ -45,11 +45,14 @@ public class FulfillResponseProcessor implements Processor {
 				for(Product product: products) {
 					logger.debug("Product Quota defined: " +  product.getQuotaDefined() + " Quota consumed: " + product.getQuotaConsumed());
 					atomicProducts.add(TransactionServiceHelper.getApiEntity(product));
+					logger.debug("still in loop...");
 				}
 				}
 			//TODO: based on the transaction status set a transaction fault while posting back the step result
 			//TODO: fix the impedence of passing the metas from fulfillment to upstream. Fix required in FulfillmentStepResult. Approval pending Sathya
+			logger.debug("out of loop, creating response...");
 			result = new FulfillmentStepResult(null, atomicProducts);
+			logger.debug("here is the response: " + result);
 		}
 		logger.debug("Fulfillment completed. Engaging orchestration manager to update the response for " +  correlationId);
 		OrchestrationManager.getInstance().promoteFulfillmentExecution(correlationId, result);
