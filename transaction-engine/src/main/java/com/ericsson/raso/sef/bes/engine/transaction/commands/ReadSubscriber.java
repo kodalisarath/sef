@@ -149,6 +149,4 @@ public class ReadSubscriber extends AbstractTransaction {
 		
 	}
 	
-	
-
 }
