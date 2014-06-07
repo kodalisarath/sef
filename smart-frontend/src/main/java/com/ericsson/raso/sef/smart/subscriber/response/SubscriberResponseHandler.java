@@ -33,7 +33,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		
 		//get the subscriber status from back end
 		String activationStatus = subscriberMetas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG);
-		
+		logger.debug("Subscriber activationStatus: " +  activationStatus);
 		boolean isActive = false;
 		if(activationStatus != null) {
 			logger.warn("No activation status flag received from the back end");
@@ -55,6 +55,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			String recycleStatus = subscriberMetas.get(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID+"." + i);
 			if(recycleStatus != null && recycleStatus.equalsIgnoreCase("2")) {
 				String recycleActivationStatus = subscriberMetas.get(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG +"." + i);
+				logger.debug("Subscriber Recycle status: " + recycleActivationStatus);
 				recycleStat = Boolean.parseBoolean(recycleActivationStatus);
 			}
 		}
