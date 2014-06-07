@@ -146,9 +146,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) { 
-						//this.promote2Fulfill();
-						logger.debug("Stifled the persistence to stop executing in preventing the thread model to break...");
-						this.status = Status.DONE_SUCCESS; //TODO: uncomment this when Vinay has fixed the bug in DB TIER....
+						this.promote2Fulfill();
 					}
 					else {
 						this.status = Status.DONE_FAULT;
@@ -160,7 +158,9 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //						this.processNotification();
 //						this.promote2Schedule();
 						//TODO: remove this when uncomment the above two tasks
-						this.promote2Persist();
+						//this.promote2Persist();
+						logger.debug("Stifled the persistence to stop executing in preventing the thread model to break...");
+						this.status = Status.DONE_SUCCESS; //TODO: uncomment this when Vinay has fixed the bug in DB TIER....
 
 					} else {
 						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
