@@ -327,6 +327,7 @@ public abstract class TransactionServiceHelper {
 		returned.setQuotaDefined(other.getQuota().getDefinedQuota());
 		returned.setQuotaConsumed(other.getQuota().getConsumedQuota());
 		returned.setValidity(other.getValidity().getExpiryTimeInMillis());
+		returned.setMetas(getApiMap(other.getMetas()));
 		
 		return returned;
 	}
