@@ -180,7 +180,7 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
 			}
 		}
-		LOGGER.debug("Packed all offer info...");
+		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
 		
 	
 		product.setMetas(accountDetails);
