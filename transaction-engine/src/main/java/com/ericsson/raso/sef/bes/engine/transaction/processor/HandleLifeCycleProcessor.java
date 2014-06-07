@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.bes.engine.transaction.processor;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
@@ -7,6 +8,8 @@ import org.apache.camel.Processor;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionManager;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
+import com.ericsson.sef.bes.api.entities.Meta;
 
 public class HandleLifeCycleProcessor implements Processor{
 
@@ -17,9 +20,12 @@ public class HandleLifeCycleProcessor implements Processor{
 		String requestId = (String)objectArray[0];
 		String subscriberId =(String)objectArray[1];
 		String lifeCycleState = (String)objectArray[2];
-		Map metas = (Map)objectArray[3];
+		List<Meta> apiMetas = (List<Meta>)objectArray[3];
 		TransactionManager transactionManager = ServiceResolver.getTransactionManager();
-		transactionManager.handleLifeCycle(requestId, subscriberId, lifeCycleState, metas);
+		
+		Map<String, String> sefMetas = TransactionServiceHelper.getApiMap(apiMetas);
+		
+		transactionManager.handleLifeCycle(requestId, subscriberId, lifeCycleState, sefMetas);
 	}
 
 }
