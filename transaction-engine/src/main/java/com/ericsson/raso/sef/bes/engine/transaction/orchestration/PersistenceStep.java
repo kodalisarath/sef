@@ -112,7 +112,14 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						
 		} catch(Exception e) {			
 			LOGGER.error("Failed Persistence task", e);
-			this.getResult().setResultantFault(new StepExecutionException("txe", new ResponseCode(6000, "Persistence Tier Failed"), e));
+			
+			if (this.getResult() == null) {
+				this.setResult(new PersistenceStepResult(new StepExecutionException("txe", new ResponseCode(6000, "Persistence Tier Failed"), e), null));
+			} else {
+				this.getResult().setResultantFault(new StepExecutionException("txe", new ResponseCode(6000, "Persistence Tier Failed"), e));	
+			}
+				
+			
 			return this.getResult();
 		}
 		

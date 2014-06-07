@@ -158,7 +158,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //						this.promote2Schedule();
 						//TODO: remove this when uncomment the above two tasks
 						this.promote2Persist();
-						this.status = Status.DONE_SUCCESS;
+
 					} else {
 						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
 							this.status = Status.DONE_FAULT;
@@ -380,7 +380,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		} else {
 			this.status = Status.DONE_FAULT;
 		}
-		logger.debug("Final status: " + this.printPhasingProgress());
+		logger.debug("Final status: " + this.status + "State Machine: " + this.printPhasingProgress());
 	}
 
 	private void promote2Schedule() {
