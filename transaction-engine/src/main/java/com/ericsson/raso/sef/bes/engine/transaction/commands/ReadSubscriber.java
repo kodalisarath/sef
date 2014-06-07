@@ -125,8 +125,10 @@ public class ReadSubscriber extends AbstractTransaction {
 						txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
 						break;
 					}else{
-						if(((FulfillmentStep) result).getResult() !=null)
-						products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+						if(((FulfillmentStep) result).getResult() !=null) {
+							products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+							LOGGER.debug("FulfillmentStep has some results added to products list");
+						}
 					}
 				}
 			}
