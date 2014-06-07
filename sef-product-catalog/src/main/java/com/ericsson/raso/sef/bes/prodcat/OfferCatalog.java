@@ -1,8 +1,10 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,6 +123,10 @@ public class OfferCatalog implements IOfferCatalog {
 		return offer.execute(subscriber, event, override, metas);
 	}
 	
+	
+	public TreeMap<String,TreeMap<Integer,Offer>> getAllOffers() {
+		return container.getOffersById();
+	}
 	
 	
 }

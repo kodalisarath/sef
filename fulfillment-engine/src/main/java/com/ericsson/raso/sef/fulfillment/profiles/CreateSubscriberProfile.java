@@ -58,6 +58,7 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		
 		
 		// AF Install - function here
+		LOGGER.debug("Preparing request pojo for CS-AF....");
 		AddDnsRequest dnsRequest = new AddDnsRequest();
 		dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
 		dnsRequest.setDclass(this.getDclass());
@@ -66,15 +67,16 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		dnsRequest.setTtl(this.getTtl());
 		dnsRequest.setZname(this.getZname());
 		
-		
+		LOGGER.debug("Fetching the sdpId from Router");
 		String sdpId= (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
 		dnsRequest.setSdpId(sdpId);
 		
 		try {
+			LOGGER.debug("Shall I fire the command to CS-AF DNS?");
 			new AddDnsCommand(dnsRequest).execute();
 			LOGGER.debug("Installed new subscriber in CS-AF DNS");
 		} catch (SmException e1) {
-			LOGGER.error("Failed AddDnsCommand execute" + e1);
+			LOGGER.error("Failed AddDnsCommand execute" + e1.getMessage(), e);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
 		
@@ -85,37 +87,44 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		InstallSubscriberRequest request = new InstallSubscriberRequest();
 		if(createSubscriberProfile.getPromotionPlanId() != null) 
 			request.setPromotionPlanId(createSubscriberProfile.getPromotionPlanId());
+		LOGGER.debug("Requesting for Promotion Plan: " + createSubscriberProfile.getPromotionPlanId());
 		
 		if(createSubscriberProfile.getLanguageIDNew() !=null) 
 			request.setLanguageIDNew(createSubscriberProfile.getLanguageIDNew());
+		LOGGER.debug("Requesting for Language ID: " + createSubscriberProfile.getLanguageIDNew());
 		
 		if(createSubscriberProfile.getMessageCapabilityFlag() != null) 
 			request.setMessageCapabilityFlag(createSubscriberProfile.getMessageCapabilityFlag());
-
+		LOGGER.debug("Requesting for MessageCapablityFlag: " + createSubscriberProfile.getMessageCapabilityFlag());
+		
 		if(request.getPamInformationList() != null) 
 			request.setPamInformationList(createSubscriberProfile.getPamInformationList().getPamInfolist());
+		LOGGER.debug("Requesting for Pam Info: " + createSubscriberProfile.getPamInformationList());
 		
 		
 		request.setServiceClassNew(Integer.valueOf(defaultServiceClass));
+		LOGGER.debug("Requesting for Service Class: " + defaultServiceClass);
 		
 		if(request.getTemporaryBlockedFlag() !=null) 
 			request.setTemporaryBlockedFlag(createSubscriberProfile.getTemporaryBlockedFlag());
+		LOGGER.debug("Requesting for Temporary Blocked Flag: " + createSubscriberProfile.getTemporaryBlockedFlag());
 		
 		
 		if(request.getUssdEndOfCallNotificationID() !=null) 
 			request.setUssdEndOfCallNotificationID(createSubscriberProfile.getUssdEndOfCallNotificationID());
+		LOGGER.debug("Requesting for USSD End of Call Notification: " + createSubscriberProfile.getUssdEndOfCallNotificationID());
 		
 		request.setSubscriberNumber(map.get("SUBSCRIBER_ID"));
 		InstallSubscriberCommand instlCommand = new InstallSubscriberCommand(request);
-		LOGGER.debug("Packed the request for execution...");
+		LOGGER.debug("Packed the request for execution..." + map.get("SUBSCRIBER_ID"));
 		
 		try {
 			instlCommand.execute();
+			LOGGER.debug("Subscriber installed in CS-AIR");
 		} catch (SmException e1) {
 			LOGGER.error("Installing new subscriber failed!!", e1);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
-		LOGGER.debug("Subscriber installed in CS-AIR");
 		returned.add(e);
 		
 		return returned;	

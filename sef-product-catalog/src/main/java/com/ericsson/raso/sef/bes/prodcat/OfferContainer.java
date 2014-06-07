@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -284,6 +285,8 @@ public class OfferContainer implements Serializable {
 	public TreeMap<String, TreeMap<Integer, Offer>> getOffersById() {
 		return offersById;
 	}
+
+	
 
 	
 	
