@@ -30,15 +30,16 @@
 		<result property="customerSegment" column="customer_segment"/>
 	</resultMap>
 <insert id="createSubscriber" parameterType="Subscriber">
-		insert into subscriber (user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,payment_responsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
+		insert into subscriber (user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
 		values
 		(#{userId},#{accountId},#{msisdn},#{registrationDate jdbcType=TIMESTAMP},#{contractState},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment})
 	</insert>
 	<resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
-		<id property="userId" column="user_id" />
-		<result property="eventTimestamp" column="event_timestamp" jdbcType="TIMESTAMP"/>
-		<result property="attributeName" column="attribute_name" />
-		<result property="attributeNewValue" column="attribute_new_value" />
+		<id property="userId" column="USER_ID " />
+		<result property="eventTimestamp" column="EVENT_TIMESTAMP" jdbcType="TIMESTAMP"/>
+		<result property="attributeName" column="ATTRIBUTE_NAME" />
+		<result property="attributeNewValue" column="ATTRIBUTE_NEW_VALUE" />
+		<result property="changedByUser" column="CHANGE_BY_USER"/>
 	</resultMap>
 	<resultMap id="MetaResult" type="Meta">
 	<result property="key" column="last_modified"/>
@@ -94,7 +95,7 @@ values (#{userId}, #{key}, #{value jdbcType=VARCHAR}, #{lastModified})
 		where user_id = #{userId}
 	</update>
 	<insert id="insertSubscriberHistory" parameterType="SubscriberAuditTrial">
-		insert into subscriber_history (user_id,event_timestamp, attribute_name, attribute_old_value, attribute_new_value)
+		insert into SUBSCRIBER_AUDIT_TRAIL (user_id,event_timestamp, CHANGE_BY_USER, ATTRIBUTE_NAME, ATTRIBUTE_NEW_VALUE)
 		values
 		(#{userId}, #{eventTimestamp}, #{attributeName},  #{attributeNewValue jdbcType=VARCHAR},#{changedByUser jdbccType=VARCHAR})
 	</insert>
