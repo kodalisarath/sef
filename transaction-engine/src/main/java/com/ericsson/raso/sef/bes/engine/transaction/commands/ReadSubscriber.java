@@ -24,6 +24,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TaskType;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
@@ -31,6 +32,7 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
 
 public class ReadSubscriber extends AbstractTransaction {
+	
 	private static final long	serialVersionUID	= 8130277491237379246L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReadSubscriber.class);
 	
@@ -46,11 +48,22 @@ public class ReadSubscriber extends AbstractTransaction {
 		LOGGER.debug("Entering Read Subscriber somehow....");
 		
 		try {
+			
+			//Fetch subscriber from DB
 			Subscriber subscriber = new FetchSubscriber(((ReadSubscriberRequest)this.getRequest()).getSubscriberId()).execute();
-			LOGGER.debug("Dodged a maor bullet there...");
+			LOGGER.debug("Subscriber entity fetched from DB: " + subscriber);
+			
+			
+			//Subscriber not found in db, cannot proceed further
+			if(subscriber == null) {
+				throw new TransactionException("txe", new ResponseCode(102, "Subscriber not found"));
+			}
+
 			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper.getApiEntity(subscriber);
 			((ReadSubscriberResponse)this.getResponse()).setSubscriber(result);
-			
+
+
+			// Fetch the subscriber from downstream through work flow
 			String readSubscriberWorkflowId = ((ReadSubscriberRequest)this.getRequest()).getMetas().get(Constants.READ_SUBSCRIBER.name());
 			if(readSubscriberWorkflowId != null) {
 				LOGGER.debug("somehow a workflow is also needed... wtf?!!!");
@@ -70,14 +83,13 @@ public class ReadSubscriber extends AbstractTransaction {
 					LOGGER.info("Going to execute the orcheastration profile for: " + execution.getNorthBoundCorrelator());
 					OrchestrationManager.getInstance().submit(this, execution);
 				}
-			} else {
-				this.sendResponse();
-			}
+			} 
+		} catch (TransactionException e) {
+			((ReadSubscriberResponse)this.getResponse()).setReturnFault(e);
+		} catch (FrameworkException e1) {
+			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(e1.getComponent(), e1.getStatusCode()));
+		} finally {
 			
-			
-			
-		} catch (FrameworkException e) {
-			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Unable to fetch subscription", e));
 		}
 		
 		return true;
