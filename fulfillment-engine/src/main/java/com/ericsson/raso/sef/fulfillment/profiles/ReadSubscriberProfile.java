@@ -164,11 +164,21 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 		// offer info...
 		index = 0;
 		for (OfferInformation offerInformation: response.getOfferInformationList()) {
-			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID + "." + ++index, "" + offerInformation.getOfferID());
-			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE + "." + index, "" + offerInformation.getStartDate().getTime());
-			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME + "." + index, "" + offerInformation.getStartDateTime().getTime());
-			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
-			accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
+			if(offerInformation != null) {
+				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID + "." + ++index, "" + offerInformation.getOfferID());
+				
+				if(offerInformation.getStartDate() != null)
+				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE + "." + index, "" + offerInformation.getStartDate().getTime());
+				
+				if(offerInformation.getStartDateTime() != null)
+				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME + "." + index, "" + offerInformation.getStartDateTime().getTime());
+				
+				if(offerInformation.getExpiryDate() != null)
+				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
+				
+				if(offerInformation.getExpiryDateTime() != null)
+				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
+			}
 		}
 		LOGGER.debug("Packed all offer info...");
 		
