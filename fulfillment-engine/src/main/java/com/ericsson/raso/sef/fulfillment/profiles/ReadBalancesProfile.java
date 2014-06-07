@@ -152,19 +152,21 @@ public class ReadBalancesProfile extends BlockingFulfillment<Product> {
 			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_COMPOSITE_DA_FLAG + "." + index, "" + daInformation.isCompositeDedicatedAccountFlag());
 			
 			int subindex = 0;
-			for (SubDedicatedInfo subDedicatedInfo: daInformation.getSubDedicatedAccountInformation()) {
-				if(subDedicatedInfo != null) {
-					if(subDedicatedInfo.getDedicatedAccountValue1() != null)
-					balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_1 + "." + ++subindex, "" + subDedicatedInfo.getDedicatedAccountValue1());
-					
-					if(subDedicatedInfo.getDedicatedAccountValue2() != null)
-					balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_2 + "." + subindex, "" + subDedicatedInfo.getDedicatedAccountValue2());
-					
-					if(subDedicatedInfo.getStartDate() != null)
-					balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_START_DATE + "." + subindex, "" + subDedicatedInfo.getStartDate().getTime());
-					
-					if(subDedicatedInfo.getExpiryDate() != null)
-					balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_EXPIRY_DATE + "." + subindex, "" + subDedicatedInfo.getExpiryDate().getTime());
+			if(daInformation.getSubDedicatedAccountInformation() != null) {
+				for (SubDedicatedInfo subDedicatedInfo: daInformation.getSubDedicatedAccountInformation()) {
+					if(subDedicatedInfo != null) {
+						if(subDedicatedInfo.getDedicatedAccountValue1() != null)
+						balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_1 + "." + ++subindex, "" + subDedicatedInfo.getDedicatedAccountValue1());
+						
+						if(subDedicatedInfo.getDedicatedAccountValue2() != null)
+						balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_2 + "." + subindex, "" + subDedicatedInfo.getDedicatedAccountValue2());
+						
+						if(subDedicatedInfo.getStartDate() != null)
+						balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_START_DATE + "." + subindex, "" + subDedicatedInfo.getStartDate().getTime());
+						
+						if(subDedicatedInfo.getExpiryDate() != null)
+						balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_EXPIRY_DATE + "." + subindex, "" + subDedicatedInfo.getExpiryDate().getTime());
+					}
 				}
 			}
 		}
