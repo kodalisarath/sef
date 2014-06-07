@@ -244,6 +244,6 @@ public class UseCaseProcessor implements Processor {
 	}
 	
 	private void sendQueryResponse(String correlationId, String msisdn, TransactionStatus fault, List<Product> products, List<Meta> meta) {
-		FulfillmentServiceResolver.getFulfillmentResponseClient().prepare(correlationId, fault, products, meta);
+		FulfillmentServiceResolver.getFulfillmentResponseClient().query(correlationId, fault, products, meta);
 	}
 }
