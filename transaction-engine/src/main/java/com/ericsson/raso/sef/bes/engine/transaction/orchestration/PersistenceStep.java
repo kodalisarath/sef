@@ -43,7 +43,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						break;
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						subscriberService.createSubscriber((Subscriber) persistentEntity);
+						subscriberService.createSubscriber((Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
 						LOGGER.debug("Subscriber saved.");
 						this.getResult().setPersistenceResult(true);
 						break;
@@ -69,7 +69,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						break;
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						returned = true;
+						returned = true;																		//TODO: implement...
 						LOGGER.debug("Subscriber saved.");
 						this.getResult().setPersistenceResult(true);
 						break;

@@ -85,10 +85,9 @@ public class CreateSubscriber extends AbstractTransaction {
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
 		
-		Boolean result = ((CreateSubscriberResponse)this.getResponse()).getResult();
-		LOGGER.debug("CreateSubscriber::=> Functional Result: " + result);
 		
 		LOGGER.debug("Invoking create subscriber response!!");
+		Boolean result = null;
 		TransactionStatus txnStatus = new TransactionStatus();
 		if (this.getResponse() != null) {
 			if (this.getResponse().getAtomicStepResults() != null) {
@@ -98,11 +97,17 @@ public class CreateSubscriber extends AbstractTransaction {
 						txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
 						txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
 						LOGGER.debug("CreateSubscriber::=> Transaction Status: " + txnStatus);
+						result = false;
 						break;
 					}
 				}
 			}
 		}
+		
+		if (result == null)
+			result = true;
+		LOGGER.debug("CreateSubscriber::=> Functional Result: " + result);
+		
 		
 		LOGGER.debug("About to send request...");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
