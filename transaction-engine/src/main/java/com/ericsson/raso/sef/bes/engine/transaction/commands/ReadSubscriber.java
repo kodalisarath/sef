@@ -19,6 +19,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
+import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
@@ -129,6 +130,9 @@ public class ReadSubscriber extends AbstractTransaction {
 							//products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) step).getResult().getFulfillmentResult()));
 							FulfillmentStepResult stepResult = (FulfillmentStepResult)this.getResponse().getAtomicStepResults().get(step);
 						if(stepResult != null) {
+							for(AtomicProduct atomicProduct: stepResult.getFulfillmentResult()) {
+								LOGGER.debug("Atomic product metas: " + atomicProduct.getMetas().toString());
+							}
 							products.addAll(TransactionServiceHelper.translateProducts(stepResult.getFulfillmentResult()));
 							LOGGER.debug("FulfillmentStep has some results added to products list");
 						}
