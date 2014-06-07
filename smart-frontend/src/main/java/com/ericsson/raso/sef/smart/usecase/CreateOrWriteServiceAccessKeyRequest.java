@@ -82,4 +82,12 @@ public class CreateOrWriteServiceAccessKeyRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "CreateOrWriteServiceAccessKeyRequest [customerId=" + customerId
+				+ ", category=" + category + ", keyType=" + keyType
+				+ ", vInvalidFrom=" + vInvalidFrom + ", messageId=" + messageId
+				+ "]";
+	}
+
 }

@@ -37,4 +37,11 @@ public abstract class SmartRequest {
 	}
 	
 	public abstract void prepareRequest(Operation operation);
+
+	@Override
+	public String toString() {
+		return "SmartRequest [usecase=" + usecase + ", transactional="
+				+ transactional + "]";
+	}
+	
 }

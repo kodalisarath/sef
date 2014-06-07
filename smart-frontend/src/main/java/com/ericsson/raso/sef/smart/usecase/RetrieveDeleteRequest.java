@@ -28,4 +28,9 @@ public class RetrieveDeleteRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "RetrieveDeleteRequest [customerId=" + customerId + "]";
+	}
+
 }

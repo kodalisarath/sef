@@ -8,4 +8,5 @@ public class DummyRequest extends SmartRequest {
 	public void prepareRequest(Operation operation) {
 
 	}
+	
 }

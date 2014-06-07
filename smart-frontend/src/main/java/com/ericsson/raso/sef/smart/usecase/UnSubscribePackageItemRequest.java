@@ -66,4 +66,11 @@ public class UnSubscribePackageItemRequest extends SmartRequest{
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "UnSubscribePackageItemRequest [customerId=" + customerId
+				+ ", accessKey=" + accessKey + ", packaze=" + packaze
+				+ ", messageId=" + messageId + "]";
+	}
+
 }

@@ -66,4 +66,11 @@ public class SubscribePackageItemRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "SubscribePackageItemRequest [customerId=" + customerId
+				+ ", accessKey=" + accessKey + ", packaze=" + packaze
+				+ ", messageId=" + messageId + "]";
+	}
+
 }

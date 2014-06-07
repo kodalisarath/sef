@@ -28,4 +28,9 @@ public class RetrieveReadRPPRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "RetrieveReadRPPRequest [customerId=" + customerId + "]";
+	}
+
 }

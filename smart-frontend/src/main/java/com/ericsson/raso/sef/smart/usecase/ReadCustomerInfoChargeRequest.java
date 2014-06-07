@@ -65,4 +65,11 @@ public class ReadCustomerInfoChargeRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "ReadCustomerInfoChargeRequest [customerId=" + customerId
+				+ ", accessKey=" + accessKey + ", channel=" + channel
+				+ ", messageId=" + messageId + "]";
+	}
+
 }

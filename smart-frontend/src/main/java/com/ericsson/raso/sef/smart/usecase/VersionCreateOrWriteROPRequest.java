@@ -139,4 +139,14 @@ public class VersionCreateOrWriteROPRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "VersionCreateOrWriteROPRequest [customerId=" + customerId
+				+ ", key=" + key + ", vValidFrom=" + vValidFrom
+				+ ", vInvalidFrom=" + vInvalidFrom + ", s_OfferId=" + s_OfferId
+				+ ", category=" + category + ", messageId=" + messageId
+				+ ", precision=" + precision + ", expiryDate=" + expiryDate
+				+ "]";
+	}
+
 }

@@ -82,4 +82,12 @@ public class VersionCreateOrWriteCustomerRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "VersionCreateOrWriteCustomerRequest [customerId=" + customerId
+				+ ", category=" + category + ", vValidFrom=" + vValidFrom
+				+ ", vInvalidFrom=" + vInvalidFrom + ", messageId=" + messageId
+				+ "]";
+	}
+
 }

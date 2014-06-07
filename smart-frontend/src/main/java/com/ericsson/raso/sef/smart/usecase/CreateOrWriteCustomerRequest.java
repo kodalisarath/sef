@@ -68,4 +68,11 @@ public class CreateOrWriteCustomerRequest extends SmartRequest {
 
 	}
 
+	@Override
+	public String toString() {
+		return "CreateOrWriteCustomerRequest [customerId=" + customerId
+				+ ", category=" + category + ", billCycleId=" + billCycleId
+				+ ", messageId=" + messageId + "]";
+	}
+
 }

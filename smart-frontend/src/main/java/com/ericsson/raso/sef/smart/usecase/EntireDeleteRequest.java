@@ -29,4 +29,9 @@ public class EntireDeleteRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "EntireDeleteRequest [customerId=" + customerId + "]";
+	}
+
 }

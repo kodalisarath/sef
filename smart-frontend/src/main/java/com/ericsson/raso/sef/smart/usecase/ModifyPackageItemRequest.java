@@ -87,4 +87,12 @@ public class ModifyPackageItemRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "ModifyPackageItemRequest [customerId=" + customerId
+				+ ", accessKey=" + accessKey + ", packaze=" + packaze
+				+ ", operation=" + operation + ", messageId=" + messageId
+				+ ", eventInfo=" + eventInfo + "]";
+	}
+
 }

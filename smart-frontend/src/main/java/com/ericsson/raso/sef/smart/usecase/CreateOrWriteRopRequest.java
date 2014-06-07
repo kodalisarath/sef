@@ -199,5 +199,19 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "CreateOrWriteRopRequest [customerId=" + customerId + ", key="
+				+ key + ", isSmsAllowed=" + isSmsAllowed + ", isUSCAllowed="
+				+ isUSCAllowed + ", isGPRSUsed=" + isGPRSUsed
+				+ ", isLastTransactionEnqUsed=" + isLastTransactionEnqUsed
+				+ ", languageId=" + languageId + ", activeEndDate="
+				+ activeEndDate + ", graceEndDate=" + graceEndDate
+				+ ", preActiveEndDate=" + preActiveEndDate + ", firstCallDate="
+				+ firstCallDate + ", isFirstCallPassed=" + isFirstCallPassed
+				+ ", lastKnownPeriod=" + lastKnownPeriod + ", category="
+				+ category + ", messageId=" + messageId + "]";
+	}
+
 }
 	

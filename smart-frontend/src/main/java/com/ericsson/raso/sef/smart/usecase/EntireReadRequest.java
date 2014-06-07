@@ -27,5 +27,10 @@ public class EntireReadRequest extends SmartRequest {
 			}
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "EntireReadRequest [customerId=" + customerId + "]";
+	}
 	
 }

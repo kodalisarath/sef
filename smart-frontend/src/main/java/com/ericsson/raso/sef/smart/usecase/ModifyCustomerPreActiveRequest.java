@@ -68,4 +68,11 @@ public class ModifyCustomerPreActiveRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "ModifyCustomerPreActiveRequest [customerId=" + customerId
+				+ ", daysOfExtension=" + daysOfExtension + ", eventInfo="
+				+ eventInfo + ", messageId=" + messageId + "]";
+	}
+
 }

@@ -111,4 +111,13 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "BucketCreateOrWriteRopRequest [customerId=" + customerId
+				+ ", key=" + key + ", category=" + category + ", bValidFrom="
+				+ bValidFrom + ", bInvalidFrom=" + bInvalidFrom
+				+ ", OnPeakAccountID_FU=" + OnPeakAccountID_FU + ", messageId="
+				+ messageId + ", s_OfferId=" + s_OfferId + "]";
+	}
+
 }

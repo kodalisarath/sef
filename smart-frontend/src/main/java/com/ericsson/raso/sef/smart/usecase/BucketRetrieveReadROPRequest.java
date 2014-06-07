@@ -28,4 +28,9 @@ public class BucketRetrieveReadROPRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "BucketRetrieveReadROPRequest [customerId=" + customerId + "]";
+	}
+
 }

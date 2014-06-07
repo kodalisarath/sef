@@ -80,4 +80,11 @@ public class ModifyTaggingRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "ModifyTaggingRequest [customerId=" + customerId + ", tagging="
+				+ tagging + ", eventInfo=" + eventInfo + ", messageId="
+				+ messageId + ", accessKey=" + accessKey + "]";
+	}
+
 }

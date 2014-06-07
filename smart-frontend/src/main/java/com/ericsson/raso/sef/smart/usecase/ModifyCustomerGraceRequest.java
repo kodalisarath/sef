@@ -68,4 +68,11 @@ public class ModifyCustomerGraceRequest extends SmartRequest {
 		
 	}
 
+	@Override
+	public String toString() {
+		return "ModifyCustomerGraceRequest [customerId=" + customerId
+				+ ", daysOfExtension=" + daysOfExtension + ", eventInfo="
+				+ eventInfo + ", messageId=" + messageId + "]";
+	}
+
 }

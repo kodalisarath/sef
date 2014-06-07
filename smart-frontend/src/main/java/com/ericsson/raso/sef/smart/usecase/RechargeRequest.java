@@ -190,4 +190,16 @@ public class RechargeRequest extends SmartRequest {
 			}
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "RechargeRequest [customerId=" + customerId + ", eventName="
+				+ eventName + ", amountOfUnits=" + amountOfUnits
+				+ ", eventClass=" + eventClass + ", ratingInput0="
+				+ ratingInput0 + ", ratingInput1=" + ratingInput1
+				+ ", ratingInput2=" + ratingInput2 + ", ratingInput3="
+				+ ratingInput3 + ", ratingInput4=" + ratingInput4
+				+ ", messageId=" + messageId + ", eventInfo=" + eventInfo + "]";
+	}
+	
 }

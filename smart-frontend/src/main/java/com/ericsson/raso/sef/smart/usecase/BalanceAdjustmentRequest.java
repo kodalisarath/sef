@@ -101,4 +101,13 @@ public class BalanceAdjustmentRequest extends SmartRequest {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "BalanceAdjustmentRequest [customerId=" + customerId
+				+ ", accessKey=" + accessKey + ", balanceId=" + balanceId
+				+ ", amountOfUnits=" + amountOfUnits + ", chargeCode="
+				+ chargeCode + ", messageId=" + messageId + ", eventInfo="
+				+ eventInfo + "]";
+	}
+
 }

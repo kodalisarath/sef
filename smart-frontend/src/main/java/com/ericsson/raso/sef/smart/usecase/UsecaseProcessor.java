@@ -36,4 +36,10 @@ public class UsecaseProcessor implements Processor {
 		usecase.getRequestProcessor().process(exchange);
 		logger.debug("Usecase identified and delegated");
 	}
+
+	@Override
+	public String toString() {
+		return "UsecaseProcessor [logger=" + logger + "]";
+	}
+	
 }

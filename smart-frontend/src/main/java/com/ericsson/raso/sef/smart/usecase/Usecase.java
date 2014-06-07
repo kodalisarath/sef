@@ -211,4 +211,5 @@ public enum Usecase {
 	public Processor getRequestProcessor() {
 		return SmartServiceResolver.getBean(processorType);
 	}
+	
 }
