@@ -47,7 +47,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 					 subscriber.setContractId(subscriber.getMsisdn());
 				 }
 		        if(subscriber.getPin() == null){
-					 subscriber.setPin(subscriber.getMsisdn());
+					 subscriber.setPin("1234");
 				 }
 			 
 		 }else{
