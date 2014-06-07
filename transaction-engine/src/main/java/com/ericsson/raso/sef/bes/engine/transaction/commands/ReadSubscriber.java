@@ -14,6 +14,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStep;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
@@ -116,17 +117,20 @@ public class ReadSubscriber extends AbstractTransaction {
 		if (this.isWorkflowEngaged) {
 			List<Product> products = new ArrayList<Product>();
 			
-			for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
-				if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
-					if(result.getFault() != null){
+			for (Step<?> step: this.getResponse().getAtomicStepResults().keySet()) {
+				if (step.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
+					if(step.getFault() != null){
 						txnStatus=new TransactionStatus();
-						txnStatus.setCode(result.getFault().getStatusCode().getCode());
-						txnStatus.setComponent(result.getFault().getComponent());
-						txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
+						txnStatus.setCode(step.getFault().getStatusCode().getCode());
+						txnStatus.setComponent(step.getFault().getComponent());
+						txnStatus.setDescription(step.getFault().getStatusCode().getMessage());
 						break;
 					}else{
-						if(((FulfillmentStep) result).getResult() !=null) {
-							products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+						
+							//products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) step).getResult().getFulfillmentResult()));
+							FulfillmentStepResult stepResult = (FulfillmentStepResult)this.getResponse().getAtomicStepResults().get(step);
+						if(stepResult != null) {
+							products.addAll(TransactionServiceHelper.translateProducts(stepResult.getFulfillmentResult()));
 							LOGGER.debug("FulfillmentStep has some results added to products list");
 						}
 					}
