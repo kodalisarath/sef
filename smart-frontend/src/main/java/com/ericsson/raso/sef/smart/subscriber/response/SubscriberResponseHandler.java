@@ -23,10 +23,10 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 	public void readSubscriber(String requestCorrelator,
 			TransactionStatus fault, Subscriber subscriber) {
 		
+		logger.debug("CorrelationID: " + requestCorrelator);
+		
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		
-		synchronized (subscriberInfo) {
-			
 		subscriberInfo.setMsisdn(subscriber.getMsisdn());
 		subscriberInfo.setLocalState(ContractState.apiValue(subscriber.getContractState()));
 		Map<String, String> subscriberMetas = subscriber.getMetas();
@@ -71,7 +71,6 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
 		
-		}
 	}
 
 	@Override

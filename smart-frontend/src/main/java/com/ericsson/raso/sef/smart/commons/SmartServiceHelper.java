@@ -34,8 +34,11 @@ public abstract class SmartServiceHelper {
 		logger.debug("Entering SmartServiceResolver.....");
 		
 		
+		
 		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
+		
+		SubscriberResponseStore.put(correlationId, subscriberInfo);
 		
         ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
