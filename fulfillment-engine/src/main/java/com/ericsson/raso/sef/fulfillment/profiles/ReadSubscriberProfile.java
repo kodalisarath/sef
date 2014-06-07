@@ -21,9 +21,7 @@ import com.ericsson.sef.bes.api.entities.Product;
 public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final long serialVersionUID = -7488149893022619584L;
 
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReadSubscriberProfile.class);
-	
 	
 	private static final String READ_SUBSCRIBER_ACTIVATION_DATE = "READ_SUBSCRIBER_ACTIVATION_DATE";
 	private static final String READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE = "READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE";
