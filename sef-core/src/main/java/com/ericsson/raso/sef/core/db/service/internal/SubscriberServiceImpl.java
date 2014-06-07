@@ -17,6 +17,7 @@ import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.mapper.SubscriberMapper;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
+import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 
 public class SubscriberServiceImpl implements SubscriberService {
@@ -28,7 +29,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 		this.subscriberMapper = subscriberMapper;
 	}
 	
-	@Override
 	@Transactional
 	public void createSubscriber(Subscriber subscriber) throws Exception {
        
@@ -55,14 +55,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 		subscriberMapper.createSubscriber(subscriber);
 	}
 
-	@Override
 	@Transactional
 	public void deleteSubscriber(String userId) {
 		subscriberMapper.deleteSubscriber(userId);
 		evictSubscriber(userId);
 	}
 	
-	@Override
 	@Transactional
 	public void updateSubscriber(Subscriber subscriber) {
 		logger.debug("Inside the update method querying the db for subscriber with userid="+subscriber.getUserId());
@@ -126,7 +124,6 @@ logger.debug("Inside the update method querying the db for subscriber with useri
 		evictSubscriber(subscriber.getUserId());
 	}
 
-	@Override
 	@Transactional
 	public void setMetas(String userId, List<Meta> metas) {
 		logger.debug("Method setMetas is  called");
@@ -187,7 +184,7 @@ logger.debug("Inside the update method querying the db for subscriber with useri
 		
 		evictSubscriber(userId);
 	}
-
+	
 	@Override
 	public Collection<Meta> getMetas(String userId, String... metaKeys) {
 		Subscriber subscriber = fetchSubscriberByUserId(userId);
@@ -196,7 +193,6 @@ logger.debug("Inside the update method querying the db for subscriber with useri
 		return subscriber.getMetas();
 	}
 
-	@Override
 	public Subscriber getSubscriber(String msisdn, String... metaKeys) {
 		try {
 			return fetchSubscriberByMsisdn(msisdn);
@@ -204,7 +200,6 @@ logger.debug("Inside the update method querying the db for subscriber with useri
 		}
 	}
 	
-	@Override
 	public Collection<SubscriberAuditTrial> getSubscriberHistory(String userId, String... metaKeys) {
 		if(metaKeys == null || metaKeys.length == 0 ) return Collections.emptyList();
 		
@@ -215,7 +210,6 @@ logger.debug("Inside the update method querying the db for subscriber with useri
 		return subscriberMapper.getSubscriberHistory(map);
 	}
 	
-	@Override
 	public Subscriber getSubscriberByUserId(String userId) {
 		return fetchSubscriberByUserId(userId);
 	}
@@ -271,7 +265,6 @@ logger.debug("Inside the update method querying the db for subscriber with useri
 		
 	}
 
-	@Override
 	public Subscriber getSubscriber(String msisdn) {
 		Subscriber subscriber = null;
 		try {
@@ -297,5 +290,68 @@ logger.debug("Inside the update method querying the db for subscriber with useri
 		}
 		return subscriber;
 
+	}
+
+	@Override
+	public boolean createSubscriber(String nbCorrelator, Subscriber subscriber)
+			throws PersistenceError {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean updateSubscriber(String nbCorrelator, Subscriber subscriber)
+			throws PersistenceError {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteSubscriber(String nbCorrelator, String userId)
+			throws PersistenceError {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setMetas(String nbCorrelator, String userId, List<Meta> metas)
+			throws PersistenceError {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<Meta> getMetas(String nbCorrelator, String userId,
+			List<String> metaKeys) throws PersistenceError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<SubscriberAuditTrial> getSubscriberHistory(String nbCorrelator,
+			String userId, List<String> metaKeys) throws PersistenceError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Subscriber getSubscriber(String nbCorrelator, String msisdn,
+			List<String> metaKeys) throws PersistenceError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Subscriber getSubscriberByUserId(String nbCorrelator, String userId)
+			throws PersistenceError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Subscriber getSubscriber(String nbCorrelator, String msisdn)
+			throws PersistenceError {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -31,7 +31,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 				switch (((Persistence) this.getExecutionInputs()).getMode()) {
 					case QUERY:
 						LOGGER.debug("About to query Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						returned = subscriberService.getSubscriber(((Subscriber) persistentEntity).getMsisdn());
+						returned = subscriberService.getSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity).getMsisdn());
 						LOGGER.debug("Fetched Entity for query.");
 						
 						if (this.getResult() == null) {
@@ -42,7 +42,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						break;
 					case REMOVE:
 						LOGGER.debug("Deleting Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						subscriberService.deleteSubscriber(((Subscriber) persistentEntity).getMsisdn());
+						subscriberService.deleteSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity).getMsisdn());
 						LOGGER.debug("Subscriber deleted.");
 						
 						if (this.getResult() == null) {
@@ -53,7 +53,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						break;
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						subscriberService.createSubscriber((Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
+						subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
 						LOGGER.debug("Subscriber saved.");
 						
 						if (this.getResult() == null) {

@@ -14,6 +14,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepRe
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -60,10 +61,20 @@ public class UpdateSubscriber extends AbstractTransaction{
 		}
 		
 		LOGGER.debug("About to persist Subscriber: " + subscriberEntity);
-		subscriberStore.updateSubscriber(subscriberEntity); //TODO: vinay to check what is wrong here...
+		try {
+			subscriberStore.updateSubscriber(this.getRequestId(), subscriberEntity);
+		} catch (PersistenceError e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} //TODO: vinay to check what is wrong here...
 		LOGGER.debug("Update Subscriber successfull!!");
 		LOGGER.debug("calling setMetas ");
-		subscriberStore.setMetas(subscriberEntity.getUserId(),TransactionServiceHelper.getList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
+		try {
+			subscriberStore.setMetas(this.getRequestId(), subscriberEntity.getUserId(),TransactionServiceHelper.getList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
+		} catch (PersistenceError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		sendResponse();
 		
 		return true;

@@ -65,6 +65,7 @@ public class PromoHelper {
 		fulfillmentProfile.setTransactionAmount(transactionAmount);
 		fulfillmentProfile.setTransactionCurrency(transactionCurrency);
 		fulfillmentProfile.setAbstractResources(Arrays.asList(abstractResources));
+
 		
 		//System.out.println(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
