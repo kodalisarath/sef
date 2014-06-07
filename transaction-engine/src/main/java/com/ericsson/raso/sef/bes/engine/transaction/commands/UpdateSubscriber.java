@@ -26,6 +26,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 	public UpdateSubscriber(String requestId,String subscriberId,Map<String,String> metas) {
 		super(requestId, new UpdateSubscriberRequest(requestId, subscriberId,metas));
 		this.setResponse(new UpdateSubscriberResponse(requestId,true));
+		LOGGER.debug("FFE Sanity Check: " + subscriberId + ", " + metas);
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 				sendResponse();
 				return false;
 			}
-			LOGGER.debug("Got Persistable Entity: Subscriber...");
+			LOGGER.debug("Got Persistable Entity: Subscriber: " + subscriberEntity);
 				
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));
@@ -57,7 +58,9 @@ public class UpdateSubscriber extends AbstractTransaction{
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to access persistence tier service!! Check configuration (beans.xml)"));
 			return false;
 		}
-		subscriberStore.updateSubscriber(subscriberEntity);
+		
+		LOGGER.debug("About to persist Subscriber: " + subscriberEntity);
+		subscriberStore.updateSubscriber(subscriberEntity); //TODO: vinay to check what is wrong here...
 		LOGGER.debug("Update Subscriber successfull!!");
 		LOGGER.debug("calling setMetas ");
 		subscriberStore.setMetas(subscriberEntity.getUserId(),TransactionServiceHelper.getList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
