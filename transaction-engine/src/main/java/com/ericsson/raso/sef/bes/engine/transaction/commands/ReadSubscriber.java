@@ -32,6 +32,7 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
 
 public class ReadSubscriber extends AbstractTransaction {
+	
 	private static final long	serialVersionUID	= 8130277491237379246L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReadSubscriber.class);
 	
