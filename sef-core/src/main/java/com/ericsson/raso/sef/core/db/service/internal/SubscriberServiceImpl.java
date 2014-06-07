@@ -33,7 +33,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	public void createSubscriber(Subscriber subscriber) throws Exception {
        
 		if(subscriber.getMsisdn() != null){
-			
+			subscriber.setPin("1234");
 			 if(subscriber.getUserId() == null){
 					subscriber.setUserId(subscriber.getMsisdn());
 				 }
@@ -45,9 +45,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 				 }
 		        if(subscriber.getContractId() == null){
 					 subscriber.setContractId(subscriber.getMsisdn());
-				 }
-		        if(subscriber.getPin() == null){
-					 subscriber.setPin("1234");
 				 }
 			 
 		 }else{
