@@ -7,12 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
-import com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
+import com.hazelcast.core.ISemaphore;
 
 public abstract class SmartServiceHelper {
 	
@@ -36,15 +37,13 @@ public abstract class SmartServiceHelper {
 		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
 		
+        ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
-			synchronized (subscriberInfo) {
-				SubscriberResponseStore.put(requestId, subscriberInfo);
-				subscriberInfo.wait(10000L);
-			}
-		} catch (InterruptedException e) {
+		semaphore.init(0);
+		semaphore.acquire();
+		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
-		
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " +  correlationId);
 		
 		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
