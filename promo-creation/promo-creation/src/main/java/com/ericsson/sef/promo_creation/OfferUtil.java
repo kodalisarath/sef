@@ -606,7 +606,7 @@ public class OfferUtil
 		lookupResourcesByName.put("CreateSubscriber", helper.createCreateSubscriberProfile("CreateSubscriber", "Create a new Subscriber"));
 
 		lookupResourcesByName.put("GetAccountDetails_Cmd", helper.createGetAccountDetailsProfile("GetAccountDetails_Cmd", "Get Account Details"));
-		lookupResourcesByName.put("GetBalanceAndDate_Cmd", helper.createGetBalanceAndDateProfile("GetBalanceAndDate_Cmd", "Get Balance and Date"));
+		//lookupResourcesByName.put("GetBalanceAndDate_Cmd", helper.createGetBalanceAndDateProfile("GetBalanceAndDate_Cmd", "Get Balance and Date"));
 		
 		lookupResourcesByName.put("UpdateSubscriberSegmentation_Cmd", helper.createGetAccountDetailsProfile("UpdateSubscriberSegmentation_Cmd", "Update Subscriber Segmentation"));
 
@@ -1737,8 +1737,8 @@ public class OfferUtil
 		planCodes = new HashSet<String>();
 		planCodes.add("J");
 		offerResources.add(lookupResourcesByName.get("AllText10Refill_1017"));
-		offerResources.add(lookupResourcesByName.get("TimerOffer_1054"));
-		offerResources.add(lookupResourcesByName.get("AllText10DedicatedAccount_54"));
+		//offerResources.add(lookupResourcesByName.get("TimerOffer_1054"));
+		//offerResources.add(lookupResourcesByName.get("AllText10DedicatedAccount_54"));
 		offer = helper.createCommercialOffer("AllText10", "", "PHP", 1, planCodes, offerResources);
 		offerManager.createOffer(offer);
 		// ----------------------------------------------------------
@@ -3671,7 +3671,7 @@ public class OfferUtil
 		planCodes = new HashSet<String>();
 		planCodes.add("READ_SUBSCRIBER");
 		offerResources.add(lookupResourcesByName.get("GetAccountDetails_Cmd"));
-		offerResources.add(lookupResourcesByName.get("GetBalanceAndDate_Cmd"));
+		//offerResources.add(lookupResourcesByName.get("GetBalanceAndDate_Cmd"));
 		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "Read Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
 		// ----------------------------------------------------------

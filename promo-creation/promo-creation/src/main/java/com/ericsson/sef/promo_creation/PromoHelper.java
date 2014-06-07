@@ -174,6 +174,11 @@ public class PromoHelper {
 		resource.setEnforcedMinQuota(-1L);
 		
 		CreateSubscriberProfile fulfillmentProfile = new CreateSubscriberProfile(name);
+		fulfillmentProfile.setZname(".msisdn.sub.cs.");
+		fulfillmentProfile.setRdata(".cs.");
+		fulfillmentProfile.setDtype(5);
+		fulfillmentProfile.setDclass(1);
+		fulfillmentProfile.setTtl(100);
 		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
