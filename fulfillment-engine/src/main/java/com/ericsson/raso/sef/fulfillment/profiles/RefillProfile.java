@@ -81,7 +81,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		LOGGER.debug("Fufill request for refill");
 
 		RefillRequest refillRequest = new RefillRequest();
-		refillRequest.setSubscriberNumber(map.get("msisdn"));
+		refillRequest.setSubscriberNumber(map.get("SUBSCRIBER_ID"));
 		refillRequest.setRefProfID(this.refillProfileId);
 		refillRequest.setRefType(this.refillType);
 		refillRequest.setTransacAmount(this.transactionAmount);
