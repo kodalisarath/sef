@@ -21,9 +21,7 @@ import com.ericsson.sef.bes.api.entities.Product;
 public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final long serialVersionUID = -7488149893022619584L;
 
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReadSubscriberProfile.class);
-	
 	
 	private static final String READ_SUBSCRIBER_ACTIVATION_DATE = "READ_SUBSCRIBER_ACTIVATION_DATE";
 	private static final String READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE = "READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE";
@@ -53,7 +51,6 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
 
 	}
-
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) throws FulfillmentException {
@@ -180,7 +177,7 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
 			}
 		}
-		LOGGER.debug("Packed all offer info...");
+		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
 		
 	
 		product.setMetas(accountDetails);
