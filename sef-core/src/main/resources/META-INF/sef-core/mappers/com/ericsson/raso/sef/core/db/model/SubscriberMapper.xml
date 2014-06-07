@@ -19,26 +19,21 @@
 		<result property="imeiSv" column="imei_sv"/>
 		<result property="paymentType" column="payment_type"/>
 		<result property="paymentResponsible" column="paymentresponsible"/>
-		<result property="paymentParent" column="payment_parent"/>
+		<result property="paymentParent" column="paymentparent"/>
 		<result property="billCycleDay" column="billcycle_day"/>
 		<result property="dateOfBirth" column="date_of_birth"/>
 		<result property="gender" column="gender"/>
-		<result property="prefferedLanguage" column="preffered_language"/>
+		<result property="prefferedLanguage" column="preferred_language"/>
 		<result property="registrationDate" column="registration_date"/>
 		<result property="activeDate" column="active_date"/>
 		<result property="ratePlan" column="rate_plan"/>
 		<result property="customerSegment" column="customer_segment"/>
 	</resultMap>
 <insert id="createSubscriber" parameterType="Subscriber">
-		insert into subscriber (user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,payment_responsible,payment_parent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
+		insert into subscriber (user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,payment_responsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
 		values
 		(#{userId},#{accountId},#{msisdn},#{registrationDate jdbcType=TIMESTAMP},#{contractState},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment})
 	</insert>
-<!-- 	<resultMap id="SubscriberMetaResult" type="SubscriberMeta"> -->
-<!-- 		<id property="userId" column="user_id" /> -->
-<!-- 		<result property="lastModified" column="last_modified"/> -->
-<!-- 		<result property="created" column="created"/> -->
-<!-- 	</resultMap> -->
 	<resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
 		<id property="userId" column="user_id" />
 		<result property="eventTimestamp" column="event_timestamp" jdbcType="TIMESTAMP"/>
@@ -55,8 +50,9 @@
 	
 	
 	<update id="deleteSubscriber" parameterType="String">
-		update subscriber set deleted = #{userId}
-		where user_id = #{userId}
+	delete from subscriber where user_id = #{userId}
+		<!-- update subscriber set deleted = #{userId}
+		where user_id = #{userId} -->
 	</update>
 	
 	<select id="getSubscriber" resultMap="SubscriberResult" parameterType="String">
