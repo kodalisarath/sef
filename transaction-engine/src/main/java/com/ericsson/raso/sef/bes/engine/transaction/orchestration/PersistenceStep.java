@@ -56,19 +56,19 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 				//SubscriberService subscriberService = SefCoreServiceResolver.getSusbcriberStore();
 				switch (((Persistence) this.getExecutionInputs()).getMode()) {
 					case QUERY:
-						LOGGER.debug("About to query Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
+						LOGGER.debug("About to query Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = (Subscription) persistentEntity; 											//TODO: implement...
 						LOGGER.debug("Fetched Entity for query.");
 						this.getResult().setPersistenceResult(returned);
 						break;
 					case REMOVE:
-						LOGGER.debug("Deleting Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
+						LOGGER.debug("Deleting Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = true;																		//TODO: implement...
 						LOGGER.debug("Subscriber deleted.");
 						this.getResult().setPersistenceResult(true);
 						break;
 					case SAVE:
-						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
+						LOGGER.debug("Saving Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = true;																		//TODO: implement...
 						LOGGER.debug("Subscriber saved.");
 						this.getResult().setPersistenceResult(true);
