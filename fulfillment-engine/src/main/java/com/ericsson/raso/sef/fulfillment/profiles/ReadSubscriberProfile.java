@@ -54,7 +54,6 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	}
 
-
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) throws FulfillmentException {
 		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
