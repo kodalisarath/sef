@@ -44,6 +44,7 @@ public class FulfillResponseProcessor implements Processor {
 			if(products != null) {
 				for(Product product: products) {
 					logger.debug("Product Quota defined: " +  product.getQuotaDefined() + " Quota consumed: " + product.getQuotaConsumed());
+					logger.debug(product.getMetas().toString());
 					atomicProducts.add(TransactionServiceHelper.getApiEntity(product));
 					logger.debug("still in loop...");
 				}

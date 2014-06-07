@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.entities.AbstractQuotaCharacteristic;
 import com.ericsson.raso.sef.bes.prodcat.entities.AbstractTimeCharacteristic;
@@ -29,6 +32,7 @@ import com.ericsson.sef.bes.api.entities.Subscriber;
 
 public abstract class TransactionServiceHelper {
 	
+	private final static Logger logger = LoggerFactory.getLogger(TransactionServiceHelper.class);
 	
 	public static Subscriber getApiEntity(com.ericsson.raso.sef.core.db.model.Subscriber subscriber) {
 		Subscriber returned = new Subscriber();
@@ -417,6 +421,7 @@ public abstract class TransactionServiceHelper {
 			
 			// account flags
 			value = metas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name());
+			logger.debug("Activation Status flag: " + value);
 			if (value != null)
 				subscriber.addMeta(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name(), value);
 			
