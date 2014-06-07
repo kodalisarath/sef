@@ -10,6 +10,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberResponse;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
@@ -68,19 +69,37 @@ public class UpdateSubscriber extends AbstractTransaction{
 	@Override
 	public void sendResponse() {
 		
+		LOGGER.debug("Invoking update subscriber response");
 		TransactionStatus txnStatus=null;
-		TransactionException fault = this.getResponse().getReturnFault();
-		if(fault != null){
-			LOGGER.debug("Gonna check for nulls,code is "+fault.getStatusCode()+"Description is "+fault.getMessage()+"Component is"+fault.getComponent());
-			txnStatus = new TransactionStatus();
-			txnStatus.setCode(fault.getStatusCode().getCode());
-			txnStatus.setDescription(fault.getMessage());
-			txnStatus.setComponent(fault.getComponent());
+		boolean result = true;
+		if (this.getResponse() != null) {
+			if (this.getResponse().getAtomicStepResults() != null) {
+				for (AbstractStepResult stepResult: this.getResponse().getAtomicStepResults().values()) {
+					if (stepResult.getResultantFault() != null) {
+						txnStatus.setComponent(stepResult.getResultantFault().getComponent());
+						txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
+						txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
+						LOGGER.debug("UpdateSubscriber::=> Transaction Status: " + txnStatus);
+						result = false;
+						break;
+					}
+				}
+			}
 		}
-		boolean result = ((UpdateSubscriberResponse)this.getResponse()).getResult();
+		
+		if (result != false)
+			result = true;
+		
+		LOGGER.debug("UpdateSubscriber::=> Functional Result: " + result);
+		
 		LOGGER.debug("Invoking update subscriber response!!");
-		ISubscriberResponse subscriberClient=ServiceResolver.getSubscriberResponseClient();
-		subscriberClient.updateSubscriber(this.getRequestId(),txnStatus,result);
+		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
+		if (subscriberClient != null) {
+			subscriberClient.updateSubscriber(this.getRequestId(), txnStatus, result);
+			LOGGER.debug("update susbcriber response posted");
+		} else {
+			LOGGER.error("Unable to acquire client access to response interface. Request will time-out in the consumer side!!");
+		}
 		LOGGER.debug("update susbcriber response posted");
 	}
 
