@@ -2,9 +2,10 @@ package com.ericsson.raso.sef.core.db.service.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
+//import java.util.Base64;
+//import java.util.Base64.Decoder;
+//import java.util.Base64.Encoder;
+//import org.apache.commons.codec.binary.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,8 +30,8 @@ import com.ericsson.raso.sef.core.db.service.SubscriberService;
 public class SubscriberServiceImpl implements SubscriberService {
 	private static final Logger logger = LoggerFactory.getLogger(SubscriberServiceImpl.class);
 	private static final SecureSerializationHelper encryptor = new SecureSerializationHelper();
-	private static final Encoder encoder = Base64.getEncoder();
-	private static final Decoder decoder = Base64.getDecoder();
+	//private static final Encoder encoder = Base64.getEncoder();
+	//private static final Decoder decoder = Base64.getDecoder();
 	
 	// constants section
 	static final int ApplicationContextError = 9000;
@@ -45,7 +46,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 	
 	
 	public void setSubscriberMapper(SubscriberMapper subscriberMapper) {
-		this.subscriberMapper = subscriberMapper; //TODO: confirm from beans.xml that this setter method is actually called..
+		this.subscriberMapper = subscriberMapper;
+		//TODO: confirm from beans.xml that this setter method is actually called..
 	}
 	
 	@Override
@@ -86,17 +88,18 @@ public class SubscriberServiceImpl implements SubscriberService {
 		// Perform encryption of identities...
 		try {
 			
-			subscriber.setAccountId(new String(encoder.encode(encryptor.encrypt(subscriber.getAccountId()))));
-			subscriber.setContractId(new String(encoder.encode(encryptor.encrypt(subscriber.getContractId()))));
-			subscriber.setCustomerId(new String(encoder.encode(encryptor.encrypt(subscriber.getCustomerId()))));
-			subscriber.setEmail(new String(encoder.encode(encryptor.encrypt(subscriber.getEmail()))));
-			subscriber.setImeiSv(new String(encoder.encode(encryptor.encrypt(subscriber.getImeiSv()))));
-			subscriber.setImsi(new String(encoder.encode(encryptor.encrypt(subscriber.getImsi()))));
-			subscriber.setMsisdn(new String(encoder.encode(encryptor.encrypt(subscriber.getMsisdn()))));
-			subscriber.setPaymentParent(new String(encoder.encode(encryptor.encrypt(subscriber.getPaymentParent()))));
-			subscriber.setPaymentResponsible(new String(encoder.encode(encryptor.encrypt(subscriber.getPaymentResponsible()))));
-			subscriber.setPin(new String(encoder.encode(encryptor.encrypt(subscriber.getPin()))));
-			subscriber.setUserId(new String(encoder.encode(encryptor.encrypt(subscriber.getUserId()))));
+			
+			subscriber.setAccountId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getAccountId()))));
+			subscriber.setContractId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getContractId()))));
+			subscriber.setCustomerId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getCustomerId()))));
+			subscriber.setEmail(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getEmail()))));
+			subscriber.setImeiSv(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getImeiSv()))));
+			subscriber.setImsi(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getImsi()))));
+			subscriber.setMsisdn(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
+			subscriber.setPaymentParent(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentParent()))));
+			subscriber.setPaymentResponsible(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentResponsible()))));
+			subscriber.setPin(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPin()))));
+			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
 
 		} catch (FrameworkException e) {
 			logger.error(nbCorellator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
@@ -121,7 +124,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		
 		String subscriberId = null;
 		try {
-			subscriberId = new String(encoder.encode(encryptor.encrypt(userId)));
+			subscriberId = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId)));
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
@@ -169,17 +172,17 @@ public class SubscriberServiceImpl implements SubscriberService {
 		// Perform encryption of identities...
 		try {
 			logger.debug(nbCorrelator, "Encrypting Identities now...");
-			subscriber.setAccountId(new String(encoder.encode(encryptor.encrypt(subscriber.getAccountId()))));
-			subscriber.setContractId(new String(encoder.encode(encryptor.encrypt(subscriber.getContractId()))));
-			subscriber.setCustomerId(new String(encoder.encode(encryptor.encrypt(subscriber.getCustomerId()))));
-			subscriber.setEmail(new String(encoder.encode(encryptor.encrypt(subscriber.getEmail()))));
-			subscriber.setImeiSv(new String(encoder.encode(encryptor.encrypt(subscriber.getImeiSv()))));
-			subscriber.setImsi(new String(encoder.encode(encryptor.encrypt(subscriber.getImsi()))));
-			subscriber.setMsisdn(new String(encoder.encode(encryptor.encrypt(subscriber.getMsisdn()))));
-			subscriber.setPaymentParent(new String(encoder.encode(encryptor.encrypt(subscriber.getPaymentParent()))));
-			subscriber.setPaymentResponsible(new String(encoder.encode(encryptor.encrypt(subscriber.getPaymentResponsible()))));
-			subscriber.setPin(new String(encoder.encode(encryptor.encrypt(subscriber.getPin()))));
-			subscriber.setUserId(new String(encoder.encode(encryptor.encrypt(subscriber.getUserId()))));
+			subscriber.setAccountId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getAccountId()))));
+			subscriber.setContractId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getContractId()))));
+			subscriber.setCustomerId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getCustomerId()))));
+			subscriber.setEmail(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getEmail()))));
+			subscriber.setImeiSv(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getImeiSv()))));
+			subscriber.setImsi(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getImsi()))));
+			subscriber.setMsisdn(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
+			subscriber.setPaymentParent(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentParent()))));
+			subscriber.setPaymentResponsible(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentResponsible()))));
+			subscriber.setPin(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPin()))));
+			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
 			logger.debug(nbCorrelator, "Encrypted Identities to ensure info security");
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
@@ -251,7 +254,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 																			meta.getValue(), 
 																			"system-user");
 					try {
-						subscriberMapper.updateSubscriberMeta(new String(encoder.encode(encryptor.encrypt(userId))), meta, new Date());
+						subscriberMapper.updateSubscriberMeta(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))), meta, new Date());
 					} catch (PersistenceException e) {
 						logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
@@ -313,7 +316,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 		String subscriberId = null;
 		try {
-			subscriberId = new String(encoder.encode(encryptor.encrypt(userId)));
+			subscriberId = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId)));
 		} catch(FrameworkException e) {
 			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
@@ -352,7 +355,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 		String subscriberId = null;
 		try {
-			subscriberId = new String(encoder.encode(encryptor.encrypt(msisdn)));
+			subscriberId = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn)));
 		} catch(FrameworkException e) {
 			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
@@ -382,7 +385,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		
 		String subscriberId = null;
 		try {
-			subscriberId = new String(encoder.encode(encryptor.encrypt(userId)));
+			subscriberId = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId)));
 		} catch(FrameworkException e) {
 			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
