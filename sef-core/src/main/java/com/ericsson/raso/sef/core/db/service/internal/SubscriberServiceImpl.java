@@ -393,7 +393,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		
 		Subscriber subscriber = null;
 		try { 
-			subscriber = subscriberMapper.getSubscriber(subscriberId);
+			subscriber = subscriberMapper.getSubscriberByUserId(subscriberId);
 		} catch(PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
