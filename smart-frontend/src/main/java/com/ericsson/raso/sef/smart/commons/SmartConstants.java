@@ -45,4 +45,12 @@ public class SmartConstants {
 	
 	public static final long CS_LONGEST_EXPTIME = 2114351999000l;
 
+	public static final String CHANNEL_NAME = "channelName";
+	public static final String EX_DATA1 = "externalData1";
+	public static final String EX_DATA2 = "externalData2";
+	public static final String EX_DATA3 = "externalData3";
+	public static final String REQUEST_ID = "requestId";
+	public static final String IL_CHANNEL = "ILCHANNEL";
+	
+	public static final String MAX_DATETIME = "MAX_DATEANDTIME";
 }

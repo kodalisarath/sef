@@ -127,14 +127,7 @@ public class CARecharge implements Processor {
 				e.printStackTrace();
 				logger.debug("Exception while sleep     :"+e.getMessage());
 			}
-//			try {
-//				synchronized (response) {
-//					RequestCorrelationStore.put(correlationId, response);
-//					response.wait(10000L);
-//				}
-//			} catch(InterruptedException e) {
-//				logger.debug("sleep interrupted. may be response arrived!!!");
-//			}
+
 			
 			logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 			
@@ -152,6 +145,7 @@ public class CARecharge implements Processor {
 			logger.debug("Get requestId: " + purchaseResponse.getRequestId());
 			
 			logger.debug("Response purchase received.. now creating front end response");
+			
 			CommandResponseData responseData = createResponse(rechargeRequest.isTransactional(),purchaseResponse);
 			arg0.getOut().setBody(responseData);
 		

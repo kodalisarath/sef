@@ -7,18 +7,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
-import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
+import com.ericsson.raso.sef.smart.commons.read.EntireRead;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
-import com.hazelcast.core.ISemaphore;
 
 public abstract class SmartServiceHelper {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SmartServiceHelper.class);
-	
+	public static EntireRead entireReadSubscriber(String msisdn) throws SmException
+	{
+		//To DO
+		
+		return null;
+		
+	}
 	public static SubscriberInfo getAndRefreshSubscriber(String msisdn) {
 		
 		logger.debug("Entering getAndRefreshSubscriber.....");
@@ -34,23 +40,22 @@ public abstract class SmartServiceHelper {
 		logger.debug("Entering SmartServiceResolver.....");
 		
 		
-		
 		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
 		
-		SubscriberResponseStore.put(correlationId, subscriberInfo);
-		
-        ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
-		semaphore.init(0);
-		semaphore.acquire();
-		} catch(InterruptedException e) {
+			synchronized (subscriberInfo) {
+				SubscriberResponseStore.put(requestId, subscriberInfo);
+				subscriberInfo.wait(10000L);
+			}
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " +  correlationId);
 		
 		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
-		logger.debug("Subscriber response store"+subscriberInfo);
+		
 		updateSubscriberState(subscriberInfo);
 		
 		return subscriberInfo;

@@ -8,6 +8,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
+//TODO: Refactor the class name to NSN Default Success Response
 public class DummyProcessor implements Processor {
 	
 	public static void response(Exchange exchange) {

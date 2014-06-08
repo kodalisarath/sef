@@ -26,7 +26,7 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		logger.info("CreateOrWriteServiceAccessKey: process()");
 		CreateOrWriteServiceAccessKeyRequest request = (CreateOrWriteServiceAccessKeyRequest) exchange.getIn().getBody();
-		
+
 		List<Meta> metas = new ArrayList<Meta>();
 		metas.add(new Meta("key", request.getCategory()));
 		metas.add(new Meta("keyType", request.getKeyType()));
@@ -36,21 +36,26 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		updateSubscriber(requestId, request.getCustomerId(), metas);
 		DummyProcessor.response(exchange);
-		
+
 	}
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) throws SmException {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
+
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
+
 		iSubscriberRequest.updateSubscriber(requestId,customer_id, metas);
+
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
-		semaphore.init(0);
-		semaphore.acquire();
+			semaphore.init(0);
+			semaphore.acquire();
 		} catch(InterruptedException e) {
-			
+			logger.warn("Interrupted while waiting for response to " + requestId);
 		}
+		
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		if(subscriberInfo.getStatus().getCode() > 0){
@@ -59,5 +64,5 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		}
 		return subscriberInfo;
 	}
-	
+
 }
