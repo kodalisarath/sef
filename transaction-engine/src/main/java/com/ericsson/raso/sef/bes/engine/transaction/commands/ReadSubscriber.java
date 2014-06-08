@@ -52,6 +52,9 @@ public class ReadSubscriber extends AbstractTransaction {
 		try {
 			
 			//Fetch subscriber from DB
+			LOGGER.debug("SANITY CHECKS....");
+			LOGGER.debug("Request: " + this.getRequest());
+			
 			Subscriber subscriber = new FetchSubscriber(((ReadSubscriberRequest)this.getRequest()).getSubscriberId()).execute();
 			LOGGER.debug("Subscriber entity fetched from DB: " + subscriber);
 			

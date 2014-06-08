@@ -48,7 +48,8 @@ public class UpdateSubscriber extends AbstractTransaction{
 			LOGGER.debug("Got Persistable Entity: Subscriber: " + subscriberEntity);
 				
 		} catch (FrameworkException e1) {
-			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), 
+											new ResponseCode(1006, "Unable to pack the workflow tasks for this use-case"), e1));
 			sendResponse();
 			return false;
 		}
@@ -56,7 +57,8 @@ public class UpdateSubscriber extends AbstractTransaction{
 		SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
 		if (subscriberStore == null) {
 			LOGGER.error("Unable to access persistence tier service!!");
-			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to access persistence tier service!! Check configuration (beans.xml)"));
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), 
+									new ResponseCode(1006, "Unable to access persistence tier service!! Check configuration (beans.xml)")));
 			return false;
 		}
 		
@@ -64,16 +66,17 @@ public class UpdateSubscriber extends AbstractTransaction{
 		try {
 			subscriberStore.updateSubscriber(this.getRequestId(), subscriberEntity);
 		} catch (PersistenceError e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(1004, "Saving metas failed!!"), e1));
+			return false;
 		} //TODO: vinay to check what is wrong here...
 		LOGGER.debug("Update Subscriber successfull!!");
 		LOGGER.debug("calling setMetas ");
 		try {
-			subscriberStore.setMetas(this.getRequestId(), subscriberEntity.getUserId(),TransactionServiceHelper.getList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
+			subscriberStore.setMetas(this.getRequestId(), subscriberEntity.getUserId(),
+						TransactionServiceHelper.getList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
 		} catch (PersistenceError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(1004, "Saving metas failed!!"), e));
+			return false;
 		}
 		sendResponse();
 		
