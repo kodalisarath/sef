@@ -1,13 +1,11 @@
 package com.ericsson.raso.sef.core.db.service.internal;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -121,12 +119,20 @@ public class SubscriberServiceImpl implements SubscriberService {
 	public boolean deleteSubscriber(String nbCorrelator, String userId) throws PersistenceError {
 		logger.debug(nbCorrelator, "Quick scan on persitent entity: " + userId);
 		
+		String subscriberId = null;
 		try {
-			subscriberMapper.deleteSubscriber(new String(encoder.encode(encryptor.encrypt(userId))));
-			logger.debug(nbCorrelator, "Subscriber: " + userId + " was successfully deleted!!");
+			subscriberId = new String(encoder.encode(encryptor.encrypt(userId)));
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+		}
+		
+		try {
+			subscriberMapper.deleteSubscriber(subscriberId);
+			logger.debug(nbCorrelator, "Subscriber: " + userId + " was successfully deleted!!");
+		} catch (PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to delete Subscriber entity!!"), e);
 		}
 		
 		return true;
@@ -219,9 +225,13 @@ public class SubscriberServiceImpl implements SubscriberService {
 	public boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError {
 		logger.debug("Method setMetas is  called");
 
-		if(metas == null || metas.size() == 0)
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The subscriber entity provided was null!!"));
+		if(userId == null || userId.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
 
+		if(metas == null || metas.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'metaKeys' provided was null!!"));
+
+		
 		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
 		List<String> metaKeys = this.getKeys(metas);
 		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId, metaKeys);
@@ -269,7 +279,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 			subscriber = this.fetchSubscriberByMsisdn(nbCorrelator, userId);
 		
 		if (subscriber == null)
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber cannot be found for the given 'userId'!!"));
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber meta cannot be found for the given 'userId'!!"));
 			
 		
 		return this.translateMetas(subscriber.getMetas());
