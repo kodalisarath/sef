@@ -1,7 +1,9 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -13,7 +15,9 @@ import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberMetaR
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberMetaResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberResponse;
 import com.ericsson.raso.sef.core.Meta;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -36,19 +40,25 @@ public class ReadSubscriberMeta extends AbstractTransaction {
 		
 		if (((ReadSubscriberMetaRequest)this.getRequest()).getSubscriberId() == null) {
 			LOGGER.error("Subscriber ID is not found. Cannot execute!!!");
-			this.getResponse().setReturnFault(new TransactionException(getRequestId(), "Subscriber ID was not found!!"));
+			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(1000, "Subscriber ID was not found!!"), null));
 			return false;
 		}
 		
 		SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
 		if (subscriberStore == null) {
-			this.getResponse().setReturnFault(new TransactionException(getRequestId(), "Unable to secure DB Service for Subscriber!!!"));
+			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(1001, "Unable to secure DB Service for Subscriber!!!"), null));
 			return false;
 		}
 
 
-		Collection<Meta> metas = subscriberStore.getMetas(((ReadSubscriberMetaRequest)this.getRequest()).getSubscriberId(), 
-				(String[])((ReadSubscriberMetaRequest)this.getRequest()).getMetaNames().toArray());
+		Collection<Meta> metas = null;
+		try {
+			metas = subscriberStore.getMetas(this.getRequestId(), ((ReadSubscriberMetaRequest)this.getRequest()).getSubscriberId(), 
+															this.getMetaKeys(((ReadSubscriberMetaRequest)this.getRequest()).getMetaNames()));
+		} catch (PersistenceError e) {
+			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(1002, "Persistence failure with metas"), e));
+			return false;
+		}
 
 
 		Set<com.ericsson.sef.bes.api.entities.Meta> result = this.getApiEntities(metas);
@@ -59,6 +69,12 @@ public class ReadSubscriberMeta extends AbstractTransaction {
 	}
 
 	
+	private List<String> getMetaKeys(Set<String> metaNames) {
+		List<String> metaKeys = new ArrayList<String>();
+		metaKeys.addAll(metaNames);
+		return metaKeys;
+	}
+
 	private Set<com.ericsson.sef.bes.api.entities.Meta> getApiEntities(Collection<Meta> metas) {
 		Set<com.ericsson.sef.bes.api.entities.Meta> result = new HashSet<com.ericsson.sef.bes.api.entities.Meta>();
 		for (Meta nativeMeta: metas) {
