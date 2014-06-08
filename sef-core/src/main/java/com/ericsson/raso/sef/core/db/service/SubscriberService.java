@@ -14,17 +14,17 @@ public interface SubscriberService {
 	
 	boolean deleteSubscriber(String nbCorrelator, String userId) throws PersistenceError;
 	
-	boolean setMetas(String userId, List<Meta> metas) throws PersistenceError;
+	boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError;
 	
-	List<Meta> getMetas(String userId, List<String> metaKeys) throws PersistenceError;
+	List<Meta> getMetas(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError;
 	
-	List<SubscriberAuditTrial> getSubscriberHistory(String userId, List<String> metaKeys) throws PersistenceError;
+	List<SubscriberAuditTrial> getSubscriberHistory(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError;
 	
-	Subscriber getSubscriber(String msisdn, List<String> metaKeys) throws PersistenceError;
+	Subscriber getSubscriber(String nbCorrelator, String msisdn, List<String> metaKeys) throws PersistenceError;
 	
-	Subscriber getSubscriberByUserId(String userId) throws PersistenceError;
+	Subscriber getSubscriberByUserId(String nbCorrelator, String userId) throws PersistenceError;
 	
-	Subscriber getSubscriber(String msisdn) throws PersistenceError;
+	Subscriber getSubscriber(String nbCorrelator, String msisdn) throws PersistenceError;
 
 	
 }
