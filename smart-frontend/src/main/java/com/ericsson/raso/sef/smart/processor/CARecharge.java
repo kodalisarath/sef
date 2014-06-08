@@ -156,8 +156,8 @@ public class CARecharge implements Processor {
 				logger.debug("exception is an instance of SmException");
 				throw e;
 			}else{
-				e.printStackTrace();
-				throw new SmException(ErrorCode.internalSystemError);
+				logger.error("RuntimeException? ", e);
+				throw new SmException("Catch-All Pathetic", ErrorCode.internalSystemError, e);
 			}
 			
 		}
