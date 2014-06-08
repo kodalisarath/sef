@@ -20,7 +20,7 @@ import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class FulfillResponseProcessor implements Processor {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(FulfillResponseProcessor.class);
 
 	@SuppressWarnings("unchecked")
@@ -31,9 +31,9 @@ public class FulfillResponseProcessor implements Processor {
 		TransactionStatus status = (TransactionStatus)objectArray[1];
 		List<Product> products =(List<Product>)objectArray[2];
 		List<Meta> metas = (List<Meta>)objectArray[3];
-		
+
 		logger.debug("Fulfillment response received for: " + correlationId);
-		
+
 		Set<AtomicProduct> atomicProducts = new HashSet<AtomicProduct>();
 		FulfillmentStepResult result=null;
 		if(status != null  && status.getCode() > 0){
@@ -43,12 +43,11 @@ public class FulfillResponseProcessor implements Processor {
 		}else{
 			if(products != null) {
 				for(Product product: products) {
-					logger.debug("Product Quota defined: " +  product.getQuotaDefined() + " Quota consumed: " + product.getQuotaConsumed());
-					logger.debug(product.getMetas().toString());
+					logger.debug("Product Quota defined: " +  product.getQuotaDefined() + " Quota consumed: " + product.getQuotaConsumed() + " Metas: " + product.getMetas());
 					atomicProducts.add(TransactionServiceHelper.getApiEntity(product));
 					logger.debug("still in loop...");
 				}
-				}
+			}
 			//TODO: based on the transaction status set a transaction fault while posting back the step result
 			//TODO: fix the impedence of passing the metas from fulfillment to upstream. Fix required in FulfillmentStepResult. Approval pending Sathya
 			logger.debug("out of loop, creating response...");
@@ -57,7 +56,7 @@ public class FulfillResponseProcessor implements Processor {
 		}
 		logger.debug("Fulfillment completed. Engaging orchestration manager to update the response for " +  correlationId);
 		OrchestrationManager.getInstance().promoteFulfillmentExecution(correlationId, result);
-		
+
 	}
 
 }
