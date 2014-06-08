@@ -2,6 +2,7 @@ package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -158,7 +159,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //						this.processNotification();
 //						this.promote2Schedule();
 						//TODO: remove this when uncomment the above two tasks
-						//this.promote2Persist();
+						this.promote2Persist();
 						logger.debug("Stifled the persistence to stop executing in preventing the thread model to break...");
 						this.status = Status.DONE_SUCCESS; //TODO: uncomment this when Vinay has fixed the bug in DB TIER....
 
@@ -608,8 +609,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				}
 				toProcess.poll();
 			} catch (CatalogException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(this.northBoundCorrelator, "Unable to pack orchestration profile for fulfillment... Service Registry Failure", e);
+				return new ArrayList();
 			}
 		}
 		
