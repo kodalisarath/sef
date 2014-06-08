@@ -11,6 +11,17 @@ public class SubscriberAuditTrial {
 	private String attributeNewValue;
 	private String changedByUser;
 
+	
+	
+	public SubscriberAuditTrial(String userId, Date eventTimestamp, String attributeName, String attributeNewValue, String changedByUser) {
+		super();
+		this.userId = userId;
+		this.eventTimestamp = eventTimestamp;
+		this.attributeName = attributeName;
+		this.attributeNewValue = attributeNewValue;
+		this.changedByUser = changedByUser;
+	}
+
 	public String getUserId() {
 		return userId;
 	}

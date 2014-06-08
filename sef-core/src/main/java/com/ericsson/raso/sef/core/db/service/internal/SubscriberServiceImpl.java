@@ -1,7 +1,11 @@
 package com.ericsson.raso.sef.core.db.service.internal;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -9,11 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.Meta;
+import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SecureSerializationHelper;
 import com.ericsson.raso.sef.core.db.mapper.SubscriberMapper;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
@@ -22,336 +30,417 @@ import com.ericsson.raso.sef.core.db.service.SubscriberService;
 
 public class SubscriberServiceImpl implements SubscriberService {
 	private static final Logger logger = LoggerFactory.getLogger(SubscriberServiceImpl.class);
+	private static final SecureSerializationHelper encryptor = new SecureSerializationHelper();
+	private static final Encoder encoder = Base64.getEncoder();
+	private static final Decoder decoder = Base64.getDecoder();
+	
+	// constants section
+	static final int ApplicationContextError = 9000;
+	static final int FunctionalDataError = 9500;
+	static final int InfrastructureError = 9600;
+	static final int ConnectionError = 9700;
+	static final int TransientError = 9950;
+	static final int PersistentError = 9970;
+	static final int CriticalError = 9990;
+
 	private SubscriberMapper subscriberMapper;
 	
 	
 	public void setSubscriberMapper(SubscriberMapper subscriberMapper) {
-		this.subscriberMapper = subscriberMapper;
-	}
-	
-	@Transactional
-	public void createSubscriber(Subscriber subscriber) throws Exception {
-       
-		if(subscriber.getMsisdn() != null){
-			subscriber.setPin("1234");
-			 if(subscriber.getUserId() == null){
-					subscriber.setUserId(subscriber.getMsisdn());
-				 }
-				 if(subscriber.getAccountId() == null){
-					 subscriber.setAccountId(subscriber.getMsisdn());
-				 }
-				 if(subscriber.getCustomerId() == null){
-					 subscriber.setCustomerId(subscriber.getMsisdn());
-				 }
-		        if(subscriber.getContractId() == null){
-					 subscriber.setContractId(subscriber.getMsisdn());
-				 }
-			 
-		 }else{
-			 //TO:DO Proper exception handling need to be implimented
-			 throw new Exception("MSISDN is null here,cannot process further");
-			 
-		 }
-		subscriberMapper.createSubscriber(subscriber);
-	}
-
-	@Transactional
-	public void deleteSubscriber(String userId) {
-		subscriberMapper.deleteSubscriber(userId);
-		evictSubscriber(userId);
-	}
-	
-	@Transactional
-	public void updateSubscriber(Subscriber subscriber) {
-		logger.debug("Inside the update method querying the db for subscriber with userid="+subscriber.getUserId());
-		
-		Subscriber oldSubscriber = subscriberMapper.getSubscriberByUserId(subscriber.getUserId());
-		logger.debug("Query successful for existing subscriber");
-		
-		logger.debug("Printing existing subscriber fields");
-		logger.debug("msisdn= "+oldSubscriber.getMsisdn()+"    "+
-		"Account id  ="+oldSubscriber.getAccountId()+"    "+
-		"Contractid ="+oldSubscriber.getContractId()+"  "+
-		"Contract state  ="+oldSubscriber.getContractState()+" "+
-		"Pin   ="+oldSubscriber.getPin()+"  "+"IMSI ="+oldSubscriber.getImsi()+" "+
-		"Email ="+oldSubscriber.getEmail()+"  "+"Payment Type  ="+oldSubscriber.getPaymentType()+"   "+
-		"Payment Responsible ="+oldSubscriber.getPaymentResponsible()+"  "+"Payment Parent"+
-		oldSubscriber.getPaymentParent()+"  "+"Bill life cycle day ="+oldSubscriber.getBillCycleDay()+
-		"DOB  ="+oldSubscriber.getDateOfBirth()+"Preferred Language  "+oldSubscriber.getPrefferedLanguage()+
-		" Registration date "+oldSubscriber.getRegistrationDate()+" "+"Active Date ="+oldSubscriber.getActiveDate()+
-		" Rate Plan="+oldSubscriber.getRatePlan()+"Customer Segment= "+oldSubscriber.getCustomerSegment()+"  IMEI_SV="+oldSubscriber.getImeiSv());
-		Collection<SubscriberAuditTrial> hists = new ArrayList<SubscriberAuditTrial>();
-		if(oldSubscriber.getContractState() != null && oldSubscriber.getContractState() != subscriber.getContractState()) {
-			SubscriberAuditTrial history = new SubscriberAuditTrial();
-			history.setAttributeName(Subscriber.CONTRACT_STATE);
-			history.setAttributeNewValue(subscriber.getContractState().name());
-			history.setUserId(subscriber.getUserId());
-			history.setEventTimestamp(new Date());
-			hists.add(history);
-		}
-		
-		logger.debug("now going to update subscriber");
-		subscriberMapper.updateSubscriber(subscriber);
-		
-logger.debug("Inside the update method querying the db for subscriber with userid="+subscriber.getUserId());
-		
-		Subscriber updatedSubscriber = subscriberMapper.getSubscriberByUserId(subscriber.getUserId());
-		logger.debug("After updating table ");
-		
-		logger.debug("Printing Updated subscriber fields");
-		logger.debug("msisdn= "+updatedSubscriber.getMsisdn()+"    "+
-		"Account id  ="+updatedSubscriber.getAccountId()+"    "+
-		"Contractid   ="+updatedSubscriber.getContractId()+"  "+
-		"Contract state  ="+updatedSubscriber.getContractState()+" "+
-		"Pin   ="+updatedSubscriber.getPin()+"  "+"IMSI ="+updatedSubscriber.getImsi()+" "+
-		"Email ="+updatedSubscriber.getEmail()+"  "+"Payment Type  ="+updatedSubscriber.getPaymentType()+"   "+
-		"Payment Responsible ="+updatedSubscriber.getPaymentResponsible()+"     "+"Payment Parent"+
-		updatedSubscriber.getPaymentParent()+"       "+"Bill life cycle day ="+updatedSubscriber.getBillCycleDay()+
-		"DOB  ="+updatedSubscriber.getDateOfBirth()+"     Preferred Language  "+updatedSubscriber.getPrefferedLanguage()+
-		" Registration date "+updatedSubscriber.getRegistrationDate()+" "+"Active Date ="+updatedSubscriber.getActiveDate()+
-		" Rate Plan="+updatedSubscriber.getRatePlan()+"      Customer Segment= "+updatedSubscriber.getCustomerSegment()+"  IMEI_SV="+updatedSubscriber.getImeiSv());
-		
-		
-		
-		
-		for (SubscriberAuditTrial subscriberHistory : hists) {
-			subscriberMapper.insertSubscriberHistory(subscriberHistory);
-		}
-		
-		
-		
-		
-		evictSubscriber(subscriber.getUserId());
-	}
-
-	@Transactional
-	public void setMetas(String userId, List<Meta> metas) {
-		logger.debug("Method setMetas is  called");
-		if(metas == null || metas.size() == 0) return;
-       		
-		String[] keys = new String[metas.size()];
-		int i = 0;
-		for(Meta meta: metas) {
-			keys[i++] = meta.getKey();
-		}
-		
-		Collection<SubscriberAuditTrial> hists = new ArrayList<SubscriberAuditTrial>();
-		
-		Collection<Meta> oldMetas = this.getMetas(userId, keys);
-		logger.debug("old metas values are of size "+oldMetas.size());
-
-		for(Meta meta: metas) {
-			if(meta.getValue() == null || meta.getValue().trim().length() == 0) {
-				continue;
-			}
-
-			Meta subMeta = new Meta();
-			subMeta.setKey(meta.getKey());
-			subMeta.setValue(meta.getValue());
-			boolean isUpdate = false;
-			for(Meta oldmeta: oldMetas) {
-				if(subMeta.getKey().equals(oldmeta.getKey())) {
-					SubscriberAuditTrial history = new SubscriberAuditTrial();
-					history.setAttributeName(meta.getKey());
-					history.setAttributeNewValue(meta.getValue());
-					history.setUserId(userId);
-					history.setEventTimestamp(new Date());
-					hists.add(history);
-					
-					isUpdate = true;
-					break;
-				}
-			}
-			logger.debug("checking iff isUpdate is true:   "+isUpdate);
-			if(isUpdate) {
-				subscriberMapper.updateSubscriberMeta(userId, subMeta, new Date());
-			} else {
-				logger.debug("Inseting a new Subscriber meta  "+isUpdate);
-				SubscriberAuditTrial history = new SubscriberAuditTrial();
-				history.setAttributeName(meta.getKey());
-				history.setAttributeNewValue(meta.getValue());
-				history.setUserId(userId);
-				history.setEventTimestamp(new Date());
-				hists.add(history);
-
-				subscriberMapper.insertSubscriberMeta(subMeta, new Date(), new Date());
-			}
-		}
-		
-		for (SubscriberAuditTrial subscriberHistory : hists) {
-			subscriberMapper.insertSubscriberHistory(subscriberHistory);
-		}
-		
-		evictSubscriber(userId);
+		this.subscriberMapper = subscriberMapper; //TODO: confirm from beans.xml that this setter method is actually called..
 	}
 	
 	@Override
-	public Collection<Meta> getMetas(String userId, String... metaKeys) {
-		Subscriber subscriber = fetchSubscriberByUserId(userId);
-		if(subscriber == null) return Collections.emptyList();
+	@Transactional
+	public boolean createSubscriber(String nbCorellator, Subscriber subscriber) throws PersistenceError {
+       
+		if (subscriber == null)
+			throw new PersistenceError(nbCorellator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The subscriber entity provided was null!!"));
 		
-		return subscriber.getMetas();
+		if (subscriber.getMsisdn() == null || subscriber.getMsisdn().isEmpty())
+			throw new PersistenceError(nbCorellator, this.getClass().getName(), new ResponseCode(FunctionalDataError, "The 'msisdn' attribute was null and it is PK/CK in 'Subscriber' entity!!"));
+			
+		if (subscriber.getPin() == null || subscriber.getPin().isEmpty()) {
+			logger.warn("The 'pin' attribute was null. Assuming to default '1234'");
+			subscriber.setPin("1234");
+		}
+		
+		if (subscriber.getUserId() == null || subscriber.getUserId().isEmpty()) {
+			logger.warn("The 'userId' attribute was null. Assuming to default 'msisdn'");
+			subscriber.setUserId(subscriber.getMsisdn());
+		}
+		
+		if (subscriber.getAccountId() == null || subscriber.getAccountId().isEmpty()) {
+			logger.warn("The 'accountId' attribute was null. Assuming to default 'msisdn'");
+			subscriber.setAccountId(subscriber.getMsisdn());
+		}
+		
+		if (subscriber.getCustomerId() == null || subscriber.getCustomerId().isEmpty()) {
+			logger.warn("The 'customerId' attribute was null. Assuming to default 'msisdn'");
+			subscriber.setCustomerId(subscriber.getMsisdn());
+		}
+		
+		if (subscriber.getContractId() == null || subscriber.getContractId().isEmpty()) {
+			logger.warn("The 'contractId' attribute was null. Assuming to default 'msisdn'");
+			subscriber.setContractId(subscriber.getMsisdn());
+		}
+		
+		// Perform encryption of identities...
+		try {
+			
+			subscriber.setAccountId(new String(encoder.encode(encryptor.encrypt(subscriber.getAccountId()))));
+			subscriber.setContractId(new String(encoder.encode(encryptor.encrypt(subscriber.getContractId()))));
+			subscriber.setCustomerId(new String(encoder.encode(encryptor.encrypt(subscriber.getCustomerId()))));
+			subscriber.setEmail(new String(encoder.encode(encryptor.encrypt(subscriber.getEmail()))));
+			subscriber.setImeiSv(new String(encoder.encode(encryptor.encrypt(subscriber.getImeiSv()))));
+			subscriber.setImsi(new String(encoder.encode(encryptor.encrypt(subscriber.getImsi()))));
+			subscriber.setMsisdn(new String(encoder.encode(encryptor.encrypt(subscriber.getMsisdn()))));
+			subscriber.setPaymentParent(new String(encoder.encode(encryptor.encrypt(subscriber.getPaymentParent()))));
+			subscriber.setPaymentResponsible(new String(encoder.encode(encryptor.encrypt(subscriber.getPaymentResponsible()))));
+			subscriber.setPin(new String(encoder.encode(encryptor.encrypt(subscriber.getPin()))));
+			subscriber.setUserId(new String(encoder.encode(encryptor.encrypt(subscriber.getUserId()))));
+
+		} catch (FrameworkException e) {
+			logger.error(nbCorellator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+			throw new PersistenceError(nbCorellator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+		}
+		
+		try {
+			logger.debug("Crossing fingers... About to insert subscriber:" + subscriber);
+			subscriberMapper.createSubscriber(subscriber);
+		} catch (PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(nbCorellator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to insert Subscriber entity!!"), e);
+		}
+		return true;
 	}
 
-	public Subscriber getSubscriber(String msisdn, String... metaKeys) {
+	
+	@Override
+	@Transactional
+	public boolean deleteSubscriber(String nbCorrelator, String userId) throws PersistenceError {
+		logger.debug(nbCorrelator, "Quick scan on persitent entity: " + userId);
+		
 		try {
-			return fetchSubscriberByMsisdn(msisdn);
-		} finally {
+			subscriberMapper.deleteSubscriber(new String(encoder.encode(encryptor.encrypt(userId))));
+			logger.debug(nbCorrelator, "Subscriber: " + userId + " was successfully deleted!!");
+		} catch (FrameworkException e) {
+			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
 		}
+		
+		return true;
+	}
+
+	
+	@Override
+	@Transactional
+	public boolean updateSubscriber(String nbCorrelator, Subscriber subscriber) throws PersistenceError {
+		
+		logger.debug("Sanity checks on the data...");
+		if (subscriber == null)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The subscriber entity provided was null!!"));
+		
+		if (subscriber.getMsisdn() == null || subscriber.getMsisdn().isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(FunctionalDataError, "The 'msisdn' attribute is null and it is PK/CK in 'Subscriber' entity!!"));
+			
+		if (subscriber.getPin() == null || subscriber.getPin().isEmpty()) 
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(FunctionalDataError, "The 'pin' attribute is null!!"));
+				
+		if (subscriber.getUserId() == null || subscriber.getUserId().isEmpty()) 
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(FunctionalDataError, "The 'userId' attribute is null!!"));
+		
+		if (subscriber.getAccountId() == null || subscriber.getAccountId().isEmpty()) 
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(FunctionalDataError, "The 'accountId' attribute is null!!"));
+		
+		if (subscriber.getCustomerId() == null || subscriber.getCustomerId().isEmpty()) 
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(FunctionalDataError, "The 'customerId' attribute is null!!"));
+		
+		if (subscriber.getContractId() == null || subscriber.getContractId().isEmpty()) 
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(FunctionalDataError, "The 'contractId' attribute is null!!"));
+		
+		
+		// Perform encryption of identities...
+		try {
+			logger.debug(nbCorrelator, "Encrypting Identities now...");
+			subscriber.setAccountId(new String(encoder.encode(encryptor.encrypt(subscriber.getAccountId()))));
+			subscriber.setContractId(new String(encoder.encode(encryptor.encrypt(subscriber.getContractId()))));
+			subscriber.setCustomerId(new String(encoder.encode(encryptor.encrypt(subscriber.getCustomerId()))));
+			subscriber.setEmail(new String(encoder.encode(encryptor.encrypt(subscriber.getEmail()))));
+			subscriber.setImeiSv(new String(encoder.encode(encryptor.encrypt(subscriber.getImeiSv()))));
+			subscriber.setImsi(new String(encoder.encode(encryptor.encrypt(subscriber.getImsi()))));
+			subscriber.setMsisdn(new String(encoder.encode(encryptor.encrypt(subscriber.getMsisdn()))));
+			subscriber.setPaymentParent(new String(encoder.encode(encryptor.encrypt(subscriber.getPaymentParent()))));
+			subscriber.setPaymentResponsible(new String(encoder.encode(encryptor.encrypt(subscriber.getPaymentResponsible()))));
+			subscriber.setPin(new String(encoder.encode(encryptor.encrypt(subscriber.getPin()))));
+			subscriber.setUserId(new String(encoder.encode(encryptor.encrypt(subscriber.getUserId()))));
+			logger.debug(nbCorrelator, "Encrypted Identities to ensure info security");
+		} catch (FrameworkException e) {
+			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+		}
+		
+		
+		// fetch the current entity...
+		Subscriber currentEntity = null;
+		try {
+			currentEntity = subscriberMapper.getSubscriberByUserId(subscriber.getUserId());
+		} catch (PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);
+		}
+		
+		// select the list of changes to audit trail...
+		Collection<SubscriberAuditTrial> newAuditTrails = new ArrayList<SubscriberAuditTrial>();
+		
+		if(currentEntity.getContractState() != null && currentEntity.getContractState() != subscriber.getContractState()) {
+			SubscriberAuditTrial historyEvent = new SubscriberAuditTrial(subscriber.getUserId(), 
+																		new Date(), 
+																		Subscriber.CONTRACT_STATE, 
+																		subscriber.getContractState().name(),
+																		"system-user");
+			newAuditTrails.add(historyEvent);
+		}
+	
+		try {
+			subscriberMapper.updateSubscriber(subscriber);
+			for (SubscriberAuditTrial subscriberHistory : newAuditTrails) {
+				subscriberMapper.insertSubscriberHistory(subscriberHistory);
+			}
+		} catch (PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);
+		}
+		return true;
+	}
+
+	@Override
+	@Transactional
+	public boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError {
+		logger.debug("Method setMetas is  called");
+
+		if(metas == null || metas.size() == 0)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The subscriber entity provided was null!!"));
+
+		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
+		List<String> metaKeys = this.getKeys(metas);
+		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId, metaKeys);
+		logger.debug("current metas values are of size " + currentMetas.size());
+
+		for(Meta meta: metas) {
+			logger.debug("Processing meta: " + meta);
+			if(meta.getValue() == null || meta.getValue().trim().length() == 0) 
+				continue;
+
+			boolean isUpdate = false;
+			for(Meta currentMeta: currentMetas) {
+				if(meta.getKey().equals(currentMeta.getKey())) {
+					SubscriberAuditTrial history = new SubscriberAuditTrial(userId, 
+																			new Date(), 
+																			meta.getKey(), 
+																			meta.getValue(), 
+																			"system-user");
+					try {
+						subscriberMapper.updateSubscriberMeta(new String(encoder.encode(encryptor.encrypt(userId))), meta, new Date());
+					} catch (PersistenceException e) {
+						logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
+					} catch (FrameworkException e) {
+						logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	
+	@Override
+	public List<Meta> getMetas(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError {
+		if(userId == null || userId.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
+
+		if(metaKeys == null || metaKeys.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'metaKeys' provided was null!!"));
+
+		Subscriber subscriber = this.fetchSubscriberByUserId(nbCorrelator, userId);
+		if (subscriber == null) 
+			subscriber = this.fetchSubscriberByMsisdn(nbCorrelator, userId);
+		
+		if (subscriber == null)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber cannot be found for the given 'userId'!!"));
+			
+		
+		return this.translateMetas(subscriber.getMetas());
+	}
+
+	@Override
+	public Subscriber getSubscriber(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError {
+		if(userId == null || userId.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
+
+		if(metaKeys == null || metaKeys.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'metaKeys' provided was null!!"));
+
+		Subscriber subscriber = this.fetchSubscriberByUserId(nbCorrelator, userId);
+		if (subscriber == null) 
+			subscriber = this.fetchSubscriberByMsisdn(nbCorrelator, userId);
+		
+		if (subscriber == null)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber cannot be found for the given 'userId'!!"));
+		
+		return subscriber;
 	}
 	
-	public Collection<SubscriberAuditTrial> getSubscriberHistory(String userId, String... metaKeys) {
-		if(metaKeys == null || metaKeys.length == 0 ) return Collections.emptyList();
+	@Override
+	public List<SubscriberAuditTrial> getSubscriberHistory(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError {
+		if(userId == null || userId.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
+
+		if(metaKeys == null || metaKeys.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'metaKeys' provided was null!!"));
+
+		String subscriberId = null;
+		try {
+			subscriberId = new String(encoder.encode(encryptor.encrypt(userId)));
+		} catch(FrameworkException e) {
+			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("userId", userId);
+		map.put("userId", subscriberId);
 		map.put("keys", Arrays.asList(metaKeys));
 		
-		return subscriberMapper.getSubscriberHistory(map);
-	}
-	
-	public Subscriber getSubscriberByUserId(String userId) {
-		return fetchSubscriberByUserId(userId);
-	}
-	
-	
-	private Subscriber fetchSubscriberByMsisdn(String msisdn) {
-		Subscriber subscriber = subscriberMapper.getSubscriber(msisdn);
-		logger.debug("Extracted fields ");
+		Collection<SubscriberAuditTrial> subscriberHistory = subscriberMapper.getSubscriberHistory(map);
+		if (map.containsKey("userId"))
+			map.put("userId", userId);
 		
-		logger.debug("userid= "+subscriber.getUserId()+"    "+"Account id"+subscriber.getAccountId());
+		return this.translateHistory(subscriberHistory);
+	}
+	
+	@Override
+	public Subscriber getSubscriberByUserId(String nbCorrelator, String userId) throws PersistenceError {
+		if(userId == null || userId.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
+
+		Subscriber subscriber = this.fetchSubscriberByUserId(nbCorrelator, userId);
+		if (subscriber == null) 
+			subscriber = this.fetchSubscriberByMsisdn(nbCorrelator, userId);
+		
+		if (subscriber == null)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber cannot be found for the given 'userId'!!"));
+		
+		return subscriber;
+	}
+	
+	
+	private Subscriber fetchSubscriberByMsisdn(String nbCorrelator, String msisdn) throws PersistenceError {
+		if(msisdn == null || msisdn.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was null!!"));
+
+		String subscriberId = null;
+		try {
+			subscriberId = new String(encoder.encode(encryptor.encrypt(msisdn)));
+		} catch(FrameworkException e) {
+			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+		}
+		
+		Subscriber subscriber = null;
+		try { 
+			subscriber = subscriberMapper.getSubscriber(subscriberId);
+		} catch(PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
+		}
+		
 		if(subscriber != null) {
-			Collection<Meta> subscriberMetas = fetchMetas(subscriber.getUserId());
+			Collection<Meta> subscriberMetas = this.fetchMetas(msisdn);
 			for (Meta meta : subscriberMetas) {
-				Meta sMeta = new Meta();
-				sMeta.setKey(meta.getKey());
-				sMeta.setValue(meta.getValue());
-				subscriber.getMetas().add(sMeta);
-				subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
+				subscriber.getMetas().add(meta);
 			}
+			subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
 		}
 		return subscriber;
 	}
 	
-	private Subscriber fetchSubscriberByUserId(String userId) {
-		Subscriber subscriber =null;
+	private Subscriber fetchSubscriberByUserId(String nbCorrelator, String userId) throws PersistenceError {
+		if(userId == null || userId.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
+		
+		String subscriberId = null;
 		try {
-			subscriber=subscriberMapper.getSubscriberByUserId(userId);
-			if(subscriber != null){
-				Collection<Meta> subscriberMetas = fetchMetas(subscriber.getUserId());
-				logger.debug("Returned subscriber metas of length for userid:"+subscriber.getUserId() +"is"+ subscriberMetas.size());
-				for (Meta meta : subscriberMetas) {
-					Meta sMeta = new Meta();
-					sMeta.setKey(meta.getKey());
-					sMeta.setValue(meta.getValue());
-					subscriber.getMetas().add(sMeta);
-					subscriber.getMetas().add(new Meta("SUBCRIBER_ID", subscriber.getUserId()));
-				}
+			subscriberId = new String(encoder.encode(encryptor.encrypt(userId)));
+		} catch(FrameworkException e) {
+			logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+		}
+		
+		Subscriber subscriber = null;
+		try { 
+			subscriber = subscriberMapper.getSubscriber(subscriberId);
+		} catch(PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
+		}
+		
+		if(subscriber != null) {
+			Collection<Meta> subscriberMetas = this.fetchMetas(userId);
+			for (Meta meta : subscriberMetas) {
+				subscriber.getMetas().add(meta);
 			}
-		} catch (Exception e) {
-			logger.debug("Returned a sql error while getting subscriber by userid");
-			e.printStackTrace();
-			// TODO: handle exception
+			subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
 		}
 		return subscriber;
 	}
 	
 	private Collection<Meta> fetchMetas(String userId) {
-		logger.debug("Inside the method to fetch metas");
-		return subscriberMapper.getAllSubscriberMetas(userId);
+		logger.debug("Inside the method to fetch metas for subscriber: " + userId);
+		Collection<Meta> metas = subscriberMapper.getAllSubscriberMetas(userId);
+		if (metas == null)
+			return new ArrayList<Meta>();
+		else
+			return metas;
 	}
 
-	private void evictSubscriber(String userIdOrMsisdn) {
+	@Override
+	public Subscriber getSubscriber(String nbCorrelator, String msisdn) throws PersistenceError {
+		if(msisdn == null || msisdn.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was null!!"));
+
 		
-	}
-
-	public Subscriber getSubscriber(String msisdn) {
-		Subscriber subscriber = null;
-		try {
-			subscriber = subscriberMapper.getSubscriber(msisdn);
-              logger.debug("subscriber returned on calling  a mapper "+subscriber);
-			if (subscriber != null) {
-				Collection<Meta> metaCollections = fetchMetas(subscriber
-						.getUserId());
-				logger.debug("Returned metas for the subscriber of size"+metaCollections.size());
-				for (Meta meta : metaCollections) {
-					Meta sMeta = new Meta();
-					if(meta != null){
-						sMeta.setKey(meta.getKey());
-						sMeta.setValue(meta.getValue());
-						subscriber.getMetas().add(sMeta);
-					}
-					subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
-				}
-			}
-		} catch (Exception e) {
-			logger.error("Exception occured while querying subscriber entity",
-					e);
-		}
+		Subscriber subscriber = this.fetchSubscriberByUserId(nbCorrelator, msisdn);
+		if (subscriber == null) 
+			subscriber = this.fetchSubscriberByMsisdn(nbCorrelator, msisdn);
+		
+		if (subscriber == null)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber cannot be found for the given 'userId'!!"));
+		
 		return subscriber;
+	}
+	
 
+
+	private List<String> getKeys(List<Meta> metas) {
+		List<String> keys = new ArrayList<String>();
+		for (String key: keys)
+			keys.add(key);
+		return keys;
+	}
+	
+	private List<Meta> translateMetas(Collection<Meta> metas) {
+		List<Meta> returned = new ArrayList<Meta>();
+		returned.addAll(metas);
+		return returned;
 	}
 
-	@Override
-	public boolean createSubscriber(String nbCorrelator, Subscriber subscriber)
-			throws PersistenceError {
-		// TODO Auto-generated method stub
-		return false;
+	private List<SubscriberAuditTrial> translateHistory(Collection<SubscriberAuditTrial> history) {
+		List<SubscriberAuditTrial> returned = new ArrayList<SubscriberAuditTrial>();
+		returned.addAll(history);
+		return returned;
 	}
 
-	@Override
-	public boolean updateSubscriber(String nbCorrelator, Subscriber subscriber)
-			throws PersistenceError {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
-	@Override
-	public boolean deleteSubscriber(String nbCorrelator, String userId)
-			throws PersistenceError {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean setMetas(String nbCorrelator, String userId, List<Meta> metas)
-			throws PersistenceError {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<Meta> getMetas(String nbCorrelator, String userId,
-			List<String> metaKeys) throws PersistenceError {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<SubscriberAuditTrial> getSubscriberHistory(String nbCorrelator,
-			String userId, List<String> metaKeys) throws PersistenceError {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Subscriber getSubscriber(String nbCorrelator, String msisdn,
-			List<String> metaKeys) throws PersistenceError {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Subscriber getSubscriberByUserId(String nbCorrelator, String userId)
-			throws PersistenceError {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Subscriber getSubscriber(String nbCorrelator, String msisdn)
-			throws PersistenceError {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
