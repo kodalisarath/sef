@@ -1,8 +1,10 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
@@ -50,10 +52,15 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 			
 			Date preActiveEndDate = new Date(System.currentTimeMillis() + preActivePeriod);
 			
-			
+			List<Meta> useCaseMetas = new ArrayList<Meta>();
 			Meta meta = new Meta();
 			meta.setKey(SmartConstants.PREACTIVE_ENDDATE);
 			meta.setValue(DateUtil.convertDateToString(preActiveEndDate, config.getValue("GLOBAL",SmartConstants.DATE_FORMAT)));
+			useCaseMetas.add(meta);
+			
+			meta.setKey("HANDLE_LIFE_CYCLE");
+			meta.setValue("UPDATE_CONTRACT_STATE");
+			useCaseMetas.add(meta);
 			
 			String requestId = RequestContextLocalStore.get().getRequestId();
 			Subscriber subscriber = new Subscriber();
