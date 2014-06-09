@@ -8,6 +8,8 @@ import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
 
 public interface SubscriberService {
 
+	boolean isSubscriberExist(String subscriber) throws PersistenceError;
+	
 	boolean createSubscriber(String nbCorrelator, Subscriber subscriber) throws PersistenceError;
 
 	boolean updateSubscriber(String nbCorrelator, Subscriber subscriber) throws PersistenceError;
