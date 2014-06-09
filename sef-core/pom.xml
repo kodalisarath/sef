@@ -29,6 +29,7 @@
 			org.springframework.jdbc.core,
 			org.springframework.*,
 			org.apache.tomcat.dbcp.dbcp,
+			org.apache.commons.codec.binary,
 			javax.sql,
 			org.xml.sax,
 			org.apache.cxf.binding.soap.interceptor,
