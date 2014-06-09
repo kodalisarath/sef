@@ -10,15 +10,6 @@
   <name>Smart SEF</name>
   <url>http://maven.apache.org</url>
   
-  <modules>
-  		<module>sef-core</module>
-		<module>sef-api</module>
-		<module>sef-product-catalog</module>
-		<module>smart-frontend</module>
-		<module>fulfilment-engine</module>
-		<module>transformation-engine</module>
-		<module>transaction-engine</module>
-  </modules>
 
  <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -155,4 +146,15 @@
 			</plugin>
 		</plugins>
 	</build>
+	<modules>
+		<module>../sef-core</module>
+		<module>../sef-product-catalog</module>
+		<module>../cs-af</module>
+		<module>../cs-air</module>
+		<module>../sef-api</module>		
+		<module>../smart-frontend</module>
+		<module>../transaction-engine</module>
+		<module>../transformation-engine</module>
+		<module>../fulfillment-engine</module>
+	</modules>
 </project>
