@@ -170,7 +170,10 @@ public abstract class TransactionServiceHelper {
 
 	private static Map<String, String> getMetas(Collection<Meta> subscriberMetas) {
 		Map<String,String> map = new HashMap<String, String>();
-		for(Meta meta: subscriberMetas) {
+		for(Meta meta : subscriberMetas) {
+            // for some reason the subscriberMetas collection sometimes has a mix of null and non-null meta objects, to avoid NPEs we just don't process the null ones.
+            if(meta == null) continue;
+            
 			map.put(meta.getKey(), meta.getValue());
 		}
 		return map;
