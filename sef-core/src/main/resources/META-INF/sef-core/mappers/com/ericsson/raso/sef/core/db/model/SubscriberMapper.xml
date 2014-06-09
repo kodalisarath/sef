@@ -29,6 +29,9 @@
 		<result property="ratePlan" column="rate_plan"/>
 		<result property="customerSegment" column="customer_segment"/>
 	</resultMap>
+	<select id="isSubscriberExists" parameterType="String" resultType="int">
+	select count(*) from subscriber where msisdn = #{msisdn}
+	</select>
 <insert id="createSubscriber" parameterType="Subscriber">
 		insert into subscriber (user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
 		values
@@ -48,8 +51,6 @@
 	<!-- <select id="userSequence" resultMap="SequenceResult" parameterType="String">
 		select user_id_sequence.nextval as seq, #{rand} as rand from dual
 	</select> -->
-	
-	
 	<update id="deleteSubscriber" parameterType="String">
 	delete from subscriber where user_id = #{userId}
 		<!-- update subscriber set deleted = #{userId}

@@ -462,5 +462,34 @@ public class SubscriberServiceImpl implements SubscriberService {
 		return returned;
 	}
 
+	@Override
+	public boolean isSubscriberExist(String subscriber) throws PersistenceError {
+		
+		Boolean returnValue;
+		int countSubscriber;
+		if(subscriber == null || subscriber.isEmpty())
+			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was null!!"));
+		String msisdn=null;
+		try {
+			msisdn = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber)));
+		} catch(FrameworkException e) {
+			logger.error("null", "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+		}
+		try {
+		countSubscriber=subscriberMapper.isSubscriberExists(msisdn);
+		} catch (PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);		
+		}
+          if(countSubscriber >0){
+        	  returnValue=Boolean.TRUE;
+          }else{
+        	  returnValue=Boolean.FALSE;
+          }
+		
+		return returnValue;
+	}
+
 
 }
