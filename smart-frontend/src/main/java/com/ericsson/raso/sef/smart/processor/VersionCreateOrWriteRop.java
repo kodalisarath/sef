@@ -35,8 +35,6 @@ public class VersionCreateOrWriteRop implements Processor {
 				metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
 				metas.add(new Meta("precision", String.valueOf(request.getPrecision())));	
 				metas.add(new Meta("expiryDate", DateUtil.convertISOToSimpleDateFormat(request.getExpiryDate())));
-
-				//subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
 				String requestId = RequestContextLocalStore.get().getRequestId();
 			    updateSubscriber(requestId, request.getCustomerId(), metas);
 			    logger.info("Sending subscriber response");
