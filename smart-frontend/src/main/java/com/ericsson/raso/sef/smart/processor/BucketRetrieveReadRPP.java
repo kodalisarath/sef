@@ -31,9 +31,6 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 public class BucketRetrieveReadRPP implements Processor {
 	private static final Logger logger = LoggerFactory
 			.getLogger(BucketRetrieveReadRPP.class);
-	private Usecase smartUsecase = null;
-	private String operationName = null;
-	private String operationModifier = null;
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		// get the method signature of web service [Standard]
@@ -45,9 +42,9 @@ public class BucketRetrieveReadRPP implements Processor {
 				List<Meta> metas = new ArrayList<Meta>();
 				metas.add(new Meta("command", bucketRetrieveReadRPPRequest.getCommand()));
 				metas.add(new Meta("customerid", bucketRetrieveReadRPPRequest.getCustomerId()));
-				smartUsecase = bucketRetrieveReadRPPRequest.getUsecase();
-				operationName = smartUsecase.getOperation();
-				operationModifier = smartUsecase.getModifier();
+				Usecase smartUsecase = bucketRetrieveReadRPPRequest.getUsecase();
+				String operationName = smartUsecase.getOperation();
+				String operationModifier = smartUsecase.getModifier();
 				String requestId = RequestContextLocalStore.get().getRequestId();
 				
 				SubscriberInfo subscriberinfo = readSubscriber(requestId, bucketRetrieveReadRPPRequest.getCustomerId(),metas);
