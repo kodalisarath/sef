@@ -1,11 +1,12 @@
 package com.ericsson.raso.sef.smart.subscriber.response;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
-public class SubscriberInfo extends AbstractSubscriberResponse {
+public class SubscriberInfo extends AbstractSubscriberResponse implements Serializable {
 
 	
 	private static final long serialVersionUID = -339541771917173674L;
