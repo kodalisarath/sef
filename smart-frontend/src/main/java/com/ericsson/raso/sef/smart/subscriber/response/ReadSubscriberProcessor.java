@@ -14,8 +14,10 @@ public class ReadSubscriberProcessor implements Processor {
 		String correlationId = (String)objectArray[0];
 	 	TransactionStatus fault =(TransactionStatus)objectArray[1];
 	 	Subscriber subscriber =(Subscriber)objectArray[2];
-	 	 SubscriberResponseHandler subscriberResponsehandler=new SubscriberResponseHandler();
-		    subscriberResponsehandler.readSubscriber(correlationId, fault, subscriber);
+	 	
+	 	SubscriberResponseHandler subscriberResponsehandler=new SubscriberResponseHandler();
+		
+	 	subscriberResponsehandler.readSubscriber(correlationId, fault, subscriber);
 	}
 
 }
