@@ -61,10 +61,15 @@ public class VersionCreateOrWriteRop implements Processor {
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		if(subscriberInfo != null){
+		System.out.println(subscriberInfo.getStatus());
+		if(subscriberInfo.getStatus() != null){
 		if(subscriberInfo.getStatus().getCode() > 0){
 			ResponseCode resonseCode = new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription());
 			throw new SmException(resonseCode);
-			}
+		}
+	}
+}
 		return subscriberInfo;
 	}
 	
