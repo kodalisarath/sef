@@ -61,11 +61,18 @@ public class VersionCreateOrWriteRop implements Processor {
 		if(subscriberInfo != null){
 		System.out.println(subscriberInfo.getStatus());
 		if(subscriberInfo.getStatus() != null){
-		if(subscriberInfo.getStatus().getCode() > 0){
-			ResponseCode resonseCode = new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription());
-			throw new SmException(resonseCode);
+			
+			try{
+				if(subscriberInfo.getStatus().getCode() > 0){
+					ResponseCode resonseCode = new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription());
+					throw new SmException(resonseCode);
+					}
+			}catch(Exception e){
+				logger.error("subscriberInfo fields are null");
+				throw null;
+			}
+			
 		}
-	}
 }
 		return subscriberInfo;
 	}
