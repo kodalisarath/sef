@@ -7,6 +7,10 @@ import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class SubscriberInfo extends AbstractSubscriberResponse {
 
+	
+	private static final long serialVersionUID = -339541771917173674L;
+
+	
 	private String msisdn;
 	private ContractState remoteState;
 	private ContractState localState;

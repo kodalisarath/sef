@@ -7,6 +7,9 @@ import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class PurchaseResponse extends AbstractSubscriptionResponse {
+
+	private static final long serialVersionUID = -3985512985259212610L;
+	
 	
 	private TransactionStatus fault;
 	private String subscriptionId;

@@ -1,6 +1,9 @@
 package com.ericsson.raso.sef.smart.subscription.response;
 
-public class AbstractSubscriptionResponse {
+import java.io.Serializable;
+
+public class AbstractSubscriptionResponse implements Serializable {
+	private static final long serialVersionUID = 5169526375690002389L;
 
 	private String requestId = null;
 	private long requestedTime = 0l;
