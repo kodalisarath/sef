@@ -39,6 +39,8 @@
 			com.hazelcast.core,
 			org.mybatis.spring,
 			org.apache.ibatis.type,
+			org.apache.ibatis.exceptions,
+			org.apache.ibatis.exceptions.*,
 			org.mybatis.spring.mapper,
 			org.springframework.aop,
 			org.springframework.aop.framework,
