@@ -411,7 +411,14 @@ public class SubscriberServiceImpl implements SubscriberService {
 	
 	private Collection<Meta> fetchMetas(String userId) {
 		logger.debug("Inside the method to fetch metas for subscriber: " + userId);
-		Collection<Meta> metas = subscriberMapper.getAllSubscriberMetas(userId);
+		
+		Collection<Meta> metas = null;
+		try {
+		metas = subscriberMapper.getAllSubscriberMetas(userId);
+		} catch (PersistenceException e) {
+			logger.error("DB execution failed fetching metas. Cause: " + e.getMessage(), e);
+		}
+		
 		if (metas == null)
 			return new ArrayList<Meta>();
 		else

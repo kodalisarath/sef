@@ -51,8 +51,11 @@ public class FulfillResponseProcessor implements Processor {
 			//TODO: fix the impedence of passing the metas from fulfillment to upstream. Fix required in FulfillmentStepResult. Approval pending Sathya
 			logger.debug("out of loop, creating response...");
 			result = new FulfillmentStepResult(null, atomicProducts);
-			if (metas != null || !metas.isEmpty()) {
-				result.setMetas(TransactionServiceHelper.getApiMap(metas));
+			if (metas != null) {
+				if(!metas.isEmpty()){
+					result.setMetas(TransactionServiceHelper.getApiMap(metas));	
+				}
+				
 			}
 			logger.debug("here is the response: " + result);
 		}
