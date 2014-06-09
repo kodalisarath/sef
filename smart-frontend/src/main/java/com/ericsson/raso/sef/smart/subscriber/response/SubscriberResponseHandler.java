@@ -119,6 +119,8 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		subInfo.setStatus(fault);
+        SubscriberResponseStore.put(requestCorrelator, subInfo);
+
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
 	}
@@ -128,6 +130,8 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		subInfo.setStatus(fault);
+        SubscriberResponseStore.put(requestCorrelator, subInfo);
+
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
 	}
