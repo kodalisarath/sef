@@ -87,8 +87,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 		
 		// Perform encryption of identities...
 		try {
-			
-			
 			subscriber.setAccountId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getAccountId()))));
 			subscriber.setContractId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getContractId()))));
 			subscriber.setCustomerId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getCustomerId()))));
@@ -109,6 +107,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		try {
 			logger.debug("Crossing fingers... About to insert subscriber:" + subscriber);
 			subscriberMapper.createSubscriber(subscriber);
+			List<Meta> listMetas=new ArrayList<Meta>(subscriber.getMetas());
+			boolean isMetasSet=setMetas(nbCorellator,subscriber.getUserId(),listMetas);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorellator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to insert Subscriber entity!!"), e);
@@ -216,16 +216,18 @@ public class SubscriberServiceImpl implements SubscriberService {
 			for (SubscriberAuditTrial subscriberHistory : newAuditTrails) {
 				subscriberMapper.insertSubscriberHistory(subscriberHistory);
 			}
+			List<Meta> listMetas=new ArrayList<Meta>(subscriber.getMetas());
+			boolean isMetasSet=setMetas(nbCorrelator,subscriber.getUserId(),listMetas);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);
 		}
 		return true;
 	}
-
-	@Override
-	@Transactional
-	public boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError {
+//Made this method as a private method to invoke when a subscriber is created or updated
+	
+	
+	private boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError {
 		logger.debug("Method setMetas is  called");
 
 		if(userId == null || userId.isEmpty())
