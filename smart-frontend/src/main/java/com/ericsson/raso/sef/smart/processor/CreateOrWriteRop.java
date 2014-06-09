@@ -90,9 +90,11 @@ public class CreateOrWriteRop implements Processor {
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		if(subscriberInfo.getStatus().getCode() > 0){
-		ResponseCode resonseCode = new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription());
-		throw new SmException(resonseCode);
+		if(subscriberInfo != null){
+			if(subscriberInfo.getStatus().getCode() > 0){
+				ResponseCode resonseCode = new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription());
+				throw new SmException(resonseCode);
+				}
 		}
 		return subscriberInfo;
 	}
