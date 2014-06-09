@@ -26,7 +26,6 @@ public class VersionCreateOrWriteRop implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		
 			VersionCreateOrWriteROPRequest request = (VersionCreateOrWriteROPRequest) exchange.getIn().getBody();
-			
 				List<Meta> metas = new ArrayList<Meta>();
 				metas.add(new Meta("key", String.valueOf(request.getKey())));
 				metas.add(new Meta("vValidFrom", request.getvValidFrom()));
