@@ -108,7 +108,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 			logger.debug("Crossing fingers... About to insert subscriber:" + subscriber);
 			subscriberMapper.createSubscriber(subscriber);
 			List<Meta> listMetas=new ArrayList<Meta>(subscriber.getMetas());
-			boolean isMetasSet=setMetas(nbCorellator,subscriber.getUserId(),listMetas);
+			boolean isMetasSet=setMeta(nbCorellator,subscriber.getUserId(),listMetas);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorellator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to insert Subscriber entity!!"), e);
@@ -217,7 +217,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 				subscriberMapper.insertSubscriberHistory(subscriberHistory);
 			}
 			List<Meta> listMetas=new ArrayList<Meta>(subscriber.getMetas());
-			boolean isMetasSet=setMetas(nbCorrelator,subscriber.getUserId(),listMetas);
+			boolean isMetasSet=setMeta(nbCorrelator,subscriber.getUserId(),listMetas);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);
@@ -227,7 +227,53 @@ public class SubscriberServiceImpl implements SubscriberService {
 //Made this method as a private method to invoke when a subscriber is created or updated
 	
 	
-	private boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError {
+	private boolean setMeta(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError {
+		logger.debug("Method setMetas is  called");
+
+		if(userId == null || userId.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
+
+		if(metas == null || metas.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'metaKeys' provided was null!!"));
+
+		
+		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
+		List<String> metaKeys = this.getKeys(metas);
+		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId, metaKeys);
+		logger.debug("current metas values are of size " + currentMetas.size());
+
+		for(Meta meta: metas) {
+			logger.debug("Processing meta: " + meta);
+			if(meta.getValue() == null || meta.getValue().trim().length() == 0) 
+				continue;
+
+			boolean isUpdate = false;
+			for(Meta currentMeta: currentMetas) {
+				if(meta.getKey().equals(currentMeta.getKey())) {
+					SubscriberAuditTrial history = new SubscriberAuditTrial(userId, 
+																			new Date(), 
+																			meta.getKey(), 
+																			meta.getValue(), 
+																			"system-user");
+					try {
+						subscriberMapper.updateSubscriberMeta(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))), meta, new Date());
+					} catch (PersistenceException e) {
+						logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
+					} catch (FrameworkException e) {
+						logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	//this is being called from some methods,need some clarity to refactor this
+	@Override
+	@Transactional
+	public boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError {
 		logger.debug("Method setMetas is  called");
 
 		if(userId == null || userId.isEmpty())
