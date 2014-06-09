@@ -26,7 +26,6 @@ public class VersionCreateOrWriteRop implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		
 			VersionCreateOrWriteROPRequest request = (VersionCreateOrWriteROPRequest) exchange.getIn().getBody();
-			
 				List<Meta> metas = new ArrayList<Meta>();
 				metas.add(new Meta("key", String.valueOf(request.getKey())));
 				metas.add(new Meta("vValidFrom", request.getvValidFrom()));
@@ -36,8 +35,6 @@ public class VersionCreateOrWriteRop implements Processor {
 				metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
 				metas.add(new Meta("precision", String.valueOf(request.getPrecision())));	
 				metas.add(new Meta("expiryDate", DateUtil.convertISOToSimpleDateFormat(request.getExpiryDate())));
-
-				//subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
 				String requestId = RequestContextLocalStore.get().getRequestId();
 			    updateSubscriber(requestId, request.getCustomerId(), metas);
 			    logger.info("Sending subscriber response");
@@ -61,10 +58,15 @@ public class VersionCreateOrWriteRop implements Processor {
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		if(subscriberInfo != null){
+		System.out.println(subscriberInfo.getStatus());
+		if(subscriberInfo.getStatus() != null){
 		if(subscriberInfo.getStatus().getCode() > 0){
 			ResponseCode resonseCode = new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription());
 			throw new SmException(resonseCode);
-			}
+		}
+	}
+}
 		return subscriberInfo;
 	}
 	
