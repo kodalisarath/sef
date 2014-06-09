@@ -621,7 +621,8 @@ public class Offer implements Serializable {
 		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.name, subscriberId, SubscriptionLifeCycleEvent.PURCHASE.name()));
 		
 		// finally save this transaction to DB...
-		tasks.add(new Persistence<Subscription>(PersistenceMode.SAVE, purchase, subscriberId));
+		if (this.isCommercial)
+			tasks.add(new Persistence<Subscription>(PersistenceMode.SAVE, purchase, subscriberId));
 		
 		return tasks;
 	}

@@ -80,22 +80,25 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 	private SubscriberInfo createSubscriber(String requestId, Subscriber subscriber) {
 		logger.info("Invoking create subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.createSubscriber(requestId, subscriber);
-		
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+
+		iSubscriberRequest.createSubscriber(requestId, subscriber);
+
 		
 		try {
-		semaphore.init(0);
-		semaphore.acquire();
+			semaphore.init(0);
+			semaphore.acquire();
 		} catch(InterruptedException e) {
-			
+			logger.error("Interrupted from waiting for response... This use case might cause inconsistencies...");
 		}
-		
+
 		logger.info("Check if response received for create subscriber");
-		
+
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		logger.debug("REceived Response: " + subscriberInfo);
 		return subscriberInfo;
 	}
 }
