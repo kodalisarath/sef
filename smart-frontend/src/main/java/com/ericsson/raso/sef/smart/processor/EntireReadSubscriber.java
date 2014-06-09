@@ -16,31 +16,18 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 
 public class EntireReadSubscriber implements Processor {
-
+     
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		EntireReadRequest request = (EntireReadRequest) exchange.getIn().getBody();
-		
-		
-		//refreshSubscriberState(request.getCustomerId());
-		
 		SmartServiceHelper.getAndRefreshSubscriber(request.getCustomerId());
-		
-		//SmartCommonService smartCommonService = SmartContext.getSmartCommonService();
-		
-		//EntireRead entireRead = smartCommonService.entireReadSubscriber(request.getCustomerId());
-		
 		EntireRead entireRead = SmartServiceHelper.entireReadSubscriber(request.getCustomerId());
-		
 		exchange.getOut().setBody(createResponse(entireRead, request.isTransactional()));
-		
 	}
 	
 	private CommandResponseData createResponse(EntireRead entireRead, boolean isTransactional) {
 		CommandResponseData responseData = new CommandResponseData();
 		CommandResult result = new CommandResult();
-		
-		
 		responseData.setCommandResult(result);
 		OperationResult operationResult =  new OperationResult();
 		if(isTransactional) {
