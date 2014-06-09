@@ -65,6 +65,7 @@ public abstract class TransactionServiceHelper {
 				returned.setImsi(subscriber.getImsi());
 			}
 			if(subscriber.getMetas() != null){
+				logger.debug("SANITY CHECK: subscriber.metas= " + subscriber.getMetas());
 				returned.setMetas(getMetas(subscriber.getMetas())); //TODO: this will need refactoring API entity, since SOAP does not support Map<K,V>
 			}
 			if(subscriber.getMsisdn() != null){
