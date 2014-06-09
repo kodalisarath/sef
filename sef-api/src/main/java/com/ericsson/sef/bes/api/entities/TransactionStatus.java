@@ -1,6 +1,8 @@
 package com.ericsson.sef.bes.api.entities;
 
-public class TransactionStatus {
+import java.io.Serializable;
+
+public class TransactionStatus implements Serializable {
 	private String component;
 	private Integer code = 0;
 	private String description;
