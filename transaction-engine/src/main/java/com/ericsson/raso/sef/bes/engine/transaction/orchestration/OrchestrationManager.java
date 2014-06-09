@@ -69,6 +69,11 @@ public class OrchestrationManager {
 			this.sbExecutionStatus.put(southboundCorrelator, Status.DONE_SUCCESS);
 		
 		if (requiredOrchestration != null) {
+			
+			if (fulfillmentResult.getMetas() != null) {
+				requiredOrchestration.addMetas(fulfillmentResult.getMetas());
+			}
+			
 			this.grinder.submit(requiredOrchestration);
 			logger.debug("Orchestration found for correlation: " +  southboundCorrelator + 
 					"& submitted for further execution. Status: " + requiredOrchestration.getStatus() + " Mode: " + requiredOrchestration.getMode() + 
@@ -94,7 +99,8 @@ public class OrchestrationManager {
 			orchestration.cleanupTransaction();
 		}
 		logger.debug("Use case response to be sent");
-
+		
+		usecase.setMetas(orchestration.getMetas());
 		usecase.sendResponse();
 		
 		nbTransactionStore.remove(nbCorrelator);

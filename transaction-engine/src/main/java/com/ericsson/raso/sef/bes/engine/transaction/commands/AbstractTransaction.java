@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ public abstract class AbstractTransaction implements Callable<Boolean>, Serializ
 	private String requestId = null;
 	private AbstractRequest request = null;
 	private AbstractResponse response = null;
+	private Map<String, String>	metas;
 
 	public AbstractTransaction(String requestId, AbstractRequest request) {
 		super();
@@ -92,6 +94,14 @@ public abstract class AbstractTransaction implements Callable<Boolean>, Serializ
 
 	public String getRequestId() {
 		return requestId;
+	}
+
+	public void setMetas(Map<String, String> metas) {
+		this.metas = metas;
+	}
+
+	public Map<String, String> getMetas() {
+		return metas;
 	}
 	
 	

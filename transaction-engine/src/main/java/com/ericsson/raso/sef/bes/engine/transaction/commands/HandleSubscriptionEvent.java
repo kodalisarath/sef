@@ -117,8 +117,10 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		logger.debug("Handle Subscription Event use case response to be sent now");
 		String subscriptionId = null;
 		List<Product> products = new ArrayList<Product>();
-		List<Meta> billingMetas = new ArrayList<Meta>();
+		List<Meta> billingMetas = null;
 		TransactionStatus txnStatus=null;
+		
+		
 		for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
 			if (result.getExecutionInputs().getType() == TaskType.PERSIST) {
 				Object saved = ((Persistence<?>)((PersistenceStep) result).getExecutionInputs()).getToSave();
@@ -140,6 +142,10 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 				}
 			}
 		}
+		
+		// Handle the metas
+		billingMetas = TransactionServiceHelper.getSefApiList(this.getMetas());
+		
 		logger.debug("Invoking subscription response!!");
 		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
 		subscriptionClient.purchase(this.getRequestId(), 

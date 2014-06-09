@@ -137,6 +137,7 @@ public class ReadSubscriber extends AbstractTransaction {
 								LOGGER.debug("Atomic product metas: " + atomicProduct.getMetas().toString());
 							}
 							products.addAll(TransactionServiceHelper.translateProducts(stepResult.getFulfillmentResult()));
+							//TODO: go back and refactor all the way from FulfillmentStep to pass metas to SMFE....
 							LOGGER.debug("FulfillmentStep has some results added to products list");
 						}
 					}
@@ -144,6 +145,8 @@ public class ReadSubscriber extends AbstractTransaction {
 			}
 			
 			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber, products);
+			
+			
 		}
 		
 		LOGGER.debug("Invoking read subscriber response!!");

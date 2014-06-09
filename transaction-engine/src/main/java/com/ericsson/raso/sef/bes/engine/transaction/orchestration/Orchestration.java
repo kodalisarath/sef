@@ -3,6 +3,7 @@ package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,7 +56,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private Mode							mode					= Mode.FORWARD;
 	private Map<Phase, Status>				phasingProgress			= null;
 	private TransactionException			executionFault			= null;
+	private Map<String, String>	metas = null;
+
 	private Semaphore criticalPath = new Semaphore(1);
+
 	
 	
 
@@ -889,6 +893,22 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	enum Mode implements Serializable {
 		FORWARD,
 		ROLLBACK;
+	}
+
+	public void setMetas(Map<String, String> metas) {
+		this.metas = metas;
+		
+	}
+
+	public Map<String, String> getMetas() {
+		return this.metas;
+	}
+
+	public void addMetas(Map<String, String> metas) {
+		if (this.metas == null)
+			this.metas = new HashMap<String, String>();
+		
+		this.metas.putAll(metas);
 	}
 	
 	

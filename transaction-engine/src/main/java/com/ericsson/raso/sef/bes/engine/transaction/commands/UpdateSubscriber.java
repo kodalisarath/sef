@@ -73,7 +73,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 		LOGGER.debug("calling setMetas ");
 		try {
 			subscriberStore.setMetas(this.getRequestId(), subscriberEntity.getUserId(),
-						TransactionServiceHelper.getList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
+						TransactionServiceHelper.getSefCoreList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
 		} catch (PersistenceError e) {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(1004, "Saving metas failed!!"), e));
 			return false;

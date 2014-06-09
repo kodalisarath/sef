@@ -55,26 +55,22 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 	}
 
 	@Override
-	public void purchase(String requestCorrelator, TransactionStatus fault,
-			String subscriptionId, List<Product> products,
-			List<Meta> billingMetas) {
+	public void purchase(String requestCorrelator, TransactionStatus fault,	String subscriptionId, List<Product> products, List<Meta> billingMetas) {
 		logger.debug("Fetching relavant response from correlation for updating the received response");
+		
+		//Step 1: Place the response in a location where the original node can access
 		PurchaseResponse response = (PurchaseResponse) RequestCorrelationStore.get(requestCorrelator);
-			response.setBillingMetas(billingMetas);
-			response.setProducts(products);
-			response.setSubscriptionId(subscriptionId);
-			response.setFault(fault);
+		response.setBillingMetas(billingMetas);
+		response.setProducts(products);
+		response.setSubscriptionId(subscriptionId);
+		response.setFault(fault);
+		RequestCorrelationStore.put(requestCorrelator, response);
 
-			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
-			semaphore.release();
+		//Step 2: Trigger the original node that is waiting for response
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
+		semaphore.release();
 	}
 	
-	/*@Override
-	public void purchase(String requestCorrelator, TransactionException fault,String subscriptionId,List<Meta> billingMetas) {
-		// TODO Auto-generated method stub
-		
-	}*/
-
 	@Override
 	public void terminate(String requestCorrelator, TransactionStatus fault,
 			Boolean result) {

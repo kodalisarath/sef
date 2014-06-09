@@ -53,4 +53,5 @@ public class SmartConstants {
 	public static final String IL_CHANNEL = "ILCHANNEL";
 	
 	public static final String MAX_DATETIME = "MAX_DATEANDTIME";
+	public static final String	SMFE_CORRELATION_STORE	= "SMFE_CORRELATION_STORE";
 }
