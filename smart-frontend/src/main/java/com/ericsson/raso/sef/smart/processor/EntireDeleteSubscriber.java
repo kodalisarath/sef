@@ -39,8 +39,7 @@ public class EntireDeleteSubscriber implements Processor{
 			SubscriberInfo subscriberinfo = deleteSubscriber(requestId, request.getCustomerId());
 		
 			if(subscriberinfo == null) {
-				throw new SmException(new ResponseCode(-111,
-						"13423#EntireDelete Entity - Customer with primary key Keyname:PK,CustomerId: " + request.getCustomerId()
+				throw new SmException(new ResponseCode(-111, "13423#EntireDelete Entity - Customer with primary key Keyname:PK,CustomerId: " + request.getCustomerId()
 								+ " does not exist"));
 			}
 			exchange.getOut().setBody(createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional()));
@@ -71,16 +70,19 @@ public class EntireDeleteSubscriber implements Processor{
 
 	private SubscriberInfo deleteSubscriber(String requestId, String customerId) {
 		logger.info("Invoking delete subscriber on tx-engine subscriber interface");
+		
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
+
 		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.deleteSubscriber(requestId, customerId);
+		
+		iSubscriberRequest.deleteSubscriber(requestId, customerId);		
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
-		semaphore.init(0);
-		semaphore.acquire();
+			semaphore.init(0);
+			semaphore.acquire();
 		} catch(InterruptedException e) {
-			
+
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);

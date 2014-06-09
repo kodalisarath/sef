@@ -2,7 +2,7 @@ package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
 import java.util.Map;
 
-import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.core.FrameworkException;
 
 
@@ -10,11 +10,13 @@ public final class HandleLifeCycleRequest extends AbstractRequest {
 	private static final long	serialVersionUID	= -921884001442299482L;
 	
 	private String subscriberId = null;
+	private String lifeCycleState = null;
 	private Map<String,String>	metas = null;
 
-	public HandleLifeCycleRequest(String requestCorrelator, String subscriberId, Map<String,String> metas) {
+	public HandleLifeCycleRequest(String requestCorrelator, String subscriberId, String lifeCycleState, Map<String,String> metas) {
 		super(requestCorrelator);
 		this.subscriberId = subscriberId;
+		this.lifeCycleState = lifeCycleState;
 		this.setMetas(metas);
 	}
 
@@ -28,8 +30,7 @@ public final class HandleLifeCycleRequest extends AbstractRequest {
 
 	
 	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() throws FrameworkException {
-		FetchSubscriber fetchSubscriber=new FetchSubscriber(this.subscriberId);
-		return fetchSubscriber.execute();
+		return TransactionServiceHelper.fetchSubscriberFromDb(subscriberId);
 	}
 
 	public Map<String,String> getMetas() {
@@ -38,6 +39,16 @@ public final class HandleLifeCycleRequest extends AbstractRequest {
 
 	public void setMetas(Map<String,String> metas) {
 		this.metas = metas;
+	}
+	
+	
+
+	public String getLifeCycleState() {
+		return lifeCycleState;
+	}
+
+	public void setLifeCycleState(String lifeCycleState) {
+		this.lifeCycleState = lifeCycleState;
 	}
 
 	@Override

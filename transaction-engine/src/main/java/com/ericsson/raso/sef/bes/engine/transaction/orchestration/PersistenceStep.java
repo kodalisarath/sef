@@ -53,7 +53,10 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						break;
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
+						if (subscriberService.isSubscriberExist(((Subscriber) persistentEntity).getMsisdn())) 
+							subscriberService.updateSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
+						else
+							subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
 						LOGGER.debug("Subscriber saved.");
 						
 						if (this.getResult() == null) {

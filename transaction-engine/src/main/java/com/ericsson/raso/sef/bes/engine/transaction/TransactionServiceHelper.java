@@ -24,7 +24,11 @@ import com.ericsson.raso.sef.bes.prodcat.entities.LimitedQuota;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
 import com.ericsson.raso.sef.core.Meta;
+import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.core.db.service.PersistenceError;
+import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.Offer;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.Subscriber;
@@ -33,6 +37,20 @@ import com.ericsson.sef.bes.api.entities.Subscriber;
 public abstract class TransactionServiceHelper {
 	
 	private final static Logger logger = LoggerFactory.getLogger(TransactionServiceHelper.class);
+	
+	public static com.ericsson.raso.sef.core.db.model.Subscriber fetchSubscriberFromDb(String subscriberId) throws TransactionException {
+		SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
+		logger.debug("Subscriber Store:getSubscriberStore"+subscriberStore);
+		if (subscriberStore == null)
+			throw new TransactionException("txe", new ResponseCode(11614, "Unable to fetch Subscriber Profile for further processing of the request!! Please check configuration"));
+		try {
+			return subscriberStore.getSubscriber("dynamic-task", subscriberId);
+		} catch (PersistenceError e) {
+			throw new TransactionException("txe", new ResponseCode(11614, "Unable to fetch Subscriber Profile - Error on DB"));
+		}
+		
+	}
+	
 	
 	public static Subscriber getApiEntity(com.ericsson.raso.sef.core.db.model.Subscriber subscriber) {
 		Subscriber returned = new Subscriber();

@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleLifeCycleRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleLifeCycleResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
@@ -23,13 +25,18 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.Meta;
+import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
 public class HandleLifeCycle extends AbstractTransaction{
 	private static final Logger LOGGER = LoggerFactory.getLogger(HandleLifeCycle.class);
+	
+	
 	public HandleLifeCycle(String requestId, String subscriberId,String lifeCycleState,Map<String,String> metas) {
-		super(requestId, new HandleLifeCycleRequest(requestId, subscriberId,metas));
+		super(requestId, new HandleLifeCycleRequest(requestId, subscriberId,lifeCycleState, metas));
 		this.setResponse(new HandleLifeCycleResponse(requestId,true));
 	}
 
@@ -46,10 +53,17 @@ public class HandleLifeCycle extends AbstractTransaction{
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity;
 		try {
 			subscriberEntity = ((HandleLifeCycleRequest)this.getRequest()).persistableEntity();
+			this.updateChanges(subscriberEntity, 
+					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
+					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
+								((HandleLifeCycleRequest)this.getRequest()).getMetas());
 			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
+			// Find workflow...
+			String workflowId = ((HandleLifeCycleRequest)this.getRequest()).getMetas().get(Constants.HANDLE_LIFE_CYCLE.name());
+			
 			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-			Offer workflow = catalog.getOfferById(Constants.HANDLE_LIFE_CYCLE.name());
+			Offer workflow = catalog.getOfferById(workflowId);
 			if (workflow != null) {
 				String subscriberId = ((HandleLifeCycleRequest)this.getRequest()).getSubscriberId();
 				try {
@@ -68,6 +82,22 @@ public class HandleLifeCycle extends AbstractTransaction{
 		return true;
 	
 		
+	}
+
+	private Subscriber updateChanges(Subscriber subscriberEntity, String subscriberId, String lifeCycleState, Map<String, String> map) {
+		
+		subscriberEntity.setContractState(ContractState.valueOf(lifeCycleState));
+		Collection<Meta> existingMetas = subscriberEntity.getMetas();
+		List<Meta> toUpdate = TransactionServiceHelper.getSefCoreList(map);
+		
+		for (Meta newMeta: existingMetas) {
+			if (map.containsKey(newMeta.getKey())) {
+				existingMetas.remove(newMeta);
+			}
+		}
+		existingMetas.addAll(toUpdate);
+		
+		return subscriberEntity;
 	}
 
 	@Override
