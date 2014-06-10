@@ -83,7 +83,6 @@ public class CreateOrWriteRop implements Processor {
 				// RescheduleRecycleCommand command = new RescheduleRecycleCommand(subscriber, preActiveEndDateDt);
 				//command.execute();
 			}
-			logger.info("Sending subscriber response");
 			//DummyProcessor.response(exchange);
 			
 			
