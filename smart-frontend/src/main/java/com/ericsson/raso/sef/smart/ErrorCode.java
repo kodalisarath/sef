@@ -212,9 +212,9 @@ public enum ErrorCode implements StatusCode {
 	undefinedParameterError(4010,"undefined parameter"),
 	invalidParameterType(4011,"invalid parameter type"),
 	unspecificError(4040,"unspecific error"),
-	notValidPreActiveEndDate(12345678, "Not a Valid Pre Active End Date"),
-	notPreActive(12345678,"User is not preactive"),
-	notInGrace(12345678,"User is not Grace"),
+	notValidPreActiveEndDate(4020, "Not a Valid Pre Active End Date"),
+	notPreActive(4020,"User is not preactive"),
+	notInGrace(4020,"User is not Grace"),
 	SLAExhaust(99999,"SLA Exhaust");
 	private final int code;
 	private final String message;

@@ -66,6 +66,8 @@ public abstract class SmartServiceHelper {
 	
 	public static void updateSubscriberState(SubscriberInfo subscriberInfo) {
 		
+		//To DO
+		
 	}
 	
 	
