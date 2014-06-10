@@ -38,14 +38,14 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		
-		SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
+		SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),metas);
 		
 		
 if(subscriberinfo ==null)
 {
 logger.error("Subscriber Not Found. msisdn: "
 		+ request.getCustomerId());	
-throw ExceptionUtil.toSmException(ErrorCode.nonExistentAccount);
+throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 }
 else
 		if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {

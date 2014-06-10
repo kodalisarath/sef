@@ -17,6 +17,8 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -44,6 +46,17 @@ public class RetrieveDeleteProcessor implements Processor {
 			RetrieveDeleteRequest request = (RetrieveDeleteRequest) exchange.getIn().getBody();
 			String requestId = RequestContextLocalStore.get().getRequestId();
 		
+			
+			SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
+			
+			
+	if(subscriberinfo ==null)
+	{
+	logger.error("Subscriber Not Found. msisdn: "
+			+ request.getCustomerId());	
+	throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+	}
+			
 			//SmartContext.getSubscriberManagement().changeContractState(request.getCustomerId(), ContractState.READY_TO_DELETE, null);
 			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 			iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.READY_TO_DELETE.getName(), null);
