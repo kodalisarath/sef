@@ -49,6 +49,7 @@ public class ModifyCustomerPreActive implements Processor {
 				String requestId = RequestContextLocalStore.get().getRequestId();
 				SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
 				
+				
 				if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
 				
 					
@@ -156,7 +157,7 @@ public class ModifyCustomerPreActive implements Processor {
 		semaphore.acquire();
 		} catch(InterruptedException e) {
 		}
-		logger.info("Check if response received for update subscriber");
+		logger.info("Check if response received for read subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 		

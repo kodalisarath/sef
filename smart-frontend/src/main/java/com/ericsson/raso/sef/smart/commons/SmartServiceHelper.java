@@ -2,6 +2,7 @@ package com.ericsson.raso.sef.smart.commons;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,37 @@ public abstract class SmartServiceHelper {
 	
 	public static SmartModel readSubscriberAccounts(String msisdn)  throws SmException
 	{
-		//To DO
+		logger.debug("Entering getAndRefreshSubscriber.....");
+		String requestId = RequestContextLocalStore.get().getRequestId();
+		logger.debug("Entering Request ID..... " + requestId);
+		SubscriberInfo subscriberInfo = new SubscriberInfo();
+		
+		List<Meta> metas = new ArrayList<Meta>();
+		Meta meta = new Meta();
+		meta.setKey("READ_SUBSCRIBER");
+		meta.setValue("READ_SUBSCRIBER");
+		metas.add(meta);
+		logger.debug("Entering SmartServiceResolver.....");
+		
+		
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
+		SubscriberResponseStore.put(correlationId, subscriberInfo);
+		
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+			logger.debug("Exception while sleep     :"+e.getMessage());
+		}
+		
+		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " +  correlationId);
+		
+		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
+		
+		Map<String, String> metaList = subscriberInfo.getMetas();
 		
 		return null;
 		

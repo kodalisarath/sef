@@ -22,7 +22,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 	@Override
 	public void readSubscriber(String requestCorrelator, TransactionStatus fault, Subscriber subscriber) {
 
-		logger.debug("CorrelationID: " + requestCorrelator);
+		logger.debug("readSubscriber CorrelationID: " + requestCorrelator);
 
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 
