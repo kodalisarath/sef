@@ -642,7 +642,7 @@ public class OfferUtil
 		Resource forcedDeleteBit = helper.createSmartServiceOfferingProfile("SetForcedDeleteBit", "Tag Subsriber ForcedDelete", 7	, true);
 		Resource resetBit = helper.createSmartServiceOfferingProfile("SetResetBit", "Tag Subsriber Reset", 0, false);
 		Resource entireRead = helper.createSmartEntireReadProfile("READ_SUBSCRIBER", "Entire Read Subscriber");
-		Resource entireDelete = helper.createSmartEntireDeleteProfile("READ_SUBSCRIBER", "Entire Read Subscriber");
+		Resource entireDelete = helper.createSmartEntireDeleteProfile("DELETE_SUBSCRIBER", "Delete Subscriber");
 
 		serviceRegistry.createResource(accountBlockingBit);
 		serviceRegistry.createResource(recycleBit);
