@@ -32,11 +32,11 @@ public class EntireDeleteSubscriber implements Processor{
 	public void process(Exchange exchange) throws SmException {
 		try {
 			EntireDeleteRequest request = (EntireDeleteRequest) exchange.getIn().getBody();
-			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+			//ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 			String requestId = RequestContextLocalStore.get().getRequestId();
 			
 			List<Meta> metas = new ArrayList<Meta>();
-			metas.add(new Meta("federation-profile", "deleteSubscriber"));
+		//	metas.add(new Meta("federation-profile", "deleteSubscriber"));
 			SubscriberInfo subscriberinfo = deleteSubscriber(requestId, request.getCustomerId());
 		
 			if(subscriberinfo == null) {
