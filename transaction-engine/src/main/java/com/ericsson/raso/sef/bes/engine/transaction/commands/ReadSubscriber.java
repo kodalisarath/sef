@@ -60,7 +60,7 @@ public class ReadSubscriber extends AbstractTransaction {
 
 			// Subscriber not found in db, cannot proceed further
 			if (subscriber == null) {
-				throw new TransactionException("txe", new ResponseCode(102, "Subscriber not found"));
+				throw new TransactionException("txe", new ResponseCode(504, "Subscriber not found"));
 			}
 
 			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper.getApiEntity(subscriber);
