@@ -67,15 +67,18 @@ public class UpdateSubscriber extends AbstractTransaction{
 		try {
 			subscriberStore.updateSubscriber(this.getRequestId(), subscriberEntity);
 		} catch (PersistenceError e1) {
+			LOGGER.debug("Persistence error while updating subscriber");
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(1004, "Saving metas failed!!"), e1));
 			return false;
-		} //TODO: vinay to check what is wrong here...
+		}
 		LOGGER.debug("Update Subscriber successfull!!");
 		LOGGER.debug("calling setMetas ");
 		try {
 			subscriberStore.updateMetas(this.getRequestId(), subscriberEntity.getUserId(),
 						TransactionServiceHelper.getSefCoreList(((UpdateSubscriberRequest)this.getRequest()).getMetas()));
+			
 		} catch (PersistenceError e) {
+			LOGGER.debug("Persistence error while updating subscriber metas");
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(1004, "Saving metas failed!!"), e));
 			return false;
 		}
@@ -103,11 +106,11 @@ public class UpdateSubscriber extends AbstractTransaction{
 					}
 				}
 			}
-		}
+		}else
+			result=false;
 		
 		if (result != false)
 			result = true;
-		
 		LOGGER.debug("UpdateSubscriber::=> Functional Result: " + result);
 		
 		LOGGER.debug("Invoking update subscriber response!!");
