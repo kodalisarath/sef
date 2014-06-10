@@ -479,8 +479,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 		}
 		
 		if(subscriber != null) {
-			Collection<Meta> subscriberMetas = this.fetchMetas(msisdn);
-			for (Meta meta : subscriberMetas) {
+			Collection<SubscriberMeta> subscriberMetas = this.fetchMetas(msisdn);
+			for (SubscriberMeta metaSubscriber : subscriberMetas) {
+				Meta meta=new Meta();
+				meta.setKey(metaSubscriber.getKey());
+				meta.setValue(metaSubscriber.getValue());
 				subscriber.getMetas().add(meta);
 			}
 			subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
@@ -509,8 +512,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 		}
 		
 		if(subscriber != null) {
-			Collection<Meta> subscriberMetas = this.fetchMetas(userId);
-			for (Meta meta : subscriberMetas) {
+			Collection<SubscriberMeta> subscriberMetas = this.fetchMetas(userId);
+			for (SubscriberMeta metaSubscriber : subscriberMetas) {
+				Meta meta=new Meta();
+				meta.setKey(metaSubscriber.getKey());
+				meta.setValue(metaSubscriber.getValue());
 				subscriber.getMetas().add(meta);
 			}
 			subscriber.getMetas().add(new Meta("SUBSCRIBER_ID", subscriber.getUserId()));
@@ -518,10 +524,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 		return subscriber;
 	}
 	
-	private Collection<Meta> fetchMetas(String userId) {
+	private Collection<SubscriberMeta> fetchMetas(String userId) {
 		logger.debug("Inside the method to fetch metas for subscriber: " + userId);
 		
-		Collection<Meta> metas = null;
+		Collection<SubscriberMeta> metas = null;
 		try {
 		metas = subscriberMapper.getAllSubscriberMetas(userId);
 		} catch (PersistenceException e) {
@@ -529,7 +535,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		}
 		
 		if (metas == null)
-			return new ArrayList<Meta>();
+			return new ArrayList<SubscriberMeta>();
 		else
 			return metas;
 	}

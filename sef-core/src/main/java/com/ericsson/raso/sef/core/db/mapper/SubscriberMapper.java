@@ -23,9 +23,9 @@ public interface SubscriberMapper {
 	
 	void updateSubscriber(Subscriber subscriber);
 	
-	Collection<Meta> getSubscriberMetas(Map<String, Object> map);
+	Collection<SubscriberMeta> getSubscriberMetas(Map<String, Object> map);
 	
-	Collection<Meta> getAllSubscriberMetas(String userId);
+	Collection<SubscriberMeta> getAllSubscriberMetas(String userId);
 	
 	void insertSubscriberMeta(SubscriberMeta subscriberMeta);
 
