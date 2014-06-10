@@ -48,20 +48,20 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(6000, "Not Implemented!"));
 
 	}
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(6000, "Not Implemented!"));
 	}
 
 
 	@Override
 	public List<Product> query(Product e, Map<String, String> map) throws FulfillmentException {
 		
-		LOGGER.debug("Query request for read subscriber...");
+		LOGGER.debug("Request for Get Account Details...");
 		
 		if (map == null || map.isEmpty())
 			throw new FulfillmentException("ffe", new ResponseCode(1001, "runtime parameters 'metas' missing in request!!"));
@@ -89,7 +89,7 @@ public class ReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> revert(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("ffe", new ResponseCode(1000, "Not Implemented!"));
+		throw new FulfillmentException("ffe", new ResponseCode(6000, "Not Implemented!"));
 	}
 	
 	//TODO: Move to smart-commons

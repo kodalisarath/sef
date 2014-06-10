@@ -633,14 +633,15 @@ public class OfferUtil
 		}
 		
 		
-		Resource accountBlockingBit =  helper.createServiceOfferingProfile("SetAccountActivationBlockingBit", "Tag Subsriber AccountActivation", 1, true);
-		Resource recycleBit = helper.createServiceOfferingProfile("SeRecycleBit", "Tag Subsriber Recycle", 2, true);
-		Resource barGeneralBit = helper.createServiceOfferingProfile("SetBarGeneralBit", "Tag Subsriber BarGeneral", 3, true);
-		Resource barOtherBit = helper.createServiceOfferingProfile("SetBarOtherBit", "Tag Subsriber BarOther", 4, true);
-		Resource barIrmBit = helper.createServiceOfferingProfile("SetBarIRMBit", "Tag Subsriber BarIRM", 5, true);
-		Resource specialFraudBit = helper.createServiceOfferingProfile("SetSpecialFraudBit", "Tag Subsriber SpecialFraud", 6, true);
-		Resource forcedDeleteBit = helper.createServiceOfferingProfile("SetForcedDeleteBit", "Tag Subsriber ForcedDelete", 7	, true);
-		Resource resetBit = helper.createServiceOfferingProfile("SetResetBit", "Tag Subsriber Reset", 0, false);
+		Resource accountBlockingBit =  helper.createSmartServiceOfferingProfile("SetAccountActivationBlockingBit", "Tag Subsriber AccountActivation", 1, true);
+		Resource recycleBit = helper.createSmartServiceOfferingProfile("SeRecycleBit", "Tag Subsriber Recycle", 2, true);
+		Resource barGeneralBit = helper.createSmartServiceOfferingProfile("SetBarGeneralBit", "Tag Subsriber BarGeneral", 3, true);
+		Resource barOtherBit = helper.createSmartServiceOfferingProfile("SetBarOtherBit", "Tag Subsriber BarOther", 4, true);
+		Resource barIrmBit = helper.createSmartServiceOfferingProfile("SetBarIRMBit", "Tag Subsriber BarIRM", 5, true);
+		Resource specialFraudBit = helper.createSmartServiceOfferingProfile("SetSpecialFraudBit", "Tag Subsriber SpecialFraud", 6, true);
+		Resource forcedDeleteBit = helper.createSmartServiceOfferingProfile("SetForcedDeleteBit", "Tag Subsriber ForcedDelete", 7	, true);
+		Resource resetBit = helper.createSmartServiceOfferingProfile("SetResetBit", "Tag Subsriber Reset", 0, false);
+		Resource entireRead = helper.createSmartEntireReadProfile("READ_SUBSCRIBER", "Entire Read Subscriber");
 
 		serviceRegistry.createResource(accountBlockingBit);
 		serviceRegistry.createResource(recycleBit);
@@ -3753,13 +3754,12 @@ public class OfferUtil
 //		// ----------------------------------------------------------
 //		// Offer.name=READ_SUBSCRIBER
 //		// ----------------------------------------------------------
-//		offerResources = new ArrayList<Resource>();
-//		planCodes = new HashSet<String>();
-//		planCodes.add("READ_SUBSCRIBER");
-//		offerResources.add(lookupResourcesByName.get("GetAccountDetails_Cmd"));
-//		offerResources.add(lookupResourcesByName.get("GetBalanceAndDate_Cmd"));
-//		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "Read Subscriber", planCodes, offerResources);
-//		offerManager.createOffer(offer);
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("READ_SUBSCRIBER");
+		offerResources.add(entireRead);
+		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "Read Subscriber", planCodes, offerResources);
+		offerManager.createOffer(offer);
 		// ----------------------------------------------------------
 		// Offer.name=DELETE_SUBSCRIBER
 		// ----------------------------------------------------------

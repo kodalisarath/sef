@@ -31,6 +31,7 @@ import com.ericsson.raso.sef.fulfillment.profiles.CreateSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.DedicatedAccountProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.DeleteSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.DnsUpdateProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.EntireReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.OfferProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry;
 import com.ericsson.raso.sef.fulfillment.profiles.ReadBalancesProfile;
@@ -320,6 +321,25 @@ public class PromoHelper {
 		
 		fulfillmentProfile.setServiceOfferings(serviceOfferings);
 		
+		
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;		
+	}
+	
+	public Resource createSmartEntireReadProfile(String name, String description) throws Exception
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+		EntireReadSubscriberProfile fulfillmentProfile = new EntireReadSubscriberProfile(name);
 		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
