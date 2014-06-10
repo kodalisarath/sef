@@ -597,6 +597,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			try {
 				logger.debug("Retrieve resource from registry: " + fulfillment.getAtomicProduct().getResource().getName());
 				Resource current = resources.readResource(fulfillment.getAtomicProduct().getResource().getName());
+				logger.debug("Just to show Noli is being an ass... Resource current is: " + current);
 				if (current.getDependantOnOthers() != null) {
 					logger.debug("Found dependency for the resouce. preparing sequential orchestration");
 					for (Resource dependancy: current.getDependantOnOthers()) {
