@@ -12,6 +12,9 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -34,10 +37,48 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
 
 		String requestId = RequestContextLocalStore.get().getRequestId();
+		
+		SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
+		
+		
+if(subscriberinfo ==null)
+{
+logger.error("Subscriber Not Found. msisdn: "
+		+ request.getCustomerId());	
+throw ExceptionUtil.toSmException(ErrorCode.nonExistentAccount);
+}
+else
+		if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
+			
+			logger.error("Subscriber should be in GRACE state to extend the graceEndDate. msisdn: "
+					+ request.getCustomerId());	
+			throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
+		}
+
+		
 		updateSubscriber(requestId, request.getCustomerId(), metas);
 		DummyProcessor.response(exchange);
 
 	}
+	
+	private SubscriberInfo readSubscriber(String requestId, String subscriberId, List<Meta> metas){
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
+		semaphore.init(0);
+		semaphore.acquire();
+		} catch(InterruptedException e) {
+		}
+		logger.info("Check if response received for update subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		return subscriberInfo;
+		
+	}
+	
+	
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) throws SmException {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 
