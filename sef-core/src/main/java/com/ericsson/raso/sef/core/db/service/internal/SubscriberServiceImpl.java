@@ -409,8 +409,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		if (subscriber == null) 
 			subscriber = this.fetchSubscriberByMsisdn(nbCorrelator, userId);
 		
-		if (subscriber == null)
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber cannot be found for the given 'userId'!!"));
+		/*if (subscriber == null)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber cannot be found for the given 'userId'!!"));*/
 		
 		return subscriber;
 	}
