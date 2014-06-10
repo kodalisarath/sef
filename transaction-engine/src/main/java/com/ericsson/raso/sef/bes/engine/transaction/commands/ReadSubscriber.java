@@ -13,11 +13,9 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceStep;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
@@ -64,13 +62,8 @@ public class ReadSubscriber extends AbstractTransaction {
 
 			// Subscriber not found in db, cannot proceed further
 			if (subscriber == null) {
-				/*throw new TransactionException("txe", new ResponseCode(504,
+				throw new TransactionException("txe", new ResponseCode(504,
 						"Subscriber not found"));
-*/
-			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case")));
-			sendResponse();
-			return false;
-			
 			}
 
 			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper
@@ -112,7 +105,7 @@ public class ReadSubscriber extends AbstractTransaction {
 /*			((ReadSubscriberResponse) this.getResponse()).setReturnFault(e);
 			sendResponse();
 */			
-			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e));
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e));
 			
 			return false;
 		} catch (FrameworkException e1) {
@@ -123,7 +116,7 @@ public class ReadSubscriber extends AbstractTransaction {
 					.setReturnFault(new TransactionException(e1.getComponent(),
 							e1.getStatusCode()));
 */
-			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e1));
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11615, "Unable to pack the workflow tasks for this use-case"), e1));
 			sendResponse();
 			return false;
 		} finally {
