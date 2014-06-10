@@ -17,7 +17,7 @@ public class DeleteSubscriberCommand extends AbstractAirCommand<DeleteSubscriber
 
 	@Override
 	public DeleteSubscriberResponse execute() throws SmException {
-		DeleteSubscriberResponse response = new DeleteSubscriberResponse();
+		DeleteSubscriberResponse response = new DeleteSubscriberResponse(endpointId);
 		try {
 			CsAirContext.getAirClient().execute(request, response);
 		} catch (XmlRpcException e) {
