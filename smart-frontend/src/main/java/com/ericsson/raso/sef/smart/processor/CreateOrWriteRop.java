@@ -22,6 +22,11 @@ import com.ericsson.raso.sef.smart.usecase.CreateOrWriteRopRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 
 
@@ -65,6 +70,10 @@ public class CreateOrWriteRop implements Processor {
 			//subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
 			String requestId = RequestContextLocalStore.get().getRequestId();
 			updateSubscriber(requestId, request.getCustomerId(), metas);
+			CommandResponseData responseData = createResponse(request.getUsecase()
+					.getOperation(), request.getUsecase().getModifier(),
+					request.isTransactional());
+			exchange.getOut().setBody(responseData);
 			logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
 			
 			/* 	 @To Do.  To be completed after scheduler is ready.*/
@@ -75,13 +84,36 @@ public class CreateOrWriteRop implements Processor {
 				//command.execute();
 			}
 			logger.info("Sending subscriber response");
-			DummyProcessor.response(exchange);
+			//DummyProcessor.response(exchange);
 			
 		} catch (Exception e) {
 			logger.error("Error in the processor:",e.getClass().getName(),e);
 		}
 		
 		
+	}
+	private CommandResponseData createResponse(String operationName,
+			String modifier, boolean isTransactional) {
+		logger.info("Invoking create Response");
+		CommandResponseData responseData = new CommandResponseData();
+		CommandResult result = new CommandResult();
+		responseData.setCommandResult(result);
+
+		Operation operation = new Operation();
+		operation.setName(operationName);
+		operation.setModifier(modifier);
+
+		OperationResult operationResult = new OperationResult();
+
+		if (isTransactional) {
+			TransactionResult transactionResult = new TransactionResult();
+			result.setTransactionResult(transactionResult);
+			transactionResult.getOperationResult().add(operationResult);
+		} else {
+			result.setOperationResult(operationResult);
+		}
+
+		return responseData;
 	}
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) throws SmException {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
