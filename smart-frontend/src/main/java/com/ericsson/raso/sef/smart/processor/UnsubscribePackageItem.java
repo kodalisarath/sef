@@ -140,7 +140,7 @@ public class UnsubscribePackageItem implements Processor {
 		metas.add(new Meta("package", "initialSC"));
 		metas.add(new Meta("currentPackage", currentPackage));
 		metas.add(new Meta("messageId", messageId));
-		metas.add(new Meta("federation-profile", "preloadUnsubscribe"));
+		//metas.add(new Meta("federation-profile", "preloadUnsubscribe"));
 
 		// subscriberManagement.updateSubscriber(customerId, metas);
 
