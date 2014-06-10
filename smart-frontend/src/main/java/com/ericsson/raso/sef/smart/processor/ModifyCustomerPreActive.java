@@ -42,8 +42,8 @@ public class ModifyCustomerPreActive implements Processor {
 			IConfig config = SefCoreServiceResolver.getConfigService();
 			
 				//SubscriberManagement subscriberManagement = SmartContext.getSubscriberManagement();
-				List<String> keys = new ArrayList<String>();
-				keys.add("PreActiveEndDate");
+				//List<String> keys = new ArrayList<String>();
+				//keys.add("PreActiveEndDate");
 				
 				//Subscriber subscriber = subscriberManagement.getSubscriberProfile(request.getCustomerId(), keys);
 				String requestId = RequestContextLocalStore.get().getRequestId();
@@ -78,7 +78,7 @@ public class ModifyCustomerPreActive implements Processor {
 				preActiveEndDateStr = DateUtil.convertDateToString(preActiveEndDate, config.getValue("GLOBAL", "dateFormat"));
 				Meta preActiveEndDateMeta = new Meta(SmartConstants.PREACTIVE_ENDDATE, preActiveEndDateStr);
 				metas.add(preActiveEndDateMeta);
-				metas.add(new Meta("federation-profile", "shelfLifeExtension"));
+				//metas.add(new Meta("federation-profile", "shelfLifeExtension"));
 
 				updateSubscriber(requestId, request.getCustomerId(), metas);
 				
