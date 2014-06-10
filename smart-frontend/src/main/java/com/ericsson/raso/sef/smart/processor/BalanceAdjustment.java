@@ -44,7 +44,9 @@ public class BalanceAdjustment implements Processor {
 		     metas.add(new Meta("eventInfo",request.getEventInfo()));
 		     
 		     String requestId = RequestContextLocalStore.get().getRequestId();
-		     updateSusbcriber(requestId, request.getCustomerId(), metas);
+		     SubscriberInfo subscriberInfo= updateSusbcriber(requestId, request.getCustomerId(), metas);
+		     
+		     
 		} catch (Exception e) {
 			logger.error("Error in the processor class:",this.getClass().getName(),e);
 		}

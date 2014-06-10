@@ -12,7 +12,7 @@ import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 
 public interface SubscriberMapper {
 	Integer isSubscriberExists(String msisdn);
-	
+	String getContractState(String userId);
 	void createSubscriber(Subscriber subscriber);
 	
 	void deleteSubscriber(String userId);

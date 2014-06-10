@@ -99,7 +99,7 @@ else
 		
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		if(subscriberInfo != null){
+	/*	if(subscriberInfo != null){
 			try{
 			if(subscriberInfo.getStatus().getCode() > 0){
 				if(subscriberInfo.getStatus().getCode() != 504){
@@ -114,7 +114,7 @@ else
 			logger.error("subscriberInfo fields are null",e.getMessage(),e);
 			
 		}
-			}
+			}*/
 		return subscriberInfo;
 	}
 
