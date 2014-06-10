@@ -13,11 +13,9 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceStep;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
@@ -102,16 +100,14 @@ public class ReadSubscriber extends AbstractTransaction {
 			LOGGER.error(
 					"ReadSubscriber TransactionException caught "
 							+ e.getMessage(), e);
-			((ReadSubscriberResponse) this.getResponse()).setReturnFault(e);
-			sendResponse();
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e));
+			this.sendResponse();
 			return false;
 		} catch (FrameworkException e1) {
 			LOGGER.error(
 					"ReadSubscriber FrameworkException caught "
 							+ e1.getMessage(), e1);
-			((ReadSubscriberResponse) this.getResponse())
-					.setReturnFault(new TransactionException(e1.getComponent(),
-							e1.getStatusCode()));
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11615, "Unable to pack the workflow tasks for this use-case"), e1));
 			sendResponse();
 			return false;
 		} finally {
@@ -141,10 +137,17 @@ public class ReadSubscriber extends AbstractTransaction {
 		 */
 
 		TransactionStatus txnStatus = new TransactionStatus();
-		com.ericsson.sef.bes.api.entities.Subscriber subscriber = ((ReadSubscriberResponse) this
-				.getResponse()).getSubscriber();
+		com.ericsson.sef.bes.api.entities.Subscriber subscriber = ((ReadSubscriberResponse) this.getResponse()).getSubscriber();
 
-		if (this.isWorkflowEngaged) {
+		if (this.getResponse() != null) {
+			TransactionException fault = this.getResponse().getReturnFault();
+			if (fault != null) {
+				txnStatus.setCode(fault.getStatusCode().getCode());
+				txnStatus.setDescription(fault.getStatusCode().getMessage());
+				txnStatus.setComponent(fault.getComponent());
+			}
+
+		} else  if (this.isWorkflowEngaged) {
 			List<Product> products = new ArrayList<Product>();
 
 			for (Step<?> step : this.getResponse().getAtomicStepResults()
@@ -178,22 +181,15 @@ public class ReadSubscriber extends AbstractTransaction {
 					}
 				}
 			}
+		
 
 			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber,
 					products);
 
 		}
+	
 
-		else if (this.getResponse() != null) {
-			TransactionException fault = this.getResponse().getReturnFault();
-			if (fault != null) {
-				txnStatus.setCode(fault.getStatusCode().getCode());
-				txnStatus.setDescription(fault.getStatusCode().getMessage());
-				txnStatus.setComponent(fault.getComponent());
-			}
-
-		}
-
+		
 		LOGGER.debug("Invoking read subscriber response!!");
 		ISubscriberResponse subscriberClient = ServiceResolver
 				.getSubscriberResponseClient();
