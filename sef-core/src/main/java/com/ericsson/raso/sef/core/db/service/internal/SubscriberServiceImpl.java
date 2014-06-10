@@ -592,7 +592,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	public boolean isSubscriberExist(String subscriber) throws PersistenceError {
 		
 		Boolean returnValue;
-		int countSubscriber;
+		Integer countSubscriber;
 		if(subscriber == null){
 	logger.error("The 'msisdn' provided was null!!");
 			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was null!!"));
