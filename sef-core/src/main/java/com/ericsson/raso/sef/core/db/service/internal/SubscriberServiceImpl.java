@@ -529,9 +529,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 		
 		Collection<SubscriberMeta> metas = null;
 		try {
-		metas = subscriberMapper.getAllSubscriberMetas(userId);
+		metas = subscriberMapper.getAllSubscriberMetas(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
 		} catch (PersistenceException e) {
 			logger.error("DB execution failed fetching metas. Cause: " + e.getMessage(), e);
+		} catch (FrameworkException e) {
+			logger.error("DB preparation failed fetching metas. Cause: " + e.getMessage(), e);
+			return new ArrayList<SubscriberMeta>();			
 		}
 		
 		if (metas == null)
