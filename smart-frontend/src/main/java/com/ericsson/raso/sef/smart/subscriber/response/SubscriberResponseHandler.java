@@ -35,9 +35,11 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		if (subscriber == null) {
 			subscriberInfo.setStatus(new TransactionStatus("txe", 504, "Invalid Account - Subscriber canot be found!!"));
 			this.triggerResponse(requestCorrelator, subscriberInfo);
+			return;
+			
 		}
 		
-		if (subscriber.getMsisdn() == null || 
+		else if (subscriber.getMsisdn() == null || 
 				subscriber.getUserId() == null|| 
 				subscriber.getCustomerId() == null|| 
 				subscriber.getContractId() == null || 
