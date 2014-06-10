@@ -281,7 +281,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 	@Transactional
 	public boolean updateMetas(String nbCorrelator, String userId, Collection<Meta> metas) throws PersistenceError {
 		logger.debug("Method setMetas is  called");
-
 		if(userId == null || userId.isEmpty())
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
 
@@ -290,6 +289,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 		
 		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
+		logger.debug("Function call to get the metas");
 		List<String> metaKeys = this.getKeysAsList(metas);
 		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId, metaKeys);
 		logger.debug("current metas values are of size " + currentMetas.size());
@@ -381,6 +381,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	
 	@Override
 	public List<Meta> getMetas(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError {
+		logger.debug("In the getMetas called");
 		if(userId == null || userId.isEmpty())
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
 
@@ -391,8 +392,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		if (subscriber == null) 
 			subscriber = this.fetchSubscriberByMsisdn(nbCorrelator, userId);
 		
-		if (subscriber == null)
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber meta cannot be found for the given 'userId'!!"));
+		/*if (subscriber == null)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber meta cannot be found for the given 'userId'!!"));*/
 			
 		
 		return this.translateMetas(subscriber.getMetas());
@@ -493,6 +494,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	}
 	
 	private Subscriber fetchSubscriberByUserId(String nbCorrelator, String userId) throws PersistenceError {
+		logger.debug("In the fetchsubscriberByUserId called");
 		if(userId == null || userId.isEmpty())
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
 		
@@ -524,7 +526,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 		}
 		return subscriber;
 	}
-	
 	private Collection<SubscriberMeta> fetchMetas(String userId) {
 		logger.debug("Inside the method to fetch metas for subscriber: " + userId);
 		
@@ -537,7 +538,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 			logger.error("DB preparation failed fetching metas. Cause: " + e.getMessage(), e);
 			return new ArrayList<SubscriberMeta>();			
 		}
-		
 		if (metas == null)
 			return new ArrayList<SubscriberMeta>();
 		else
@@ -553,7 +553,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 		Subscriber subscriber = this.fetchSubscriberByUserId(nbCorrelator, msisdn);
 		if (subscriber == null) 
 			subscriber = this.fetchSubscriberByMsisdn(nbCorrelator, msisdn);
-		
 //		if (subscriber == null)
 //			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "A subscriber cannot be found for the given 'userId'!!"));
 		
