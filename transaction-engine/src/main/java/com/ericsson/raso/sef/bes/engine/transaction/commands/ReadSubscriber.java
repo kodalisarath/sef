@@ -57,15 +57,13 @@ public class ReadSubscriber extends AbstractTransaction {
 			LOGGER.debug("SANITY CHECKS....");
 			LOGGER.debug("Request: " + this.getRequest());
 
-			Subscriber subscriber = TransactionServiceHelper
-					.fetchSubscriberFromDb(((ReadSubscriberRequest) this
-							.getRequest()).getSubscriberId());
+			Subscriber subscriber = TransactionServiceHelper.fetchSubscriberFromDb(((ReadSubscriberRequest) this.getRequest()).getSubscriberId());
 			LOGGER.debug("Subscriber entity fetched from DB: " + subscriber);
 
 			// Subscriber not found in db, cannot proceed further
 			if (subscriber == null) {
-				throw new TransactionException("txe", new ResponseCode(504,
-						"Subscriber not found"));
+				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504,	"Subscriber not found")));
+				this.sendResponse();
 			}
 
 			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper
