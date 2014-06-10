@@ -78,10 +78,12 @@ public class UseCaseProcessor implements Processor {
 		
 		try {
 			for(String profile: fulfillmentProfileIds) {
+				if(FulfillmentServiceResolver.getProfileRegistry() != null){
+					FulfillmentProfile fulfillmentProfile =  FulfillmentServiceResolver.getProfileRegistry().readProfile(profile);
+					logger.debug("Profile found: " + fulfillmentProfile.getName());
+					profiles.add(fulfillmentProfile);
+				}
 				
-				FulfillmentProfile fulfillmentProfile =  FulfillmentServiceResolver.getProfileRegistry().readProfile(profile);
-				logger.debug("Profile found: " + fulfillmentProfile.getName());
-				profiles.add(fulfillmentProfile);
 			}
 		} catch (CatalogException e) {
 			logger.error("Failed to fetch fulfillment profiles...");
