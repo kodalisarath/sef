@@ -104,16 +104,21 @@ public class ReadSubscriber extends AbstractTransaction {
 			LOGGER.error(
 					"ReadSubscriber TransactionException caught "
 							+ e.getMessage(), e);
-			((ReadSubscriberResponse) this.getResponse()).setReturnFault(e);
+/*			((ReadSubscriberResponse) this.getResponse()).setReturnFault(e);
 			sendResponse();
+*/			
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e));
+			
 			return false;
 		} catch (FrameworkException e1) {
 			LOGGER.error(
 					"ReadSubscriber FrameworkException caught "
 							+ e1.getMessage(), e1);
-			((ReadSubscriberResponse) this.getResponse())
+			/*((ReadSubscriberResponse) this.getResponse())
 					.setReturnFault(new TransactionException(e1.getComponent(),
 							e1.getStatusCode()));
+*/
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11615, "Unable to pack the workflow tasks for this use-case"), e1));
 			sendResponse();
 			return false;
 		} finally {
