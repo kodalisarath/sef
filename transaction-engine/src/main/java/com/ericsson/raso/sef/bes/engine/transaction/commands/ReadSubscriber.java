@@ -64,8 +64,13 @@ public class ReadSubscriber extends AbstractTransaction {
 
 			// Subscriber not found in db, cannot proceed further
 			if (subscriber == null) {
-				throw new TransactionException("txe", new ResponseCode(504,
+				/*throw new TransactionException("txe", new ResponseCode(504,
 						"Subscriber not found"));
+*/
+			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case")));
+			sendResponse();
+			return false;
+			
 			}
 
 			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper
@@ -107,7 +112,7 @@ public class ReadSubscriber extends AbstractTransaction {
 /*			((ReadSubscriberResponse) this.getResponse()).setReturnFault(e);
 			sendResponse();
 */			
-			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e));
+			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e));
 			
 			return false;
 		} catch (FrameworkException e1) {
@@ -118,7 +123,7 @@ public class ReadSubscriber extends AbstractTransaction {
 					.setReturnFault(new TransactionException(e1.getComponent(),
 							e1.getStatusCode()));
 */
-			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11615, "Unable to pack the workflow tasks for this use-case"), e1));
+			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e1));
 			sendResponse();
 			return false;
 		} finally {
