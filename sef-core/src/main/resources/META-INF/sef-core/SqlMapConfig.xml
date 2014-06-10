@@ -9,7 +9,7 @@
 	</settings>
 	
 	<typeAliases>
-		
+		<typeAlias alias="SubscriberMeta" type="com.ericsson.raso.sef.core.db.model.SubscriberMeta" />
 		<typeAlias alias="Subscriber" type="com.ericsson.raso.sef.core.db.model.Subscriber" />
 		<typeAlias alias="Meta" type="com.ericsson.raso.sef.core.Meta"/>
 		<typeAlias alias="SubscriberAuditTrial" type="com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial"/>
