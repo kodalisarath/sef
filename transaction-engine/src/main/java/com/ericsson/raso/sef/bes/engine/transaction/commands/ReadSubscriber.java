@@ -35,12 +35,15 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 public class ReadSubscriber extends AbstractTransaction {
 
 	private static final long serialVersionUID = 8130277491237379246L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(ReadSubscriber.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(ReadSubscriber.class);
 
 	private boolean isWorkflowEngaged = false;
 
-	public ReadSubscriber(String requestId, String subscriberId, Map<String, String> metas) {
-		super(requestId, new ReadSubscriberRequest(requestId, subscriberId, metas));
+	public ReadSubscriber(String requestId, String subscriberId,
+			Map<String, String> metas) {
+		super(requestId, new ReadSubscriberRequest(requestId, subscriberId,
+				metas));
 		this.setResponse(new ReadSubscriberResponse(requestId));
 	}
 
@@ -54,20 +57,25 @@ public class ReadSubscriber extends AbstractTransaction {
 			LOGGER.debug("SANITY CHECKS....");
 			LOGGER.debug("Request: " + this.getRequest());
 
-			Subscriber subscriber = TransactionServiceHelper.fetchSubscriberFromDb(((ReadSubscriberRequest) this.getRequest())
-					.getSubscriberId());
+			Subscriber subscriber = TransactionServiceHelper
+					.fetchSubscriberFromDb(((ReadSubscriberRequest) this
+							.getRequest()).getSubscriberId());
 			LOGGER.debug("Subscriber entity fetched from DB: " + subscriber);
 
 			// Subscriber not found in db, cannot proceed further
 			if (subscriber == null) {
-				throw new TransactionException("txe", new ResponseCode(504, "Subscriber not found"));
+				throw new TransactionException("txe", new ResponseCode(504,
+						"Subscriber not found"));
 			}
 
-			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper.getApiEntity(subscriber);
+			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper
+					.getApiEntity(subscriber);
 			((ReadSubscriberResponse) this.getResponse()).setSubscriber(result);
 
 			// Fetch the subscriber from downstream through work flow
-			String readSubscriberWorkflowId = ((ReadSubscriberRequest) this.getRequest()).getMetas().get(Constants.READ_SUBSCRIBER.name());
+			String readSubscriberWorkflowId = ((ReadSubscriberRequest) this
+					.getRequest()).getMetas().get(
+					Constants.READ_SUBSCRIBER.name());
 			if (readSubscriberWorkflowId != null) {
 				LOGGER.debug("somehow a workflow is also needed... wtf?!!!");
 				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
@@ -76,23 +84,35 @@ public class ReadSubscriber extends AbstractTransaction {
 				LOGGER.debug("Guess what? found the workflow in prodcat too...");
 				if (workflow != null) {
 					List<TransactionTask> tasks = new ArrayList<TransactionTask>();
-					tasks.addAll(workflow.execute(((ReadSubscriberRequest) this.getRequest()).getSubscriberId(),
+					tasks.addAll(workflow.execute(((ReadSubscriberRequest) this
+							.getRequest()).getSubscriberId(),
 							SubscriptionLifeCycleEvent.DISCOVERY, true,
-							TransactionServiceHelper.getNativeMap(((ReadSubscriberRequest) this.getRequest()).getMetas())));
+							TransactionServiceHelper
+									.getNativeMap(((ReadSubscriberRequest) this
+											.getRequest()).getMetas())));
 
 					this.isWorkflowEngaged = true;
-					Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
-					LOGGER.info("Going to execute the orcheastration profile for: " + execution.getNorthBoundCorrelator());
+					Orchestration execution = OrchestrationManager
+							.getInstance().createExecutionProfile(
+									this.getRequestId(), tasks);
+					LOGGER.info("Going to execute the orcheastration profile for: "
+							+ execution.getNorthBoundCorrelator());
 					OrchestrationManager.getInstance().submit(this, execution);
 				}
 			}
 		} catch (TransactionException e) {
-			LOGGER.error("ReadSubscriber TransactionException caught "+e.getMessage(),e);
-			((ReadSubscriberResponse)this.getResponse()) .setReturnFault(e);
+			LOGGER.error(
+					"ReadSubscriber TransactionException caught "
+							+ e.getMessage(), e);
+			((ReadSubscriberResponse) this.getResponse()).setReturnFault(e);
 			sendResponse();
 		} catch (FrameworkException e1) {
-			LOGGER.error("ReadSubscriber FrameworkException caught "+e1.getMessage(),e1);
-			((ReadSubscriberResponse)this.getResponse()).setReturnFault(new TransactionException(e1.getComponent(), e1.getStatusCode()));
+			LOGGER.error(
+					"ReadSubscriber FrameworkException caught "
+							+ e1.getMessage(), e1);
+			((ReadSubscriberResponse) this.getResponse())
+					.setReturnFault(new TransactionException(e1.getComponent(),
+							e1.getStatusCode()));
 			sendResponse();
 		} finally {
 
@@ -105,84 +125,81 @@ public class ReadSubscriber extends AbstractTransaction {
 	public void sendResponse() {
 		// TODO: implement this logic
 		/*
-		 * 1. when this method is called, it means that Orchestration Manager has executed all steps in the transaction. Either a response
-		 * or exception is available.
+		 * 1. when this method is called, it means that Orchestration Manager
+		 * has executed all steps in the transaction. Either a response or
+		 * exception is available.
 		 * 
-		 * 2. The response will most likely be results/ responses/ exceptions from atomic steps in the transaction. This must be packed into
-		 * the response pojo structure pertinent to method signature of the response interface.
+		 * 2. The response will most likely be results/ responses/ exceptions
+		 * from atomic steps in the transaction. This must be packed into the
+		 * response pojo structure pertinent to method signature of the response
+		 * interface.
 		 * 
-		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
-		 * interface will notify the right JVM waiting for this response thru a Object.wait
+		 * 3. once the response pojo entity is packed, the client for response
+		 * interface must be invoked. the assumption is that response interface
+		 * will notify the right JVM waiting for this response thru a
+		 * Object.wait
 		 */
 
-		TransactionStatus  txnStatus = new TransactionStatus();
-		com.ericsson.sef.bes.api.entities.Subscriber subscriber = ((ReadSubscriberResponse) this.getResponse()).getSubscriber();
+		TransactionStatus txnStatus = new TransactionStatus();
+		com.ericsson.sef.bes.api.entities.Subscriber subscriber = ((ReadSubscriberResponse) this
+				.getResponse()).getSubscriber();
 
 		if (this.isWorkflowEngaged) {
 			List<Product> products = new ArrayList<Product>();
 
-			for (Step<?> step : this.getResponse().getAtomicStepResults().keySet()) {
+			for (Step<?> step : this.getResponse().getAtomicStepResults()
+					.keySet()) {
 				if (step.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
 					if (step.getFault() != null) {
-						txnStatus.setCode(step.getFault().getStatusCode().getCode());
+						txnStatus.setCode(step.getFault().getStatusCode()
+								.getCode());
 						txnStatus.setComponent(step.getFault().getComponent());
-						txnStatus.setDescription(step.getFault().getStatusCode().getMessage());
+						txnStatus.setDescription(step.getFault()
+								.getStatusCode().getMessage());
 						break;
 					} else {
 						// products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep)
 						// step).getResult().getFulfillmentResult()));
-						FulfillmentStepResult stepResult = (FulfillmentStepResult) this.getResponse().getAtomicStepResults().get(step);
+						FulfillmentStepResult stepResult = (FulfillmentStepResult) this
+								.getResponse().getAtomicStepResults().get(step);
 						if (stepResult != null) {
-							for (AtomicProduct atomicProduct : stepResult.getFulfillmentResult()) {
-								LOGGER.debug("Atomic product metas: " + atomicProduct.getMetas().toString());
+							for (AtomicProduct atomicProduct : stepResult
+									.getFulfillmentResult()) {
+								LOGGER.debug("Atomic product metas: "
+										+ atomicProduct.getMetas().toString());
 							}
-							products.addAll(TransactionServiceHelper.translateProducts(stepResult.getFulfillmentResult()));
-							// TODO: go back and refactor all the way from FulfillmentStep to pass metas to SMFE....
+							products.addAll(TransactionServiceHelper
+									.translateProducts(stepResult
+											.getFulfillmentResult()));
+							// TODO: go back and refactor all the way from
+							// FulfillmentStep to pass metas to SMFE....
 							LOGGER.debug("FulfillmentStep has some results added to products list");
 						}
 					}
 				}
 			}
 
-			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber, products);
+			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber,
+					products);
 
 		}
-		
-		else
-			if (this.getResponse() != null) {
-				if (this.getResponse().getAtomicStepResults() != null) {
-					for (Step<?> step: this.getResponse().getAtomicStepResults().keySet()) {
-						AbstractStepResult stepResult = this.getResponse().getAtomicStepResults().get(step);
-						if (stepResult == null) {
-							if (step instanceof PersistenceStep) //TODO: this is temporary fix until DB Tier is fixed. Vinay is working on the same.  
-								continue;
-							else {
-								LOGGER.debug("quick check for type:" + step);
-							}
-						} else if (stepResult.getResultantFault() != null) {
-							txnStatus.setComponent(stepResult.getResultantFault().getComponent());
-							txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
-							txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
-							LOGGER.debug("ReadSubscriber::=> Transaction Status: " + txnStatus);
-							//result = false;
-							break;
-						}
-					}
-				}
+
+		else if (this.getResponse() != null) {
+			TransactionException fault = this.getResponse().getReturnFault();
+			if (fault != null) {
+				txnStatus.setCode(fault.getStatusCode().getCode());
+				txnStatus.setDescription(fault.getStatusCode().getMessage());
+				txnStatus.setComponent(fault.getComponent());
 			}
 
-/*		TransactionException fault = this.getResponse().getReturnFault();
-		if ( fault != null) {
-			txnStatus.setCode(fault.getStatusCode().getCode());
-			txnStatus.setDescription(fault.getStatusCode().getMessage());
-			txnStatus.setComponent(fault.getComponent());
 		}
-*/		
-		
+
 		LOGGER.debug("Invoking read subscriber response!!");
-		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
-		LOGGER.debug("subscriberClient"+subscriberClient);
-		subscriberClient.readSubscriber(this.getRequestId(), txnStatus, subscriber);
+		ISubscriberResponse subscriberClient = ServiceResolver
+				.getSubscriberResponseClient();
+		LOGGER.debug("subscriberClient" + subscriberClient);
+		subscriberClient.readSubscriber(this.getRequestId(), txnStatus,
+				subscriber);
 		LOGGER.debug("read susbcriber response posted");
 
 	}
