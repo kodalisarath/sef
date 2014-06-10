@@ -36,7 +36,6 @@ public class ModifyCustomerGrace implements Processor {
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		
-		try {
 			
 			ModifyCustomerGraceRequest request = (ModifyCustomerGraceRequest) exchange.getIn().getBody();
 			
@@ -72,10 +71,6 @@ public class ModifyCustomerGrace implements Processor {
 			exchange.getOut().setBody(createResponse(graceEndDate,request.isTransactional()));
 		
 			
-		} catch (Exception e) {
-			logger.error("Error in processor class"+e.getClass().getName(),e);
-			
-		}
 			
 		
 	}

@@ -36,7 +36,7 @@ public class ModifyCustomerPreActive implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(ModifyCustomerPreActive.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		try {
+		
 			ModifyCustomerPreActiveRequest request = (ModifyCustomerPreActiveRequest) exchange.getIn().getBody();
 
 			IConfig config = SefCoreServiceResolver.getConfigService();
@@ -94,9 +94,6 @@ public class ModifyCustomerPreActive implements Processor {
 				//command.execute();
 				
 				exchange.getOut().setBody(responseData);
-		} catch (Exception e) {
-			logger.error("Error in the processor class",e.getClass().getName(),e);
-		}
 		
 		
 		
