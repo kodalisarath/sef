@@ -7,7 +7,6 @@ import java.util.Arrays;
 //import java.util.Base64.Encoder;
 //import org.apache.commons.codec.binary.*;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -585,8 +584,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 		
 		Boolean returnValue;
 		int countSubscriber;
-		if(subscriber == null || subscriber.isEmpty())
-			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was null!!"));
+		if(subscriber == null){
+				throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was null!!"));
+		}else if(subscriber.isEmpty()){
+			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was empty!!"));
+		}
 		String msisdn=null;
 		try {
 			msisdn = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber)));
