@@ -47,7 +47,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 	
 	public void setSubscriberMapper(SubscriberMapper subscriberMapper) {
 		this.subscriberMapper = subscriberMapper;
-		//TODO: confirm from beans.xml that this setter method is actually called..
 	}
 	
 	@Override
@@ -599,7 +598,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		try {
 		countSubscriber=subscriberMapper.isSubscriberExists(msisdn);
 		} catch (PersistenceException e) {
-			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+			logger.error("Encountered Persistence Error. Cause:",e);
 			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);		
 		}
           if(countSubscriber >0){

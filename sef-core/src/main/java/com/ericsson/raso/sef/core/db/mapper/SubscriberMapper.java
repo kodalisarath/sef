@@ -1,7 +1,6 @@
 package com.ericsson.raso.sef.core.db.mapper;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 

@@ -53,7 +53,7 @@
 	</resultMap>
 	
 	<resultMap id="MetaResult" type="SubscriberMeta">
-		<result property="userId" column="USER_ID" />
+		<result property="subscriberId" column="USER_ID" />
 		<result property="key" column="ATTRIBUTE_NAME" />
 		<result property="value" column="ATTRIBUTE_VALUE" />
 	</resultMap>
@@ -82,18 +82,14 @@
 	
 	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta">
 		insert into subscriber_meta (user_id, attribute_name, attribute_value)
-		values (#{userId}, #{key}, #{value})
+		values (#{subscriberId}, #{key}, #{value})
 	</insert>
 	
 	<update id="updateSubscriberMeta" parameterType="SubscriberMeta">
 		update subscriber_meta set attribute_value = #{value},
-		where user_id = #{userId}
+		where user_id = #{subscriberId}
 		and attribute_name = #{key}
 	</update>
-
-	
-	
-	
 	<update id="updateSubscriber" parameterType="Subscriber">
 		update subscriber
 		<set>
@@ -148,7 +144,7 @@
 		select *
 		from
 		subscriber_meta s
-		where user_id = #{userId}
+		where user_id = #{subscriberId}
 	</select>
 	<!-- <insert id="insertSubscriberMeta" parameterType="SubscriberMeta"> -->
 	<!-- insert into subscriber_meta (user_id, attribute_name, attribute_value, 
