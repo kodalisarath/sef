@@ -113,6 +113,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 		LOGGER.debug("Invoking update subscriber response!!");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
 		if (subscriberClient != null) {
+			LOGGER.debug("Gonna Send send response");
 			subscriberClient.updateSubscriber(this.getRequestId(), txnStatus, result);
 			LOGGER.debug("update susbcriber response posted");
 		} else {

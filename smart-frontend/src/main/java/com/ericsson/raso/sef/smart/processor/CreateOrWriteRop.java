@@ -86,6 +86,7 @@ public class CreateOrWriteRop implements Processor {
 			logger.info("Sending subscriber response");
 			//DummyProcessor.response(exchange);
 			
+			
 		} catch (Exception e) {
 			logger.error("Error in the processor:",e.getClass().getName(),e);
 		}
