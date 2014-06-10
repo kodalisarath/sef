@@ -68,5 +68,13 @@ public abstract class SmartServiceHelper {
 		
 	}
 	
-
+	
+	public static SmartModel readSubscriberAccounts(String msisdn)  throws SmException
+	{
+		//To DO
+		
+		return null;
+		
+	}
+	
 }

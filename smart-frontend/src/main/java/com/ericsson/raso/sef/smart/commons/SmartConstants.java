@@ -54,4 +54,8 @@ public class SmartConstants {
 	
 	public static final String MAX_DATETIME = "MAX_DATEANDTIME";
 	public static final String	SMFE_CORRELATION_STORE	= "SMFE_CORRELATION_STORE";
+	public static final String SERVICE_IDENTIFIER = "Service-Identifier";
+	public static final String FLEXIBLE_SERVICE_IDENTIFIER = "flexible";
+	public static final String PREDEFINED_SERVICE_IDENTIFIER = "predefined";
+
 }
