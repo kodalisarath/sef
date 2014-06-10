@@ -55,8 +55,7 @@ public class VersionCreateOrWriteCustomer implements Processor {
 		// get subscriber based on msisdn
 		// Subscriber subscriber = subscriberService.getSubscriber(customerId);
 
-		Subscriber subscriber = subscriberService.getSubscriber(
-				UniqueIdGenerator.generateId(), customerId);
+		Subscriber subscriber = subscriberService.getSubscriberByUserId(UniqueIdGenerator.generateId(), customerId);
 
 		// if subscriber is unknown
 		if (subscriber == null) {
@@ -189,5 +188,4 @@ public class VersionCreateOrWriteCustomer implements Processor {
 				.add(dateTimeParameter);
 		return responseData;
 	}
-
 }
