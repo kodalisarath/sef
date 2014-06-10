@@ -13,16 +13,16 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.ReadSubscriberResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStep;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceStep;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
-import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TaskType;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
@@ -115,16 +115,15 @@ public class ReadSubscriber extends AbstractTransaction {
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
 
-		TransactionStatus txnStatus = null;
+		TransactionStatus  txnStatus = new TransactionStatus();
 		com.ericsson.sef.bes.api.entities.Subscriber subscriber = ((ReadSubscriberResponse) this.getResponse()).getSubscriber();
 
-		if (this.isWorkflowEngaged) {
+	//	if (this.isWorkflowEngaged) {
 			List<Product> products = new ArrayList<Product>();
 
 			for (Step<?> step : this.getResponse().getAtomicStepResults().keySet()) {
 				if (step.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
 					if (step.getFault() != null) {
-						txnStatus = new TransactionStatus();
 						txnStatus.setCode(step.getFault().getStatusCode().getCode());
 						txnStatus.setComponent(step.getFault().getComponent());
 						txnStatus.setDescription(step.getFault().getStatusCode().getMessage());
@@ -147,10 +146,11 @@ public class ReadSubscriber extends AbstractTransaction {
 
 			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber, products);
 
-		}
+//		}
 
 		LOGGER.debug("Invoking read subscriber response!!");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
+		LOGGER.debug("subscriberClient"+subscriberClient);
 		subscriberClient.readSubscriber(this.getRequestId(), txnStatus, subscriber);
 		LOGGER.debug("read susbcriber response posted");
 
