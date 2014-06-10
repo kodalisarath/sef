@@ -613,12 +613,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 			logger.error("Encountered Persistence Error. Cause:",e);
 			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);		
 		}
-          if(countSubscriber >0){
-        	  returnValue=Boolean.TRUE;
-          }else{
-        	  returnValue=Boolean.FALSE;
-          }
-		
+		if(countSubscriber != null){
+			  returnValue=Boolean.TRUE;
+		}
+		else{
+			returnValue=Boolean.FALSE;
+		}
 		return returnValue;
 	}
 
