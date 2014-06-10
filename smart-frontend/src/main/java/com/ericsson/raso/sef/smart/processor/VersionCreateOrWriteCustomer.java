@@ -54,9 +54,7 @@ public class VersionCreateOrWriteCustomer implements Processor {
 				.getSusbcriberStore();
 		// get subscriber based on msisdn
 		// Subscriber subscriber = subscriberService.getSubscriber(customerId);
-
 		Subscriber subscriber = subscriberService.getSubscriberByUserId(UniqueIdGenerator.generateId(), customerId);
-
 		// if subscriber is unknown
 		if (subscriber == null) {
 			logger.error("Subscriber is UNKNOWN");
