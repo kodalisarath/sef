@@ -328,6 +328,25 @@ public class PromoHelper {
 		return resource;		
 	}
 	
+	public Resource createSmartEntireDeleteProfile(String name, String description) throws Exception{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+		DeleteSubscriberProfile fulfillmentProfile = new DeleteSubscriberProfile(name);
+	
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;		
+	}
+
+	
 	public Resource createSmartEntireReadProfile(String name, String description) throws Exception
 	{
 		Resource resource = new Service(name);
@@ -469,5 +488,6 @@ public class PromoHelper {
 			}
 			return nonCommercialOffer;
 	}
+
 	
 }

@@ -85,12 +85,16 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("ffe", new ResponseCode(6000, "Not Implemented!"));
+		List<Product> returned = new ArrayList<Product>();
+		returned.add(e);
+		return returned;	
 	}
 
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("ffe", new ResponseCode(6000, "Not Implemented!"));
+		List<Product> returned = new ArrayList<Product>();
+		returned.add(e);
+		return returned;	
 	}
 
 	@Override
@@ -153,7 +157,9 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> revert(Product e, Map<String, String> map) throws FulfillmentException {
-		throw new FulfillmentException("ffe", new ResponseCode(6000, "Not Implemented!"));
+		List<Product> returned = new ArrayList<Product>();
+		returned.add(e);
+		return returned;	
 	}
 
 	private void processAccountDetailsResponse(HashMap<String, String> accountDetails, GetAccountDetailsResponse response) {
@@ -314,5 +320,6 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 	public String toString() {
 		return "EntireReadSubscriberProfile []";
 	}
+
 
 }

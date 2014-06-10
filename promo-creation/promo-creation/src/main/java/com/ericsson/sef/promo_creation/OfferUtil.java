@@ -642,6 +642,7 @@ public class OfferUtil
 		Resource forcedDeleteBit = helper.createSmartServiceOfferingProfile("SetForcedDeleteBit", "Tag Subsriber ForcedDelete", 7	, true);
 		Resource resetBit = helper.createSmartServiceOfferingProfile("SetResetBit", "Tag Subsriber Reset", 0, false);
 		Resource entireRead = helper.createSmartEntireReadProfile("READ_SUBSCRIBER", "Entire Read Subscriber");
+		Resource entireDelete = helper.createSmartEntireDeleteProfile("READ_SUBSCRIBER", "Entire Read Subscriber");
 
 		serviceRegistry.createResource(accountBlockingBit);
 		serviceRegistry.createResource(recycleBit);
@@ -651,6 +652,7 @@ public class OfferUtil
 		serviceRegistry.createResource(specialFraudBit);
 		serviceRegistry.createResource(forcedDeleteBit);
 		serviceRegistry.createResource(resetBit);
+		serviceRegistry.createResource(entireDelete);
 
 		// ----------------------------------------------------------
 		// --- creating all the offer products
@@ -3766,18 +3768,18 @@ public class OfferUtil
 		offerResources = new ArrayList<Resource>();
 		planCodes = new HashSet<String>();
 		planCodes.add("DELETE_SUBSCRIBER");
-		offerResources.add(lookupResourcesByName.get("DeleteSubscriber"));
+		offerResources.add(entireDelete);
 		offer = helper.createNonCommercialOffer("DELETE_SUBSCRIBER", "Delete Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
 		// ----------------------------------------------------------
 		// Offer.name=UpdateSubscriberSegmentation
 		// ----------------------------------------------------------
-		offerResources = new ArrayList<Resource>();
-		planCodes = new HashSet<String>();
-		planCodes.add("MODIFY_TAGGING");
-		offerResources.add(lookupResourcesByName.get("ModifyTagging"));
-		offer = helper.createNonCommercialOffer("MODIFY_TAGGING", "Modify Subscriber Taggin", planCodes, offerResources);
-		offerManager.createOffer(offer);	
+//		offerResources = new ArrayList<Resource>();
+//		planCodes = new HashSet<String>();
+//		planCodes.add("MODIFY_TAGGING");
+//		offerResources.add(lookupResourcesByName.get("ModifyTagging"));
+//		offer = helper.createNonCommercialOffer("MODIFY_TAGGING", "Modify Subscriber Taggin", planCodes, offerResources);
+//		offerManager.createOffer(offer);	
 //		// ----------------------------------------------------------
 //		// Offer.name=SIMShelfLifeExt
 //		// ----------------------------------------------------------

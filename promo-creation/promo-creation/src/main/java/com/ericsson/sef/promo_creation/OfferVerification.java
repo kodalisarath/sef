@@ -30,6 +30,7 @@ public class OfferVerification {
 			System.out.println("\n1. Create Subscriber:\n" + offerStore.getOfferById("CREATE_SUBSCRIBER"));
 			System.out.println("\n2. Read Subscriber:\n" + offerStore.getOfferById("READ_SUBSCRIBER"));
 			System.out.println("\n3. Modify Tagging:\n" + offerStore.getOfferById("MODIFY_TAGGING"));
+			System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
 			
 			Offer taggingOffer = offerStore.getOfferById("MODIFY_TAGGING");
 			for (AtomicProduct product: taggingOffer.getAllAtomicProducts()) {
