@@ -24,6 +24,7 @@ import com.ericsson.raso.sef.core.SecureSerializationHelper;
 import com.ericsson.raso.sef.core.db.mapper.SubscriberMapper;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
+import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 
@@ -107,8 +108,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		try {
 			logger.debug("Crossing fingers... About to insert subscriber:" + subscriber);
 			subscriberMapper.createSubscriber(subscriber);
-			List<Meta> listMetas=new ArrayList<Meta>(subscriber.getMetas());
-			boolean isMetasSet=setMeta(nbCorellator,subscriber.getUserId(),listMetas);
+			this.createMetas(nbCorellator, subscriber.getUserId(), subscriber.getMetas());
+			
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorellator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to insert Subscriber entity!!"), e);
@@ -194,34 +195,35 @@ public class SubscriberServiceImpl implements SubscriberService {
 		Subscriber currentEntity = null;
 		try {
 			currentEntity = subscriberMapper.getSubscriberByUserId(subscriber.getUserId());
+			this.updateMetas(nbCorrelator, subscriber.getUserId(), subscriber.getMetas());
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);
 		}
 		
 		// select the list of changes to audit trail...
-		Collection<SubscriberAuditTrial> newAuditTrails = new ArrayList<SubscriberAuditTrial>();
+//		Collection<SubscriberAuditTrial> newAuditTrails = new ArrayList<SubscriberAuditTrial>();
 		
-		if(currentEntity.getContractState() != null && currentEntity.getContractState() != subscriber.getContractState()) {
-			SubscriberAuditTrial historyEvent = new SubscriberAuditTrial(subscriber.getUserId(), 
-																		new Date(), 
-																		Subscriber.CONTRACT_STATE, 
-																		subscriber.getContractState().name(),
-																		"system-user");
-			newAuditTrails.add(historyEvent);
-		}
+//		if(currentEntity.getContractState() != null && currentEntity.getContractState() != subscriber.getContractState()) {
+//			SubscriberAuditTrial historyEvent = new SubscriberAuditTrial(subscriber.getUserId(), 
+//																		new Date(), 
+//																		Subscriber.CONTRACT_STATE, 
+//																		subscriber.getContractState().name(),
+//																		"system-user");
+//			newAuditTrails.add(historyEvent);
+//		}
 	
-		try {
-			subscriberMapper.updateSubscriber(subscriber);
-			for (SubscriberAuditTrial subscriberHistory : newAuditTrails) {
-				subscriberMapper.insertSubscriberHistory(subscriberHistory);
-			}
-			List<Meta> listMetas=new ArrayList<Meta>(subscriber.getMetas());
-			boolean isMetasSet=setMeta(nbCorrelator,subscriber.getUserId(),listMetas);
-		} catch (PersistenceException e) {
-			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);
-		}
+//		try {
+//			subscriberMapper.updateSubscriber(subscriber);
+//			for (SubscriberAuditTrial subscriberHistory : newAuditTrails) {
+//				subscriberMapper.insertSubscriberHistory(subscriberHistory);
+//			}
+//			List<Meta> listMetas=new ArrayList<Meta>(subscriber.getMetas());
+//			boolean isMetasSet=setMeta(nbCorrelator,subscriber.getUserId(),listMetas);
+//		} catch (PersistenceException e) {
+//			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+//			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);
+//		}
 		return true;
 	}
 //Made this method as a private method to invoke when a subscriber is created or updated
@@ -238,7 +240,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 		
 		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
-		List<String> metaKeys = this.getKeys(metas);
+		List<String> metaKeys = this.getKeysAsList(metas);
 		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId, metaKeys);
 		logger.debug("current metas values are of size " + currentMetas.size());
 
@@ -250,13 +252,18 @@ public class SubscriberServiceImpl implements SubscriberService {
 			boolean isUpdate = false;
 			for(Meta currentMeta: currentMetas) {
 				if(meta.getKey().equals(currentMeta.getKey())) {
-					SubscriberAuditTrial history = new SubscriberAuditTrial(userId, 
-																			new Date(), 
-																			meta.getKey(), 
-																			meta.getValue(), 
-																			"system-user");
+					/**
+					 * Audit Trail will be ignored temporarily until all core requisite functionalit is out...
+					 */
+//					SubscriberAuditTrial history = new SubscriberAuditTrial(userId, 
+//																			new Date(), 
+//																			meta.getKey(), 
+//																			meta.getValue(), 
+//																			"system-user");
 					try {
-						subscriberMapper.updateSubscriberMeta(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))), meta, new Date());
+						SubscriberMeta subscriberMeta = new SubscriberMeta(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))),
+														meta.getKey(), meta.getValue());
+						subscriberMapper.updateSubscriberMeta(subscriberMeta);
 					} catch (PersistenceException e) {
 						logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
@@ -273,7 +280,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	//this is being called from some methods,need some clarity to refactor this
 	@Override
 	@Transactional
-	public boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError {
+	public boolean updateMetas(String nbCorrelator, String userId, Collection<Meta> metas) throws PersistenceError {
 		logger.debug("Method setMetas is  called");
 
 		if(userId == null || userId.isEmpty())
@@ -284,7 +291,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 		
 		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
-		List<String> metaKeys = this.getKeys(metas);
+		List<String> metaKeys = this.getKeysAsList(metas);
 		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId, metaKeys);
 		logger.debug("current metas values are of size " + currentMetas.size());
 
@@ -296,13 +303,19 @@ public class SubscriberServiceImpl implements SubscriberService {
 			boolean isUpdate = false;
 			for(Meta currentMeta: currentMetas) {
 				if(meta.getKey().equals(currentMeta.getKey())) {
-					SubscriberAuditTrial history = new SubscriberAuditTrial(userId, 
-																			new Date(), 
-																			meta.getKey(), 
-																			meta.getValue(), 
-																			"system-user");
+					/**
+					 * Audit Trail is ignored until core functionality is thru...
+					 */
+//					SubscriberAuditTrial history = new SubscriberAuditTrial(userId, 
+//																			new Date(), 
+//																			meta.getKey(), 
+//																			meta.getValue(), 
+//																			"system-user");
 					try {
-						subscriberMapper.updateSubscriberMeta(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))), meta, new Date());
+						SubscriberMeta subscriberMeta = new SubscriberMeta(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))),
+																			meta.getKey(), meta.getValue());
+						subscriberMapper.updateSubscriberMeta(subscriberMeta);
+						logger.debug("Meta updated: " + subscriberMeta);
 					} catch (PersistenceException e) {
 						logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
@@ -316,6 +329,56 @@ public class SubscriberServiceImpl implements SubscriberService {
 		return true;
 	}
 
+	@Override
+	@Transactional
+	public boolean createMetas(String nbCorrelator, String userId, Collection<Meta> metas) throws PersistenceError {
+		logger.debug("Method setMetas is  called");
+
+		if(userId == null || userId.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'userId' provided was null!!"));
+
+		if(metas == null || metas.isEmpty())
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'metaKeys' provided was null!!"));
+
+		
+//		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
+		List<String> metaKeys = this.getKeysAsList(metas);
+		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId, metaKeys);
+		logger.debug("current metas values are of size " + currentMetas.size());
+
+		for(Meta meta: metas) {
+			logger.debug("Processing meta: " + meta);
+			if(meta == null || meta.getKey() == null || meta.getValue() == null || meta.getValue().trim().length() == 0) 
+				continue;
+
+			boolean isUpdate = false;
+			for(Meta currentMeta: currentMetas) {
+				if(meta.getKey().equals(currentMeta.getKey())) {
+					/**
+					 * Audit Trail is ignored until core functionality is thru...
+					 */
+//					SubscriberAuditTrial history = new SubscriberAuditTrial(userId, 
+//																			new Date(), 
+//																			meta.getKey(), 
+//																			meta.getValue(), 
+//																			"system-user");
+					try {
+						SubscriberMeta subscriberMeta = new SubscriberMeta(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))),
+																			meta.getKey(), meta.getValue());
+						subscriberMapper.insertSubscriberMeta(subscriberMeta);
+						logger.debug("Meta updated: " + subscriberMeta);
+					} catch (PersistenceException e) {
+						logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
+						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);					
+					} catch (FrameworkException e) {
+						logger.error(nbCorrelator, "Could not prepare entity for persistence. Cause: Encrypting Identities", e);
+						throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, "Failed to encrypt Subscriber identities!!"), e);
+					}
+				}
+			}
+		}
+		return true;
+	}
 	
 	@Override
 	public List<Meta> getMetas(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError {
@@ -491,8 +554,15 @@ public class SubscriberServiceImpl implements SubscriberService {
 	
 
 
-	private List<String> getKeys(List<Meta> metas) {
+	private List<String> getKeysAsList(Collection<Meta> metas) {
 		List<String> keys = new ArrayList<String>();
+		for (String key: keys)
+			keys.add(key);
+		return keys;
+	}
+	
+	private Collection<String> getKeysAsCollection(Collection<Meta> metas) {
+		Collection<String> keys = new ArrayList<String>();
 		for (String key: keys)
 			keys.add(key);
 		return keys;

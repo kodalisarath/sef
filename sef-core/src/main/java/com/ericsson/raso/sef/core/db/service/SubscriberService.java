@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.core.db.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.ericsson.raso.sef.core.Meta;
@@ -16,9 +17,6 @@ public interface SubscriberService {
 	
 	boolean deleteSubscriber(String nbCorrelator, String userId) throws PersistenceError;
 	
-	boolean setMetas(String nbCorrelator, String userId, List<Meta> metas) throws PersistenceError;
-	
-	List<Meta> getMetas(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError;
 	
 	List<SubscriberAuditTrial> getSubscriberHistory(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError;
 	
@@ -28,5 +26,11 @@ public interface SubscriberService {
 	
 	Subscriber getSubscriber(String nbCorrelator, String msisdn) throws PersistenceError;
 
+	boolean createMetas(String nbCorrelator, String userId, Collection<Meta> metas) throws PersistenceError;
+
+	boolean updateMetas(String nbCorrelator, String userId, Collection<Meta> metas) throws PersistenceError;
+
+	List<Meta> getMetas(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError;
+	
 	
 }

@@ -9,9 +9,11 @@ import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.model.SmSequence;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
+import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 
 public interface SubscriberMapper {
 	int isSubscriberExists(String msisdn);
+	
 	void createSubscriber(Subscriber subscriber);
 	
 	void deleteSubscriber(String userId);
@@ -26,9 +28,9 @@ public interface SubscriberMapper {
 	
 	Collection<Meta> getAllSubscriberMetas(String userId);
 	
-	void insertSubscriberMeta(Meta subscriberMeta, Date creationDate, Date modifiedDate);
+	void insertSubscriberMeta(SubscriberMeta subscriberMeta);
 
-	void updateSubscriberMeta(String userId, Meta subscriberMeta, Date date);
+	void updateSubscriberMeta(SubscriberMeta subscriberMeta);
 
 	void insertSubscriberHistory(SubscriberAuditTrial subscriberHistory);
 	

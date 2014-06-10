@@ -31,70 +31,74 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteCustomerProcessor.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		
-		logger.info("CreateOrWriteCustomerProcessor: process()");
-		
-		CreateOrWriteCustomerRequest request = (CreateOrWriteCustomerRequest) exchange.getIn().getBody();
-		
-			Map<String,String> metas = new HashMap<String,String>();
-			metas.put("category", request.getCategory());
-			metas.put("billCycleId", String.valueOf(request.getBillCycleId()));
-			metas.put("messageId",  String.valueOf(request.getMessageId()));
-			metas.put("package",  "initialSC");
-			
-			
-			IConfig config = SefCoreServiceResolver.getConfigService();
-		
-			
-			String preAtivePeriodStr = config.getValue("GLOBAL", SmartConstants.PREACTIVE_PERIOD);		
-			String milliSecMultiplier = config.getValue("GLOBAL", SmartConstants.MILLISEC_MULTIPLIER);	
-			long preActivePeriod = Long.valueOf(preAtivePeriodStr)*Long.valueOf(milliSecMultiplier);
-			
-			Date preActiveEndDate = new Date(System.currentTimeMillis() + preActivePeriod);
-			
-			List<Meta> useCaseMetas = new ArrayList<Meta>();
-			Meta meta = new Meta();
-			meta.setKey(SmartConstants.PREACTIVE_ENDDATE);
-			meta.setValue(DateUtil.convertDateToString(preActiveEndDate, config.getValue("GLOBAL",SmartConstants.DATE_FORMAT)));
-			useCaseMetas.add(meta);
-			
-			meta.setKey("HANDLE_LIFE_CYCLE");
-			meta.setValue("UPDATE_CONTRACT_STATE");
-			useCaseMetas.add(meta);
-			
-			String requestId = RequestContextLocalStore.get().getRequestId();
-			Subscriber subscriber = new Subscriber();
-			subscriber.setMsisdn(request.getCustomerId());
-			subscriber.setMetas(metas);
-			
-			createSubscriber(requestId,subscriber);
-			
-			logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
-			//TODO: commented out until BC is ready. If you see this code commented beyond 5th June 2014, its a broken implementation 
-			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-			iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), Arrays.asList(meta));
-			
-			// 	 TODO:  To be completed after scheduler is ready
-			//String id = iSubscriberRequest.readSubscriber(requestId, request.getCustomerId());
-			// RecycleJobCommand command = new RecycleJobCommand(subscriber, preActiveEndDate);
-			// command.execute();
 
-			logger.info("Sending subscriber response");
-			DummyProcessor.response(exchange);
+		logger.info("CreateOrWriteCustomerProcessor: process()");
+
+		CreateOrWriteCustomerRequest request = (CreateOrWriteCustomerRequest) exchange.getIn().getBody();
+
+		// Metas...
+		Map<String,String> metas = new HashMap<String,String>();
+		metas.put("category", request.getCategory());
+		metas.put("billCycleId", String.valueOf(request.getBillCycleId()));
+		metas.put("messageId",  String.valueOf(request.getMessageId()));
+		metas.put("package",  "initialSC");
 		
+		IConfig config = SefCoreServiceResolver.getConfigService();
+
+
+		String preAtivePeriodStr = config.getValue("GLOBAL", SmartConstants.PREACTIVE_PERIOD);		
+		String milliSecMultiplier = config.getValue("GLOBAL", SmartConstants.MILLISEC_MULTIPLIER);	
+		long preActivePeriod = Long.valueOf(preAtivePeriodStr)*Long.valueOf(milliSecMultiplier);
+
+		Date preActiveEndDate = new Date(System.currentTimeMillis() + preActivePeriod);
+
+		List<Meta> useCaseMetas = new ArrayList<Meta>();
+		Meta meta = new Meta();
+		meta.setKey(SmartConstants.PREACTIVE_ENDDATE);
+		meta.setValue(DateUtil.convertDateToString(preActiveEndDate, config.getValue("GLOBAL",SmartConstants.DATE_FORMAT)));
+		useCaseMetas.add(meta);
+
+		meta.setKey("HANDLE_LIFE_CYCLE");
+		meta.setValue("UPDATE_CONTRACT_STATE");
+		useCaseMetas.add(meta);
+		logger.debug("Subscribe Metas: " + metas);
+
+		// Subscriber...
+		String requestId = RequestContextLocalStore.get().getRequestId();
+		Subscriber subscriber = new Subscriber();
+		subscriber.setMsisdn(request.getCustomerId());
+		subscriber.setMetas(metas);
+
+		// Creating user first...
+		createSubscriber(requestId,subscriber);
+
+		
+		logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), useCaseMetas);
+		//iSubscriberRequest.updateSubscriber(requestId, subscriberId, metas)
+		
+		// 	 TODO:  To be completed after scheduler is ready
+		//String id = iSubscriberRequest.readSubscriber(requestId, request.getCustomerId());
+		// RecycleJobCommand command = new RecycleJobCommand(subscriber, preActiveEndDate);
+		// command.execute();
+
+		logger.info("Sending subscriber response");
+		DummyProcessor.response(exchange);
+
 	}
 
 	private SubscriberInfo createSubscriber(String requestId, Subscriber subscriber) {
 		logger.info("Invoking create subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		
+
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 
 		iSubscriberRequest.createSubscriber(requestId, subscriber);
 
-		
+
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
