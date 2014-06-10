@@ -106,6 +106,7 @@ public class ReadSubscriber extends AbstractTransaction {
 							+ e.getMessage(), e);
 			((ReadSubscriberResponse) this.getResponse()).setReturnFault(e);
 			sendResponse();
+			return false;
 		} catch (FrameworkException e1) {
 			LOGGER.error(
 					"ReadSubscriber FrameworkException caught "
@@ -114,6 +115,7 @@ public class ReadSubscriber extends AbstractTransaction {
 					.setReturnFault(new TransactionException(e1.getComponent(),
 							e1.getStatusCode()));
 			sendResponse();
+			return false;
 		} finally {
 
 		}
