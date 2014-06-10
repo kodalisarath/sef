@@ -147,14 +147,37 @@ public class ReadSubscriber extends AbstractTransaction {
 			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber, products);
 
 		}
+		
+		else
+			if (this.getResponse() != null) {
+				if (this.getResponse().getAtomicStepResults() != null) {
+					for (Step<?> step: this.getResponse().getAtomicStepResults().keySet()) {
+						AbstractStepResult stepResult = this.getResponse().getAtomicStepResults().get(step);
+						if (stepResult == null) {
+							if (step instanceof PersistenceStep) //TODO: this is temporary fix until DB Tier is fixed. Vinay is working on the same.  
+								continue;
+							else {
+								LOGGER.debug("quick check for type:" + step);
+							}
+						} else if (stepResult.getResultantFault() != null) {
+							txnStatus.setComponent(stepResult.getResultantFault().getComponent());
+							txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
+							txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
+							LOGGER.debug("ReadSubscriber::=> Transaction Status: " + txnStatus);
+							//result = false;
+							break;
+						}
+					}
+				}
+			}
 
-		TransactionException fault = this.getResponse().getReturnFault();
+/*		TransactionException fault = this.getResponse().getReturnFault();
 		if ( fault != null) {
 			txnStatus.setCode(fault.getStatusCode().getCode());
 			txnStatus.setDescription(fault.getStatusCode().getMessage());
 			txnStatus.setComponent(fault.getComponent());
 		}
-		
+*/		
 		
 		LOGGER.debug("Invoking read subscriber response!!");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
