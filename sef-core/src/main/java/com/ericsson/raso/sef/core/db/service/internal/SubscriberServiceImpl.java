@@ -584,8 +584,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 		Boolean returnValue;
 		int countSubscriber;
 		if(subscriber == null){
-				throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was null!!"));
+	logger.error("The 'msisdn' provided was null!!");
+			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was null!!"));
 		}else if(subscriber.isEmpty()){
+			logger.error("The 'msisdn' provided was empty!!");
 			throw new PersistenceError(null, this.getClass().getName(), new ResponseCode(ApplicationContextError, "The 'msisdn' provided was empty!!"));
 		}
 		String msisdn=null;
