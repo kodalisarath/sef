@@ -11,7 +11,7 @@ import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
 import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
 
 public interface SubscriberMapper {
-	int isSubscriberExists(String msisdn);
+	Integer isSubscriberExists(String msisdn);
 	
 	void createSubscriber(Subscriber subscriber);
 	
