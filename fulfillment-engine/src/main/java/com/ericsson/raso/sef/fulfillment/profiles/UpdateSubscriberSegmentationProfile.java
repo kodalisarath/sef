@@ -24,7 +24,6 @@ public class UpdateSubscriberSegmentationProfile extends BlockingFulfillment<Pro
 	
 	public UpdateSubscriberSegmentationProfile(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -69,6 +68,14 @@ public class UpdateSubscriberSegmentationProfile extends BlockingFulfillment<Pro
 			throws FulfillmentException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public List<ServiceOffering> getServiceOfferings() {
+		return serviceOfferings;
+	}
+
+	public void setServiceOfferings(List<ServiceOffering> serviceOfferings) {
+		this.serviceOfferings = serviceOfferings;
 	}
 
 	@Override

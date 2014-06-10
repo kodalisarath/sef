@@ -13,6 +13,7 @@ import com.ericsson.raso.sef.bes.prodcat.ServiceRegistry;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
+import com.ericsson.raso.sef.fulfillment.profiles.FulfillmentProfile;
 
 /**
  * Hello world!
@@ -604,15 +605,10 @@ public class OfferUtil
 		
 		//lookupResourcesByName.put("DnsUpdateAF_Cmd", helper.createDnsUpdateProfile("DnsUpdateAF_Cmd", "DNS Update Profile"));
 		lookupResourcesByName.put("CreateSubscriber", helper.createCreateSubscriberProfile("CreateSubscriber", "Create a new Subscriber"));
-
-
 		lookupResourcesByName.put("DeleteSubscriber", helper.createDeleteSuscriberProfile("DeleteSubscriber", "Delete Subscriber"));
-		
 		//lookupResourcesByName.put("GetAccountDetails", helper.createGetAccountDetailsProfile("GetAccountDetails", "Get Account Details"));
 		//lookupResourcesByName.put("GetBalanceAndDate_Cmd", helper.createGetBalanceAndDateProfile("GetBalanceAndDate_Cmd", "Get Balance and Date"));
 		
-		lookupResourcesByName.put("ModifyTagging", helper.createGetAccountDetailsProfile("ModifyTagging", "Modify Subscriber Tagging"));
-//
 //		lookupResourcesByName.put("PreloadUpdateServiceClass_Cmd", helper.createUpdateServiceClassProfile("PreloadUpdateServiceClass_Cmd", "Get Account Details"));
 //		lookupResourcesByName.put("PreloadAddPAM_Cmd", helper.createAddPeriodicAccountManagementProfile("PreloadAddPAM_Cmd", "Get Balance and Date"));
 //		lookupResourcesByName.put("PreloadUpdSubsSeg_Cmd", helper.createUpdateSubscriberSegmentationProfile("PreloadUpdSubsSeg_Cmd", "Get Account Details"));
@@ -635,6 +631,25 @@ public class OfferUtil
 			Resource resource = entry.getValue ();
 			serviceRegistry.createResource(resource);
 		}
+		
+		
+		Resource accountBlockingBit =  helper.createServiceOfferingProfile("SetAccountActivationBlockingBit", "Tag Subsriber AccountActivation", 1, true);
+		Resource recycleBit = helper.createServiceOfferingProfile("SeRecycleBit", "Tag Subsriber Recycle", 2, true);
+		Resource barGeneralBit = helper.createServiceOfferingProfile("SetBarGeneralBit", "Tag Subsriber BarGeneral", 3, true);
+		Resource barOtherBit = helper.createServiceOfferingProfile("SetBarOtherBit", "Tag Subsriber BarOther", 4, true);
+		Resource barIrmBit = helper.createServiceOfferingProfile("SetBarIRMBit", "Tag Subsriber BarIRM", 5, true);
+		Resource specialFraudBit = helper.createServiceOfferingProfile("SetSpecialFraudBit", "Tag Subsriber SpecialFraud", 6, true);
+		Resource forcedDeleteBit = helper.createServiceOfferingProfile("SetForcedDeleteBit", "Tag Subsriber ForcedDelete", 7	, true);
+		Resource resetBit = helper.createServiceOfferingProfile("SetResetBit", "Tag Subsriber Reset", 0, false);
+
+		serviceRegistry.createResource(accountBlockingBit);
+		serviceRegistry.createResource(recycleBit);
+		serviceRegistry.createResource(barGeneralBit);
+		serviceRegistry.createResource(barOtherBit);
+		serviceRegistry.createResource(barIrmBit);
+		serviceRegistry.createResource(specialFraudBit);
+		serviceRegistry.createResource(forcedDeleteBit);
+		serviceRegistry.createResource(resetBit);
 
 		// ----------------------------------------------------------
 		// --- creating all the offer products
@@ -3669,6 +3684,72 @@ public class OfferUtil
 		
 		offer = helper.createNonCommercialOffer("CREATE_SUBSCRIBER", "Create Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
+		// ----------------------------------------------------------
+		// Offers for Modify Tagging....
+		// ----------------------------------------------------------
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("accountBlockingBit");
+		offerResources.add(accountBlockingBit);
+		offer = helper.createNonCommercialOffer("accountBlockingBit", "Service Offering Account Blocking", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("recycleBit");
+		offerResources.add(recycleBit);
+		offer = helper.createNonCommercialOffer("recycleBit", "Service Offering Recycle", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		
+		
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("barGeneralBit");
+		offerResources.add(barGeneralBit);
+		offer = helper.createNonCommercialOffer("barGeneralBit", "Service Offering Bar General", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		
+		
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("barIrmBit");
+		offerResources.add(barIrmBit);
+		offer = helper.createNonCommercialOffer("barIrmBit", "Service Offering Bar Other", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("barOtherBit");
+		offerResources.add(barOtherBit);
+		offer = helper.createNonCommercialOffer("barOtherBit", "Service Offering Bar Other", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		
+		
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("specialFraudBit");
+		offerResources.add(specialFraudBit);
+		offer = helper.createNonCommercialOffer("specialFraudBit", "Service Offering Special Fraud", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		
+		
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("forcedDeleteBit");
+		offerResources.add(forcedDeleteBit);
+		offer = helper.createNonCommercialOffer("forcedDeleteBit", "Service Offering Special Fraud", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		
+		
+		offerResources = new ArrayList<Resource>();
+		planCodes = new HashSet<String>();
+		planCodes.add("resetBit");
+		offerResources.add(resetBit);
+		offer = helper.createNonCommercialOffer("resetBit", "Service Offering ResetBit", planCodes, offerResources);
+		offerManager.createOffer(offer);
+		
+		
+		
 //		// ----------------------------------------------------------
 //		// Offer.name=READ_SUBSCRIBER
 //		// ----------------------------------------------------------

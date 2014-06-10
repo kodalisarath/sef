@@ -46,7 +46,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 		
 		
-		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity;
+		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = null;
 		try {
 			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
 			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
@@ -68,9 +68,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e1));
 		}
-		
-		
-		
+	
 		return true;
 	}
 	

@@ -1,6 +1,10 @@
 package com.ericsson.raso.sef.client.air.command;
 
+import java.util.List;
+
 import com.ericsson.raso.sef.client.air.internal.CsAirContext;
+import com.ericsson.raso.sef.client.air.request.GetAccountDetailsRequest;
+import com.ericsson.raso.sef.client.air.request.ServiceOffering;
 import com.ericsson.raso.sef.client.air.request.UpdateSubscriberSegmentRequest;
 import com.ericsson.raso.sef.client.air.response.SegmentationResponse;
 import com.ericsson.raso.sef.core.ResponseCode;
@@ -25,4 +29,7 @@ public class UpdateSubscriberSegmentationCmd extends AbstractAirCommand<Segmenta
 		}
 		return response;
 	}
+	
+	
+	
 }

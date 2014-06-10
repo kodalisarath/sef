@@ -24,6 +24,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.State;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
 import com.ericsson.raso.sef.bes.prodcat.policies.AccumulateUnlimited;
 import com.ericsson.raso.sef.bes.prodcat.policies.SwitchUnlimited;
+import com.ericsson.raso.sef.client.air.request.ServiceOffering;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
 import com.ericsson.raso.sef.fulfillment.profiles.AddPeriodicAccountManagementDataProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.CreateSubscriberProfile;
@@ -262,6 +263,69 @@ public class PromoHelper {
 		
 		return resource;		
 	}	
+	
+	public Resource createServiceOfferingProfile(String name, String description, int soId, boolean activeFlag) throws Exception
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+		UpdateSubscriberSegmentationProfile fulfillmentProfile = new UpdateSubscriberSegmentationProfile(name);
+		
+		ServiceOffering soInfo = new ServiceOffering();
+		soInfo.setServiceOfferingId(soId);
+		soInfo.setServiceOfferingActiveFlag(activeFlag);
+		List<ServiceOffering> serviceOfferings = new ArrayList<ServiceOffering>();
+		serviceOfferings.add(soInfo);
+		
+		fulfillmentProfile.setServiceOfferings(serviceOfferings);
+		
+		
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;		
+	}
+	
+	public Resource createSmartServiceOfferingProfile(String name, String description, int soId, boolean activeFlag) throws Exception
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+		
+		UpdateSubscriberSegmentationProfile fulfillmentProfile = new UpdateSubscriberSegmentationProfile(name);
+		
+		List<ServiceOffering> serviceOfferings = new ArrayList<ServiceOffering>();
+		for (int i=0; i<8; i++ ) {
+			ServiceOffering soInfo = new ServiceOffering();
+			if (soId == 0) {
+				soInfo.setServiceOfferingId(soId);
+				soInfo.setServiceOfferingActiveFlag(false);
+			} else {
+				soInfo.setServiceOfferingId(soId);
+				soInfo.setServiceOfferingActiveFlag((soId==i));
+			}
+			serviceOfferings.add(soInfo);
+		}
+		
+		fulfillmentProfile.setServiceOfferings(serviceOfferings);
+		
+		
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		
+		return resource;		
+	}
 	
 	public Resource createUpdateSubscriberSegmentationProfile(String name, String description) throws Exception
 	{

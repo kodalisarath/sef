@@ -44,9 +44,6 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 	@Override
 	public String createSubscriber(String requestId, com.ericsson.sef.bes.api.entities.Subscriber subscriber) {
-		if (subscriber == null) {
-			logger.debug("Subscriber is empty");
-		}
 		CreateSubscriber command = new CreateSubscriber(requestId, subscriber);
 		executor.submit(command);
 		return requestId;

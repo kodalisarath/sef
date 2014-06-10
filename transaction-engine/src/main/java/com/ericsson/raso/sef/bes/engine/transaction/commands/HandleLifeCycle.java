@@ -86,7 +86,10 @@ public class HandleLifeCycle extends AbstractTransaction{
 
 	private Subscriber updateChanges(Subscriber subscriberEntity, String subscriberId, String lifeCycleState, Map<String, String> map) {
 		
-		subscriberEntity.setContractState(ContractState.valueOf(lifeCycleState));
+		if (lifeCycleState != null && !lifeCycleState.isEmpty()) 
+				subscriberEntity.setContractState(ContractState.valueOf(lifeCycleState));
+		
+		
 		Collection<Meta> existingMetas = subscriberEntity.getMetas();
 		List<Meta> toUpdate = TransactionServiceHelper.getSefCoreList(map);
 		
