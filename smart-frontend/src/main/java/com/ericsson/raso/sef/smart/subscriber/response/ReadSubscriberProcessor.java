@@ -18,9 +18,9 @@ public class ReadSubscriberProcessor implements Processor {
 		String correlationId = (String)objectArray[0];
 	 	TransactionStatus fault =(TransactionStatus)objectArray[1];
 	 	Subscriber subscriber =(Subscriber)objectArray[2];
-	 	logger.debug("Inside process method of subscriber object is "+subscriber.toString());
+	 	logger.debug("Inside process method of subscriber object is "+subscriber);
 	 	SubscriberResponseHandler subscriberResponsehandler=new SubscriberResponseHandler();
-	 	logger.debug("Inside process method of subscriber fault is "+fault.toString() +" correlationId is "+correlationId);
+	 	logger.debug("Inside process method of subscriber fault is "+fault +" correlationId is "+correlationId);
 	 	subscriberResponsehandler.readSubscriber(correlationId, fault, subscriber);
 	}
 
