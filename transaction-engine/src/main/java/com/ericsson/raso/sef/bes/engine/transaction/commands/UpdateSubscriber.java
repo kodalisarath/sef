@@ -41,7 +41,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 			if(subscriberEntity == null) {
 				LOGGER.error("Subscriber not found in database" );
 				
-				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(102,"Subscriber not found")));
+				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504,"Subscriber not found")));
 				sendResponse();
 				return false;
 			}
