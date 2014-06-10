@@ -46,6 +46,8 @@ public abstract class TransactionServiceHelper {
 		try {
 			return subscriberStore.getSubscriber("dynamic-task", subscriberId);
 		} catch (PersistenceError e) {
+			
+			logger.error("TransactionServiceHelper  PersistenceError "+e.getMessage(),e);
 			throw new TransactionException("txe", new ResponseCode(11614, "Unable to fetch Subscriber Profile - Error on DB"));
 		}
 		

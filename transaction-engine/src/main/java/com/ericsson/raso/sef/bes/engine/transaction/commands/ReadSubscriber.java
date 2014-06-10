@@ -87,11 +87,11 @@ public class ReadSubscriber extends AbstractTransaction {
 				}
 			}
 		} catch (TransactionException e) {
-			LOGGER.error("ReadSubscriber TransactionException caugh "+e.getMessage(),e);
-			((ReadSubscriberResponse) this.getResponse()).setReturnFault(e);
+			LOGGER.error("ReadSubscriber TransactionException caught "+e.getMessage(),e);
+			 this.getResponse().setReturnFault(e);
 		} catch (FrameworkException e1) {
-			LOGGER.error("ReadSubscriber FrameworkException caughr "+e1.getMessage(),e1);
-			((ReadSubscriberResponse) this.getResponse()).setReturnFault(new TransactionException(e1.getComponent(), e1.getStatusCode()));
+			LOGGER.error("ReadSubscriber FrameworkException caught "+e1.getMessage(),e1);
+			this.getResponse().setReturnFault(new TransactionException(e1.getComponent(), e1.getStatusCode()));
 		} finally {
 
 		}
