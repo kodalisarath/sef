@@ -1,8 +1,6 @@
 package com.ericsson.raso.sef.smart.processor;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -10,28 +8,21 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.UniqueIdGenerator;
-import com.ericsson.raso.sef.core.db.model.Subscriber;
-import com.ericsson.raso.sef.core.db.service.SubscriberService;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
-import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
-import com.ericsson.raso.sef.smart.usecase.VersionCreateOrWriteCustomerDummyRequest;
 import com.ericsson.raso.sef.smart.usecase.VersionCreateOrWriteCustomerRequest;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.DateTimeParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class VersionCreateOrWriteCustomer implements Processor {
@@ -47,108 +38,44 @@ public class VersionCreateOrWriteCustomer implements Processor {
 			VersionCreateOrWriteCustomerRequest versionCreateOrWriteCustomerRequest = (VersionCreateOrWriteCustomerRequest) exchange
 					.getIn().getBody();
 			logger.debug("Got it!");
+			
+			List<com.ericsson.sef.bes.api.entities.Meta> metas = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("customerId", versionCreateOrWriteCustomerRequest.getCustomerId()));
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("category", versionCreateOrWriteCustomerRequest.getCategory()));
+			if(versionCreateOrWriteCustomerRequest.getvValidFrom()!=null){
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("validFrom", DateUtil.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest.getvValidFrom())));
+			}
+			if(versionCreateOrWriteCustomerRequest.getvInvalidFrom()!=null){
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("vInvalidFrom", DateUtil.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest.getvInvalidFrom())));
+		    }
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("messageId", String.valueOf(versionCreateOrWriteCustomerRequest.getMessageId())));
+			String requestId = RequestContextLocalStore.get().getRequestId();
 
 			// functional service logic to be ported here [Porting work]
 			String customerId = versionCreateOrWriteCustomerRequest.getCustomerId();
-			VersionCreateOrWriteCustomerDummyRequest dummyRequest = new VersionCreateOrWriteCustomerDummyRequest();
-			SubscriberService subscriberService = SefCoreServiceResolver
-					.getSusbcriberStore();
-			// get subscriber based on msisdn
-			// Subscriber subscriber = subscriberService.getSubscriber(customerId);
-			Subscriber subscriber = subscriberService.getSubscriberByUserId(UniqueIdGenerator.generateId(), customerId);
-			// if subscriber is unknown
-			if (subscriber == null) {
-				logger.error("Subscriber is UNKNOWN");
-				throw new SmException(new ResponseCode(504,
-						"Invalid Operation State"));
-			}else{
-			// if subscriber is valid
-			Collection<Meta> metas = subscriber.getMetas();
-			dummyRequest.setSubscriberMeta(metas);
-			String subscriberStatus = subscriber.getContractState().getName();
-			if (subscriberStatus.equalsIgnoreCase("PRE")) {
-				// update subscriber and subscriber_meta table with version
-				for (Meta meta : dummyRequest.getSubscriberMeta()) {
-					String key = meta.getKey();
-					String value = meta.getValue();
-					metas.add(new Meta("category",
-							versionCreateOrWriteCustomerRequest.getCategory()));
-					if (key.equalsIgnoreCase("vValidFrom")) {
-						meta.setValue(DateUtil
-								.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest
-										.getvValidFrom()));
-					}
-					if (key.equalsIgnoreCase("vInvalidFrom")) {
-						meta.setValue(DateUtil
-								.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest
-										.getvInvalidFrom()));
-					}
-					metas.add(new Meta("messageId", String
-							.valueOf(versionCreateOrWriteCustomerRequest
-									.getMessageId())));
-				}
-				DummyProcessor.response(exchange);
-			} else {
-				if (subscriberStatus.equalsIgnoreCase("ACT")) {
-					logger.error("Number is in Active State");
-					throw new SmException(new ResponseCode(4020,
-							"Invalid Operation"));
-				}
-				if (subscriberStatus.equalsIgnoreCase("RECYCLE")) {
-					logger.error("Number is in Deactive state in IL DB");
-					throw new SmException(new ResponseCode(4020,
-							"Invalid Operation"));
-				}
-				// return response code for Subscriber State GRACE with Zero Balance
-				// or Expired ActiveEndDate
-				if (subscriberStatus.equalsIgnoreCase("GRACE")) {
-					// check with zero balance and activeEndDate expiry date
-					// subscriberRequestId =
-					// subscriberRequest.readSubscriber(requestId, subscriberId,
-					// metas);
-					logger.error("Number is in Grace state in IL DB");
-					throw new SmException(new ResponseCode(4020,
-							"Invalid Operation"));
-				}
-			  }
+
+			SubscriberInfo subscriberinfo = readSubscriber(requestId,customerId, metas);
+			if (subscriberinfo == null) {
+				logger.error("Subscriber Not Found. msisdn: "
+						+ versionCreateOrWriteCustomerRequest.getCustomerId());
+				throw new SmException(new ResponseCode(504,"Subscriber Not Found"));
+			} else if (ContractState.ACTIVE.name().equals(subscriberinfo.getLocalState())) {
+				logger.error("Number is in ACTIVE state in IL DB");
+				throw new SmException(new ResponseCode(4020,"Invalid Operation State"));
+			} else if(!ContractState.RECYCLED.name().equals(subscriberinfo.getLocalState())){
+				logger.error("Number is in Deactive state in IL DB");
+				throw new SmException(new ResponseCode(4020,"Invalid Operation State"));
+			}else if(!ContractState.GRACE.name().equals(subscriberinfo.getLocalState())){
+				logger.error("Number is in GRACE state in IL DB");
+				throw new SmException(new ResponseCode(4020,"Invalid Operation State"));
 			}
-
-			// delegate to backend for processing [Standard]
-			logger.debug("Got event class....");
-			String requestId = RequestContextLocalStore.get().getRequestId();
-			ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
-			List<com.ericsson.sef.bes.api.entities.Meta> list = null;
-			Collection<Meta> convertMetas = dummyRequest.getSubscriberMeta();
-			for (Meta meta : convertMetas) {
-				list = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
-				list.addAll((Collection<? extends com.ericsson.sef.bes.api.entities.Meta>) meta);
-			}
-			String correlationId = subscriberRequest.updateSubscriber(requestId,
-					customerId, list);
-			logger.debug("Got past event class....");
-			SubscriberInfo response = new SubscriberInfo();
-			SubscriberResponseStore.put(correlationId, response);
-			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-					.getSemaphore(requestId);
-
-			try {
-				semaphore.init(0);
-				semaphore.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				logger.debug("Exception while sleep     :" + e.getMessage());
-			}
-
-			// Response is received here [Standard]
-			logger.debug("Awake from sleep.. going to check response in store with id: "
-					+ correlationId);
-
-			// functional logic of response handling here.... [Porting work]
-			SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore
-					.get(correlationId);
+			
+			updateSubscriber(requestId, customerId, metas);
 			// send response back to web service client [Porting work]
 			logger.debug("Response purchase received.. now creating front end response");
-			CommandResponseData responseData = createResponse(subInfo, response);
+			CommandResponseData responseData = createResponse(versionCreateOrWriteCustomerRequest.getUsecase()
+					.getOperation(), versionCreateOrWriteCustomerRequest.getUsecase().getModifier(),
+					versionCreateOrWriteCustomerRequest.isTransactional());
 			exchange.getOut().setBody(responseData);
 		} catch (Exception e) {
 			logger.error("Error in the processor",e.getClass().getName());
@@ -156,39 +83,83 @@ public class VersionCreateOrWriteCustomer implements Processor {
 		
 	}
 
-	private CommandResponseData createResponse(SubscriberInfo subInfo,
-			SubscriberInfo response) {
+	private SubscriberInfo readSubscriber(String requestId,String subscriberId, List<com.ericsson.sef.bes.api.entities.Meta> metas) {
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
+				.getSemaphore(requestId);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+		}
+		logger.info("Check if response received for Read subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
+				.remove(requestId);
+		return subscriberInfo;
+
+	}
+	private CommandResponseData createResponse(String operationName,
+			String modifier, boolean isTransactional) {
+		logger.info("Invoking create Response");
 		CommandResponseData responseData = new CommandResponseData();
 		CommandResult result = new CommandResult();
 		responseData.setCommandResult(result);
-		OperationResult operationResult = new OperationResult();
-		// variable not with subscriberRequest
-		/*
-		 * boolean isTransactional = false; if(isTransactional) {
-		 */
-		TransactionResult transactionResult = new TransactionResult();
-		result.setTransactionResult(transactionResult);
-		transactionResult.getOperationResult().add(operationResult);
-		/*
-		 * } else { result.setOperationResult(operationResult); }
-		 */
 
 		Operation operation = new Operation();
-		operation.setModifier("CustomerPreActive");
-		operation.setName("Modify");
-		operationResult.getOperation().add(operation);
+		operation.setName(operationName);
+		operation.setModifier(modifier);
 
-		ParameterList parameterList = new ParameterList();
-		operation.setParameterList(parameterList);
+		OperationResult operationResult = new OperationResult();
 
-		DateTimeParameter dateTimeParameter = new DateTimeParameter();
-		dateTimeParameter.setName(SmartConstants.RESPONSE_PREACTIVE_ENDDATE);
+		if (isTransactional) {
+			TransactionResult transactionResult = new TransactionResult();
+			result.setTransactionResult(transactionResult);
+			transactionResult.getOperationResult().add(operationResult);
+		} else {
+			result.setOperationResult(operationResult);
+		}
 
-		/* java.util.Date preActiveEndDate = null; */
-		dateTimeParameter.setValue(DateUtil.convertDateToUTCtime(new Date()));
-		operation.getParameterList()
-				.getParameterOrBooleanParameterOrByteParameter()
-				.add(dateTimeParameter);
 		return responseData;
+	}
+	
+	private SubscriberInfo updateSubscriber(String requestId,
+			String customer_id, List<com.ericsson.sef.bes.api.entities.Meta> metas) throws SmException {
+		logger.info("Invoking create subscriber on tx-engine subscriber interface");
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
+				.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas);
+
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
+				.getSemaphore(requestId);
+
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+			logger.error("Error while acquire()", this.getClass().getName(), e);
+		}
+		logger.info("Check if response received for create subscriber");
+
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
+				.remove(requestId);
+		if (subscriberInfo != null) {
+			try {
+				if (subscriberInfo.getStatus().getCode() > 0) {
+					ResponseCode resonseCode = new ResponseCode(subscriberInfo
+							.getStatus().getCode(), subscriberInfo.getStatus()
+							.getDescription());
+					throw new SmException(resonseCode);
+				}
+			} catch (Exception e) {
+				logger.error("subscriberInfo fields are null");
+				throw null;
+			}
+		}
+		return subscriberInfo;
 	}
 }
