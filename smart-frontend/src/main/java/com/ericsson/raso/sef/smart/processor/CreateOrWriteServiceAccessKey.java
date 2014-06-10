@@ -105,7 +105,7 @@ else
 				if(subscriberInfo.getStatus().getCode() != 504){
 					if(!ContractState.PREACTIVE.name().equals(subscriberInfo.getLocalState()))
 					{
-						ResponseCode responseCode=new ResponseCode(4020,"");
+						ResponseCode responseCode=new ResponseCode(4020,"Invalid Operation State");
 						throw new SmException(responseCode);
 					}
 				}

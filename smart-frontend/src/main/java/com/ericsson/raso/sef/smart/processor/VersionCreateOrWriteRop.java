@@ -93,24 +93,22 @@ else	if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState()))
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
 				.remove(requestId);
-		if (subscriberInfo != null) {
-			System.out.println(subscriberInfo.getStatus());
-			if (subscriberInfo.getStatus() != null) {
-
-				try {
-					if (subscriberInfo.getStatus().getCode() > 0) {
-						ResponseCode resonseCode = new ResponseCode(
-								subscriberInfo.getStatus().getCode(),
-								subscriberInfo.getStatus().getDescription());
-						throw new SmException(resonseCode);
+		if(subscriberInfo != null){
+			try{
+			if(subscriberInfo.getStatus().getCode() > 0){
+				if(subscriberInfo.getStatus().getCode() != 504){
+					if(!ContractState.PREACTIVE.name().equals(subscriberInfo.getLocalState()))
+					{
+						ResponseCode responseCode=new ResponseCode(4020,"Invalid Operation State");
+						throw new SmException(responseCode);
 					}
-				} catch (Exception e) {
-					logger.error("subscriberInfo fields are null");
-					throw null;
 				}
-
-			}
+				}
+		}catch(Exception e){
+			logger.error("subscriberInfo fields are null",e.getMessage(),e);
+			
 		}
+			}
 		return subscriberInfo;
 	}
 
