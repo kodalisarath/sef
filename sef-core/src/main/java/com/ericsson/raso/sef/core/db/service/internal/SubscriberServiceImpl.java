@@ -193,7 +193,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		Subscriber currentEntity = null;
 		try {
 			currentEntity = subscriberMapper.getSubscriberByUserId(subscriber.getUserId());
-			this.updateMetas(nbCorrelator, subscriber.getUserId(), subscriber.getMetas());
+			this.updateMetas(nbCorrelator, subscriber.getUserId(), currentEntity.getMetas());
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: " + e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(InfrastructureError, e.getMessage()), e);
