@@ -49,8 +49,13 @@ public class ModifyCustomerPreActive implements Processor {
 				String requestId = RequestContextLocalStore.get().getRequestId();
 				SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
 				
-				
-				if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
+				if(subscriberinfo ==null)
+				{
+					logger.error("Subscriber Not Found. msisdn: "
+							+ request.getCustomerId());
+					throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+				}
+				else if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
 				
 					
 					logger.error("Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
