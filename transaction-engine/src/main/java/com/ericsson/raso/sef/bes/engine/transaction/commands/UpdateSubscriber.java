@@ -87,7 +87,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 	public void sendResponse() {
 		
 		LOGGER.debug("Invoking update subscriber response");
-		TransactionStatus txnStatus=null;
+		TransactionStatus txnStatus=new TransactionStatus();
 		boolean result = true;
 		if (this.getResponse() != null) {
 			if (this.getResponse().getAtomicStepResults() != null) {

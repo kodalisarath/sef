@@ -14,6 +14,7 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -98,18 +99,21 @@ public class CreateOrWriteRop implements Processor {
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		if(subscriberInfo != null){
-			
 			try{
-				if(subscriberInfo.getStatus().getCode() > 0){
-					ResponseCode resonseCode = new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription());
-					throw new SmException(resonseCode);
+			if(subscriberInfo.getStatus().getCode() > 0){
+				if(subscriberInfo.getStatus().getCode() != 504){
+					if(!ContractState.PREACTIVE.name().equals(subscriberInfo.getLocalState()))
+					{
+						ResponseCode responseCode=new ResponseCode(4020,"Invalid Operation State");
+						throw new SmException(responseCode);
 					}
-			}catch(Exception e){
-				logger.error("subscriberInfo fields are null");
-				throw null;
-			}
+				}
+				}
+		}catch(Exception e){
+			logger.error("subscriberInfo fields are null",e.getMessage(),e);
 			
 		}
+			}
 		return subscriberInfo;
 	}
 	
