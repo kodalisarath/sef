@@ -19,16 +19,21 @@ public class ReadSubscriberProcessor implements Processor{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void process(Exchange arg0) throws Exception {
+		final Logger logger = LoggerFactory.getLogger(ReadSubscriberProcessor.class);
+		try{
+			logger.debug("Read Subscriber Profile request received!!");
+			logger.debug("Before delegation...");
+			Object[] objectArray = (Object[]) arg0.getIn().getBody(Object[].class);
+			String requestId = (String) objectArray[0];
+			String subscriberId = (String) objectArray[1];
+			List<Meta> metas = (List<Meta>) objectArray[2];
+			TransactionManager transactionManager = ServiceResolver.getTransactionManager();
+			logger.debug("received input parameters");
+			transactionManager.readSubscriber(requestId, subscriberId, TransactionServiceHelper.getApiMap(metas));
+		}catch(Exception e){
+			logger.error("Error in processor class",this.getClass().getName(),e);
+		}
 		
-		logger.debug("Read Subscriber Profile request received!!");
-		logger.debug("Before delegation...");
-		Object[] objectArray = (Object[]) arg0.getIn().getBody(Object[].class);
-		String requestId = (String) objectArray[0];
-		String subscriberId = (String) objectArray[1];
-		List<Meta> metas = (List<Meta>) objectArray[2];
-		TransactionManager transactionManager = ServiceResolver.getTransactionManager();
-		logger.debug("received input parameters");
-		transactionManager.readSubscriber(requestId, subscriberId, TransactionServiceHelper.getApiMap(metas));
 		
 	}
 	

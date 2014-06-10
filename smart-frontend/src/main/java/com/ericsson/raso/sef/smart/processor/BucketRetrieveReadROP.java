@@ -32,32 +32,38 @@ public class BucketRetrieveReadROP implements Processor {
 	
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		// get the method signature of web service [Standard]
-		logger.debug("Getting exchange body....");
-		BucketRetrieveReadROPRequest bucketRetrieveReadROPRequest = (BucketRetrieveReadROPRequest) exchange
-				.getIn().getBody();
-		logger.debug("Got it!");
+		try {
+			// get the method signature of web service [Standard]
+			logger.debug("Getting exchange body....");
+			BucketRetrieveReadROPRequest bucketRetrieveReadROPRequest = (BucketRetrieveReadROPRequest) exchange
+					.getIn().getBody();
+			logger.debug("Got it!");
+			
+			// functional service logic to be ported here [Porting work]
+			List<Meta> metas = new ArrayList<Meta>();
+			metas.add(new Meta("command", bucketRetrieveReadROPRequest.getCommand()));
+			metas.add(new Meta("customerid", bucketRetrieveReadROPRequest.getCustomerId()));
+			Usecase smartUsecase = bucketRetrieveReadROPRequest.getUsecase();
+			String operationName = smartUsecase.getOperation();
+			String operationModifier = smartUsecase.getModifier();
+			
+			String requestId = RequestContextLocalStore.get().getRequestId();
+			SubscriberInfo subscriberinfo = readSubscriber(requestId, bucketRetrieveReadROPRequest.getCustomerId(),metas);
+			// need error code response for EntireReadSubscriber
+					if(subscriberinfo == null) {
+						/*throw new SmException(new ResponseCode(-111,
+								"13423#EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + readRequest.getCustomerId()
+										+ " does not exist"));*/
+						throw new SmException(new ResponseCode(504, "13423#Bucket Retrieve Read ROP Entity - Customer with primary key Keyname:PK,CustomerId: " + bucketRetrieveReadROPRequest.getCustomerId()
+								+ " does not exist"));
+					}
+			CommandResponseData responseData = createResponse(bucketRetrieveReadROPRequest.getUsecase().getOperation(), bucketRetrieveReadROPRequest.getUsecase().getModifier(),bucketRetrieveReadROPRequest.isTransactional());
+			exchange.getOut().setBody(responseData);
+			
+		} catch (Exception e) {
+			logger.error("Error in processor class:",this.getClass().getName(),e);
+		}
 		
-		// functional service logic to be ported here [Porting work]
-		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta("command", bucketRetrieveReadROPRequest.getCommand()));
-		metas.add(new Meta("customerid", bucketRetrieveReadROPRequest.getCustomerId()));
-		Usecase smartUsecase = bucketRetrieveReadROPRequest.getUsecase();
-		String operationName = smartUsecase.getOperation();
-		String operationModifier = smartUsecase.getModifier();
-		
-		String requestId = RequestContextLocalStore.get().getRequestId();
-		SubscriberInfo subscriberinfo = readSubscriber(requestId, bucketRetrieveReadROPRequest.getCustomerId(),metas);
-		// need error code response for EntireReadSubscriber
-				if(subscriberinfo == null) {
-					/*throw new SmException(new ResponseCode(-111,
-							"13423#EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + readRequest.getCustomerId()
-									+ " does not exist"));*/
-					throw new SmException(new ResponseCode(504, "13423#Bucket Retrieve Read ROP Entity - Customer with primary key Keyname:PK,CustomerId: " + bucketRetrieveReadROPRequest.getCustomerId()
-							+ " does not exist"));
-				}
-		CommandResponseData responseData = createResponse(bucketRetrieveReadROPRequest.getUsecase().getOperation(), bucketRetrieveReadROPRequest.getUsecase().getModifier(),bucketRetrieveReadROPRequest.isTransactional());
-		exchange.getOut().setBody(responseData);
 				
 	}
 	

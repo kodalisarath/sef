@@ -40,9 +40,8 @@ public class RetrieveDeleteProcessor implements Processor {
 	
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		// TODO Auto-generated method stub
-
-		RetrieveDeleteRequest request = (RetrieveDeleteRequest) exchange.getIn().getBody();
+		try {
+			RetrieveDeleteRequest request = (RetrieveDeleteRequest) exchange.getIn().getBody();
 			String requestId = RequestContextLocalStore.get().getRequestId();
 		
 			//SmartContext.getSubscriberManagement().changeContractState(request.getCustomerId(), ContractState.READY_TO_DELETE, null);
@@ -51,6 +50,9 @@ public class RetrieveDeleteProcessor implements Processor {
 			
 			
 			exchange.getOut().setBody(response(requestId,request.getCustomerId(), request.getUsecase().getOperation(), request.getUsecase().getModifier(), request.isTransactional() ));
+		} catch (Exception e) {
+			logger.error("Error in processor class:",e.getClass().getName(),e);
+		}
 		 
 	}
 	

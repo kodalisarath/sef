@@ -30,8 +30,9 @@ public class BucketCreateOrWriteRop implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteCustomerProcessor.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		BucketCreateOrWriteRopRequest request = (BucketCreateOrWriteRopRequest) exchange.getIn().getBody();
-		
+		try{
+			BucketCreateOrWriteRopRequest request = (BucketCreateOrWriteRopRequest) exchange.getIn().getBody();
+			
 			List<Meta> metas = new ArrayList<Meta>();
 			metas.add(new Meta("category", request.getCategory()));
 			metas.add(new Meta("key", String.valueOf(request.getKey())));
@@ -44,6 +45,10 @@ public class BucketCreateOrWriteRop implements Processor {
 			
 			CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional());
 			exchange.getOut().setBody(responseData);
+		}catch(Exception e){
+			logger.error("Error in processor class:",this.getClass().getName(),e);
+		}
+	
 		
 	}
 	
@@ -83,7 +88,7 @@ public class BucketCreateOrWriteRop implements Processor {
 		semaphore.init(0);
 		semaphore.acquire();
 		} catch(InterruptedException e) {
-			
+			logger.error("Error while acquire()",this.getClass().getName(),e);
 		}
 		
 		logger.info("Check if response received for create subscriber");

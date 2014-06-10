@@ -36,58 +36,63 @@ public class ModifyCustomerPreActive implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(ModifyCustomerPreActive.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
+		try {
+			ModifyCustomerPreActiveRequest request = (ModifyCustomerPreActiveRequest) exchange.getIn().getBody();
+
+			IConfig config = SefCoreServiceResolver.getConfigService();
+			
+				//SubscriberManagement subscriberManagement = SmartContext.getSubscriberManagement();
+				List<String> keys = new ArrayList<String>();
+				keys.add("PreActiveEndDate");
+				
+				//Subscriber subscriber = subscriberManagement.getSubscriberProfile(request.getCustomerId(), keys);
+				String requestId = RequestContextLocalStore.get().getRequestId();
+				SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
+				
+				if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
+				
+					
+					logger.error("Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
+							+ request.getCustomerId());
+					throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
+				}
+
+				Date preActiveEndDate = null;
+				String preActiveEndDateStr = null;
+				try {
+					
+					//preActiveEndDateStr = getMetaValue(subscriber.getMetas(), SmartConstants.PREACTIVE_ENDDATE);
+					preActiveEndDateStr =subscriberinfo.getMetas().get(SmartConstants.PREACTIVE_ENDDATE);
+					String milliSecMultiplier =config.getValue("GLOBAL", SmartConstants.MILLISEC_MULTIPLIER);  
+					
+					preActiveEndDate = DateUtil.convertStringToDate(preActiveEndDateStr, config.getValue("GLOBAL", "dateFormat"));
+					
+					preActiveEndDate = new Date(preActiveEndDate.getTime() + Long.valueOf(request.getDaysOfExtension()) * Long.valueOf(milliSecMultiplier));
+					logger.info("new PreActiveEndDate for msisdn:" + request.getCustomerId() + " is " + preActiveEndDate.toString());
+				} catch (Exception e) {
+					logger.error("Not a valid preActiveEnddate for msisdn: " + request.getCustomerId());
+					throw ExceptionUtil.toSmException(ErrorCode.notValidPreActiveEndDate);
+				}
+				List<Meta> metas = new ArrayList<Meta>();
+				//DateToStringTransformer transformer = new DateToStringTransformer(SmartContext.getProperty(SmartContext.DATE_FORMAT));
+				preActiveEndDateStr = DateUtil.convertDateToString(preActiveEndDate, config.getValue("GLOBAL", "dateFormat"));
+				Meta preActiveEndDateMeta = new Meta(SmartConstants.PREACTIVE_ENDDATE, preActiveEndDateStr);
+				metas.add(preActiveEndDateMeta);
+				metas.add(new Meta("federation-profile", "shelfLifeExtension"));
+
+				updateSubscriber(requestId, request.getCustomerId(), metas);
+				
+				CommandResponseData responseData = createResponse(preActiveEndDate,request.isTransactional());
+				/* 	 @To Do.  To be completed after scheduler is ready.*/
+				//RescheduleRecycleCommand command = new RescheduleRecycleCommand(subscriber, preActiveEndDate);
+				//command.execute();
+				
+				exchange.getOut().setBody(responseData);
+		} catch (Exception e) {
+			logger.error("Error in the processor class",e.getClass().getName(),e);
+		}
 		
-		ModifyCustomerPreActiveRequest request = (ModifyCustomerPreActiveRequest) exchange.getIn().getBody();
-
-		IConfig config = SefCoreServiceResolver.getConfigService();
 		
-			//SubscriberManagement subscriberManagement = SmartContext.getSubscriberManagement();
-			List<String> keys = new ArrayList<String>();
-			keys.add("PreActiveEndDate");
-			
-			//Subscriber subscriber = subscriberManagement.getSubscriberProfile(request.getCustomerId(), keys);
-			String requestId = RequestContextLocalStore.get().getRequestId();
-			SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
-			
-			if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
-			
-				
-				logger.error("Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
-						+ request.getCustomerId());
-				throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
-			}
-
-			Date preActiveEndDate = null;
-			String preActiveEndDateStr = null;
-			try {
-				
-				//preActiveEndDateStr = getMetaValue(subscriber.getMetas(), SmartConstants.PREACTIVE_ENDDATE);
-				preActiveEndDateStr =subscriberinfo.getMetas().get(SmartConstants.PREACTIVE_ENDDATE);
-				String milliSecMultiplier =config.getValue("GLOBAL", SmartConstants.MILLISEC_MULTIPLIER);  
-				
-				preActiveEndDate = DateUtil.convertStringToDate(preActiveEndDateStr, config.getValue("GLOBAL", "dateFormat"));
-				
-				preActiveEndDate = new Date(preActiveEndDate.getTime() + Long.valueOf(request.getDaysOfExtension()) * Long.valueOf(milliSecMultiplier));
-				logger.info("new PreActiveEndDate for msisdn:" + request.getCustomerId() + " is " + preActiveEndDate.toString());
-			} catch (Exception e) {
-				logger.error("Not a valid preActiveEnddate for msisdn: " + request.getCustomerId());
-				throw ExceptionUtil.toSmException(ErrorCode.notValidPreActiveEndDate);
-			}
-			List<Meta> metas = new ArrayList<Meta>();
-			//DateToStringTransformer transformer = new DateToStringTransformer(SmartContext.getProperty(SmartContext.DATE_FORMAT));
-			preActiveEndDateStr = DateUtil.convertDateToString(preActiveEndDate, config.getValue("GLOBAL", "dateFormat"));
-			Meta preActiveEndDateMeta = new Meta(SmartConstants.PREACTIVE_ENDDATE, preActiveEndDateStr);
-			metas.add(preActiveEndDateMeta);
-			metas.add(new Meta("federation-profile", "shelfLifeExtension"));
-
-			updateSubscriber(requestId, request.getCustomerId(), metas);
-			
-			CommandResponseData responseData = createResponse(preActiveEndDate,request.isTransactional());
-			/* 	 @To Do.  To be completed after scheduler is ready.*/
-			//RescheduleRecycleCommand command = new RescheduleRecycleCommand(subscriber, preActiveEndDate);
-			//command.execute();
-			
-			exchange.getOut().setBody(responseData);
 		
 	}
 	

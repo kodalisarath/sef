@@ -36,39 +36,46 @@ public class ModifyCustomerGrace implements Processor {
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		
-		
+		try {
+			
 			ModifyCustomerGraceRequest request = (ModifyCustomerGraceRequest) exchange.getIn().getBody();
 			
-				String requestId = RequestContextLocalStore.get().getRequestId();
-				SubscriberInfo subscriberInfo = readSubscriber(requestId,request.getCustomerId(),null);
+			String requestId = RequestContextLocalStore.get().getRequestId();
+			SubscriberInfo subscriberInfo = readSubscriber(requestId,request.getCustomerId(),null);
+			
+			if (!ContractState.PREACTIVE.name().equals(subscriberInfo.getLocalState())) {
 				
-				if (!ContractState.PREACTIVE.name().equals(subscriberInfo.getLocalState())) {
-					
-					logger.error("Subscriber should be in GRACE state to extend the graceEndDate. msisdn: "
-							+ request.getCustomerId());	
-					throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
-				}
-				List<String> keys = new ArrayList<String>();
-				keys.add(SmartConstants.GRACE_ENDDATE);
-				
-				List<Meta> metas = new ArrayList<Meta>();
-				metas.add(new Meta("daysOfExtension" , String.valueOf(request.getDaysOfExtension())));
-				metas.add(new Meta("eventInfo" , String.valueOf(request.getEventInfo())));
-				metas.add(new Meta("messageId" , String.valueOf(request.getMessageId())));
-				
-				metas.add(new Meta("federation-profile", "extendGracePeriod"));
-				
-				//subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
-			    updateSubscriber(requestId, request.getCustomerId(), metas);
-				
-				//Subscriber subscriber = subscriberManagement.getSubscriberProfile(request.getCustomerId(), keys);
-				
-				String graceEndDateStr = subscriberInfo.getMetas().get(SmartConstants.GRACE_ENDDATE); 
-				
-				//Date graceEndDate = new StringToDateTransformer(SmartContext.getProperty(SmartContext.DATE_FORMAT)).transform(graceEndDateStr);
-				IConfig config = SefCoreServiceResolver.getConfigService();
-				Date graceEndDate =DateUtil.convertStringToDate(graceEndDateStr, config.getValue("GLOBAL", "dateFormat"));
-				exchange.getOut().setBody(createResponse(graceEndDate,request.isTransactional()));
+				logger.error("Subscriber should be in GRACE state to extend the graceEndDate. msisdn: "
+						+ request.getCustomerId());	
+				throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
+			}
+			List<String> keys = new ArrayList<String>();
+			keys.add(SmartConstants.GRACE_ENDDATE);
+			
+			List<Meta> metas = new ArrayList<Meta>();
+			metas.add(new Meta("daysOfExtension" , String.valueOf(request.getDaysOfExtension())));
+			metas.add(new Meta("eventInfo" , String.valueOf(request.getEventInfo())));
+			metas.add(new Meta("messageId" , String.valueOf(request.getMessageId())));
+			
+			metas.add(new Meta("federation-profile", "extendGracePeriod"));
+			
+			//subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
+		    updateSubscriber(requestId, request.getCustomerId(), metas);
+			
+			//Subscriber subscriber = subscriberManagement.getSubscriberProfile(request.getCustomerId(), keys);
+			
+			String graceEndDateStr = subscriberInfo.getMetas().get(SmartConstants.GRACE_ENDDATE); 
+			
+			//Date graceEndDate = new StringToDateTransformer(SmartContext.getProperty(SmartContext.DATE_FORMAT)).transform(graceEndDateStr);
+			IConfig config = SefCoreServiceResolver.getConfigService();
+			Date graceEndDate =DateUtil.convertStringToDate(graceEndDateStr, config.getValue("GLOBAL", "dateFormat"));
+			exchange.getOut().setBody(createResponse(graceEndDate,request.isTransactional()));
+		
+			
+		} catch (Exception e) {
+			logger.error("Error in processor class"+e.getClass().getName(),e);
+			
+		}
 			
 		
 	}

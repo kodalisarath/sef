@@ -30,7 +30,8 @@ public class EntireDeleteSubscriber implements Processor{
 	
 	@Override
 	public void process(Exchange exchange) throws SmException {
-		EntireDeleteRequest request = (EntireDeleteRequest) exchange.getIn().getBody();
+		try {
+			EntireDeleteRequest request = (EntireDeleteRequest) exchange.getIn().getBody();
 			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 			String requestId = RequestContextLocalStore.get().getRequestId();
 			
@@ -43,6 +44,10 @@ public class EntireDeleteSubscriber implements Processor{
 								+ " does not exist"));
 			}
 			exchange.getOut().setBody(createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional()));
+		} catch (Exception e) {
+			logger.error("Error in the processor class:",e.getClass().getName(),e);
+		}
+		
 	}
 
 	private CommandResponseData createResponse(String operationName, String modifier,boolean isTransactional) {
@@ -82,7 +87,7 @@ public class EntireDeleteSubscriber implements Processor{
 			semaphore.init(0);
 			semaphore.acquire();
 		} catch(InterruptedException e) {
-
+            
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);

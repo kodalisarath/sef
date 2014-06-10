@@ -28,23 +28,28 @@ public class BalanceAdjustment implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteCustomerProcessor.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
-     logger.info("BalanceAdjustment: process()");
+		try {
+			 logger.info("BalanceAdjustment: process()");
+				
+		     BalanceAdjustmentRequest request = (BalanceAdjustmentRequest) exchange.getIn().getBody();
+		     IConfig config = SefCoreServiceResolver.getConfigService();
+		     List<Meta> metas = new ArrayList<Meta>();
+		     metas.add(new Meta("customerId", request.getCustomerId()));
+		     metas.add(new Meta("accessKey", request.getAccessKey()));
+		     metas.add(new Meta("balanceId",  request.getBalanceId()));
+		     metas.add(new Meta("amountOfUnits", String.valueOf(request.getAmountOfUnits())));
+		     metas.add(new Meta("chargeCode",String.valueOf(request.getChargeCode())));
+		     metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
+		     metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
+		     metas.add(new Meta("eventInfo",request.getEventInfo()));
+		     
+		     String requestId = RequestContextLocalStore.get().getRequestId();
+		     updateSusbcriber(requestId, request.getCustomerId(), metas);
+		} catch (Exception e) {
+			logger.error("Error in the processor class:",this.getClass().getName(),e);
+		}
 		
-     BalanceAdjustmentRequest request = (BalanceAdjustmentRequest) exchange.getIn().getBody();
-     IConfig config = SefCoreServiceResolver.getConfigService();
-     List<Meta> metas = new ArrayList<Meta>();
-     metas.add(new Meta("customerId", request.getCustomerId()));
-     metas.add(new Meta("accessKey", request.getAccessKey()));
-     metas.add(new Meta("balanceId",  request.getBalanceId()));
-     metas.add(new Meta("amountOfUnits", String.valueOf(request.getAmountOfUnits())));
-     metas.add(new Meta("chargeCode",String.valueOf(request.getChargeCode())));
-     metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
-     metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
-     metas.add(new Meta("eventInfo",request.getEventInfo()));
-     
-     String requestId = RequestContextLocalStore.get().getRequestId();
-     Subscriber subscriber=new Subscriber();
-     updateSusbcriber(requestId, request.getCustomerId(), metas);
+    
      
 	}
 	private SubscriberInfo updateSusbcriber(String requestId,String customerId,List<Meta> metas) throws SmException{
@@ -60,7 +65,7 @@ public class BalanceAdjustment implements Processor {
 		semaphore.init(0);
 		semaphore.acquire();
 		} catch(InterruptedException e) {
-			
+			logger.error("Error while aquire() call",this.getClass().getName(),e);
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);

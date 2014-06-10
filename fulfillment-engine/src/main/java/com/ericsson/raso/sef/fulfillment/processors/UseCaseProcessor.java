@@ -26,10 +26,12 @@ public class UseCaseProcessor implements Processor {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void process(Exchange arg0) throws Exception {		
-
+	public void process(Exchange arg0) throws Exception {
+		
 		logger.info("Fulfillment Request: " + arg0.getIn().getBody().toString());
-		Object[] objectArray= arg0.getIn().getBody(Object[].class);
+		
+   try {
+	   Object[] objectArray= arg0.getIn().getBody(Object[].class);
 		String operationName = (String) arg0.getIn().getHeader("operationName");
 	 	String msisdn =(String)objectArray[1];
 	 	Product product=(Product) objectArray[2]; 
@@ -37,12 +39,10 @@ public class UseCaseProcessor implements Processor {
 		Map<String, String> map = covertToMap(msisdn, metas);
 		//String correlationId = (String) arg0.getIn().getHeader("CORRELATIONID");
 		String correlationId = (String) objectArray[0];
-		
 		IServiceRegistry serviceRegistry = FulfillmentServiceResolver.getServiceRegistry();
 		Resource resource = serviceRegistry.readResource(product.getResourceName());
 		List<String> fulfillmentProfileIds = resource.getFulfillmentProfiles();
 		List<FulfillmentProfile> fulfillmentProfiles = getProfiles(fulfillmentProfileIds);
-		
 		switch(operationName){
 		case "fulfill":
 			logger.debug("Use case identified as fulfill!!");
@@ -65,8 +65,12 @@ public class UseCaseProcessor implements Processor {
 		default:  break;
 		}
 	}
-	
-	
+   catch(Exception e) {
+		logger.error("Error in the processor class :",this.getClass().getName(),e);
+  }
+	   
+      } 
+		
 	@SuppressWarnings("rawtypes")
 	private List<FulfillmentProfile> getProfiles(List<String> fulfillmentProfileIds) {
 		logger.debug("Should retrieve " + fulfillmentProfileIds.size() + "profiles");

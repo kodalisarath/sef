@@ -33,33 +33,38 @@ public class BucketRetrieveReadRPP implements Processor {
 			.getLogger(BucketRetrieveReadRPP.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		// get the method signature of web service [Standard]
-				logger.debug("Getting exchange body....");
-				BucketRetrieveReadRPPRequest bucketRetrieveReadRPPRequest = (BucketRetrieveReadRPPRequest) exchange
-						.getIn().getBody();
-				logger.debug("Got it!");
-				
-				List<Meta> metas = new ArrayList<Meta>();
-				metas.add(new Meta("command", bucketRetrieveReadRPPRequest.getCommand()));
-				metas.add(new Meta("customerid", bucketRetrieveReadRPPRequest.getCustomerId()));
-				Usecase smartUsecase = bucketRetrieveReadRPPRequest.getUsecase();
-				String operationName = smartUsecase.getOperation();
-				String operationModifier = smartUsecase.getModifier();
-				String requestId = RequestContextLocalStore.get().getRequestId();
-				
-				SubscriberInfo subscriberinfo = readSubscriber(requestId, bucketRetrieveReadRPPRequest.getCustomerId(),metas);
-				// need error code response for EntireReadSubscriber
-						if(subscriberinfo == null) {
-							/*throw new SmException(new ResponseCode(-111,
-									"13423#EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + readRequest.getCustomerId()
-											+ " does not exist"));*/
-							throw new SmException(new ResponseCode(504, "13423#Bucket Retrieve Read RPP Entity - Customer with primary key Keyname:PK,CustomerId: " + bucketRetrieveReadRPPRequest.getCustomerId()
-									+ " does not exist"));
-						}
-				
-				
-				CommandResponseData responseData = createResponse(bucketRetrieveReadRPPRequest.getUsecase().getOperation(), bucketRetrieveReadRPPRequest.getUsecase().getModifier(),bucketRetrieveReadRPPRequest.isTransactional());
-				exchange.getOut().setBody(responseData);
+		try {
+			// get the method signature of web service [Standard]
+			logger.debug("Getting exchange body....");
+			BucketRetrieveReadRPPRequest bucketRetrieveReadRPPRequest = (BucketRetrieveReadRPPRequest) exchange
+					.getIn().getBody();
+			logger.debug("Got it!");
+			
+			List<Meta> metas = new ArrayList<Meta>();
+			metas.add(new Meta("command", bucketRetrieveReadRPPRequest.getCommand()));
+			metas.add(new Meta("customerid", bucketRetrieveReadRPPRequest.getCustomerId()));
+			Usecase smartUsecase = bucketRetrieveReadRPPRequest.getUsecase();
+			String operationName = smartUsecase.getOperation();
+			String operationModifier = smartUsecase.getModifier();
+			String requestId = RequestContextLocalStore.get().getRequestId();
+			
+			SubscriberInfo subscriberinfo = readSubscriber(requestId, bucketRetrieveReadRPPRequest.getCustomerId(),metas);
+			// need error code response for EntireReadSubscriber
+					if(subscriberinfo == null) {
+						/*throw new SmException(new ResponseCode(-111,
+								"13423#EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + readRequest.getCustomerId()
+										+ " does not exist"));*/
+						throw new SmException(new ResponseCode(504, "13423#Bucket Retrieve Read RPP Entity - Customer with primary key Keyname:PK,CustomerId: " + bucketRetrieveReadRPPRequest.getCustomerId()
+								+ " does not exist"));
+					}
+			
+			
+			CommandResponseData responseData = createResponse(bucketRetrieveReadRPPRequest.getUsecase().getOperation(), bucketRetrieveReadRPPRequest.getUsecase().getModifier(),bucketRetrieveReadRPPRequest.isTransactional());
+			exchange.getOut().setBody(responseData);
+		} catch (Exception e) {
+			logger.error("Error in processor class:",this.getClass().getName(),e);
+		}
+		
 	}
 	private SubscriberInfo readSubscriber(String requestId, String customerId, List<Meta> metas) {
 		logger.info("Invoking bucket retrieve read rop subscriber on tx-engine subscriber interface");
@@ -72,7 +77,7 @@ public class BucketRetrieveReadRPP implements Processor {
 		semaphore.init(0);
 		semaphore.acquire();
 		} catch(InterruptedException e) {
-			
+			logger.error("Error while acquire() call",this.getClass().getName(),e);
 		}
 		logger.info("Check if response received for Read subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);

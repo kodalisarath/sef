@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.smart.commons.SmartServiceHelper;
 import com.ericsson.raso.sef.smart.commons.read.EntireRead;
@@ -16,13 +17,18 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 
 public class EntireReadSubscriber implements Processor {
-     
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EntireReadSubscriber.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		EntireReadRequest request = (EntireReadRequest) exchange.getIn().getBody();
-		SmartServiceHelper.getAndRefreshSubscriber(request.getCustomerId());
-		EntireRead entireRead = SmartServiceHelper.entireReadSubscriber(request.getCustomerId());
-		exchange.getOut().setBody(createResponse(entireRead, request.isTransactional()));
+		try {
+			EntireReadRequest request = (EntireReadRequest) exchange.getIn().getBody();
+			SmartServiceHelper.getAndRefreshSubscriber(request.getCustomerId());
+			EntireRead entireRead = SmartServiceHelper.entireReadSubscriber(request.getCustomerId());
+			exchange.getOut().setBody(createResponse(entireRead, request.isTransactional()));
+		} catch (Exception e) {
+			logger.error("Error in the Processor class",e.getClass().getName(),e);
+		}
+		
 	}
 	
 	private CommandResponseData createResponse(EntireRead entireRead, boolean isTransactional) {
