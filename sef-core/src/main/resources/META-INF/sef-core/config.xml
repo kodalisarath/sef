@@ -169,7 +169,7 @@
 		<property key="site" value="CEBU" />
 	</section>
 
-	<section id="cs-air1">
+	<section id="cs-air1" description="">
 		<property key="originNodeType" value="ADM" />
 		<property key="originHostName" value="IL" />
 		<property key="csair protocol" value="air" />
