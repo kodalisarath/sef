@@ -329,7 +329,7 @@ public class PromoHelper {
 		commercialOffer.setRenewalPeriod(new InfiniteTime());
 		commercialOffer.setOfferState(State.PUBLISHED);
 		
-		System.out.println("Adding Product: " + commercialOffer.getName() + " with " + resources.size());
+		System.out.println("Adding Commercial Product: " + commercialOffer.getName() + " with " + resources.size());
 		
 		for (String planCode : planCodes) {
 			commercialOffer.addExternalHandle(planCode);
@@ -346,9 +346,8 @@ public class PromoHelper {
 			commercialOffer.setOfferState(State.TESTING);
 			commercialOffer.setOfferState(State.PUBLISHED);
 			commercialOffer.addProduct(createCommercialProduct);
+			System.out.println("\t- fulfillmentProfile: " + resource.getName().toString());			
 		}
-		
-		System.out.println("Adding Commercial Offer: " + commercialOffer.getName());
 		// logger.info("CommercialOffer: " + commercialOffer.toString());
 		return commercialOffer;
 		
@@ -366,6 +365,8 @@ public class PromoHelper {
 			nonCommercialOffer.setTrialPeriod(new InfiniteTime());
 			nonCommercialOffer.setCommercial(false);
 			
+			System.out.println("Adding non-Commercial Product: " + nonCommercialOffer.getName() + " with " + resources.size());
+		
 			for (String planCode : planCodes) {
 				nonCommercialOffer.addExternalHandle(planCode);
 			}
@@ -380,8 +381,8 @@ public class PromoHelper {
 				createNonCommercialProduct.setValidity(new InfiniteTime());
 				
 				nonCommercialOffer.addProduct(createNonCommercialProduct);
+				System.out.println("\t- fulfillmentProfile: " + resource.getName().toString());
 			}
-			System.out.println("Non CommercialOffer: " + nonCommercialOffer.toString());
 			return nonCommercialOffer;
 	}
 	
