@@ -118,7 +118,7 @@ public class ReadSubscriber extends AbstractTransaction {
 		TransactionStatus  txnStatus = new TransactionStatus();
 		com.ericsson.sef.bes.api.entities.Subscriber subscriber = ((ReadSubscriberResponse) this.getResponse()).getSubscriber();
 
-	//	if (this.isWorkflowEngaged) {
+		if (this.isWorkflowEngaged) {
 			List<Product> products = new ArrayList<Product>();
 
 			for (Step<?> step : this.getResponse().getAtomicStepResults().keySet()) {
@@ -146,8 +146,16 @@ public class ReadSubscriber extends AbstractTransaction {
 
 			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber, products);
 
-//		}
+		}
 
+		TransactionException fault = this.getResponse().getReturnFault();
+		if ( fault != null) {
+			txnStatus.setCode(fault.getStatusCode().getCode());
+			txnStatus.setDescription(fault.getStatusCode().getMessage());
+			txnStatus.setComponent(fault.getComponent());
+		}
+		
+		
 		LOGGER.debug("Invoking read subscriber response!!");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
 		LOGGER.debug("subscriberClient"+subscriberClient);
