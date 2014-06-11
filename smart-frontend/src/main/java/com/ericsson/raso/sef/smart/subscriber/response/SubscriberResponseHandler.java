@@ -121,6 +121,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 	public void createSubscriber(String requestCorrelator,
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
+		if(subInfo !=null)
 		subInfo.setStatus(fault);
         SubscriberResponseStore.put(requestCorrelator, subInfo);
 
@@ -132,6 +133,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 	public void updateSubscriber(String requestCorrelator,
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
+		if(subInfo !=null)
 		subInfo.setStatus(fault);
         SubscriberResponseStore.put(requestCorrelator, subInfo);
 
@@ -143,6 +145,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 	public void deleteSubscriber(String requestCorrelator,
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
+		if(subInfo !=null)
 		subInfo.setStatus(fault);
         SubscriberResponseStore.put(requestCorrelator, subInfo);
 
@@ -155,6 +158,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 	public void handleLifeCycle(String requestCorrelator,
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
+		if(subInfo !=null)
 		subInfo.setStatus(fault);
         SubscriberResponseStore.put(requestCorrelator, subInfo);
 
