@@ -22,7 +22,7 @@ public class SmartConstants {
 	public static final String GRACE_PERIOD = "gracePeriod";
 	public static final String USECASE = "usecase";
 	
-	public static final String PREACTIVE_ENDDATE = "preActiveEndDate";
+	public static final String PREACTIVE_ENDDATE = "PreActiveEndDate";
 	public static final String RESPONSE_PREACTIVE_ENDDATE = "PreActiveEndDate";
 	public static final String GRACE_ENDDATE = "graceEndDate";
 	public static final String RESPONSE_GRACE_ENDDATE = "GraceEndDate";
