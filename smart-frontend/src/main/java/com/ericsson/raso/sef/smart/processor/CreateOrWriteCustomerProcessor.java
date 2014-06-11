@@ -73,9 +73,9 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		createSubscriber(requestId,subscriber);
 
 		
-		logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), useCaseMetas);
+		//logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
+		//ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		//iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), useCaseMetas);
 		//iSubscriberRequest.updateSubscriber(requestId, subscriberId, metas)
 		
 		// 	 TODO:  To be completed after scheduler is ready
