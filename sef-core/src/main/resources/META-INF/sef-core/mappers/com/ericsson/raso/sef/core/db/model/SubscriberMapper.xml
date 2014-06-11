@@ -34,7 +34,7 @@
 		select 1 from subscriber where msisdn = #{msisdn}
 	</select>
 	<select id="getSubscriberMetas" parameterType="String" resultMap="MetaResult">
-	select * from subscriber_meta where user_id=#{subscriberId}
+	select * from subscriber_meta where user_id=#{subscriberId}SubscriberResult
 	</select>
 	<insert id="createSubscriber" parameterType="Subscriber">
 		insert into
