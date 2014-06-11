@@ -59,11 +59,11 @@ public class UpdateSubscriber extends AbstractTransaction{
 			}
 			else{
 				LOGGER.debug("Enum "+ContractState.apiValue("PRE_ACTIVE"));
-				LOGGER.debug("Meta contract state from "+subscriberEntity.getContractState());
+				LOGGER.debug("Meta contract state from "+subscriberEntity.getContractState().toString());
 			    LOGGER.debug("Checking size of meta  from DB"+subscriberEntity.getMetas().size());
 			    List<Meta> listMetas = ((UpdateSubscriberRequest)this.getRequest()).getRequestMetas();
 			    LOGGER.debug("Check for the metas from processors"+listMetas.size());
-				if(ContractState.apiValue("PRE_ACTIVE").equals(subscriberEntity.getContractState())){
+				if(ContractState.apiValue("PRE_ACTIVE").equals(subscriberEntity.getContractState().toString())){
 					LOGGER.debug("Meta list from the processor"+listMetas.size());
 					LOGGER.debug("Iterating the metas from then processor");
 					for(Meta meta:listMetas){
