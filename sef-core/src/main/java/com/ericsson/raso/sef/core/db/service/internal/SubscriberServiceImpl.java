@@ -141,7 +141,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 					org.apache.commons.codec.binary.Base64
 							.encodeBase64(encryptor.encrypt(subscriber
 									.getUserId()))));
-			subscriber.setContractState(ContractState.PREACTIVE);
+			subscriber.setContractState(ContractState.apiValue(PRE_ACTIVE));
 
 		} catch (FrameworkException e) {
 			logger.error(

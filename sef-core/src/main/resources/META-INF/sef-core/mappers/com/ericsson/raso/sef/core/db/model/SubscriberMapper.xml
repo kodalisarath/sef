@@ -78,8 +78,6 @@
 		where s.user_id = #{userId}
 	</select>
 	
-	
-	
 	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta">
 		insert into subscriber_meta (user_id, attribute_name, attribute_value)
 		values (#{subscriberId}, #{key}, #{value})
