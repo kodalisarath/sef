@@ -397,7 +397,7 @@ public class PromoHelper {
 		resource.setEnforcedMinQuota(-1L);
 		
 		UpdateServiceClassProfile fulfillmentProfile = new UpdateServiceClassProfile(name);
-		
+
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		
