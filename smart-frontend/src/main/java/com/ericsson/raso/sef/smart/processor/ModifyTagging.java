@@ -12,6 +12,7 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
@@ -37,8 +38,12 @@ public class ModifyTagging implements Processor {
 
 		ModifyTaggingRequest request = (ModifyTaggingRequest) exchange.getIn().getBody();
 		String requestId = RequestContextLocalStore.get().getRequestId();
-		validateSubscriber(requestId, request.getCustomerId());
-
+		SubscriberInfo validSubscriberInfo = validateSubscriber(requestId, request.getCustomerId());
+		ContractState localState = null;
+		if(validSubscriberInfo != null){
+			 localState = validSubscriberInfo.getLocalState();
+			 logger.debug("Status of Valid Subscriber is :", localState);
+		}
 		Integer tag = Integer.valueOf(request.getTagging());
 
 		// SubscriberManagement subscriberManagement = SmartContext.getSubscriberManagement();
@@ -77,14 +82,20 @@ public class ModifyTagging implements Processor {
 				metas.add(new Meta("HANDLE_LIFE_CYCLE", "recycleBit"));
 				break;
 			default:
-				throw ExceptionUtil.toSmException(new ResponseCode(4020, "Subscriber Not Found"));
+				if("PRE_ACTIVE".equals(localState)){
+					logger.debug("PreActive Subscriber", localState);
+					throw ExceptionUtil.toSmException(new ResponseCode(4020, "Invalid Operation State"));
+				}else if("ACTIVE".equals(localState)){
+					logger.debug("Active Subscriber", localState);
+					throw ExceptionUtil.toSmException(new ResponseCode(4020, "Invalid Operation State"));
+				}
 		}
 		logger.debug("Usecase Metas: " + metas);
 
 		// subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
 
 		updateSubscriber(requestId, request.getCustomerId(), metas);
-
+        
 		exchange.getOut().setBody(createResponse(tag, request.isTransactional()));
 
 	}
@@ -122,7 +133,7 @@ public class ModifyTagging implements Processor {
 		return responseData;
 	}
 
-	private void validateSubscriber(String requestId, String customerId) throws SmException {
+	private SubscriberInfo validateSubscriber(String requestId, String customerId) throws SmException {
 
 		SubscriberInfo subscriberInfo = readSubscriber(requestId, customerId, null);
 
@@ -130,9 +141,9 @@ public class ModifyTagging implements Processor {
 		// Subscriber subscriber = subscriberManagement.getSubscriberProfile(customerId, null);
 		if (subscriberInfo != null && subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() == 504) {
 			throw new SmException(new ResponseCode(504, "Invalid Account"));
-		
 		}
 		logger.debug("If I am here, then it means the subscriber exists or may be other problem......" );
+		return subscriberInfo;
 	}
 
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas) {
