@@ -16,6 +16,7 @@ import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
@@ -40,13 +41,48 @@ public class UpdateSubscriber extends AbstractTransaction{
 		try {
 			//This enity must contains the subscriber and his  metas from the DB
 			subscriberEntity = ((UpdateSubscriberRequest)this.getRequest()).persistableEntity();
-			
+			SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
+			if (subscriberStore == null) {
+				LOGGER.error("Unable to access persistence tier service!!");
+				this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), 
+										new ResponseCode(1006, "Unable to access persistence tier service!! Check configuration (beans.xml)")));
+				return false;
+			}
 			if(subscriberEntity == null) {
 				LOGGER.error("Subscriber not found in database" );
 				
 				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504,"Subscriber not found")));
 				sendResponse();
 				return false;
+			}
+			
+			else{
+				if(ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState())){
+					List<Meta> listMetas = ((UpdateSubscriberRequest)this.getRequest()).getRequestMetas();
+					LOGGER.debug("Iterating the metas from then processor");
+					for(Meta meta:listMetas){
+						if(subscriberEntity.getMetas().contains(meta)){
+							try {
+								subscriberStore.updateMeta(this.getRequestId(),subscriberEntity.getMsisdn(),meta);
+							} catch (PersistenceError e) {
+								LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
+							}
+						}else{
+							try {
+								LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
+								subscriberStore.createMeta(this.getRequestId(), subscriberEntity.getMsisdn(),meta);
+							} catch (PersistenceError e) {
+								LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
+							}
+						}
+						
+					}
+					
+				}else{
+					
+					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(4020,"Invalid Operation State")));
+					
+				}
 			}
 			LOGGER.debug("Got Persistable Entity: Subscriber: " + subscriberEntity);
 				
@@ -58,32 +94,15 @@ public class UpdateSubscriber extends AbstractTransaction{
 			return false;
 		}
 		
-		SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
-		if (subscriberStore == null) {
+		
+		/*if (subscriberStore == null) {
 			LOGGER.error("Unable to access persistence tier service!!");
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), 
 									new ResponseCode(1006, "Unable to access persistence tier service!! Check configuration (beans.xml)")));
 			return false;
-		}
+		}*/
 		//It contains the metas we get from the processor
-		List<Meta> listMetas = ((UpdateSubscriberRequest)this.getRequest()).getRequestMetas();
-		LOGGER.debug("Iterating the metas from then processor");
-		for(Meta meta:listMetas){
-			if(subscriberEntity.getMetas().contains(meta)){
-				try {
-					subscriberStore.updateMeta(this.getRequestId(),subscriberEntity.getMsisdn(),meta);
-				} catch (PersistenceError e) {
-					LOGGER.error("Error in the updatemeta at UpdateSubscriber");
-				}
-			}else{
-				try {
-					subscriberStore.createMeta(this.getRequestId(), subscriberEntity.getMsisdn(),meta);
-				} catch (PersistenceError e) {
-					LOGGER.error("Error in the createmeta at UpdateSubscriber");
-				}
-			}
-			
-		}
+	
 		
 	/*	LOGGER.debug("About to persist Subscriber: " + subscriberEntity);
 		try {
