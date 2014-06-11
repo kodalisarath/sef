@@ -49,6 +49,8 @@ public class ModifyCustomerPreActive implements Processor {
 				String requestId = RequestContextLocalStore.get().getRequestId();
 				SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
 				
+				logger.info("subscriberinfo for msisdn:" + request.getCustomerId() + " is " + subscriberinfo);
+
 				if(subscriberinfo ==null)
 				{
 					logger.error("Subscriber Not Found. msisdn: "
@@ -56,8 +58,7 @@ public class ModifyCustomerPreActive implements Processor {
 					throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 				}
 				else if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
-				
-					
+
 					logger.error("Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
 							+ request.getCustomerId());
 					throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
@@ -74,6 +75,7 @@ public class ModifyCustomerPreActive implements Processor {
 					preActiveEndDate = DateUtil.convertStringToDate(preActiveEndDateStr, config.getValue("GLOBAL", "dateFormat"));
 					
 					preActiveEndDate = new Date(preActiveEndDate.getTime() + Long.valueOf(request.getDaysOfExtension()) * Long.valueOf(milliSecMultiplier));
+
 					logger.info("new PreActiveEndDate for msisdn:" + request.getCustomerId() + " is " + preActiveEndDate.toString());
 				} catch (Exception e) {
 					logger.error("Not a valid preActiveEnddate for msisdn: " + request.getCustomerId());
@@ -92,11 +94,7 @@ public class ModifyCustomerPreActive implements Processor {
 				/* 	 @To Do.  To be completed after scheduler is ready.*/
 				//RescheduleRecycleCommand command = new RescheduleRecycleCommand(subscriber, preActiveEndDate);
 				//command.execute();
-				
 				exchange.getOut().setBody(responseData);
-		
-		
-		
 	}
 	
 
@@ -164,8 +162,4 @@ public class ModifyCustomerPreActive implements Processor {
 		return subscriberInfo;
 		
 	}
-	
-	
-	
-	
 }
