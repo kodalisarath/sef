@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.ibatis.mapping.SqlMapperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +23,7 @@ import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.ModifyCustomerPreActiveRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
@@ -62,7 +62,8 @@ public class ModifyCustomerPreActive implements Processor {
 		logger.info("Manila subscriberinfo for msisdn:" + request.getCustomerId()
 				+ " is " + subscriberinfo);
 
-		if (subscriberinfo == null) {
+		
+		if (subscriberinfo == null  ) {
 			logger.error("Manila Log: Subscriber Not Found. msisdn: "
 					+ request.getCustomerId());
 
@@ -73,7 +74,21 @@ public class ModifyCustomerPreActive implements Processor {
 			// ErrorCode.invalidAccount.getMessage()
 			// +" :msisdn "+request.getCustomerId()));
 
-		} else if (ContractState.apiValue(ContractState.PREACTIVE.name()).equals(subscriberinfo.getRemoteState())) {
+		}
+		else if(subscriberinfo !=null )
+		{
+			TransactionStatus status = subscriberinfo.getStatus();
+			if(status !=null){
+				int statusCode = status.getCode();
+				logger.debug("Manila error Status Code is "+statusCode);
+				if(statusCode != 0)
+					throw new SmException(new ResponseCode(ErrorCode.invalidAccount.getCode(), ErrorCode.invalidAccount.getMessage() +" :msisdn "+request.getCustomerId() +" Read Subscriber Failed"));
+					
+			}
+			
+			
+		}
+		else if (ContractState.apiValue(ContractState.PREACTIVE.name()).equals(subscriberinfo.getLocalState())) {
 
 			logger.error("Manila Log: Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
 					+ request.getCustomerId() +", but Current Status is "+subscriberinfo.getLocalState());
