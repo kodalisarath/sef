@@ -52,6 +52,7 @@ public class ExceptionUtil {
 			
 		} else {
 			String frontenCode = SefCoreServiceResolver.getConfigService().getValue("smart-frontend-responsemap", ""+code.getCode());
+			if(frontenCode != null)
 			code = get(frontenCode);
 			
 			if(code == null) {
