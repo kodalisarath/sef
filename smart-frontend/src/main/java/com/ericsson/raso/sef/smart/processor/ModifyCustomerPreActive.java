@@ -77,7 +77,7 @@ public class ModifyCustomerPreActive implements Processor {
 				.equals(subscriberinfo.getLocalState())) {
 
 			logger.error("Manila Log: Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
-					+ request.getCustomerId());
+					+ request.getCustomerId() +", but Current Status is "+subscriberinfo.getLocalState());
 			// throw new SmException(new
 			// ResponseCode(ErrorCode.notPreActive.getCode(),
 			// ErrorCode.notPreActive.getMessage()
