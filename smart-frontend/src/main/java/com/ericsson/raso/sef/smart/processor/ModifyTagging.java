@@ -130,6 +130,7 @@ public class ModifyTagging implements Processor {
 		// Subscriber subscriber = subscriberManagement.getSubscriberProfile(customerId, null);
 		if (subscriberInfo != null && subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() == 504) {
 			throw new SmException(new ResponseCode(504, "Invalid Account - subscriber not found"));
+		
 		}
 		logger.debug("If I am here, then it means the subscriber exists or may be other problem......" );
 	}
