@@ -44,6 +44,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	static final int PersistentError = 9970;
 	static final int CriticalError = 9990;
 	static final int SubscriberStateError = 9100;
+	static final String PRE_ACTIVE="PRE_ACTIVE";
 
 	private SubscriberMapper subscriberMapper;
 
@@ -318,8 +319,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 				if (ContractState.PREACTIVE.equals(currentEntity
 						.getContractState())) {
 					logger.debug("Update metas is just called");
+					//subscriberMapper.updateSubscriberMeta();
 					this.updateMetas(nbCorrelator, subscriber.getUserId(),
-							currentEntity.getMetas());
+							subscriber.getMetas());
 				} else {
 					throw new PersistenceError(nbCorrelator, this.getClass()
 							.getName(), new ResponseCode(
@@ -539,6 +541,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		List<String> metaKeys = this.getKeysAsList(metas);
 		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId,
 				metaKeys);
+		
 		logger.debug("current metas values are of size " + currentMetas.size());
 
 		for (Meta meta : metas) {
@@ -579,7 +582,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 					} catch (FrameworkException e) {
 						logger.error(
 								nbCorrelator,
-								"Could not prepare entity for persistence. Cause: Encrypting Identities",
+								"Could not preptranslateMetasare entity for persistence. Cause: Encrypting Identities",
 								e);
 						throw new PersistenceError(nbCorrelator, this
 								.getClass().getName(), new ResponseCode(

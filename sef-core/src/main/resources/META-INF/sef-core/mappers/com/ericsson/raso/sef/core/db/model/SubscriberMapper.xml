@@ -86,7 +86,7 @@
 	</insert>
 	
 	<update id="updateSubscriberMeta" parameterType="SubscriberMeta">
-		update subscriber_meta set attribute_value = #{value},
+		update subscriber_meta set attribute_value = #{value}
 		where user_id = #{subscriberId}
 		and attribute_name = #{key}
 	</update>
