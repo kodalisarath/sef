@@ -1,6 +1,5 @@
 package com.ericsson.sef.promo_creation;
 
-import java.util.Base64;
 import java.util.Map;
 
 import com.ericsson.raso.sef.bes.prodcat.OfferContainer;
@@ -13,17 +12,18 @@ import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.Service;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.fulfillment.profiles.FulfillmentProfile;
+import org.apache.commons.codec.binary.Base64;
 
 public class OfferVerification {
 
 	public static void main(String[] args) {
 		try {
 			SecureSerializationHelper helper = new SecureSerializationHelper();
-			Base64.Encoder encoder = Base64.getEncoder();
+			Base64 encoder = new Base64();
 			
-			OfferContainer offerStore = (OfferContainer) helper.fetchFromFile("/Users/esatnar/Documents/offerStore.ccm");
-			Map<String, Resource> serviceRegistry = (Map<String, Resource>) helper.fetchFromFile("/Users/esatnar/Documents/serviceRegistry.ccm");
-			Map<String, FulfillmentProfile<?>> profileRegistry = (Map<String, FulfillmentProfile<?>>) helper.fetchFromFile("/Users/esatnar/Documents/profileRegistry.ccm");
+			OfferContainer offerStore = (OfferContainer) helper.fetchFromFile("C:\\Temp\\offerStore.ccm");
+			Map<String, Resource> serviceRegistry = (Map<String, Resource>) helper.fetchFromFile("C:\\Temp\\serviceRegistry.ccm");
+			Map<String, FulfillmentProfile<?>> profileRegistry = (Map<String, FulfillmentProfile<?>>) helper.fetchFromFile("C:\\Temp\\profileRegistry.ccm");
 			
 			System.out.println("Encrypted form: " + new String (encoder.encode(helper.encrypt("639777180104"))));
 			
@@ -32,10 +32,9 @@ public class OfferVerification {
 			System.out.println("\n3. Modify Tagging:\n" + offerStore.getOfferById("MODIFY_TAGGING"));
 			System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
 			
-			Offer taggingOffer = offerStore.getOfferById("MODIFY_TAGGING");
+			Offer taggingOffer = offerStore.getOfferById("READ_SUBSCRIBER");
 			for (AtomicProduct product: taggingOffer.getAllAtomicProducts()) {
 				System.out.println("Product name: " + product.getName());
-				System.out.println("Product resource: " + product.getResource());
 				System.out.println("Product resource: " + product.getResource());
 				
 				Service resource = (Service) product.getResource();
