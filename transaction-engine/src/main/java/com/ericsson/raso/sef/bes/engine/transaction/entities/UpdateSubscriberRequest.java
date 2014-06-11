@@ -41,7 +41,7 @@ public final class UpdateSubscriberRequest extends AbstractRequest {
 	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity()
 			throws FrameworkException {
 		LOGGER.debug("Called persistableEntity method and querying for subscriber" + this.subscriberId);
-		return TransactionServiceHelper.fetchSubscriberFromDb(subscriberId);
+		return TransactionServiceHelper.fetchSubscriberFromDb(this.subscriberId);
 	}
 
 	@Override

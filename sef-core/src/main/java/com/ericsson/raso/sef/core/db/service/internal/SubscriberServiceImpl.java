@@ -124,7 +124,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			subscriber.setPaymentResponsible(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentResponsible()))));
 			subscriber.setPin(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPin()))));
 			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
-			subscriber.setContractState(ContractState.apiValue(PRE_ACTIVE));
+			subscriber.setContractState(ContractState.apiValue("PRE_ACTIVE"));
 
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator,"Could not prepare entity for persistence. Cause: Encrypting Identities",e);
@@ -279,6 +279,8 @@ public class SubscriberServiceImpl implements SubscriberService{
      Subscriber subcriber=null;
      try {
     	try {
+    		logger.debug("Parameter msisdn"+msisdn);
+    		logger.debug("Parameter msisdn after encryption"+ new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
 			subcriber=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. Cause: Encrypting msisdn",e);
