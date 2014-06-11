@@ -84,10 +84,15 @@ public class ModifyCustomerPreActive implements Processor {
 					
 					preActiveEndDate = new Date(preActiveEndDate.getTime() + Long.valueOf(request.getDaysOfExtension()) * Long.valueOf(milliSecMultiplier));
 
+					
 					logger.info("new PreActiveEndDate for msisdn:" + request.getCustomerId() + " is " + preActiveEndDate.toString());
 				} catch (Exception e) {
 					logger.error("Not a valid preActiveEnddate for msisdn: " + request.getCustomerId());
-					throw ExceptionUtil.toSmException(ErrorCode.notValidPreActiveEndDate);
+					
+					//throw ExceptionUtil.toSmException(ErrorCode.notValidPreActiveEndDate);
+					
+throw new SmException(new ResponseCode(ErrorCode.notValidPreActiveEndDate.getCode(), ErrorCode.notValidPreActiveEndDate.getMessage() +" :preActiveEndDate "+preActiveEndDate));
+
 				}
 				List<Meta> metas = new ArrayList<Meta>();
 				//DateToStringTransformer transformer = new DateToStringTransformer(SmartContext.getProperty(SmartContext.DATE_FORMAT));
