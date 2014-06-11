@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
-import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
@@ -23,6 +22,7 @@ import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
 public class UpdateSubscriber extends AbstractTransaction{
+	static final String PRE_ACTIVE="PRE_ACTIVE";
 	
 	private static final long serialVersionUID = 7686721923498952231L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateSubscriber.class);
@@ -57,8 +57,9 @@ public class UpdateSubscriber extends AbstractTransaction{
 			}
 			
 			else{
-				if(ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState())){
+				if(ContractState.apiValue(PRE_ACTIVE).equals(subscriberEntity.getContractState())){
 					List<Meta> listMetas = ((UpdateSubscriberRequest)this.getRequest()).getRequestMetas();
+					LOGGER.debug("Meta list from the processor"+listMetas.size());
 					LOGGER.debug("Iterating the metas from then processor");
 					for(Meta meta:listMetas){
 						if(subscriberEntity.getMetas().contains(meta)){

@@ -133,10 +133,10 @@ public class SubscriberServiceImpl implements SubscriberService{
 		try {
 			logger.debug("Crossing fingers... About to insert subscriber:"+ subscriber);
 			//To:DO   optimize it
-			Subscriber subscriberDB=getSubscriber(subscriber.getMsisdn());
-			if(subscriberDB != null){
-				throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(SubscriberStateError,"Failed to insert Subscriber Metas!!"));
-			}else{
+			//Subscriber subscriberDB=getSubscriber(subscriber.getMsisdn());
+			//if(subscriberDB != null){
+				//throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(SubscriberStateError,"Failed to insert Subscriber Metas!!"));
+			//}else{
 				subscriberMapper.createSubscriber(subscriber);
 				List<Meta> metaList=(List<Meta>) subscriber.getMetas();
 				if(metaList != null){
@@ -156,7 +156,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 						}
 					}
 				}
-			}
+			//}
 		
 			//this.createMetas(nbCorellator, subscriber.getUserId(),subscriber.getMetas());
 
