@@ -56,20 +56,21 @@ public class ModifyCustomerPreActive implements Processor {
 
 				if(subscriberinfo ==null)
 				{
-					logger.error("Subscriber Not Found. msisdn: "
+					logger.error("Manila Log: Subscriber Not Found. msisdn: "
 							+ request.getCustomerId());
-					//throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+
+					throw ExceptionUtil.toTisException(ErrorCode.invalidAccount);
 					
-					throw new SmException(new ResponseCode(ErrorCode.invalidAccount.getCode(), ErrorCode.invalidAccount.getMessage() +" :msisdn "+request.getCustomerId()));
+					//throw new SmException(new ResponseCode(ErrorCode.invalidAccount.getCode(), ErrorCode.invalidAccount.getMessage() +" :msisdn "+request.getCustomerId()));
 					
 				}
-				else if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
+				else if (!ContractState.apiValue(ContractState.PREACTIVE.name()).equals(subscriberinfo.getLocalState())) {
 
-					logger.error("Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
+					logger.error("Manila Log: Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
 							+ request.getCustomerId());
-					throw new SmException(new ResponseCode(ErrorCode.notPreActive.getCode(), ErrorCode.notPreActive.getMessage() +" :msisdn "+request.getCustomerId()));
+					//throw new SmException(new ResponseCode(ErrorCode.notPreActive.getCode(), ErrorCode.notPreActive.getMessage() +" :msisdn "+request.getCustomerId()));
 
-					//throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
+					throw ExceptionUtil.toTisException(ErrorCode.notPreActive);
 				}
 
 				Date preActiveEndDate = null;
@@ -88,11 +89,11 @@ public class ModifyCustomerPreActive implements Processor {
 					
 					logger.info("new PreActiveEndDate for msisdn:" + request.getCustomerId() + " is " + preActiveEndDate.toString());
 				} catch (Exception e) {
-					logger.error("Not a valid preActiveEnddate for msisdn: " + request.getCustomerId());
+					logger.error("Manila Log: Not a valid preActiveEnddate for msisdn: " + request.getCustomerId());
 					
-					//throw ExceptionUtil.toSmException(ErrorCode.notValidPreActiveEndDate);
+					throw ExceptionUtil.toTisException(ErrorCode.notValidPreActiveEndDate);
 					
-throw new SmException(new ResponseCode(ErrorCode.notValidPreActiveEndDate.getCode(), ErrorCode.notValidPreActiveEndDate.getMessage() +" :preActiveEndDate "+preActiveEndDate));
+//throw new SmException(new ResponseCode(ErrorCode.notValidPreActiveEndDate.getCode(), ErrorCode.notValidPreActiveEndDate.getMessage() +" :preActiveEndDate "+preActiveEndDate));
 
 				}
 				List<Meta> metas = new ArrayList<Meta>();
