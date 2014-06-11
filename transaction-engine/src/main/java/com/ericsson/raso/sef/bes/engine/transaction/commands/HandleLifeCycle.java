@@ -33,6 +33,7 @@ import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
 public class HandleLifeCycle extends AbstractTransaction{
+	private static final long serialVersionUID = 1128250929086409651L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(HandleLifeCycle.class);
 	
 	
@@ -40,11 +41,6 @@ public class HandleLifeCycle extends AbstractTransaction{
 		super(requestId, new HandleLifeCycleRequest(requestId, subscriberId,lifeCycleState, metas));
 		this.setResponse(new HandleLifeCycleResponse(requestId,true));
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1128250929086409651L;
 
 	@Override
 	public Boolean execute() throws TransactionException {
@@ -67,13 +63,15 @@ public class HandleLifeCycle extends AbstractTransaction{
 			
 			// Find workflow...
 			String workflowId = ((HandleLifeCycleRequest)this.getRequest()).getMetas().get(Constants.HANDLE_LIFE_CYCLE.name());
-			
+			LOGGER.debug("Workflow requested: " + workflowId);
 			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 			Offer workflow = catalog.getOfferById(workflowId);
 			if (workflow != null) {
+				LOGGER.debug("Workflow found in store: " + workflow);
 				String subscriberId = ((HandleLifeCycleRequest)this.getRequest()).getSubscriberId();
 				try {
-					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true,new HashMap<String,Object>()));
+					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, 
+							this.getProdCatMap(((HandleLifeCycleRequest)this.getRequest()).getMetas())));
 				} catch (CatalogException e) {
 					this.getResponse().setReturnFault( new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
 				}
@@ -120,6 +118,17 @@ public class HandleLifeCycle extends AbstractTransaction{
 				                        txnStatus, 
 				                        result);
 		LOGGER.debug("Handlelifecycle susbcriber response posted");
+		
+	}
+	
+	private Map<String, Object> getProdCatMap(Map<String, String> originalMetas) {
+		Map<String, Object> resultant = new HashMap<String, Object>();
+		if (originalMetas != null) {
+			for (String key: originalMetas.keySet()) {
+				resultant.put(key, originalMetas.get(key));
+			}
+		}
+		return resultant;
 		
 	}
 
