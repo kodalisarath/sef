@@ -72,14 +72,14 @@ public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public List<Product> query(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Product> products = new ArrayList<Product>();
+		return products;
 	}
 
 	@Override
 	public List<Product> revert(Product e, Map<String, String> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Product> products = new ArrayList<Product>();
+		return products;
 	}
 
 	@Override

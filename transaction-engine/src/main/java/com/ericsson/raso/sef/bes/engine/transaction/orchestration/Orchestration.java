@@ -596,24 +596,24 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			
 			try {
 				logger.debug("Retrieve resource from registry: " + fulfillment.getAtomicProduct().getResource().getName());
-				Resource current = resources.readResource(fulfillment.getAtomicProduct().getResource().getName());
-				logger.debug("Just to show Noli is being an ass... Resource current is: " + current);
-				if (current.getDependantOnOthers() != null) {
-					logger.debug("Found dependency for the resouce. preparing sequential orchestration");
-					for (Resource dependancy: current.getDependantOnOthers()) {
-						if (this.isPresentIn(toProcess, dependancy)) {
-							String southBoundRequestId = UniqueIdGenerator.generateId();
-							sequence.add(new FulfillmentStep(southBoundRequestId, this.getGetDependantFulfillment(toProcess, dependancy)));
-						}
-					}
-					String southBoundRequestId = UniqueIdGenerator.generateId();
-					sequence.add(new FulfillmentStep(southBoundRequestId, fulfillment));
-				} else {
+//				Resource current = resources.readResource(fulfillment.getAtomicProduct().getResource().getName());
+//				logger.debug("Just to show Noli is being an ass... Resource current is: " + current);
+//				if (current.getDependantOnOthers() != null) {
+//					logger.debug("Found dependency for the resouce. preparing sequential orchestration");
+//					for (Resource dependancy: current.getDependantOnOthers()) {
+//						if (this.isPresentIn(toProcess, dependancy)) {
+//							String southBoundRequestId = UniqueIdGenerator.generateId();
+//							sequence.add(new FulfillmentStep(southBoundRequestId, this.getGetDependantFulfillment(toProcess, dependancy)));
+//						}
+//					}
+//					String southBoundRequestId = UniqueIdGenerator.generateId();
+//					sequence.add(new FulfillmentStep(southBoundRequestId, fulfillment));
+//				} else {
 					String southBoundRequestId = UniqueIdGenerator.generateId();
 					parallel.add(new FulfillmentStep(southBoundRequestId, fulfillment));
-				}
+//				}
 				toProcess.poll();
-			} catch (CatalogException e) {
+			} catch (Exception e) {
 				logger.error(this.northBoundCorrelator, "Unable to pack orchestration profile for fulfillment... Service Registry Failure", e);
 				return new ArrayList();
 			}

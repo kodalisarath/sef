@@ -51,8 +51,6 @@ public class SubscribePackageItem implements Processor {
 		CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional());
 
 		exchange.getOut().setBody(responseData);
-
-
 	}
 
 
