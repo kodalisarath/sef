@@ -26,6 +26,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -50,22 +51,29 @@ public class CreateSubscriber extends AbstractTransaction {
 		try {
 			LOGGER.debug("In execute method before getting persistable Entity");
 			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
-			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-			Offer workflow = catalog.getOfferById(Constants.CREATE_SUBSCRIBER.name());
-			if (workflow != null) {
-				String subscriberId = ((CreateSubscriberRequest)this.getRequest()).getSubscriber().getMsisdn();
-				try {
-					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, new HashMap<String, Object>()));
-				} catch (CatalogException e) {
-					this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+			if(subscriberEntity != null){
+				if(ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState())){
+					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(4020,"Invalid operation state")));
 				}
-				tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
+			}else{
+				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
+				Offer workflow = catalog.getOfferById(Constants.CREATE_SUBSCRIBER.name());
+				if (workflow != null) {
+					String subscriberId = ((CreateSubscriberRequest)this.getRequest()).getSubscriber().getMsisdn();
+					try {
+						tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, new HashMap<String, Object>()));
+					} catch (CatalogException e) {
+						this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+					}
+					tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
+					
+				}
 				
+				Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
+				
+				OrchestrationManager.getInstance().submit(this, execution);
 			}
 			
-			Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
-			
-			OrchestrationManager.getInstance().submit(this, execution);
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e1));
 		}
