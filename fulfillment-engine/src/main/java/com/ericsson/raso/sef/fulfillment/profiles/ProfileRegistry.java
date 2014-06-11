@@ -37,7 +37,7 @@ public class ProfileRegistry implements IProfileRegistry {
 			try {
 				this.profiles = (Map<String, FulfillmentProfile<?>>) ssh.fetchFromFile(this.profileRegistryLocation);
 			} catch (FrameworkException e) {
-				logger.debug("E/// Is there an error: " + e.getMessage());
+				logger.debug("E/// Is there an error: " + e.getMessage(), e);
 				// TODO: LOgger on this error...
 			}
 		}
