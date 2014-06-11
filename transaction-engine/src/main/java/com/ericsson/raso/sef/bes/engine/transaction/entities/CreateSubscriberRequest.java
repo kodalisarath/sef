@@ -1,5 +1,8 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.sef.bes.api.entities.Subscriber;
@@ -7,7 +10,7 @@ import com.ericsson.sef.bes.api.entities.Subscriber;
 
 public final class CreateSubscriberRequest extends AbstractRequest {
 	private static final long serialVersionUID = -5742652213191533447L;
-	
+	private static final Logger logger = LoggerFactory.getLogger(CreateSubscriberRequest.class);
 	private Subscriber subscriber = null;
 
 	public CreateSubscriberRequest(String requestCorrelator, Subscriber subscriber) {
@@ -55,7 +58,7 @@ public final class CreateSubscriberRequest extends AbstractRequest {
 	}
 
 	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() throws FrameworkException {
-		
+		logger.debug("In the persistable entity,querying the getPersistableEntity");
 		return TransactionServiceHelper.getPersistableEntity(this.subscriber);
 		
 	}

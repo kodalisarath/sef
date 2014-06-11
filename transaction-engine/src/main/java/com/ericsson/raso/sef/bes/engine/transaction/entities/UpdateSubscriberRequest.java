@@ -1,13 +1,14 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
-import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.Meta;
 
 public final class UpdateSubscriberRequest extends AbstractRequest {
 	private static final long serialVersionUID = 5113481758520068651L;
@@ -79,5 +80,12 @@ public final class UpdateSubscriberRequest extends AbstractRequest {
 		} else if (!subscriberId.equals(other.subscriberId))
 			return false;
 		return true;
+	}
+
+	
+	//This method is to get the metas from the processor and converted to List<META>
+	public List<Meta> getRequestMetas() {
+		List<Meta> metaList=TransactionServiceHelper.getSefCoreList(this.metas);
+		return metaList;
 	}
 }

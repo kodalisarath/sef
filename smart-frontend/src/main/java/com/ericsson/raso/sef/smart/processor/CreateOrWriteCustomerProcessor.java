@@ -95,7 +95,7 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-
+         logger.debug("Creating a subscriber,calling method with metas of size"+subscriber.getMetas().size());
 		iSubscriberRequest.createSubscriber(requestId, subscriber);
 
 

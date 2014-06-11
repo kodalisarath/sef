@@ -60,7 +60,7 @@
 	<!-- <select id="userSequence" resultMap="SequenceResult" parameterType="String"> 
 		select user_id_sequence.nextval as seq, #{rand} as rand from dual </select> -->
 	<update id="deleteSubscriber" parameterType="String">
-		delete from subscriber where user_id = #{userId}
+		delete from subscriber where msisdn = #{userId}
 		<!-- update subscriber set deleted = #{userId} where user_id = #{userId} -->
 	</update>
 
@@ -70,6 +70,9 @@
 		from subscriber
 		where msisdn = #{msisdn}
 	</select>
+	<delete id="deleteSubscriberMetas" parameterType="String" >
+	delete from susbcriber_meta where user_id=#{userId}
+	</delete>
 
 	<select id="getSubscriberByUserId" resultMap="SubscriberResult"
 		parameterType="String">

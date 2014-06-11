@@ -12,7 +12,6 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -138,6 +137,7 @@ public class CreateOrWriteRop implements Processor {
 				.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
+		logger.debug("Requesting ");
 		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
 				.getSemaphore(requestId);

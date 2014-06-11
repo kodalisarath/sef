@@ -174,14 +174,16 @@ public abstract class TransactionServiceHelper {
 		return returned;
 	}
 	
-	
-	private static Collection<Meta> getMetas(Map<String,String> metaMap) {
-		Collection<Meta> metas = new ArrayList<Meta>();
+	//Change of collection to arraylist
+	private static List<Meta> getMetas(Map<String,String> metaMap) {
+		logger.debug("Called getMetas TransactionService helper with meta size"+metaMap.size());
+		List<Meta> metas = new ArrayList<Meta>();
 		if (metaMap != null) {
 			for (String key : metaMap.keySet()) {
 				Meta meta = new Meta();
 				meta.setKey(key);
 				meta.setValue(metaMap.get(key));
+				metas.add(meta);
 			}
 		}
 		return metas;

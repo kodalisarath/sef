@@ -44,6 +44,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 	@Override
 	public String createSubscriber(String requestId, com.ericsson.sef.bes.api.entities.Subscriber subscriber) {
+		logger.debug("Transaction Manager method crete subscriber and metas are of size"+subscriber.getMetas().size());
 		CreateSubscriber command = new CreateSubscriber(requestId, subscriber);
 		executor.submit(command);
 		return requestId;
@@ -164,6 +165,7 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 	@Override
 	public String updateSubscriber(String requestId, String subscriberId, Map<String, String> metas) {
+		logger.debug("Entered into the Transaction manager :update subscriber with metas of size"+metas.size());
 	UpdateSubscriber command=new UpdateSubscriber(requestId,subscriberId,metas);
 	executor.submit(command);
 	return requestId;

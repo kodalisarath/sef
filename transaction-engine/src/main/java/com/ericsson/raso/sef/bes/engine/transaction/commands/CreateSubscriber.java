@@ -48,6 +48,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = null;
 		try {
+			LOGGER.debug("In execute method before getting persistable Entity");
 			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
 			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 			Offer workflow = catalog.getOfferById(Constants.CREATE_SUBSCRIBER.name());

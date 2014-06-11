@@ -3,7 +3,6 @@ package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.core.ResponseCode;
@@ -54,9 +53,9 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
 						if (subscriberService.isSubscriberExist(((Subscriber) persistentEntity).getMsisdn())) 
-							subscriberService.updateSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
+							subscriberService.updateSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); 
 						else
-							subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); //TODO: For Vinay to clean up the DB parts...
+							subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); 
 						LOGGER.debug("Subscriber saved.");
 						
 						if (this.getResult() == null) {

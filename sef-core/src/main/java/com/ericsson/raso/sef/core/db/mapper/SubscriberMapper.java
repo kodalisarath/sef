@@ -40,5 +40,7 @@ public interface SubscriberMapper {
 	void bulkInsertSubscriberMeta(List<Meta> list);
 	
 	void bulkInsertSubscriber(List<Subscriber> list);
+	Collection<SubscriberMeta> getSubscriberMetas(String msisdn);
+	boolean deleteSubscriberMetas(String userId);
 
 }

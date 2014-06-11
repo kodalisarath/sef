@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberReq
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.service.PersistenceError;
@@ -36,6 +38,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = null;
 		
 		try {
+			//This enity must contains the subscriber and his  metas from the DB
 			subscriberEntity = ((UpdateSubscriberRequest)this.getRequest()).persistableEntity();
 			
 			if(subscriberEntity == null) {
@@ -62,13 +65,38 @@ public class UpdateSubscriber extends AbstractTransaction{
 									new ResponseCode(1006, "Unable to access persistence tier service!! Check configuration (beans.xml)")));
 			return false;
 		}
+		//It contains the metas we get from the processor
+		List<Meta> listMetas = ((UpdateSubscriberRequest)this.getRequest()).getRequestMetas();
+		LOGGER.debug("Iterating the metas from then processor");
+		for(Meta meta:listMetas){
+			if(subscriberEntity.getMetas().contains(meta)){
+				try {
+					subscriberStore.updateMeta(this.getRequestId(),subscriberEntity.getMsisdn(),meta);
+				} catch (PersistenceError e) {
+					LOGGER.error("Error in the updatemeta at UpdateSubscriber");
+				}
+			}else{
+				try {
+					subscriberStore.createMeta(this.getRequestId(), subscriberEntity.getMsisdn(),meta);
+				} catch (PersistenceError e) {
+					LOGGER.error("Error in the createmeta at UpdateSubscriber");
+				}
+			}
+			
+		}
 		
-		LOGGER.debug("About to persist Subscriber: " + subscriberEntity);
+	/*	LOGGER.debug("About to persist Subscriber: " + subscriberEntity);
 		try {
 			subscriberStore.updateSubscriber(this.getRequestId(), subscriberEntity);
 		} catch (PersistenceError e1) {
+			String errorCode;
 			LOGGER.debug("Persistence error while updating subscriber",e1);
-			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(1004, "Saving metas failed!!"), e1));
+			if(e1.getStatusCode().getCode() == 9000){
+				errorCode="504";
+			}else{
+				errorCode="4020";
+			}
+			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(Integer.valueOf(errorCode), "Saving metas failed!!"), e1));
 			return false;
 		}
 		LOGGER.debug("Update Subscriber successfull!!");
@@ -81,7 +109,7 @@ public class UpdateSubscriber extends AbstractTransaction{
 			LOGGER.debug("Persistence error while updating subscriber metas",e);
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(1004, "Saving metas failed!!"), e));
 			return false;
-		}
+		}*/
 		sendResponse();
 		
 		return true;
