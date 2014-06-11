@@ -59,7 +59,7 @@ public class ModifyCustomerPreActive implements Processor {
 		SubscriberInfo subscriberinfo = readSubscriber(requestId,
 				request.getCustomerId(), null);
 
-		logger.info("subscriberinfo for msisdn:" + request.getCustomerId()
+		logger.info("Manila subscriberinfo for msisdn:" + request.getCustomerId()
 				+ " is " + subscriberinfo);
 
 		if (subscriberinfo == null) {
@@ -73,8 +73,7 @@ public class ModifyCustomerPreActive implements Processor {
 			// ErrorCode.invalidAccount.getMessage()
 			// +" :msisdn "+request.getCustomerId()));
 
-		} else if (!ContractState.apiValue(ContractState.PREACTIVE.name())
-				.equals(subscriberinfo.getLocalState())) {
+		} else if (ContractState.apiValue(ContractState.PREACTIVE.name()).equals(subscriberinfo.getRemoteState())) {
 
 			logger.error("Manila Log: Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
 					+ request.getCustomerId() +", but Current Status is "+subscriberinfo.getLocalState());

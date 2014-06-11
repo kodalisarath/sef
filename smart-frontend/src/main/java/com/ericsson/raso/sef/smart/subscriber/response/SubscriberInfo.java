@@ -9,6 +9,12 @@ import com.ericsson.sef.bes.api.entities.TransactionStatus;
 public class SubscriberInfo extends AbstractSubscriberResponse implements Serializable {
 
 	
+	@Override
+	public String toString() {
+		return "SubscriberInfo [msisdn=" + msisdn + ", remoteState="
+				+ remoteState + ", localState=" + localState + ", isLocked="
+				+ isLocked + ", metas=" + metas + ", status=" + status + "]";
+	}
 	private static final long serialVersionUID = -339541771917173674L;
 
 	
