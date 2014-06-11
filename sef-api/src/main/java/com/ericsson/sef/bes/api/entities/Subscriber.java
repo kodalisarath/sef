@@ -9,6 +9,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="subscriber")
 public class Subscriber implements Serializable{
 
+	@Override
+	public String toString() {
+		return "Subscriber [userId=" + userId + ", customerId=" + customerId
+				+ ", contractId=" + contractId + ", msisdn=" + msisdn
+				+ ", pin=" + pin + ", email=" + email + ", imsi=" + imsi
+				+ ", imeiSv=" + imeiSv + ", paymentType=" + paymentType
+				+ ", paymentResponsible=" + paymentResponsible
+				+ ", paymentParent=" + paymentParent + ", billCycleDay="
+				+ billCycleDay + ", contractState=" + contractState
+				+ ", dateOfBirth=" + dateOfBirth + ", gender=" + gender
+				+ ", prefferedLanguage=" + prefferedLanguage
+				+ ", registrationDate=" + registrationDate + ", activeDate="
+				+ activeDate + ", ratePlan=" + ratePlan + ", customerSegment="
+				+ customerSegment + ", metas=" + metas + "]";
+	}
+
 	/**
 	 * 
 	 */
