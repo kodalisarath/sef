@@ -73,7 +73,7 @@ public class ReadSubscriber extends AbstractTransaction {
 					.getRequest()).getMetas().get(
 					Constants.READ_SUBSCRIBER.name());
 			if (readSubscriberWorkflowId != null) {
-				LOGGER.debug("somehow a workflow is also needed... wtf?!!!");
+				LOGGER.debug("somehow a workflow is also needed... ?!!!");
 				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 				Offer workflow = catalog.getOfferById(readSubscriberWorkflowId);
 
@@ -95,6 +95,12 @@ public class ReadSubscriber extends AbstractTransaction {
 							+ execution.getNorthBoundCorrelator());
 					OrchestrationManager.getInstance().submit(this, execution);
 				}
+			}
+			else
+			{
+				LOGGER.debug("Workflow id is null."); //To Do  
+				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504,	"Subscriber not found")));
+				this.sendResponse();
 			}
 		} catch (TransactionException e) {
 			LOGGER.error(
