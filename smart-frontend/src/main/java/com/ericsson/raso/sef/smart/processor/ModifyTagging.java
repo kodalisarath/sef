@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.opensaml.ws.WSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,13 +12,13 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.ModifyTaggingRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
-import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
@@ -78,6 +77,7 @@ public class ModifyTagging implements Processor {
 				metas.add(new Meta("HANDLE_LIFE_CYCLE", "recycleBit"));
 				break;
 			default:
+				throw ExceptionUtil.toSmException(new ResponseCode(4020, "Subscriber Not Found"));
 		}
 		logger.debug("Usecase Metas: " + metas);
 
@@ -128,9 +128,10 @@ public class ModifyTagging implements Processor {
 
 		// SubscriberManagement subscriberManagement = SmartContext.getSubscriberManagement();
 		// Subscriber subscriber = subscriberManagement.getSubscriberProfile(customerId, null);
-		if (subscriberInfo == null) {
+		if (subscriberInfo != null && subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() == 504) {
 			throw new SmException(new ResponseCode(504, "Invalid Account - subscriber not found"));
 		}
+		logger.debug("If I am here, then it means the subscriber exists or may be other problem......" );
 	}
 
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas) {
