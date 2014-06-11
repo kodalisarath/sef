@@ -66,7 +66,7 @@ public class ModifyCustomerPreActive implements Processor {
 			logger.error("Manila Log: Subscriber Not Found. msisdn: "
 					+ request.getCustomerId());
 
-			throw ExceptionUtil.toTisException(ErrorCode.invalidAccount);
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 
 			// throw new SmException(new
 			// ResponseCode(ErrorCode.invalidAccount.getCode(),
@@ -83,7 +83,7 @@ public class ModifyCustomerPreActive implements Processor {
 			// ErrorCode.notPreActive.getMessage()
 			// +" :msisdn "+request.getCustomerId()));
 
-			throw ExceptionUtil.toTisException(ErrorCode.notPreActive);
+			throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
 		}
 
 		Date preActiveEndDate = null;
