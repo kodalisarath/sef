@@ -221,6 +221,8 @@
 		description="SMART Front Response mapping of backend error/status codes. 
 	Backend error code is configured as key and front-end mapped status code is configured as value">
 		<property key="99999" value="99999" />
+		<property key="504" value="504" />
+		
 		<property key="500" value="11614" />
 		<property key="4007" value="4007" />
 		<property key="506" value="506" />
@@ -311,7 +313,6 @@
 		<property key="4010" value="4007" />
 		<property key="4011" value="505" />
 		<property key="4012" value="301" />
-		<property key="4020" value="901" />
 		<property key="5003" value="4002" />
 		<property key="5004" value="4012" />
 		<property key="5005" value="4012" />
