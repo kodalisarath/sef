@@ -132,25 +132,32 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		try {
 			logger.debug("Crossing fingers... About to insert subscriber:"+ subscriber);
-			subscriberMapper.createSubscriber(subscriber);
-			List<Meta> metaList=(List<Meta>) subscriber.getMetas();
-			if(metaList != null){
-				if(!metaList.isEmpty()){
-					logger.debug("Metas gonna insert are of size:"+metaList.size());
-					for(Meta meta:metaList){
-						SubscriberMeta subscriberMeta=new SubscriberMeta();
-						try {
-							subscriberMeta.setKey(meta.getKey());
-							subscriberMeta.setValue(meta.getValue());
-							subscriberMeta.setSubscriberId(subscriber.getMsisdn());
-							subscriberMapper.insertSubscriberMeta(subscriberMeta);
-						} catch (PersistenceException e1) {
-							logger.error("Encountered Persistence Error. Cause: "+ e1.getCause().getClass().getCanonicalName(), e1);
-							throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to insert Subscriber Metas!!"), e1);
+			//To:DO   optimize it
+			Subscriber subscriberDB=getSubscriber(subscriber.getMsisdn());
+			if(subscriberDB != null){
+				throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(SubscriberStateError,"Failed to insert Subscriber Metas!!"));
+			}else{
+				subscriberMapper.createSubscriber(subscriber);
+				List<Meta> metaList=(List<Meta>) subscriber.getMetas();
+				if(metaList != null){
+					if(!metaList.isEmpty()){
+						logger.debug("Metas gonna insert are of size:"+metaList.size());
+						for(Meta meta:metaList){
+							SubscriberMeta subscriberMeta=new SubscriberMeta();
+							try {
+								subscriberMeta.setKey(meta.getKey());
+								subscriberMeta.setValue(meta.getValue());
+								subscriberMeta.setSubscriberId(subscriber.getMsisdn());
+								subscriberMapper.insertSubscriberMeta(subscriberMeta);
+							} catch (PersistenceException e1) {
+								logger.error("Encountered Persistence Error. Cause: "+ e1.getCause().getClass().getCanonicalName(), e1);
+								throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to insert Subscriber Metas!!"), e1);
+							}
 						}
 					}
 				}
 			}
+		
 			//this.createMetas(nbCorellator, subscriber.getUserId(),subscriber.getMetas());
 
 		} catch (PersistenceException e) {
@@ -197,7 +204,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		catch(FrameworkException e1){
 			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. in updating subscriber Cause: Encrypting msisdn",e1);
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
+			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
 		}
 		if(subscriberDB != null){
 			//List<Meta> metaList=convertToMetaList(subscriberDB.getMetas());
@@ -292,7 +299,20 @@ public class SubscriberServiceImpl implements SubscriberService{
 	}
 	 return subcriber;
 	}
-
+	
+private Subscriber getSubscriber(String msisdn) throws PersistenceError{
+	if(msisdn == null)
+		throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The msisdn entity provided was null!!"));
+	Subscriber readSubscriber=null;
+	try {
+		readSubscriber=subscriberMapper.getSubscriber(msisdn);
+	} catch (PersistenceException e) {
+		logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
+		throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber with the provided msisdn in getSubscriber"), e);
+	}
+	return readSubscriber;
+	
+}
 	@Override
 	public boolean createMetas(String nbCorrelator, String userId,
 			Collection<Meta> metas) throws PersistenceError {

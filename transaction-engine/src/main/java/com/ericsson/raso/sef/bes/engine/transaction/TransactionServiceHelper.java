@@ -604,6 +604,7 @@ public abstract class TransactionServiceHelper {
 	}
 	
 	public static List<Meta> getSefCoreList(Map<String,String> metas) {
+		logger.debug("getSefCoreList : called"+metas.size());
 		List<Meta> metaList=new ArrayList<Meta>();
 		for(String key: metas.keySet()) {
 			Meta meta=new Meta();
@@ -611,6 +612,7 @@ public abstract class TransactionServiceHelper {
 			meta.setValue(metas.get(key));
 			metaList.add(meta);
 		}
+		logger.debug("returning the metaList"+metaList.size());
 		return metaList;
 	}
 	
