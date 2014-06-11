@@ -129,7 +129,7 @@ public class ReadSubscriber extends AbstractTransaction {
 		TransactionStatus txnStatus = new TransactionStatus();
 		com.ericsson.sef.bes.api.entities.Subscriber subscriber = ((ReadSubscriberResponse) this.getResponse()).getSubscriber();
 
-		if (this.getResponse() != null) {
+		if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
 			TransactionException fault = this.getResponse().getReturnFault();
 			if (fault != null) {
 				txnStatus.setCode(fault.getStatusCode().getCode());
@@ -163,9 +163,7 @@ public class ReadSubscriber extends AbstractTransaction {
 					}
 				}
 			}
-
 			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber, products);
-
 		}
 
 		LOGGER.debug("Invoking read subscriber response!!");
