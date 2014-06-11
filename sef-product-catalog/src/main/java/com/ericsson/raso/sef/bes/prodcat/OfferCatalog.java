@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.bes.prodcat;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,13 @@ import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 
-public class OfferCatalog implements IOfferCatalog {
+public class OfferCatalog implements IOfferCatalog, Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7710234449771403849L;
+
 	public static String offerStoreLocation = null;;
 
 	private SecureSerializationHelper ssh = null;
@@ -37,7 +43,7 @@ public class OfferCatalog implements IOfferCatalog {
 			try {
 				this.container = (OfferContainer) ssh.fetchFromFile(offerStoreLocation);
 				logger.debug("E/// Offer Catalog is loaded");
-				logger.debug("Fetching a sample offer J: "  + container.getOfferById("AllText10").getName());
+//				logger.debug("Fetching a sample offer J: "  + container.getOfferById("AllText10").getName());
 			} catch (FrameworkException e) {
 				logger.debug("E/// I encountered an error here: " + e.getMessage() + " " + e.getCause());
 				// TODO: LOgger on this error...

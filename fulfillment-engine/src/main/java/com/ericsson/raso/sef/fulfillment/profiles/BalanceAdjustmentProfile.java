@@ -115,94 +115,35 @@ public class BalanceAdjustmentProfile extends BlockingFulfillment<Product> {
 	//TODO: Move to smart-commons
 	private List<Product> createResponse(Product p, UpdateBalanceAndDateResponse response) {
 		
-//		LOGGER.debug("Convering CS - IL response");
-//		List<Product> products = new ArrayList<Product>();
-//		
-//		Product product = new Product();
-//		product.setResourceName(p.getResourceName());
-//		product.setQuotaDefined(-1);
-//		product.setValidity(-1);
-//		
-//		// Start processing flattening of GetAccountDetailsResponse
-//		Map<String, String> balanceAndDateInfo = new HashMap<String, String>();
-//		
-//		// Dedicated Accounts...
-//		int index = 0;
-//		for (DedicatedAccountChangeInformation daInformation: response.getDedicatedAccountInformation()) {
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ID + "." + ++index, "" + daInformation.getDedicatedAccountID());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1 + "." + index, "" + daInformation.getDedicatedAccountValue1());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_VALUE_2 + "." + index, "" + daInformation.getDedicatedAccountValue2());
-//			
-//			if(daInformation.getExpiryDate() != null)
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_EXPIRY_DATE + "." + index, "" + daInformation.getExpiryDate().getTime());
-//			
-//			if(daInformation.getStartDate() != null)
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_START_DATE + "." + index, "" + daInformation.getStartDate().getTime());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_PAM_SERVICE_ID + "." + index, "" + daInformation.getPamServiceID());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_OFFER_ID + "." + index, "" + daInformation.getOfferID());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_PRODUCT_ID + "." + index, "" + daInformation.getProductID());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_REAL_MONEY_FLAG + "." + index, "" + daInformation.isDedicatedAccountRealMoneyFlag());
-//			
-//			if(daInformation.getClosestExpiryDate() != null)
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_DATE + "." + index, "" + daInformation.getClosestExpiryDate().getTime());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_1 + "." + index, "" + daInformation.getClosestExpiryValue1());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_2 + "." + index, "" + daInformation.getClosestExpiryValue2());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_DATE + "." + index, "" + daInformation.getClosestAccessibleDate());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_1 + "." + index, "" + daInformation.getClosestExpiryValue1());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_2 + "." + index, "" + daInformation.getClosestExpiryValue2());
-//			
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_1 + "." + index, "" + daInformation.getDedicatedAccountActiveValue1());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_2 + "." + index, "" + daInformation.getDedicatedAccountActiveValue2());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_UNIT_TYPE + "." + index, "" + daInformation.getDedicatedAccountUnitType());
-//			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_COMPOSITE_DA_FLAG + "." + index, "" + daInformation.isCompositeDedicatedAccountFlag());
-//			
-//			int subindex = 0;
-//			if(daInformation.getSubDedicatedAccountInformation() != null) {
-//				for (SubDedicatedInfo subDedicatedInfo: daInformation.getSubDedicatedAccountInformation()) {
-//					if(subDedicatedInfo != null) {
-//						if(subDedicatedInfo.getDedicatedAccountValue1() != null)
-//						balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_1 + "." + index+ "." + ++subindex, "" + subDedicatedInfo.getDedicatedAccountValue1());
-//						
-//						if(subDedicatedInfo.getDedicatedAccountValue2() != null)
-//						balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_2 + "." + index+ "." + subindex, "" + subDedicatedInfo.getDedicatedAccountValue2());
-//						
-//						if(subDedicatedInfo.getStartDate() != null)
-//						balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_START_DATE + "." + index+ "." +  subindex, "" + subDedicatedInfo.getStartDate().getTime());
-//						
-//						if(subDedicatedInfo.getExpiryDate() != null)
-//						balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_EXPIRY_DATE + "." + index+ "." +  subindex, "" + subDedicatedInfo.getExpiryDate().getTime());
-//					}
-//				}
-//			}
-//		}
-//		LOGGER.debug("Packed all dedicated accounts...");
-//
-//		// offer info...
-//		index = 0;
-//		for (OfferInformation offerInformation: response.getOfferInformationList()) {
-//			if(offerInformation != null) {
-//				balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_OFFER_ID + "." + ++index, "" + offerInformation.getOfferID());
-//				
-//				if(offerInformation.getStartDate() != null)
-//				balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_START_DATE + "." + index, "" + offerInformation.getStartDate().getTime());
-//				
-//				if(offerInformation.getStartDateTime() != null)
-//				balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_START_DATE_TIME + "." + index, "" + offerInformation.getStartDateTime().getTime());
-//				
-//				if(offerInformation.getExpiryDate() != null)
-//				balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
-//				
-//				if(offerInformation.getExpiryDateTime() != null)
-//				balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
-//			}
-//		}
-//		LOGGER.debug("Packed all offer info...");
-//		
-//		
-//		product.setMetas(balanceAndDateInfo);
-//		products.add(product);
-//		return products;
-		return null;
+		LOGGER.debug("Convering CS - IL response");
+		List<Product> products = new ArrayList<Product>();
+		
+		Product product = new Product();
+		product.setResourceName(p.getResourceName());
+		product.setQuotaDefined(-1);
+		product.setValidity(-1);
+		
+		// Start processing flattening of GetAccountDetailsResponse
+		Map<String, String> balanceAndDateInfo = new HashMap<String, String>();
+		
+		// Dedicated Accounts...
+		int index = 0;
+		for (DedicatedAccountChangeInformation daInformation: response.getDedicatedAccountInformation()) {
+			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ID + "." + ++index, "" + daInformation.getDedicatedAccountID());
+			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1 + "." + index, "" + daInformation.getDedicatedAccountValue1());
+		}
+		LOGGER.debug("Packed all dedicated accounts...");
+
+		// offer info...
+		index = 0;
+
+
+		LOGGER.debug("Packed all offer info...");
+		
+		
+		product.setMetas(balanceAndDateInfo);
+		products.add(product);
+		return products;
 	}
 
 

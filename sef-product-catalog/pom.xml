@@ -32,6 +32,7 @@
 		com.ericsson.raso.sef.bes.prodcat.service,
 		com.ericsson.raso.sef.bes.prodcat.entities,
 		com.ericsson.raso.sef.bes.prodcat.tasks,
+		com.ericsson.raso.sef.bes.prodcat.*,
 		META-INF.product-catalog
 		</osgi-export-package>
   </properties>
