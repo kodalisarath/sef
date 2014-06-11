@@ -41,6 +41,8 @@ public class UpdateSubscriber extends AbstractTransaction{
 		try {
 			//This enity must contains the subscriber and his  metas from the DB
 			subscriberEntity = ((UpdateSubscriberRequest)this.getRequest()).persistableEntity();
+			LOGGER.debug("PIN"+subscriberEntity.getPin()+"   "+subscriberEntity.getContractState()+"  "+subscriberEntity.getAccountId()+" "+subscriberEntity.getMsisdn());
+			LOGGER.debug(subscriberEntity.toString());
 			SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
 			if (subscriberStore == null) {
 				LOGGER.error("Unable to access persistence tier service!!");
@@ -57,11 +59,11 @@ public class UpdateSubscriber extends AbstractTransaction{
 			}
 			else{
 				LOGGER.debug("Enum "+ContractState.apiValue("PRE_ACTIVE"));
-				LOGGER.debug("Meta contract state from "+subscriberEntity.getContractState().getName());
+				LOGGER.debug("Meta contract state from "+subscriberEntity.getContractState());
 			    LOGGER.debug("Checking size of meta  from DB"+subscriberEntity.getMetas().size());
 			    List<Meta> listMetas = ((UpdateSubscriberRequest)this.getRequest()).getRequestMetas();
 			    LOGGER.debug("Check for the metas from processors"+listMetas.size());
-				if(ContractState.apiValue("PRE_ACTIVE").equals(subscriberEntity.getContractState().getName())){
+				if(ContractState.apiValue("PRE_ACTIVE").equals(subscriberEntity.getContractState())){
 					LOGGER.debug("Meta list from the processor"+listMetas.size());
 					LOGGER.debug("Iterating the metas from then processor");
 					for(Meta meta:listMetas){
