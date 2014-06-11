@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://cxf.apache.org/jaxws 
+          http://cxf.apache.org/schemas/jaxws.xsd
+          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+          http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<import resource="classpath:META-INF/sm-core/beans.xml"/>
+	<import resource="classpath:META-INF/product-catalog/beans.xml"/>
+	<import resource="classpath:META-INF/ca-client/beans.xml"/>
+	
+	<bean id="neContext" class="com.ericsson.sm.ne.NotificationEngineContext"/>
+
+	<bean id="neProperties" class="com.ericsson.sm.core.config.ComponentPropertiesBean">
+		<constructor-arg name="config" ref="cfg" />
+		<constructor-arg name="component" value="notification-engine" />
+	</bean>
+	<context:property-placeholder properties-ref="neProperties" />
+	
+	<bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemq">
+        <property name="brokerURL" value="#{cfg.jmsEndpoint('sm-jms-broker').uri}"/>
+        <property name="userName" value="#{cfg.jmsEndpoint('sm-jms-broker').username}"/>
+        <property name="password" value="#{cfg.jmsEndpoint('sm-jms-broker').password}"/>
+    </bean>
+	
+	<camelContext id="notificationEngineCamelContext" xmlns="http://camel.apache.org/schema/spring">
+		<propertyPlaceholder id="properties" location="ref:neProperties"/>
+		<route>
+	 		<from uri="file:{{autoTransfer.directory}}?delay={{autoTransfer.interval}}"/>
+			<camel:unmarshal>
+				<camel:csv skipFirstLine="true"/>
+			</camel:unmarshal>
+			<camel:setHeader headerName="csvHeader">
+				<camel:simple>{{autoTransfer.csvHeader}}</camel:simple>
+			</camel:setHeader>
+			<camel:bean beanType="com.ericsson.sm.ne.AutoTransferProcessor"/>
+		</route>
+	</camelContext>
+	
+	<bean id="notificationRoutes" class="com.ericsson.sm.ne.NotificationRoutes" init-method="start">
+		<constructor-arg ref="notificationEngineCamelContext"/>
+		<constructor-arg ref="cfg"/>
+	</bean>
+	
+	<bean id="activateSubscriberClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
+		<property name="serviceClass" value="com.ericsson.sm.api.notification.NotificationWorkflowService"/>
+		<property name="address" value="#{cfg.soapEndpoint('activateSubscriberWs-client').address}"/>
+	</bean>
+	
+	<bean id="activateSubscriberWorkflow" 
+		class="com.ericsson.sm.api.notification.NotificationWorkflowService" 
+		factory-bean="activateSubscriberClientFactory"
+		factory-method="create"/>
+		
+	<bean id="alkansyaClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
+		<property name="serviceClass" value="com.ericsson.sm.api.notification.NotificationWorkflowService"/>
+		<property name="address" value="#{cfg.soapEndpoint('Alkansya-client').address}"/>
+	</bean>
+	
+	<bean id="alkansyaWorkflow" 
+		class="com.ericsson.sm.api.notification.NotificationWorkflowService" 
+		factory-bean="alkansyaClientFactory"
+		factory-method="create"/>
+
+	<bean id="callingCircleClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
+		<property name="serviceClass" value="com.ericsson.sm.api.notification.NotificationWorkflowService"/>
+		<property name="address" value="#{cfg.soapEndpoint('callingCircleWs-client').address}"/>
+	</bean>
+	
+	<bean id="callingCircleWorkflow" 
+		class="com.ericsson.sm.api.notification.NotificationWorkflowService" 
+		factory-bean="callingCircleClientFactory"
+		factory-method="create"/>
+	
+</beans>

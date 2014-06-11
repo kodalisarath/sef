@@ -1,0 +1,116 @@
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ericsson.sef</groupId>
+	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>sef-notifcation-engine</artifactId>
+	<packaging>bundle</packaging>
+
+	<dependencies>
+	<dependency>
+		<groupId>com.ericsson.sef</groupId>
+		<artifactId>sef-core</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+		<groupId>com.ericsson.sef</groupId>
+		<artifactId>sef-api</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+		<groupId>com.googlecode.jsmpp</groupId>
+		<artifactId>jsmpp</artifactId>
+		<version>${jsmpp.version}</version>
+		</dependency>
+
+<dependency>
+	<groupId>javax.xml.ws</groupId>
+	<artifactId>jaxws-api</artifactId>
+	<version>2.2.6</version>
+</dependency>
+
+<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+
+<dependency>
+			<groupId>com.cloudhopper</groupId>
+			<artifactId>ch-smpp</artifactId>
+				<version>5.0.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<properties>
+		<osgi-import-package>
+			${smcore-packages},
+			META-INF.subscriber-frontend-client,
+			com.ericsson.sm.api.subscriber,
+			com.ericsson.sm.api.notification,
+
+			META-INF.cxf,
+			META-INF.product-catalog,
+			com.ericsson.sm.catalog,
+			com.ericsson.sm.catalog.model,
+			com.ericsson.sm.catalog.model.resource,
+			com.ericsson.sm.catalog.model.policy,
+
+			${charging-adapter-package},
+			META-INF.ca-client,
+			*
+		</osgi-import-package>
+		<jsmpp.version>2.1.0-RELEASE</jsmpp.version>
+	</properties>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<plugins>
+
+				<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-codegen-plugin</artifactId>
+				<version>2.7.11</version>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<sourceRoot>${project.build.directory}/generated/cxf</sourceRoot>
+							<wsdlOptions>
+								<wsdlOption>
+									<wsdl>${basedir}/src/main/resources/charging-adapter-api/wsdl/parlayx_payment_amount_charging_service_2_1.wsdl</wsdl>
+								</wsdlOption>
+								<wsdlOption>
+									<wsdl>${basedir}/src/main/resources/charging-adapter-api/wsdl/parlayx_payment_reserve_amount_charging_service_2_1.wsdl</wsdl>
+								</wsdlOption>
+							</wsdlOptions>
+						</configuration>
+						<goals>
+							<goal>wsdl2java</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>2.4.0</version>
+				<configuration>
+					<instructions>
+						<_failok>true</_failok>
+						<_nouses>true</_nouses>
+						<Import-Package>${osgi-import-package}</Import-Package>
+						<DynamicImport-Package>${osgi-dynamicimport-package}</DynamicImport-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+
+</project>
