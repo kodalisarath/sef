@@ -26,10 +26,9 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 
-		if (fault == null) {
+		if (fault != null) {
 			subscriberInfo.setStatus(fault);
 			this.triggerResponse(requestCorrelator, subscriberInfo);
-
 		} 
 		
 		if (subscriber == null) {
