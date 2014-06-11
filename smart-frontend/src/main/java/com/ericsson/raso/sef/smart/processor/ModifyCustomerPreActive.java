@@ -91,9 +91,10 @@ public class ModifyCustomerPreActive implements Processor {
 			TransactionStatus status = subscriberinfo.getStatus();
 			if(status !=null){
 				int statusCode = status.getCode();
-				logger.debug("Manila error Status Code is "+statusCode);
+				logger.debug("Manila error Status Code is "+statusCode+" :msisdn "+request.getCustomerId() +" Read Subscriber Failed");
 				if(statusCode != 0)
-					throw new SmException(new ResponseCode(ErrorCode.invalidAccount.getCode(), ErrorCode.invalidAccount.getMessage() +" :msisdn "+request.getCustomerId() +" Read Subscriber Failed"));
+					throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+					//throw new SmException(new ResponseCode(ErrorCode.invalidAccount.getCode(), ErrorCode.invalidAccount.getMessage() ));
 					
 			}
 			
