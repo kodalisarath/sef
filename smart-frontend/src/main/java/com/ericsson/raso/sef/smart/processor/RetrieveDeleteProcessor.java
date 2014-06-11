@@ -1,12 +1,6 @@
 package com.ericsson.raso.sef.smart.processor;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -15,10 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
-import com.ericsson.raso.sef.core.config.IConfig;
-import com.ericsson.raso.sef.core.db.model.ContractState;
-import com.ericsson.raso.sef.smart.ErrorCode;
-import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -26,14 +16,6 @@ import com.ericsson.raso.sef.smart.usecase.RetrieveDeleteRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.DateTimeParameter;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 
 
@@ -45,24 +27,11 @@ public class RetrieveDeleteProcessor implements Processor {
 		try {
 			RetrieveDeleteRequest request = (RetrieveDeleteRequest) exchange.getIn().getBody();
 			String requestId = RequestContextLocalStore.get().getRequestId();
-		
-			
-			SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
-			
-			
-	if(subscriberinfo ==null)
-	{
-	logger.error("Subscriber Not Found. msisdn: "
-			+ request.getCustomerId());	
-	throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-	}
-			
-			//SmartContext.getSubscriberManagement().changeContractState(request.getCustomerId(), ContractState.READY_TO_DELETE, null);
+		   String subscriberId=request.getCustomerId();
+			SubscriberInfo subscriberInfo= deleteSubscriber(requestId,subscriberId);
 			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-			iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.READY_TO_DELETE.getName(), null);
-			
-			
-			exchange.getOut().setBody(response(requestId,request.getCustomerId(), request.getUsecase().getOperation(), request.getUsecase().getModifier(), request.isTransactional() ));
+			//iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.READY_TO_DELETE.getName(), null);
+			//exchange.getOut().setBody();
 		} catch (Exception e) {
 			logger.error("Error in processor class:",e.getClass().getName(),e);
 		}
@@ -70,11 +39,27 @@ public class RetrieveDeleteProcessor implements Processor {
 	}
 	
 	
-	public CommandResponseData response(String requestId,String subscriberId, 
+	private SubscriberInfo deleteSubscriber(String requestId,String subscriberId) {
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		iSubscriberRequest.deleteSubscriber(requestId, subscriberId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
+		semaphore.init(0);
+		semaphore.acquire();
+		} catch(InterruptedException e) {
+		}
+		logger.info("Check if response received for update subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		return subscriberInfo;
+		
+	}
+	/*public CommandResponseData response(String requestId,String subscriberId, 
 			String operationName, 
 			String modifier,
 			boolean transactionalOperation)throws ParseException {
-
+		subscriberId
 		CommandResponseData responseData = new CommandResponseData();
 		CommandResult result = new CommandResult();
 		responseData.setCommandResult(result);
@@ -190,7 +175,7 @@ public class RetrieveDeleteProcessor implements Processor {
 			
 			
 			
-			/*for(Meta meta : metas) {
+			for(Meta meta : metas) {
 				if(meta.getKey().equals("Key")) {
 					StringParameter key = new StringParameter();
 					key.setName("Key");
@@ -234,10 +219,10 @@ public class RetrieveDeleteProcessor implements Processor {
 					paramList.getParameterOrBooleanParameterOrByteParameter().add(owningCustomerId);
 				}
 			}
-*/		
+		
 		
 		return responseData;
-	}
+	}*/
 
 
 	private SubscriberInfo readSubscriber(String requestId, String subscriberId, List<Meta> metas){

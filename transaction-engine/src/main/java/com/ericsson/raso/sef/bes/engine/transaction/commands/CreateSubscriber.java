@@ -52,9 +52,7 @@ public class CreateSubscriber extends AbstractTransaction {
 			LOGGER.debug("In execute method before getting persistable Entity");
 			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
 			if(subscriberEntity != null){
-				if(ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState())){
-					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(4020,"Invalid operation state")));
-				}
+				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(4020,"Invalid operation state")));
 			}else{
 				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 				Offer workflow = catalog.getOfferById(Constants.CREATE_SUBSCRIBER.name());

@@ -93,6 +93,9 @@
 		where user_id = #{subscriberId}
 		and attribute_name = #{key}
 	</update>
+	<update id="changeContractStatus" parameterType="String">
+	update subscriber set contract_state=#{contractState} where msisdn=#{msisdn}
+	</update>
 	<select id="getContractState" parameterType="String">
 	select contract_state from subscriber where user_id=#{userId}
 	</select>

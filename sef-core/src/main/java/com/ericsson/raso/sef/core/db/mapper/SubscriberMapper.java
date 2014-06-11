@@ -14,7 +14,7 @@ public interface SubscriberMapper {
 	Integer isSubscriberExists(String msisdn);
 	String getContractState(String userId);
 	void createSubscriber(Subscriber subscriber);
-	
+	void changeContractStatus(Subscriber subscriber);
 	void deleteSubscriber(String userId);
 	
 	Subscriber getSubscriber(String msisdn);

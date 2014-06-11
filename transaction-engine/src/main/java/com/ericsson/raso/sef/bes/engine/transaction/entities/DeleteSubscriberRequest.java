@@ -1,5 +1,8 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
+
 
 
 public final class DeleteSubscriberRequest extends AbstractRequest {
@@ -20,10 +23,11 @@ public final class DeleteSubscriberRequest extends AbstractRequest {
 		this.subscriberId = subscriberId;
 	}
 	
-	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() {
-		// TODO Auto-generated method stub
-		return null;
+	public com.ericsson.raso.sef.core.db.model.Subscriber persistableEntity() throws TransactionException {
+		
+		return TransactionServiceHelper.fetchSubscriberFromDb(this.subscriberId);
 	}
+	
  
 	@Override
 	public String toString() {

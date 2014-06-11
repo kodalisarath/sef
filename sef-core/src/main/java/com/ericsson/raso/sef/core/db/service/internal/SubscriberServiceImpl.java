@@ -238,15 +238,12 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if(userId == null)
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The userid provided was null!!"));
 		try {
-			subscriberMapper.deleteSubscriberMetas(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
-			subscriberMapper.deleteSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
+			Subscriber subscriber=new Subscriber();
+			subscriber.setContractState(ContractState.apiValue("READY_TO_DELETE"));
+			subscriberMapper.changeContractStatus(subscriber);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to delete subscriber meta with the provided userid"), e);
-		}
-		catch (FrameworkException e) {
-			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. in delete subscriber Cause: Encrypting msisdn",e);
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e);
 		}
 		return true;
 	}

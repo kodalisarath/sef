@@ -10,13 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRequest;
-import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.DeleteSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.DeleteSubscriberResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
@@ -24,6 +20,7 @@ import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -33,8 +30,8 @@ public class DeleteSubscriber extends AbstractTransaction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DeleteSubscriber.class);
 	
 	public DeleteSubscriber(String requestId, Subscriber subscriber) {
-		super(requestId, new CreateSubscriberRequest(requestId, subscriber));
-		this.setResponse(new CreateSubscriberResponse(requestId));
+		super(requestId, new DeleteSubscriberRequest(requestId, subscriber.getMsisdn()));
+		this.setResponse(new DeleteSubscriberResponse(requestId,true));
 		LOGGER.debug("RequestID: " + requestId + ", SubscriberID: " + subscriber);
 		
 	}
@@ -45,25 +42,30 @@ public class DeleteSubscriber extends AbstractTransaction {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 		
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = ((DeleteSubscriberRequest)this.getRequest()).persistableEntity();
-		LOGGER.debug("Cnverted from API to DB Format: " + subscriberEntity);
-		
-		tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.REMOVE, subscriberEntity, subscriberEntity.getMsisdn()));
-		
-		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-		Offer workflow = catalog.getOfferById(Constants.DELETE_SUBSCRIBER.name());
-		if (workflow != null) {
-			LOGGER.debug("Workflow found for delete...");
-			String subscriberId = ((DeleteSubscriberRequest)this.getRequest()).getSubscriberId();
-			try {
-				tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, new HashMap<String,Object>()));
-			} catch (CatalogException e) {
-				this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
-			}
+		LOGGER.debug("Cnverted from API to DB Format:");
+		if(subscriberEntity == null){
+			this.getResponse().setReturnFault(new TransactionException(this.getClass().getCanonicalName(), new ResponseCode(504,"Subscriber not found")));
+		}else{
+			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.REMOVE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
+			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
+			Offer workflow = catalog.getOfferById(Constants.DELETE_SUBSCRIBER.name());
+			if (workflow != null) {
+				LOGGER.debug("Workflow found for delete...");
+				String subscriberId = ((DeleteSubscriberRequest)this.getRequest()).getSubscriberId();
+				try {
+					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, new HashMap<String,Object>()));
+				} catch (CatalogException e) {
+					this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+				}
+				
+			}
+			//Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
+			
+			//OrchestrationManager.getInstance().submit(this, execution);
 		}
-		Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
 		
-		OrchestrationManager.getInstance().submit(this, execution);
+		
 		
 		return true;
 	}
