@@ -410,16 +410,21 @@ public class SubscriberServiceImpl implements SubscriberService {
 			throws PersistenceError {
 		logger.debug("Method setMetas is  called");
 
-		if (userId == null || userId.isEmpty())
+		if (userId == null || userId.isEmpty()) {
+			
+			logger.debug("setMeta The 'userId' provided was null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'userId' provided was null!!"));
-
+		}
 		if (metas == null || metas.isEmpty())
+		{	
+			logger.debug("The 'metaKeys' provided was null!!");
+			
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'metaKeys' provided was null!!"));
-
+		}
 		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
 		List<String> metaKeys = this.getKeysAsList(metas);
 		Collection<Meta> currentMetas = this.getMetas(nbCorrelator, userId,
@@ -481,15 +486,21 @@ public class SubscriberServiceImpl implements SubscriberService {
 			Collection<Meta> metas) throws PersistenceError {
 		logger.debug("Method setMetas is  called");
 		if (userId == null || userId.isEmpty())
+		{
+		
+			logger.debug("The 'userId' provided was null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'userId' provided was null!!"));
-
+		}
 		if (metas == null || metas.isEmpty())
+		{
+			logger.debug("metas null!");
+			
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'metaKeys' provided was null!!"));
-
+		}
 		Collection<SubscriberAuditTrial> newAuditTrail = new ArrayList<SubscriberAuditTrial>();
 		logger.debug("Function call to get the metas");
 		List<String> metaKeys = this.getKeysAsList(metas);
@@ -550,18 +561,24 @@ public class SubscriberServiceImpl implements SubscriberService {
 	@Transactional
 	public boolean createMetas(String nbCorrelator, String userId,
 			Collection<Meta> metas) throws PersistenceError {
-		logger.debug("Method setMetas is  called");
+		logger.debug("Method createMetas is  called");
 
-		if (userId == null || userId.isEmpty())
+		if (userId == null || userId.isEmpty()) {
+		
+			
+			
+			logger.debug("The 'userId' provided was null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'userId' provided was null!!"));
-
+		}
 		if (metas == null || metas.isEmpty())
+		{
+			logger.debug("The 'metaKeys' provided was null!!!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'metaKeys' provided was null!!"));
-
+		}
 		// Collection<SubscriberAuditTrial> newAuditTrail = new
 		// ArrayList<SubscriberAuditTrial>();
 		List<String> metaKeys = this.getKeysAsList(metas);
@@ -626,15 +643,20 @@ public class SubscriberServiceImpl implements SubscriberService {
 			List<String> metaKeys) throws PersistenceError {
 		logger.debug("In the getMetas called");
 		if (userId == null || userId.isEmpty())
+			
+		{
+			logger.debug("The 'userId' provided was null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'userId' provided was null!!"));
-
+		}
 		if (metaKeys == null || metaKeys.isEmpty())
+		{
+			logger.debug("The 'metaKeys' provided was null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'metaKeys' provided was null!!"));
-
+		}
 		Subscriber subscriber = this.fetchSubscriberByUserId(nbCorrelator,
 				userId);
 		if (subscriber == null)
@@ -652,16 +674,22 @@ public class SubscriberServiceImpl implements SubscriberService {
 	@Override
 	public Subscriber getSubscriber(String nbCorrelator, String userId,
 			List<String> metaKeys) throws PersistenceError {
+		
+		logger.debug("In the getSubscriber called");
 		if (userId == null || userId.isEmpty())
+		{
+			logger.debug("The 'userId' provided was null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'userId' provided was null!!"));
-
+		}
 		if (metaKeys == null || metaKeys.isEmpty())
+		{
+			logger.debug("The 'metaKeys' provided was null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'metaKeys' provided was null!!"));
-
+		}
 		Subscriber subscriber = this.fetchSubscriberByUserId(nbCorrelator,
 				userId);
 		if (subscriber == null)
