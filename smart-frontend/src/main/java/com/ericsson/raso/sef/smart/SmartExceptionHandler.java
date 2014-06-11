@@ -1,21 +1,12 @@
 package com.ericsson.raso.sef.smart;
 
-import java.io.StringReader;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.namespace.QName;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.cxf.binding.soap.SoapFault;
-import org.apache.cxf.helpers.DOMUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 import com.ericsson.raso.sef.core.SmException;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisException;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ErrorInfo;
 
 public class SmartExceptionHandler implements Processor {
 	
