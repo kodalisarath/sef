@@ -312,6 +312,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		// fetch the current entity...
 		Subscriber currentEntity = null;
 		try {
+			logger.debug("Checking for the userid:"+subscriber.getUserId());
 			currentEntity = subscriberMapper.getSubscriberByUserId(subscriber
 					.getUserId());
 			if (currentEntity != null) {
@@ -329,6 +330,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 				}
 
 			} else {
+				logger.debug("Subscriber not found");
 				throw new PersistenceError(nbCorrelator, this.getClass()
 						.getName(), new ResponseCode(ApplicationContextError, ""));
 			}
