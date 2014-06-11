@@ -29,12 +29,14 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		if (fault != null) {
 			subscriberInfo.setStatus(fault);
 			this.triggerResponse(requestCorrelator, subscriberInfo);
+			return;
 		} 
 		
 		if (subscriber == null) {
 			subscriberInfo.setStatus(new TransactionStatus("txe", 504, "Invalid Account - Subscriber canot be found!!"));
 			this.triggerResponse(requestCorrelator, subscriberInfo);
 			logger.debug("Subscriber is null: " + requestCorrelator);
+			return;
 		}
 		
 		else if (subscriber.getMsisdn() == null || 
@@ -46,6 +48,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			
 			subscriberInfo.setStatus(new TransactionStatus("txe", 2002, "Invalid Account - Subscriber entity seems to be corrupt or badly managed!!"));
 			this.triggerResponse(requestCorrelator, subscriberInfo);
+			return;
 		}
 
 		try {
