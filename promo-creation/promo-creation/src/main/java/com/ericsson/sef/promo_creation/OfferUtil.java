@@ -229,13 +229,13 @@ public class OfferUtil {
 		offerManager.createOffer(offer);
 
 		// // ----------------------------------------------------------
-		// // Offer.name=READ_SUBSCRIBER
+		// // Offer.name=ENTIRE_READ
 		// // ----------------------------------------------------------
 		offerResources = new ArrayList<Resource>();
 		planCodes = new HashSet<String>();
-		planCodes.add("READ_SUBSCRIBER");
+		planCodes.add("ENTIRE_READ");
 		offerResources.add(entireRead);
-		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "Read Subscriber", planCodes, offerResources);
+		offer = helper.createNonCommercialOffer("ENTIRE_READ", "Entire REad", planCodes, offerResources);
 		offerManager.createOffer(offer);
 		// ----------------------------------------------------------
 		// Offer.name=DELETE_SUBSCRIBER

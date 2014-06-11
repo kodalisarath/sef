@@ -78,6 +78,7 @@ public class CARecharge implements Processor {
 			//TODO: Subscriber validation/caching goes here
 			logger.debug("Getting subscriber info....");
 			SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
+			logger.error("At least I can break hear");
 			if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
 				logger.error("Subscriber is in recycle state.. cannot continue futher");
 				throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
