@@ -101,6 +101,7 @@ public class ReadSubscriber extends AbstractTransaction {
 				LOGGER.debug("Workflow id is null."); //To Do  
 				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504,	"Subscriber not found")));
 				this.sendResponse();
+				return false;
 			}
 		} catch (TransactionException e) {
 			LOGGER.error(
