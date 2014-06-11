@@ -45,7 +45,7 @@ public class VersionCreateOrWriteRop implements Processor {
 			metas.add(new Meta("expiryDate", DateUtil
 					.convertISOToSimpleDateFormat(request.getExpiryDate())));
 			String requestId = RequestContextLocalStore.get().getRequestId();
-	SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),null);
+	SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),metas);
 			
 			
 if(subscriberinfo ==null)

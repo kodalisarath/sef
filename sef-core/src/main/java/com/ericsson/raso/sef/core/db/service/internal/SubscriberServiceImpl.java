@@ -717,10 +717,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 	private Subscriber fetchSubscriberByMsisdn(String nbCorrelator,
 			String msisdn) throws PersistenceError {
-		if (msisdn == null || msisdn.isEmpty())
+		if (msisdn == null || msisdn.isEmpty()){
+			logger.debug("Fetching Subscriber BY Msisdn when userId is null",msisdn);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The 'msisdn' provided was null!!"));
+		}
 
 		String subscriberId = null;
 		try {
