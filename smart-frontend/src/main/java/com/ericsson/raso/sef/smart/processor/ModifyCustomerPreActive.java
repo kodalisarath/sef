@@ -6,11 +6,14 @@ import java.util.List;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.ibatis.mapping.SqlMapperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ErrorCode;
@@ -55,13 +58,18 @@ public class ModifyCustomerPreActive implements Processor {
 				{
 					logger.error("Subscriber Not Found. msisdn: "
 							+ request.getCustomerId());
-					throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+					//throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+					
+					throw new SmException(new ResponseCode(ErrorCode.invalidAccount.getCode(), ErrorCode.invalidAccount.getMessage() +" :msisdn "+request.getCustomerId()));
+					
 				}
 				else if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
 
 					logger.error("Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
 							+ request.getCustomerId());
-					throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
+					throw new SmException(new ResponseCode(ErrorCode.notPreActive.getCode(), ErrorCode.notPreActive.getMessage() +" :msisdn "+request.getCustomerId()));
+
+					//throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
 				}
 
 				Date preActiveEndDate = null;
