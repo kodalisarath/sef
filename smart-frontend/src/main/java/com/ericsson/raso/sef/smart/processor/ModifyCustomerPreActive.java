@@ -76,6 +76,7 @@ public class ModifyCustomerPreActive implements Processor {
 				String preActiveEndDateStr = null;
 				try {
 					
+					
 					//preActiveEndDateStr = getMetaValue(subscriber.getMetas(), SmartConstants.PREACTIVE_ENDDATE);
 					preActiveEndDateStr =subscriberinfo.getMetas().get(SmartConstants.PREACTIVE_ENDDATE);
 					String milliSecMultiplier =config.getValue("GLOBAL", SmartConstants.MILLISEC_MULTIPLIER);  
