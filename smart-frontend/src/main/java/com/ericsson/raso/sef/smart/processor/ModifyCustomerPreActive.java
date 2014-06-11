@@ -75,6 +75,17 @@ public class ModifyCustomerPreActive implements Processor {
 			// +" :msisdn "+request.getCustomerId()));
 
 		}
+		else if (ContractState.apiValue(ContractState.PREACTIVE.name()).equals(subscriberinfo.getLocalState())) {
+
+			logger.error("Manila Log: Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
+					+ request.getCustomerId() +", but Current Status is "+subscriberinfo.getLocalState());
+			// throw new SmException(new
+			// ResponseCode(ErrorCode.notPreActive.getCode(),
+			// ErrorCode.notPreActive.getMessage()
+			// +" :msisdn "+request.getCustomerId()));
+
+			throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
+		}
 		else if(subscriberinfo !=null )
 		{
 			TransactionStatus status = subscriberinfo.getStatus();
@@ -88,18 +99,6 @@ public class ModifyCustomerPreActive implements Processor {
 			
 			
 		}
-		else if (ContractState.apiValue(ContractState.PREACTIVE.name()).equals(subscriberinfo.getLocalState())) {
-
-			logger.error("Manila Log: Subscriber should be in preactive state to extend the preActiveEndDate. msisdn: "
-					+ request.getCustomerId() +", but Current Status is "+subscriberinfo.getLocalState());
-			// throw new SmException(new
-			// ResponseCode(ErrorCode.notPreActive.getCode(),
-			// ErrorCode.notPreActive.getMessage()
-			// +" :msisdn "+request.getCustomerId()));
-
-			throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
-		}
-
 		Date preActiveEndDate = null;
 		String preActiveEndDateStr = null;
 
