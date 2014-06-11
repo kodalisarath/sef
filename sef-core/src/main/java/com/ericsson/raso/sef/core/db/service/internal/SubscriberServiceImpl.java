@@ -57,18 +57,20 @@ public class SubscriberServiceImpl implements SubscriberService {
 	public boolean createSubscriber(String nbCorellator, Subscriber subscriber)
 			throws PersistenceError {
 
-		if (subscriber == null)
+		if (subscriber == null){
+			logger.error("The subscriber entity provided was null!!");
 			throw new PersistenceError(nbCorellator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The subscriber entity provided was null!!"));
-
-		if (subscriber.getMsisdn() == null || subscriber.getMsisdn().isEmpty())
+		}
+		if (subscriber.getMsisdn() == null || subscriber.getMsisdn().isEmpty()){
+			logger.error("The 'msisdn' attribute was null and it is PK/CK in 'Subscriber' entity!!");
 			throw new PersistenceError(
 					nbCorellator,
 					this.getClass().getName(),
 					new ResponseCode(FunctionalDataError,
 							"The 'msisdn' attribute was null and it is PK/CK in 'Subscriber' entity!!"));
-
+		}
 		if (subscriber.getPin() == null || subscriber.getPin().isEmpty()) {
 			logger.warn("The 'pin' attribute was null. Assuming to default '1234'");
 			subscriber.setPin("1234");
@@ -213,45 +215,65 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 		logger.debug("Sanity checks on the data...");
 		if (subscriber == null)
+		{
+		logger.debug("updateSubscriber The subscriber entity provided was null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(ApplicationContextError,
 							"The subscriber entity provided was null!!"));
-
+		}
 		if (subscriber.getMsisdn() == null || subscriber.getMsisdn().isEmpty())
+		{
+			
+			logger.debug("The 'msisdn' attribute is null and it is PK/CK in 'Subscriber' entity!!");
 			throw new PersistenceError(
 					nbCorrelator,
 					this.getClass().getName(),
 					new ResponseCode(FunctionalDataError,
 							"The 'msisdn' attribute is null and it is PK/CK in 'Subscriber' entity!!"));
+		}
 
-		if (subscriber.getPin() == null || subscriber.getPin().isEmpty())
+		if (subscriber.getPin() == null || subscriber.getPin().isEmpty()){
+			
+			logger.debug("updateSubscriber  The 'pin' attribute is null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(FunctionalDataError,
-							"The 'pin' attribute is null!!"));
+							"The 'pin' attribute is null!!"));}
 
 		if (subscriber.getUserId() == null || subscriber.getUserId().isEmpty())
+		{
+		
+			logger.debug("The 'userId' attribute is null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(FunctionalDataError,
 							"The 'userId' attribute is null!!"));
-
+		}
 		if (subscriber.getAccountId() == null
 				|| subscriber.getAccountId().isEmpty())
+		
+			{
+			logger.debug("The 'accountId' attribute is null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(FunctionalDataError,
 							"The 'accountId' attribute is null!!"));
-
+			}
 		if (subscriber.getCustomerId() == null
-				|| subscriber.getCustomerId().isEmpty())
+				|| subscriber.getCustomerId().isEmpty()) {
+		
+			logger.debug("The 'customerId' attribute is null!!");
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(FunctionalDataError,
 							"The 'customerId' attribute is null!!"));
-
+		}
 		if (subscriber.getContractId() == null
 				|| subscriber.getContractId().isEmpty())
+		{
+		
+			logger.debug("The 'contractId' attribute is null!!");
+			
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),
 					new ResponseCode(FunctionalDataError,
 							"The 'contractId' attribute is null!!"));
-
+		}
 		// Perform encryption of identities...
 		try {
 			logger.debug(nbCorrelator, "Encrypting Identities now...");
@@ -324,6 +346,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 					this.updateMetas(nbCorrelator, subscriber.getUserId(),
 							subscriber.getMetas());
 				} else {
+					
+					logger.debug("SubscriberStateError");
 					throw new PersistenceError(nbCorrelator, this.getClass()
 							.getName(), new ResponseCode(
 							SubscriberStateError, ""));
