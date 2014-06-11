@@ -21,11 +21,15 @@ import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
+import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TaskType;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
+import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -33,15 +37,12 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 public class ReadSubscriber extends AbstractTransaction {
 
 	private static final long serialVersionUID = 8130277491237379246L;
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(ReadSubscriber.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReadSubscriber.class);
 
 	private boolean isWorkflowEngaged = false;
 
-	public ReadSubscriber(String requestId, String subscriberId,
-			Map<String, String> metas) {
-		super(requestId, new ReadSubscriberRequest(requestId, subscriberId,
-				metas));
+	public ReadSubscriber(String requestId, String subscriberId, Map<String, String> metas) {
+		super(requestId, new ReadSubscriberRequest(requestId, subscriberId, metas));
 		this.setResponse(new ReadSubscriberResponse(requestId));
 	}
 
@@ -55,66 +56,53 @@ public class ReadSubscriber extends AbstractTransaction {
 			LOGGER.debug("SANITY CHECKS....");
 			LOGGER.debug("Request: " + this.getRequest());
 
-			Subscriber subscriber = TransactionServiceHelper.fetchSubscriberFromDb(((ReadSubscriberRequest) this.getRequest()).getSubscriberId());
+			Subscriber subscriber = TransactionServiceHelper.fetchSubscriberFromDb(((ReadSubscriberRequest) this.getRequest())
+					.getSubscriberId());
 			LOGGER.debug("Subscriber entity fetched from DB: " + subscriber);
 
 			// Subscriber not found in db, cannot proceed further
 			if (subscriber == null) {
-				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504,	"Subscriber not found")));
+				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504, "Subscriber not found")));
 				this.sendResponse();
 			}
 
-			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper
-					.getApiEntity(subscriber);
+			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper.getApiEntity(subscriber);
 			((ReadSubscriberResponse) this.getResponse()).setSubscriber(result);
 
 			// Fetch the subscriber from downstream through work flow
-			String readSubscriberWorkflowId = ((ReadSubscriberRequest) this
-					.getRequest()).getMetas().get(
-					Constants.READ_SUBSCRIBER.name());
+			String readSubscriberWorkflowId = ((ReadSubscriberRequest) this.getRequest()).getMetas().get(Constants.READ_SUBSCRIBER.name());
 			if (readSubscriberWorkflowId != null) {
-				LOGGER.debug("somehow a workflow is also needed... ?!!!");
+				LOGGER.debug("somehow a workflow is also needed... wtf?!!!");
 				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 				Offer workflow = catalog.getOfferById(readSubscriberWorkflowId);
 
 				LOGGER.debug("Guess what? found the workflow in prodcat too...");
 				if (workflow != null) {
 					List<TransactionTask> tasks = new ArrayList<TransactionTask>();
-					tasks.addAll(workflow.execute(((ReadSubscriberRequest) this
-							.getRequest()).getSubscriberId(),
+					tasks.addAll(workflow.execute(((ReadSubscriberRequest) this.getRequest()).getSubscriberId(),
 							SubscriptionLifeCycleEvent.DISCOVERY, true,
-							TransactionServiceHelper
-									.getNativeMap(((ReadSubscriberRequest) this
-											.getRequest()).getMetas())));
+							TransactionServiceHelper.getNativeMap(((ReadSubscriberRequest) this.getRequest()).getMetas())));
 
 					this.isWorkflowEngaged = true;
-					Orchestration execution = OrchestrationManager
-							.getInstance().createExecutionProfile(
-									this.getRequestId(), tasks);
-					LOGGER.info("Going to execute the orcheastration profile for: "
-							+ execution.getNorthBoundCorrelator());
+					Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
+					LOGGER.info("Going to execute the orcheastration profile for: " + execution.getNorthBoundCorrelator());
 					OrchestrationManager.getInstance().submit(this, execution);
 				}
-			}
-			else
-			{
-				LOGGER.debug("Workflow id is null."); //To Do  
-				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504,	"Subscriber not found")));
+			} else {
 				this.sendResponse();
-				return false;
 			}
 		} catch (TransactionException e) {
-			LOGGER.error(
-					"ReadSubscriber TransactionException caught "
-							+ e.getMessage(), e);
-			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e));
+			LOGGER.error("ReadSubscriber TransactionException caught " + e.getMessage(), e);
+			this.getResponse().setReturnFault(
+					new TransactionException(this.getRequestId(), new ResponseCode(11614,
+							"Unable to pack the workflow tasks for this use-case"), e));
 			this.sendResponse();
 			return false;
 		} catch (FrameworkException e1) {
-			LOGGER.error(
-					"ReadSubscriber FrameworkException caught "
-							+ e1.getMessage(), e1);
-			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11615, "Unable to pack the workflow tasks for this use-case"), e1));
+			LOGGER.error("ReadSubscriber FrameworkException caught " + e1.getMessage(), e1);
+			this.getResponse().setReturnFault(
+					new TransactionException(this.getRequestId(), new ResponseCode(11615,
+							"Unable to pack the workflow tasks for this use-case"), e1));
 			sendResponse();
 			return false;
 		} finally {
@@ -128,19 +116,14 @@ public class ReadSubscriber extends AbstractTransaction {
 	public void sendResponse() {
 		// TODO: implement this logic
 		/*
-		 * 1. when this method is called, it means that Orchestration Manager
-		 * has executed all steps in the transaction. Either a response or
-		 * exception is available.
+		 * 1. when this method is called, it means that Orchestration Manager has executed all steps in the transaction. Either a response
+		 * or exception is available.
 		 * 
-		 * 2. The response will most likely be results/ responses/ exceptions
-		 * from atomic steps in the transaction. This must be packed into the
-		 * response pojo structure pertinent to method signature of the response
-		 * interface.
+		 * 2. The response will most likely be results/ responses/ exceptions from atomic steps in the transaction. This must be packed into
+		 * the response pojo structure pertinent to method signature of the response interface.
 		 * 
-		 * 3. once the response pojo entity is packed, the client for response
-		 * interface must be invoked. the assumption is that response interface
-		 * will notify the right JVM waiting for this response thru a
-		 * Object.wait
+		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
+		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
 
 		TransactionStatus txnStatus = new TransactionStatus();
@@ -154,33 +137,25 @@ public class ReadSubscriber extends AbstractTransaction {
 				txnStatus.setComponent(fault.getComponent());
 			}
 
-		} else  if (this.isWorkflowEngaged) {
+		} else if (this.isWorkflowEngaged) {
 			List<Product> products = new ArrayList<Product>();
 
-			for (Step<?> step : this.getResponse().getAtomicStepResults()
-					.keySet()) {
+			for (Step<?> step : this.getResponse().getAtomicStepResults().keySet()) {
 				if (step.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
 					if (step.getFault() != null) {
-						txnStatus.setCode(step.getFault().getStatusCode()
-								.getCode());
+						txnStatus.setCode(step.getFault().getStatusCode().getCode());
 						txnStatus.setComponent(step.getFault().getComponent());
-						txnStatus.setDescription(step.getFault()
-								.getStatusCode().getMessage());
+						txnStatus.setDescription(step.getFault().getStatusCode().getMessage());
 						break;
 					} else {
 						// products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep)
 						// step).getResult().getFulfillmentResult()));
-						FulfillmentStepResult stepResult = (FulfillmentStepResult) this
-								.getResponse().getAtomicStepResults().get(step);
+						FulfillmentStepResult stepResult = (FulfillmentStepResult) this.getResponse().getAtomicStepResults().get(step);
 						if (stepResult != null) {
-							for (AtomicProduct atomicProduct : stepResult
-									.getFulfillmentResult()) {
-								LOGGER.debug("Atomic product metas: "
-										+ atomicProduct.getMetas().toString());
+							for (AtomicProduct atomicProduct : stepResult.getFulfillmentResult()) {
+								LOGGER.debug("Atomic product metas: " + atomicProduct.getMetas().toString());
 							}
-							products.addAll(TransactionServiceHelper
-									.translateProducts(stepResult
-											.getFulfillmentResult()));
+							products.addAll(TransactionServiceHelper.translateProducts(stepResult.getFulfillmentResult()));
 							// TODO: go back and refactor all the way from
 							// FulfillmentStep to pass metas to SMFE....
 							LOGGER.debug("FulfillmentStep has some results added to products list");
@@ -188,21 +163,15 @@ public class ReadSubscriber extends AbstractTransaction {
 					}
 				}
 			}
-		
 
-			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber,
-					products);
+			subscriber = TransactionServiceHelper.enrichSubscriber(subscriber, products);
 
 		}
-	
 
-		
 		LOGGER.debug("Invoking read subscriber response!!");
-		ISubscriberResponse subscriberClient = ServiceResolver
-				.getSubscriberResponseClient();
+		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
 		LOGGER.debug("subscriberClient" + subscriberClient);
-		subscriberClient.readSubscriber(this.getRequestId(), txnStatus,
-				subscriber);
+		subscriberClient.readSubscriber(this.getRequestId(), txnStatus, subscriber);
 		LOGGER.debug("read susbcriber response posted");
 
 	}
