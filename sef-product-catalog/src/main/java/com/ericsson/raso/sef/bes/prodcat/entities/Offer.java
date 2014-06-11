@@ -589,7 +589,7 @@ public class Offer implements Serializable {
 		 */
 		
 		for(AtomicProduct atomicProduct: this.getAllAtomicProducts()) {
-			if (atomicProduct.getResource().isDiscoverable()) {
+			//if (atomicProduct.getResource().isDiscoverable()) {
 				AtomicProduct clone = CloneHelper.deepClone(atomicProduct);
 				if (isTrialAllowed) {
 					// If trial period, then ignore the defined validity and reset the validity to trialPeriod.
@@ -601,7 +601,7 @@ public class Offer implements Serializable {
 				
 				LOGGER.debug("Adding a Fulfillment for: " + subscriberId + " with: " + clone);
 				tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, metas));
-			}
+			//}
 		}
 		
 		if (isTrialAllowed) {
