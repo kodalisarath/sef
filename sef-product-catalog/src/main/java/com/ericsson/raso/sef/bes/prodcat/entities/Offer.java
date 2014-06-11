@@ -589,17 +589,19 @@ public class Offer implements Serializable {
 		 */
 		
 		for(AtomicProduct atomicProduct: this.getAllAtomicProducts()) {
-			AtomicProduct clone = CloneHelper.deepClone(atomicProduct);
-			if (isTrialAllowed) {
-				// If trial period, then ignore the defined validity and reset the validity to trialPeriod.
-				AbstractTimeCharacteristic trialPeriod = CloneHelper.deepClone(this.trialPeriod);
-				trialPeriod.setActivationTime(PURCHASE_TIMESTAMP);
-				clone.setValidity(trialPeriod);
-				purchase.addProduct(clone);
-			} 
-			
-			LOGGER.debug("Adding a Fulfillment for: " + subscriberId + " with: " + clone);
-			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, metas));
+			if (atomicProduct.getResource().isDiscoverable()) {
+				AtomicProduct clone = CloneHelper.deepClone(atomicProduct);
+				if (isTrialAllowed) {
+					// If trial period, then ignore the defined validity and reset the validity to trialPeriod.
+					AbstractTimeCharacteristic trialPeriod = CloneHelper.deepClone(this.trialPeriod);
+					trialPeriod.setActivationTime(PURCHASE_TIMESTAMP);
+					clone.setValidity(trialPeriod);
+					purchase.addProduct(clone);
+				} 
+				
+				LOGGER.debug("Adding a Fulfillment for: " + subscriberId + " with: " + clone);
+				tasks.add(new Fulfillment(FulfillmentMode.FULFILL, clone, subscriberId, metas));
+			}
 		}
 		
 		if (isTrialAllowed) {

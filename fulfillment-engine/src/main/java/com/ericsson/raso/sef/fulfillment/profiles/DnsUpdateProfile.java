@@ -29,24 +29,40 @@ public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.a
 	private int dtype;
 	private int dclass;
 	private int ttl;
+	private boolean isInsert = true;
 
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) {
 		LOGGER.debug("Starting to fulfill installing subscriber in CS-AF...");
 		
-		AddDnsRequest dnsRequest = new AddDnsRequest();
-		dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
-		dnsRequest.setDclass(this.getDclass());
-		dnsRequest.setDtype(this.getDtype());
-		dnsRequest.setRdata(this.getRdata());
-		dnsRequest.setTtl(this.getTtl());
-		dnsRequest.setZname(this.getZname());
 		
 		String sdpId= (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
-		dnsRequest.setSdpId(sdpId);
 		
 		try {
-			new AddDnsCommand(dnsRequest).execute();
+			if (isInsert) {
+				AddDnsRequest dnsRequest = new AddDnsRequest();
+				dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
+				dnsRequest.setDclass(this.getDclass());
+				dnsRequest.setDtype(this.getDtype());
+				dnsRequest.setRdata(this.getRdata());
+				dnsRequest.setTtl(this.getTtl());
+				dnsRequest.setZname(this.getZname());
+				dnsRequest.setSdpId(sdpId);
+						
+				new AddDnsCommand(dnsRequest).execute();
+			} else {
+				DeleteDnsRequest dnsRequest = new DeleteDnsRequest();
+				dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
+				dnsRequest.setDclass(this.getDclass());
+				dnsRequest.setDtype(this.getDtype());
+				//dnsRequest.setRdata(this.getRdata());
+				dnsRequest.setTtl(this.getTtl());
+				dnsRequest.setZname(this.getZname());
+				//dnsRequest.setSdpId(sdpId);
+				
+				new DeleteDnsCommand(dnsRequest).execute();
+			}
+			
 			LOGGER.debug("Installed new subscriber in CS-AF DNS");
 		} catch (SmException e1) {
 			LOGGER.error("Failed AddDnsCommand execute" + e1);
@@ -76,16 +92,32 @@ public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.a
 		LOGGER.debug("Starting rollback of CS-AF installed subscriber...");
 		
 		DnsUpdateProfile dnsUpdateProfile=new DnsUpdateProfile(zname);
-		DeleteDnsRequest deleteDnsRequest = new DeleteDnsRequest();
-		deleteDnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
-		deleteDnsRequest.setDclass(dnsUpdateProfile.getDclass());
-		deleteDnsRequest.setDtype(dnsUpdateProfile.getDtype());
-		deleteDnsRequest.setSiteId(null);
-		deleteDnsRequest.setTtl(dnsUpdateProfile.getTtl());
-		deleteDnsRequest.setZname(dnsUpdateProfile.getZname());
 		
 		try {
-			new DeleteDnsCommand(deleteDnsRequest).execute();
+			if (isInsert) {
+				DeleteDnsRequest deleteDnsRequest = new DeleteDnsRequest();
+				deleteDnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
+				deleteDnsRequest.setDclass(dnsUpdateProfile.getDclass());
+				deleteDnsRequest.setDtype(dnsUpdateProfile.getDtype());
+				deleteDnsRequest.setSiteId(null);
+				deleteDnsRequest.setTtl(dnsUpdateProfile.getTtl());
+				deleteDnsRequest.setZname(dnsUpdateProfile.getZname());
+
+				new DeleteDnsCommand(deleteDnsRequest).execute();						
+			} else {
+				String sdpId= (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
+				
+				AddDnsRequest dnsRequest = new AddDnsRequest();
+				dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
+				dnsRequest.setDclass(this.getDclass());
+				dnsRequest.setDtype(this.getDtype());
+				dnsRequest.setRdata(this.getRdata());
+				dnsRequest.setTtl(this.getTtl());
+				dnsRequest.setZname(this.getZname());
+				dnsRequest.setSdpId(sdpId);
+						
+				new AddDnsCommand(dnsRequest).execute();
+			}
 		} catch (SmException e1) {
 			LOGGER.error("SmException while calling DeleteDnsCommand execute" + e1);
 		}
@@ -139,6 +171,14 @@ public class DnsUpdateProfile extends BlockingFulfillment<com.ericsson.sef.bes.a
 	}
 
 	
+	public boolean isInsert() {
+		return isInsert;
+	}
+
+	public void setInsert(boolean isInsert) {
+		this.isInsert = isInsert;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

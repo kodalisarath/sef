@@ -53,10 +53,11 @@ public class ModifyCustomerGrace implements Processor {
 			
 			List<Meta> metas = new ArrayList<Meta>();
 			metas.add(new Meta("daysOfExtension" , String.valueOf(request.getDaysOfExtension())));
+			metas.add(new Meta("EX_DATA_2" , String.valueOf(request.getDaysOfExtension())));
 			metas.add(new Meta("eventInfo" , String.valueOf(request.getEventInfo())));
 			metas.add(new Meta("messageId" , String.valueOf(request.getMessageId())));
 			
-			metas.add(new Meta("federation-profile", "extendGracePeriod"));
+			metas.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
 			
 			//subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
 		    updateSubscriber(requestId, request.getCustomerId(), metas);

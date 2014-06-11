@@ -33,30 +33,25 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class UnsubscribePackageItem implements Processor {
-	private static final Logger log = LoggerFactory
-			.getLogger(UnsubscribePackageItem.class);
+	private static final Logger log = LoggerFactory.getLogger(UnsubscribePackageItem.class);
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
 
-		UnSubscribePackageItemRequest request = (UnSubscribePackageItemRequest) exchange
-				.getIn().getBody();
+		UnSubscribePackageItemRequest request = (UnSubscribePackageItemRequest) exchange.getIn().getBody();
 
 		String requestId = RequestContextLocalStore.get().getRequestId();
 
 		SubscriberValidationProcessor.process(request.getCustomerId());
 
 		if (isWelcomePack(request.getPackaze())) {
-			unInstallWelcomePack(requestId, request.getCustomerId(),
-					request.getAccessKey(), request.getPackaze(),
+			unInstallWelcomePack(requestId, request.getCustomerId(), request.getAccessKey(), request.getPackaze(),
 					String.valueOf(request.getMessageId()));
 		} else {
-			unsubscribePackage(requestId, request.getCustomerId(),
-					request.getPackaze());
+			unsubscribePackage(requestId, request.getCustomerId(), request.getPackaze());
 		}
 
-		CommandResponseData responseData = createResponse(request.getUsecase()
-				.getOperation(), request.getUsecase().getModifier(),
+		CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),
 				request.isTransactional());
 
 		exchange.getOut().setBody(responseData);
@@ -71,37 +66,31 @@ public class UnsubscribePackageItem implements Processor {
 
 	}
 
-	private void unsubscribePackage(String requestId, String customerId,
-			String packaze) {
+	private void unsubscribePackage(String requestId, String customerId, String packaze) {
 
 		// SubscriptionManagement subscriptionManagement =
 		// SmartContext.getSubscriptionManagement();
 		List<Meta> metas = new ArrayList<Meta>();
 
 		metas.add(new Meta(SmartConstants.REQUEST_ID, requestId));
-		metas.add(new Meta(SmartConstants.CHANNEL_NAME,
-				SmartConstants.IL_CHANNEL));
+		metas.add(new Meta(SmartConstants.CHANNEL_NAME, SmartConstants.IL_CHANNEL));
 		metas.add(new Meta(SmartConstants.EX_DATA3, SmartConstants.IL_CHANNEL));
 		metas.add(new Meta(SmartConstants.EX_DATA1, packaze));
-		metas.add(new Meta(SmartConstants.EX_DATA2, SmartConstants.IL_CHANNEL
-				+ "|Reversal|||" + customerId + "|"));
+		metas.add(new Meta(SmartConstants.EX_DATA2, SmartConstants.IL_CHANNEL + "|Reversal|||" + customerId + "|"));
 		metas.add(new Meta(SmartConstants.USECASE, "reversal"));
 
 		// subscriptionManagement.purchaseProduct(customerId, packaze, metas);
 
-		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver
-				.getSubscriptionRequest();
+		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 
 		PurchaseResponse purchaseResponse = new PurchaseResponse();
 		RequestCorrelationStore.put(requestId, purchaseResponse);
 
-		iSubscriptionRequest.purchase(requestId, packaze, customerId, false,
-				metas);
+		iSubscriptionRequest.purchase(requestId, packaze, customerId, false, metas);
 
 		log.info("Invoking purchasebe on tx-engine subscribtion interface");
 
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
@@ -109,30 +98,23 @@ public class UnsubscribePackageItem implements Processor {
 
 		}
 		log.info("Check if response received for purchase response");
-		PurchaseResponse purRsp = (PurchaseResponse) RequestCorrelationStore
-				.remove(requestId);
+		PurchaseResponse purRsp = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
 
 	}
 
-	private void unInstallWelcomePack(String requestId, String customerId,
-			String accessKey, String packaze, String messageId)
+	private void unInstallWelcomePack(String requestId, String customerId, String accessKey, String packaze, String messageId)
 			throws SmException {
 
-		SubscriberInfo subscriberinfo = readSubscriber(requestId, customerId,
-				null);
+		SubscriberInfo subscriberinfo = readSubscriber(requestId, customerId, null);
 
-		if (!ContractState.PREACTIVE.name().equals(
-				subscriberinfo.getLocalState())) {
+		if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
 
-			log.error("Subscriber:"
-					+ customerId
-					+ "is not in preactive stage. Opeartion can not be performed");
+			log.error("Subscriber:" + customerId + "is not in preactive stage. Opeartion can not be performed");
 			throw ExceptionUtil.toSmException(ErrorCode.internalServerError);
 		}
 		String currentPackage = subscriberinfo.getMetas().get("package");
 		if (currentPackage == null || !currentPackage.equalsIgnoreCase(packaze)) {
-			throw new SmException(
-					ErrorCode.invalidSubscriberStateForRequiredPackageUseCaseOperation);
+			throw new SmException(ErrorCode.invalidSubscriberStateForRequiredPackageUseCaseOperation);
 		}
 
 		List<Meta> metas = new ArrayList<Meta>();
@@ -140,7 +122,7 @@ public class UnsubscribePackageItem implements Processor {
 		metas.add(new Meta("package", "initialSC"));
 		metas.add(new Meta("currentPackage", currentPackage));
 		metas.add(new Meta("messageId", messageId));
-		//metas.add(new Meta("federation-profile", "preloadUnsubscribe"));
+		// metas.add(new Meta("federation-profile", "preloadUnsubscribe"));
 
 		// subscriberManagement.updateSubscriber(customerId, metas);
 
@@ -148,8 +130,7 @@ public class UnsubscribePackageItem implements Processor {
 
 	}
 
-	private CommandResponseData createResponse(String operationName,
-			String modifier, boolean isTransactional) {
+	private CommandResponseData createResponse(String operationName, String modifier, boolean isTransactional) {
 
 		CommandResponseData responseData = new CommandResponseData();
 		CommandResult result = new CommandResult();
@@ -172,37 +153,30 @@ public class UnsubscribePackageItem implements Processor {
 		return responseData;
 	}
 
-	private SubscriberInfo readSubscriber(String requestId,
-			String subscriberId, List<Meta> metas) {
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
-				.getSubscriberRequest();
+	private SubscriberInfo readSubscriber(String requestId, String subscriberId, List<Meta> metas) {
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
 		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
 		} catch (InterruptedException e) {
 		}
 		log.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.remove(requestId);
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 
 	}
 
-	private SubscriberInfo updateSubscriber(String requestId,
-			String customer_id, List<Meta> metas) {
+	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas) {
 		log.info("Invoking update subscriber on tx-engine subscriber interface");
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
-				.getSubscriberRequest();
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
 		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
@@ -210,8 +184,7 @@ public class UnsubscribePackageItem implements Processor {
 
 		}
 		log.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.remove(requestId);
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
 

@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.fulfillment.profiles;
+package com.ericsson.raso.sef.fulfillment.profiles.smart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,9 @@ import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
+import com.ericsson.raso.sef.fulfillment.profiles.BlockingFulfillment;
+import com.ericsson.raso.sef.fulfillment.profiles.DnsUpdateProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.PamInformationList;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class CreateSubscriberProfile extends BlockingFulfillment<Product> {

@@ -37,11 +37,11 @@ public class SubscribePackageItem implements Processor {
 	private static final Logger log = LoggerFactory.getLogger(SubscribePackageItem.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
-SubscribePackageItemRequest request = (SubscribePackageItemRequest) exchange.getIn().getBody();
-String requestId = RequestContextLocalStore.get().getRequestId();
-		
+		SubscribePackageItemRequest request = (SubscribePackageItemRequest) exchange.getIn().getBody();
+		String requestId = RequestContextLocalStore.get().getRequestId();
+
 		SubscriberValidationProcessor.process(request.getCustomerId());
-		
+
 		if(isWelcomePack(request.getPackaze())) {
 			installWelcomePack(requestId,request.getCustomerId(), request.getPackaze(), String.valueOf(request.getMessageId()));
 		} else {
@@ -52,73 +52,73 @@ String requestId = RequestContextLocalStore.get().getRequestId();
 
 		exchange.getOut().setBody(responseData);
 
-		
+
 	}
-	
-	
+
+
 	private static boolean isWelcomePack(String packaze) {
 		IConfig config = SefCoreServiceResolver.getConfigService();
 		if (config.getValue("GLOBAL", packaze)!=null)
 			return true;
-			else return false;
-		
-	}
-	
-	private void rechargePackage(String requestId,String customerId, String packaze)  {
-		
-			//SubscriptionManagement subscriptionManagement = SmartContext.getSubscriptionManagement();
-					List<Meta> metas = new ArrayList<Meta>();
+		else return false;
 
-			metas.add(new Meta(SmartConstants.REQUEST_ID, requestId));
-			metas.add(new Meta(SmartConstants.CHANNEL_NAME, SmartConstants.IL_CHANNEL));
-			metas.add(new Meta(SmartConstants.EX_DATA3, SmartConstants.IL_CHANNEL));
-			metas.add(new Meta(SmartConstants.EX_DATA1, packaze));
-			metas.add(new Meta(SmartConstants.EX_DATA2, SmartConstants.IL_CHANNEL + "|Recharge|||"+customerId+"|"));
-			metas.add(new Meta(SmartConstants.USECASE, "recharge"));
+	}
+
+	private void rechargePackage(String requestId,String customerId, String packaze)  {
+
+		//SubscriptionManagement subscriptionManagement = SmartContext.getSubscriptionManagement();
+		List<Meta> metas = new ArrayList<Meta>();
+
+		metas.add(new Meta(SmartConstants.REQUEST_ID, requestId));
+		metas.add(new Meta(SmartConstants.CHANNEL_NAME, SmartConstants.IL_CHANNEL));
+		metas.add(new Meta(SmartConstants.EX_DATA3, SmartConstants.IL_CHANNEL));
+		metas.add(new Meta(SmartConstants.EX_DATA1, packaze));
+		metas.add(new Meta(SmartConstants.EX_DATA2, SmartConstants.IL_CHANNEL + "|Recharge|||"+customerId+"|"));
+		metas.add(new Meta(SmartConstants.USECASE, "recharge"));
 
 		//	subscriptionManagement.purchaseProduct(customerId, packaze, metas);
-	
-			ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
-			
-			PurchaseResponse purchaseResponse = new PurchaseResponse();
-			RequestCorrelationStore.put(requestId, purchaseResponse);
-			
-			iSubscriptionRequest.purchase(requestId, packaze, customerId, false, metas);
 
-			log.info("Invoking purchasebe on tx-engine subscribtion interface");
-			
-			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-			try {
+		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
+
+		PurchaseResponse purchaseResponse = new PurchaseResponse();
+		RequestCorrelationStore.put(requestId, purchaseResponse);
+
+		iSubscriptionRequest.purchase(requestId, packaze, customerId, false, metas);
+
+		log.info("Invoking purchasebe on tx-engine subscribtion interface");
+
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
 			semaphore.init(0);
 			semaphore.acquire();
-			} catch(InterruptedException e) {
-				
-			}
-			log.info("Check if response received for purchase response");
-			PurchaseResponse purRsp = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
-			
-	
+		} catch(InterruptedException e) {
+
+		}
+		log.info("Check if response received for purchase response");
+		PurchaseResponse purchaseResponse2 = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+
+
 	}
 
 	private void installWelcomePack(String requestId,String customerId, String packaze, String messageId) throws SmException {
-		
-					
-	SubscriberInfo subscriberinfo = readSubscriber(requestId, customerId,null);
-			
-			if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
-						
-				log.error("Subscriber:" + customerId + "is not in preactive stage. Opeartion can not be performed");
-				throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
-			}
 
-			List<Meta> metas = new ArrayList<Meta>();
-			metas.add(new Meta("package", packaze));
-			metas.add(new Meta("messageId", messageId));
-			metas.add(new Meta("federation-profile", "preloadSubscribe"));
-			//subscriberManagement.updateSubscriber(customerId, metas);
-			updateSubscriber(requestId, customerId, metas);
 
-		
+		SubscriberInfo subscriberinfo = readSubscriber(requestId, customerId,null);
+
+		if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
+
+			log.error("Subscriber:" + customerId + "is not in preactive stage. Opeartion can not be performed");
+			throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
+		}
+
+		List<Meta> metas = new ArrayList<Meta>();
+		metas.add(new Meta("package", packaze));
+		metas.add(new Meta("messageId", messageId));
+		metas.add(new Meta("HANDLE_LIFE_CYCLE", "preloadSubscribe"));
+		//subscriberManagement.updateSubscriber(customerId, metas);
+		updateSubscriber(requestId, customerId, metas);
+
+
 	}
 
 	private CommandResponseData createResponse(String operationName, String modifier,boolean isTransactional) {
@@ -152,14 +152,14 @@ String requestId = RequestContextLocalStore.get().getRequestId();
 		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
-		semaphore.init(0);
-		semaphore.acquire();
+			semaphore.init(0);
+			semaphore.acquire();
 		} catch(InterruptedException e) {
 		}
 		log.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
-		
+
 	}
 
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) {
@@ -167,19 +167,19 @@ String requestId = RequestContextLocalStore.get().getRequestId();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.updateSubscriber(requestId,customer_id, metas);
+		iSubscriberRequest.handleLifeCycle(requestId,customer_id, ContractState.PREACTIVE.getName(), metas);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
-		semaphore.init(0);
-		semaphore.acquire();
+			semaphore.init(0);
+			semaphore.acquire();
 		} catch(InterruptedException e) {
-			
+
 		}
 		log.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
-	
-	
-	
+
+
+
 }

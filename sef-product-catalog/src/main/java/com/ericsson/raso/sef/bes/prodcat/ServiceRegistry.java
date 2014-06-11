@@ -59,7 +59,7 @@ public final class ServiceRegistry implements IServiceRegistry {
 		}else if(your_os.indexOf( "nix") >=0 || your_os.indexOf( "nux") >=0){
 			finalfile = offerStoreLocation + "/" + filename;
 		}else{
-			finalfile = offerStoreLocation + "{others}" + filename;
+			finalfile = offerStoreLocation + "/" + filename;
 		}
 		logger.debug("ServiceRegisty Store location: " +  finalfile);
 		return finalfile;

@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.read.EntireRead;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -17,6 +19,7 @@ import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisException;
 
 public abstract class SmartServiceHelper {
 	
@@ -28,7 +31,7 @@ public abstract class SmartServiceHelper {
 		return null;
 		
 	}
-	public static SubscriberInfo getAndRefreshSubscriber(String msisdn) {
+	public static SubscriberInfo getAndRefreshSubscriber(String msisdn) throws SmException  {
 		
 		logger.debug("Entering getAndRefreshSubscriber.....");
 		String requestId = RequestContextLocalStore.get().getRequestId();
@@ -59,6 +62,9 @@ public abstract class SmartServiceHelper {
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " +  correlationId);
 		
 		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
+		
+		if (subscriberInfo != null && subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() == 504)
+			throw  ExceptionUtil.toSmException(new ResponseCode(504, "Unknown Subscriber"));
 		
 		updateSubscriberState(subscriberInfo);
 		

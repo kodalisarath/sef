@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.fulfillment.profiles;
+package com.ericsson.raso.sef.fulfillment.profiles.smart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,8 @@ import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
+import com.ericsson.raso.sef.fulfillment.profiles.BlockingFulfillment;
+import com.ericsson.raso.sef.fulfillment.profiles.PamInformationList;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.hazelcast.logging.LoggerFactory;
 
@@ -33,6 +35,8 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 	private int dtype;
 	private int dclass;
 	private int ttl;
+	private boolean isInsert = true;
+
 
 	// ACIP specific
 	private Boolean messageCapabilityFlag;
@@ -207,6 +211,14 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 
 	public void setTtl(int ttl) {
 		this.ttl = ttl;
+	}
+
+	public boolean isInsert() {
+		return isInsert;
+	}
+
+	public void setInsert(boolean isInsert) {
+		this.isInsert = isInsert;
 	}
 
 	public Boolean getMessageCapabilityFlag() {
