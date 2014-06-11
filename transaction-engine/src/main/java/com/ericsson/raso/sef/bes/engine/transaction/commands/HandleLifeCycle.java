@@ -26,6 +26,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.Meta;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
@@ -53,6 +54,11 @@ public class HandleLifeCycle extends AbstractTransaction{
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity;
 		try {
 			subscriberEntity = ((HandleLifeCycleRequest)this.getRequest()).persistableEntity();
+			
+			if(subscriberEntity == null){
+				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504, "Subscriber not found")));
+				this.sendResponse();
+			}
 			this.updateChanges(subscriberEntity, 
 					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
 					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
