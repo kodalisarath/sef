@@ -21,6 +21,7 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.PasaloadRule;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.commons.SmartServiceHelper;
@@ -75,20 +76,20 @@ public class CARecharge implements Processor {
 			}
 		
 		
-			//TODO: Subscriber validation/caching goes here
-			logger.debug("Getting subscriber info....");
-			SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
-			logger.error("At least I can break hear");
-			if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
-				logger.error("Subscriber is in recycle state.. cannot continue futher");
-				throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
-			}
-			logger.debug("Got past subs info....");
-			if(subInfo.isLocked()) {
-				logger.error("Subscriber is Barred/locked.. cannot continue further");
-				throw new SmException(ErrorCode.subscriberLocked);
-			}
-			
+//			//TODO: Subscriber validation/caching goes here
+//			logger.debug("Getting subscriber info....");
+//			SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
+//			logger.error("At least I can break hear");
+//			if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
+//				logger.error("Subscriber is in recycle state.. cannot continue futher");
+//				throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
+//			}
+//			logger.debug("Got past subs info....");
+//			if(subInfo.isLocked()) {
+//				logger.error("Subscriber is Barred/locked.. cannot continue further");
+//				throw new SmException(ErrorCode.subscriberLocked);
+//			}
+//			
 			
 			
 			logger.debug("Getting event class....");
@@ -234,6 +235,34 @@ public class CARecharge implements Processor {
 		return map;
 	}
 	
+	private Map<String,String> preparePasaload(RechargeRequest rechargeRequest) {
+		// evaluate truth table for eligibilities (2do: this will be later moved to imlicit ootb features of prodcat when subscription db is available
+		
+		
+		
+		// process the refill....
+		Map<String, String> map = new HashMap<String, String>();
+		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
+
+		if (rechargeRequest.getRatingInput0() != null) {
+			map.put(Constants.CHANNEL_NAME, rechargeRequest.getRatingInput0());
+			map.put(Constants.EX_DATA3, rechargeRequest.getRatingInput0());
+		}
+
+		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
+		map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
+		map.put(SmartConstants.USECASE, "pasaload");
+
+		return map;
+
+	}
+
+	private List<PasaloadRule> getPasaloadRules() {
+		List<PasaloadRule> rules = null;
+		String pasaloadRules = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "pasaload-eiligibility");
+		
+		return rules;
+	}
 	
 	private CommandResponseData createResponse(boolean isTransactional, PurchaseResponse response) throws SmException {
 		CommandResponseData responseData = new CommandResponseData();
