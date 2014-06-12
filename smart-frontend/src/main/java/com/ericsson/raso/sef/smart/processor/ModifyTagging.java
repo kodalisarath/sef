@@ -38,12 +38,12 @@ public class ModifyTagging implements Processor {
 
 		ModifyTaggingRequest request = (ModifyTaggingRequest) exchange.getIn().getBody();
 		String requestId = RequestContextLocalStore.get().getRequestId();
-		SubscriberInfo validSubscriberInfo = validateSubscriber(requestId, request.getCustomerId());
-		ContractState localState = null;
-		if(validSubscriberInfo != null){
+		//SubscriberInfo validSubscriberInfo = validateSubscriber(requestId, request.getCustomerId());
+		//ContractState localState = null;
+		/* if(validSubscriberInfo != null){
 			 localState = validSubscriberInfo.getLocalState();
 			 logger.debug("Status of Valid Subscriber is :", localState);
-		}
+		} */
 		Integer tag = Integer.valueOf(request.getTagging());
 
 		// SubscriberManagement subscriberManagement = SmartContext.getSubscriberManagement();
@@ -82,13 +82,13 @@ public class ModifyTagging implements Processor {
 				metas.add(new Meta("HANDLE_LIFE_CYCLE", "recycleBit"));
 				break;
 			default:
-				if("PRE_ACTIVE".equals(localState)){
+				/*if("PRE_ACTIVE".equals(localState)){
 					logger.debug("PreActive Subscriber", localState);
 					throw ExceptionUtil.toSmException(new ResponseCode(4020, "Invalid Operation State"));
 				}else if("ACTIVE".equals(localState)){
 					logger.debug("Active Subscriber", localState);
 					throw ExceptionUtil.toSmException(new ResponseCode(4020, "Invalid Operation State"));
-				}
+				}*/
 		}
 		logger.debug("Usecase Metas: " + metas);
 
