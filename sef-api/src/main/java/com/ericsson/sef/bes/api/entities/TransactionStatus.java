@@ -9,6 +9,12 @@ public class TransactionStatus implements Serializable {
 	
 	
 	
+	@Override
+	public String toString() {
+		return "TransactionStatus [component=" + component + ", code=" + code
+				+ ", description=" + description + "]";
+	}
+
 	public TransactionStatus(String component, Integer code, String description) {
 		this.component = component;
 		this.code = code;
