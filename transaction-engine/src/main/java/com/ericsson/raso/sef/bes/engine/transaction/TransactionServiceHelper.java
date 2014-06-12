@@ -618,11 +618,13 @@ public abstract class TransactionServiceHelper {
 	
 	public static List<com.ericsson.sef.bes.api.entities.Meta> getSefApiList(Map<String,String> metas) {
 		List<com.ericsson.sef.bes.api.entities.Meta> metaList=new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
-		for(String key: metas.keySet()) {
-			com.ericsson.sef.bes.api.entities.Meta meta=new com.ericsson.sef.bes.api.entities.Meta();
-			meta.setKey(key);
-			meta.setValue(metas.get(key));
-			metaList.add(meta);
+		if (metas != null) {
+			for(String key: metas.keySet()) {
+				com.ericsson.sef.bes.api.entities.Meta meta=new com.ericsson.sef.bes.api.entities.Meta();
+				meta.setKey(key);
+				meta.setValue(metas.get(key));
+				metaList.add(meta);
+			}
 		}
 		return metaList;
 	}
