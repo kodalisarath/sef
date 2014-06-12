@@ -26,9 +26,9 @@ public class NotificationMessageProcessor implements Processor {
 	
 	public void process(final Exchange exchange) throws Exception {
 		
-		//ExternalNotificationTemplateCatalog catalog = NotificationEngineContext.getBean(ExternalNotificationTemplateCatalog.class);
+		ExternalNotificationTemplateCatalog catalog = NotificationEngineServiceResolver.getBean(ExternalNotificationTemplateCatalog.class);
 		
-		ExternalNotificationTemplateCatalog catalog = null;
+		//ExternalNotificationTemplateCatalog catalog = null;
 		Object body = exchange.getIn().getBody();
 		if (body instanceof SmppMessage) {
 			SmsParser parser = new DefaultSmsParser((SmppMessage) body);
@@ -97,7 +97,8 @@ public class NotificationMessageProcessor implements Processor {
 	/*	NotificationWorkflowService service = NotificationEngineContext.getBean(event.getWsClientId(),
 				NotificationWorkflowService.class);*/
 		
-		NotificationWorkflowService service = null;;
+		NotificationWorkflowService service = NotificationEngineServiceResolver.getBean(event.getWsClientId(),
+				NotificationWorkflowService.class);
 		service.processWorkflow(parser.getMsisdn(), event.getEventId(), toNotificationMeta(parser.getMetas()));
 	}
 

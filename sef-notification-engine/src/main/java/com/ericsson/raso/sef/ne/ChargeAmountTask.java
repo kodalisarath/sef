@@ -28,7 +28,8 @@ public class ChargeAmountTask  {
 		StringBuilder builder = new StringBuilder();
 		builder.append(Constants .CHANNEL_NAME + ";" + "INVALID_CALL_ATTAMPT");
 		
-		AmountCharging amountCharging = null;//NotificationEngineContext.getBean(AmountCharging.class);
+		
+		AmountCharging amountCharging = NotificationEngineServiceResolver.getBean(AmountCharging.class);
 		
 		ChargingInformation chargingInformation = new ChargingInformation();
 		chargingInformation.setDescription(builder.toString());

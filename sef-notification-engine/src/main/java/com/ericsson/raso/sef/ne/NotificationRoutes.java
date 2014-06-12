@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.ne;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,10 @@ import org.apache.camel.model.LoadBalanceDefinition;
 
 import com.ericsson.raso.ne.core.smpp.SmppClient;
 import com.ericsson.raso.ne.core.smpp.SmppClientFactory;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.config.Property;
+import com.ericsson.raso.sef.core.config.Section;
 import com.ericsson.raso.sef.ne.notification.DynamicRouteBuilder;
 
 public class NotificationRoutes extends DynamicRouteBuilder {
@@ -37,15 +40,20 @@ public class NotificationRoutes extends DynamicRouteBuilder {
 			}
 		});
 		
-		SmppClientFactory factory = null;//NotificationEngineContext.getSmppClientFactory();
+		SmppClientFactory factory = NotificationEngineServiceResolver.getBean(SmppClientFactory.class);
 
 		//Property property = config.getProperty(NotificationEngineContext.getComponentName(), "smscClients");
 
-		final List<String> smscEndPoints = null;
+		IConfig config = SefCoreServiceResolver.getConfigService();
+		Section section = config.getSection("	Global_smscClients");
+		List<Property> propertyList = SefCoreServiceResolver.getConfigService().getProperties(section);
 	
-		for (String smscEndpoint : smscEndPoints) {
-			SmppClient smppClient = factory.create(smscEndpoint);
-			routes.put(smscEndpoint, createSmppClientRoute(smscEndpoint, smppClient));
+		final List<String> smscEndPoints = new ArrayList();
+	
+		for (Property smscEndpoint : propertyList) {
+			SmppClient smppClient = factory.create(smscEndpoint.getKey());
+			routes.put(smscEndpoint.getKey(), createSmppClientRoute(smscEndpoint.getKey(), smppClient));
+			smscEndPoints.add(smscEndpoint.getKey());
 		}
 
 		routes.put("smppLoadBalence", createSmppLoadBalncer(smscEndPoints));
