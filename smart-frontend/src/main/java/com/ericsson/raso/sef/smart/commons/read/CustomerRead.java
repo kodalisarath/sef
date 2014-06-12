@@ -2,6 +2,15 @@ package com.ericsson.raso.sef.smart.commons.read;
 
 public class CustomerRead {
 
+	@Override
+	public String toString() {
+		return "CustomerRead [customerId=" + customerId + ", billCycleId="
+				+ billCycleId + ", billCycleIdAfterSwitch="
+				+ billCycleIdAfterSwitch + ", billCycleSwitch="
+				+ billCycleSwitch + ", category=" + category
+				+ ", prefetchFilter=" + prefetchFilter + "]";
+	}
+
 	private String customerId;
 	private Integer billCycleId;
 	private Integer billCycleIdAfterSwitch;

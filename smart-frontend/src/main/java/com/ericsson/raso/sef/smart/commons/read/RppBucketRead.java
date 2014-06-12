@@ -21,6 +21,19 @@ public class RppBucketRead {
 	private Long sPeriodicBonusBalance;
 	private Date sRenewalPeriodEnd;
 
+	@Override
+	public String toString() {
+		return "RppBucketRead [customerId=" + customerId + ", offerProfileKey="
+				+ offerProfileKey + ", key=" + key + ", bSeriesId=" + bSeriesId
+				+ ", bCategory=" + bCategory + ", bValidFrom=" + bValidFrom
+				+ ", bInvalidFrom=" + bInvalidFrom + ", sActive=" + sActive
+				+ ", sError=" + sError + ", sInfo=" + sInfo + ", sValid="
+				+ sValid + ", sExpireDate=" + sExpireDate + ", sNextPeriodAct="
+				+ sNextPeriodAct + ", sPeriodicBonusBalance="
+				+ sPeriodicBonusBalance + ", sRenewalPeriodEnd="
+				+ sRenewalPeriodEnd + "]";
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}

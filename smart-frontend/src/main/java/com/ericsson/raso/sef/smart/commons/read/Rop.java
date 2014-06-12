@@ -3,6 +3,12 @@ package com.ericsson.raso.sef.smart.commons.read;
 public class Rop {
 
 	private RopRead ropRead;
+	@Override
+	public String toString() {
+		return "Rop [ropRead=" + ropRead + ", ropBucketRead=" + ropBucketRead
+				+ ", ropVersionRead=" + ropVersionRead + "]";
+	}
+
 	private RopBucketRead ropBucketRead;
 	private RopVersionRead ropVersionRead;
 

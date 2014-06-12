@@ -11,6 +11,17 @@ public class RppVersionRead {
 	private String sPeriodicBonusExpiryDate;
 	private Long sPeriodicBonusCreditLimit;
 
+	@Override
+	public String toString() {
+		return "RppVersionRead [customerId=" + customerId
+				+ ", offerProfileKey=" + offerProfileKey + ", key=" + key
+				+ ", vValidFrom=" + vValidFrom + ", vInvalidFrom="
+				+ vInvalidFrom + ", category=" + category
+				+ ", sPeriodicBonusExpiryDate=" + sPeriodicBonusExpiryDate
+				+ ", sPeriodicBonusCreditLimit=" + sPeriodicBonusCreditLimit
+				+ "]";
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}

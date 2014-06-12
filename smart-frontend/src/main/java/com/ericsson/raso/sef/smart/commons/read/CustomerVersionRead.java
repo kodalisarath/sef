@@ -7,6 +7,13 @@ public class CustomerVersionRead {
 	private String vInvalidFrom;
 	private String category;
 
+	@Override
+	public String toString() {
+		return "CustomerVersionRead [customerId=" + customerId
+				+ ", vValidFrom=" + vValidFrom + ", vInvalidFrom="
+				+ vInvalidFrom + ", category=" + category + "]";
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}

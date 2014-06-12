@@ -17,6 +17,18 @@ public class WelcomePackBucketRead {
 	private String sExpiryDate;
 	private Long sNextPeriodAct;
 
+	@Override
+	public String toString() {
+		return "WelcomePackBucketRead [key=" + key + ", sPackageId="
+				+ sPackageId + ", customerId=" + customerId
+				+ ", offerProfileKey=" + offerProfileKey + ", bSeriesId="
+				+ bSeriesId + ", bCategory=" + bCategory + ", bValidFrom="
+				+ bValidFrom + ", bInvalidFrom=" + bInvalidFrom + ", sActive="
+				+ sActive + ", sError=" + sError + ", sInfo=" + sInfo
+				+ ", sValid=" + sValid + ", sExpiryDate=" + sExpiryDate
+				+ ", sNextPeriodAct=" + sNextPeriodAct + "]";
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}

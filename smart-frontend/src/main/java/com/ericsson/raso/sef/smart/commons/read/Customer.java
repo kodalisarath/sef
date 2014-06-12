@@ -2,6 +2,13 @@ package com.ericsson.raso.sef.smart.commons.read;
 
 public class Customer {
 
+	@Override
+	public String toString() {
+		return "Customer [customerRead=" + customerRead
+				+ ", customerBucketRead=" + customerBucketRead
+				+ ", customerVersionRead=" + customerVersionRead + "]";
+	}
+
 	private CustomerRead customerRead;
 	private CustomerBucketRead customerBucketRead;
 	private CustomerVersionRead customerVersionRead;

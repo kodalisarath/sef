@@ -5,6 +5,31 @@ import java.util.List;
 
 public class RopRead {
 
+	@Override
+	public String toString() {
+		return "RopRead [customerId=" + customerId + ", key=" + key
+				+ ", category=" + category + ", prefetchFilter="
+				+ prefetchFilter + ", activeEndDate=" + activeEndDate
+				+ ", annoFirstWarningPeriodSent=" + annoFirstWarningPeriodSent
+				+ ", annoSecondWarningPeriodSent="
+				+ annoSecondWarningPeriodSent + ", chargedMenuAccessCounter="
+				+ chargedMenuAccessCounter + ", firstCallDate=" + firstCallDate
+				+ ", graceEndDate=" + graceEndDate
+				+ ", isBalanceClearanceOnOutpayment="
+				+ isBalanceClearanceOnOutpayment + ", isCFMOC=" + isCFMOC
+				+ ", IsCollectCallAllowed=" + IsCollectCallAllowed
+				+ ", IsFirstCallPassed=" + IsFirstCallPassed + ", IsGPRSUsed="
+				+ IsGPRSUsed + ", IsLastRechargeInfoStored="
+				+ IsLastRechargeInfoStored + ", IsLastTransactionEnqUsed="
+				+ IsLastTransactionEnqUsed + ", IsLocked=" + IsLocked
+				+ ", IsOperatorCollectCallAllowed="
+				+ IsOperatorCollectCallAllowed + ", IsSmsAllowed="
+				+ IsSmsAllowed + ", IsUSCAllowed=" + IsUSCAllowed
+				+ ", preActiveEndDate=" + preActiveEndDate
+				+ ", cTaggingStatus=" + cTaggingStatus + ", s_CRMTitle="
+				+ s_CRMTitle + ", lastKnownPeriod=" + lastKnownPeriod + "]";
+	}
+
 	private String customerId;
 	private Integer key;
 	private String category;

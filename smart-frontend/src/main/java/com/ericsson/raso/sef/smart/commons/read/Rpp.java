@@ -6,6 +6,12 @@ public class Rpp {
 	private RppBucketRead rppBucketRead;
 	private RppVersionRead rppVersionRead;
 
+	@Override
+	public String toString() {
+		return "Rpp [rppRead=" + rppRead + ", rppBucketRead=" + rppBucketRead
+				+ ", rppVersionRead=" + rppVersionRead + "]";
+	}
+
 	public RppRead getRppRead() {
 		return rppRead;
 	}

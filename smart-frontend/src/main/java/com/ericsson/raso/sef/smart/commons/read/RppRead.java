@@ -20,6 +20,23 @@ public class RppRead {
 	private Long cIACCreditLimitValidity;
 	private Integer cUnliResetRechargeValidity;
 
+	@Override
+	public String toString() {
+		return "RppRead [customerId=" + customerId + ", offerProfileKey="
+				+ offerProfileKey + ", key=" + key + ", category=" + category
+				+ ", prefetchFilter=" + prefetchFilter + ", sCRMTitle="
+				+ sCRMTitle + ", sCanBeSharedByMultipleRops="
+				+ sCanBeSharedByMultipleRops + ", sInsertedViaBatch="
+				+ sInsertedViaBatch + ", sPackageId=" + sPackageId
+				+ ", sPreActive=" + sPreActive + ", sActivationEndTime="
+				+ sActivationEndTime + ", c_TokenBasedExpiredDate="
+				+ c_TokenBasedExpiredDate + ", sActivationStartTime="
+				+ sActivationStartTime + ", sPeriodStartPoint="
+				+ sPeriodStartPoint + ", cIACCreditLimitValidity="
+				+ cIACCreditLimitValidity + ", cUnliResetRechargeValidity="
+				+ cUnliResetRechargeValidity + "]";
+	}
+
 	public Integer getOfferProfileKey() {
 		return offerProfileKey;
 	}
