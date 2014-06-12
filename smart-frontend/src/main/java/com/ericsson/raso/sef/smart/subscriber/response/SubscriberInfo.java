@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class SubscriberInfo extends AbstractSubscriberResponse implements Serializable {
@@ -24,6 +25,7 @@ public class SubscriberInfo extends AbstractSubscriberResponse implements Serial
 	private boolean isLocked = false;
 	private Map<String,String> metas;
 	private TransactionStatus status;
+	private Subscriber subscriber;
 	
 	public String getMsisdn() {
 		return msisdn;
@@ -60,5 +62,11 @@ public class SubscriberInfo extends AbstractSubscriberResponse implements Serial
 	}
 	public void setStatus(TransactionStatus status) {
 		this.status = status;
+	}
+	public Subscriber getSubscriber() {
+		return subscriber;
+	}
+	public void setSubscriber(Subscriber subscriber) {
+		this.subscriber = subscriber;
 	}
 }
