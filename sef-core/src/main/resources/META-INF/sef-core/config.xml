@@ -222,7 +222,7 @@
 	Backend error code is configured as key and front-end mapped status code is configured as value">
 		<property key="99999" value="99999" />
 		<property key="504" value="504" />
-		
+
 		<property key="500" value="11614" />
 		<property key="4007" value="4007" />
 		<property key="506" value="506" />
@@ -368,184 +368,231 @@
 		<property key="receiveTimeout" value="120000" />
 		<property key="connectionType" value="KEEP_ALIVE" />
 	</section>
-	
-	
-		<section id="GLOBAL_walletConversionFactor" description="smart wallet mapping conversion factor">
-					<property key="1030AutoFbc" value="100" />
-					<property key="1030DataFbc" value="100" />
-					<property key="AllTxtBcktSmsGbl" value="100" />
-					<property key="AudioStreamFbc" value="1" />
-					<property key="AudioStreamFbcCtl" value="100" />
-					<property key="BBDataFbcCtl" value="100" />
-					<property key="BrwsThroFbc" value="100" />
-					<property key="BucketArawMoc" value="6000" />
-					<property key="BucketIM6VolFbc " value="1" />
-					<property key="BucketIntlCombo" value="100" />
-					<property key="BucketIntlS1Cbo" value="100" />
-					<property key="BucketIntlS2Cbo" value="100" />
-					<property key="BucketIntlS3Moc" value="6000" />
-					<property key="BucketIntlS4Sms" value="100" />
-					<property key="BucketKamusTxtSms" value="100" />
-					<property key="BucketMocGbl" value="6000" />
-					<property key="BucketMocGblInt" value="6000" />
-					<property key="BucketMocInt" value="6000" />
-					<property key="BucketMocOn" value="6000" />
-					<property key="BucketMocSun" value="6000" />
-					<property key="BucketMocTri" value="6000" />
-					<property key="BucketMocTriCc" value="6000" />
-					<property key="BucketRoamMoc" value="6000" />
-					<property key="BucketSmsGbl" value="100" />
-					<property key="BucketSmsInt" value="100" />
-					<property key="BucketSmsOn" value="100" />
-					<property key="BucketSmsRoam" value="100" />
-					<property key="BucketSmsTri" value="100" />
-					<property key="BucketTkTpdMoc" value="100" />
-					<property key="BucketTkTpdSms" value="100" />
-					<property key="BucketTokMoc" value="100" />
-					<property key="CallAllBucketMoc" value="6000" />
-					<property key="ComDataFbc" value="1" />
-					<property key="ComDataFbcCtl" value="100" />
-					<property key="ConsWalletAcc" value="100" />
-					<property key="DailyCapSms" value="100" />
-					<property key="DataArawFbc" value="1" />
-					<property key="DataMinFbc" value="1" />
-					<property key="DataVolFbc" value="1" />
-					<property key="EmailDataFbc" value="1" />
-					<property key="EmailDataFbcCtl" value="100" />
-					<property key="FlexiBckAcc" value="100" />
-					<property key="GamesDataFbc" value="1" />
-					<property key="GamesDataFbcCtl" value="100" />
-					<property key="IMData2FbcCtl" value="100" />
-					<property key="IMDataFbc" value="1" />
-					<property key="IMDataFbcCtl" value="100" />
-					<property key="Katok10" value="100" />
-					<property key="Katok15" value="100" />
-					<property key="KatokAtTex25" value="100" />
-					<property key="KatokAtTex35" value="100" />
-					<property key="KatokSubGrace" value="100" />
-					<property key="LTEUnliSurfFbc" value="100" />
-					<property key="OnPeakAccountID" value="1" />
-					<property key="RoamFbcCtl" value="100" />
-					<property key="RwdMocTri" value="6000" />
-					<property key="RwdSmsGbl" value="100" />
-					<property key="RwdVolDataFbc" value="1" />
-					<property key="SnsData2Fbc" value="1" />
-					<property key="SnsData2FbcCtl" value="100" />
-					<property key="SnsDataFbc" value="1" />
-					<property key="SnsDataFbcCtl" value="100" />
-					<property key="UnivWalletAcc" value="1" />
-					<property key="UnliAccessSmsCtl" value="100" />
-					<property key="UnliBoost1FbcCtl" value="100" />
-					<property key="UnliBrws1FbcCtl" value="100" />
-					<property key="UnliEmail1FbcCtl" value="100" />
-					<property key="UnliIM1FbcCtl" value="100" />
-					<property key="UnliIM2FbcCtl" value="100" />
-					<property key="UnliKonekFbcCtl" value="100" />
-					<property key="UnliMocGblCtl" value="100" />
-					<property key="UnliMocOnCtl" value="100" />
-					<property key="UnliMocTriCtl" value="100" />
-					<property key="UnliNxbFbcCtl" value="100" />
-					<property key="UnliPhoto1FbcCtl" value="100" />
-					<property key="UnliSmsGblCtl" value="100" />
-					<property key="UnliSmsOnCtl" value="100" />
-					<property key="UnliSmsTriCtl" value="100" />
-					<property key="UnliSns1FbcCtl" value="100" />
-					<property key="UnliSns2FbcCtl" value="100" />
-					<property key="UnliSurfFbcCtl" value="100" />
-					<property key="UnliSurfFbcCtlRen" value="100" />
-					<property key="UnliThroFbcCtl" value="100" />
-					<property key="VideoDataFbc" value="1" />
-					<property key="VideoDataFbcCtl" value="100" />
-			
+
+
+	<section id="GLOBAL_walletConversionFactor" description="smart wallet mapping conversion factor">
+		<property key="1030AutoFbc" value="100" />
+		<property key="1030DataFbc" value="100" />
+		<property key="AllTxtBcktSmsGbl" value="100" />
+		<property key="AudioStreamFbc" value="1" />
+		<property key="AudioStreamFbcCtl" value="100" />
+		<property key="BBDataFbcCtl" value="100" />
+		<property key="BrwsThroFbc" value="100" />
+		<property key="BucketArawMoc" value="6000" />
+		<property key="BucketIM6VolFbc " value="1" />
+		<property key="BucketIntlCombo" value="100" />
+		<property key="BucketIntlS1Cbo" value="100" />
+		<property key="BucketIntlS2Cbo" value="100" />
+		<property key="BucketIntlS3Moc" value="6000" />
+		<property key="BucketIntlS4Sms" value="100" />
+		<property key="BucketKamusTxtSms" value="100" />
+		<property key="BucketMocGbl" value="6000" />
+		<property key="BucketMocGblInt" value="6000" />
+		<property key="BucketMocInt" value="6000" />
+		<property key="BucketMocOn" value="6000" />
+		<property key="BucketMocSun" value="6000" />
+		<property key="BucketMocTri" value="6000" />
+		<property key="BucketMocTriCc" value="6000" />
+		<property key="BucketRoamMoc" value="6000" />
+		<property key="BucketSmsGbl" value="100" />
+		<property key="BucketSmsInt" value="100" />
+		<property key="BucketSmsOn" value="100" />
+		<property key="BucketSmsRoam" value="100" />
+		<property key="BucketSmsTri" value="100" />
+		<property key="BucketTkTpdMoc" value="100" />
+		<property key="BucketTkTpdSms" value="100" />
+		<property key="BucketTokMoc" value="100" />
+		<property key="CallAllBucketMoc" value="6000" />
+		<property key="ComDataFbc" value="1" />
+		<property key="ComDataFbcCtl" value="100" />
+		<property key="ConsWalletAcc" value="100" />
+		<property key="DailyCapSms" value="100" />
+		<property key="DataArawFbc" value="1" />
+		<property key="DataMinFbc" value="1" />
+		<property key="DataVolFbc" value="1" />
+		<property key="EmailDataFbc" value="1" />
+		<property key="EmailDataFbcCtl" value="100" />
+		<property key="FlexiBckAcc" value="100" />
+		<property key="GamesDataFbc" value="1" />
+		<property key="GamesDataFbcCtl" value="100" />
+		<property key="IMData2FbcCtl" value="100" />
+		<property key="IMDataFbc" value="1" />
+		<property key="IMDataFbcCtl" value="100" />
+		<property key="Katok10" value="100" />
+		<property key="Katok15" value="100" />
+		<property key="KatokAtTex25" value="100" />
+		<property key="KatokAtTex35" value="100" />
+		<property key="KatokSubGrace" value="100" />
+		<property key="LTEUnliSurfFbc" value="100" />
+		<property key="OnPeakAccountID" value="1" />
+		<property key="RoamFbcCtl" value="100" />
+		<property key="RwdMocTri" value="6000" />
+		<property key="RwdSmsGbl" value="100" />
+		<property key="RwdVolDataFbc" value="1" />
+		<property key="SnsData2Fbc" value="1" />
+		<property key="SnsData2FbcCtl" value="100" />
+		<property key="SnsDataFbc" value="1" />
+		<property key="SnsDataFbcCtl" value="100" />
+		<property key="UnivWalletAcc" value="1" />
+		<property key="UnliAccessSmsCtl" value="100" />
+		<property key="UnliBoost1FbcCtl" value="100" />
+		<property key="UnliBrws1FbcCtl" value="100" />
+		<property key="UnliEmail1FbcCtl" value="100" />
+		<property key="UnliIM1FbcCtl" value="100" />
+		<property key="UnliIM2FbcCtl" value="100" />
+		<property key="UnliKonekFbcCtl" value="100" />
+		<property key="UnliMocGblCtl" value="100" />
+		<property key="UnliMocOnCtl" value="100" />
+		<property key="UnliMocTriCtl" value="100" />
+		<property key="UnliNxbFbcCtl" value="100" />
+		<property key="UnliPhoto1FbcCtl" value="100" />
+		<property key="UnliSmsGblCtl" value="100" />
+		<property key="UnliSmsOnCtl" value="100" />
+		<property key="UnliSmsTriCtl" value="100" />
+		<property key="UnliSns1FbcCtl" value="100" />
+		<property key="UnliSns2FbcCtl" value="100" />
+		<property key="UnliSurfFbcCtl" value="100" />
+		<property key="UnliSurfFbcCtlRen" value="100" />
+		<property key="UnliThroFbcCtl" value="100" />
+		<property key="VideoDataFbc" value="1" />
+		<property key="VideoDataFbcCtl" value="100" />
+
 	</section>
 
-<section id="offerMapping" description ="offerMapping">
-					<property key="1001" value="1" />
-					<property key="1002" value="2" />
-					<property key="1003" value="3" />
-					<property key="1004" value="4" />
-					<property key="1005" value="5" />
-					<property key="1006" value="6" />
-					<property key="1007" value="7" />
-					<property key="1008" value="8" />
-					<property key="1009" value="9" />
-					<property key="1010" value="10" />
-					<property key="1011" value="11" />
-					<property key="1012" value="12" />
-					<property key="1013" value="13" />
-					<property key="1014" value="14" />
-					<property key="1015" value="15" />
-					<property key="1051" value="51" />
-					<property key="1052" value="52" />
-					<property key="1053" value="53" />
-					<property key="1054" value="54" />
-					<property key="1055" value="55" />
-					<property key="1056" value="56" />
-					<property key="1057" value="57" />
-					<property key="1058" value="58" />
-					<property key="1059" value="59" />
-					<property key="1060" value="60" />
-					<property key="1061" value="61" />
-					<property key="1101" value="101" />
-					<property key="1102" value="102" />
-					<property key="1103" value="103" />
-					<property key="1104" value="104" />
-					<property key="1105" value="105" />
-					<property key="1141" value="141" />
-					<property key="1142" value="142" />
-					<property key="1143" value="143" />
-					<property key="1144" value="144" />
-					<property key="1145" value="145" />
-					<property key="1146" value="146" />
-					<property key="1147" value="147" />
-					<property key="1148" value="148" />
-					<property key="1149" value="149" />
-					<property key="1150" value="150" />
-					<property key="1151" value="151" />
-					<property key="1152" value="152" />
-					<property key="1153" value="153" />
-					<property key="1154" value="154" />
-					<property key="1155" value="155" />
-					<property key="1241" value="241" />
-					<property key="2001" value="242" />
-					<property key="2002" value="242" />
-					<property key="2003" value="242" />
-					<property key="2015" value="242" />
-					<property key="2016" value="242" />
-					<property key="2017" value="242" />
-					<property key="2018" value="242" />
-					<property key="2019" value="242" />
-					<property key="2101" value="242" />
-					<property key="2102" value="242" />
-					<property key="2103" value="242" />
-					<property key="2104" value="242" />
-					<property key="2301" value="242" />
-					<property key="2302" value="242" />
-					<property key="2303" value="242" />
-					<property key="2304" value="242" />
-					<property key="2305" value="242" />
-					<property key="2306" value="242" />
-					<property key="2307" value="242" />
-					<property key="2308" value="242" />
-					<property key="2309" value="242" />
-					<property key="2310" value="242" />
-					<property key="2311" value="242" />
-					<property key="2312" value="242" />
-					<property key="2313" value="242" />
-					<property key="2314" value="242" />
-					<property key="2315" value="242" />
-					<property key="2316" value="242" />
-					<property key="2317" value="242" />
-					<property key="2318" value="242" />
-					<property key="2319" value="242" />
-					<property key="2320" value="242" />
-					<property key="2321" value="242" />
-					<property key="2322" value="242" />
-					<property key="2323" value="242" />
-					<property key="2324" value="242" />
-					<property key="2325" value="242" />
-					<property key="2326" value="242" />
-				
+	<section id="Global_offerMapping" description="offerMapping">
+		<property key="1001" value="1" />
+		<property key="1002" value="2" />
+		<property key="1003" value="3" />
+		<property key="1004" value="4" />
+		<property key="1005" value="5" />
+		<property key="1006" value="6" />
+		<property key="1007" value="7" />
+		<property key="1008" value="8" />
+		<property key="1009" value="9" />
+		<property key="1010" value="10" />
+		<property key="1011" value="11" />
+		<property key="1012" value="12" />
+		<property key="1013" value="13" />
+		<property key="1014" value="14" />
+		<property key="1015" value="15" />
+		<property key="1051" value="51" />
+		<property key="1052" value="52" />
+		<property key="1053" value="53" />
+		<property key="1054" value="54" />
+		<property key="1055" value="55" />
+		<property key="1056" value="56" />
+		<property key="1057" value="57" />
+		<property key="1058" value="58" />
+		<property key="1059" value="59" />
+		<property key="1060" value="60" />
+		<property key="1061" value="61" />
+		<property key="1101" value="101" />
+		<property key="1102" value="102" />
+		<property key="1103" value="103" />
+		<property key="1104" value="104" />
+		<property key="1105" value="105" />
+		<property key="1141" value="141" />
+		<property key="1142" value="142" />
+		<property key="1143" value="143" />
+		<property key="1144" value="144" />
+		<property key="1145" value="145" />
+		<property key="1146" value="146" />
+		<property key="1147" value="147" />
+		<property key="1148" value="148" />
+		<property key="1149" value="149" />
+		<property key="1150" value="150" />
+		<property key="1151" value="151" />
+		<property key="1152" value="152" />
+		<property key="1153" value="153" />
+		<property key="1154" value="154" />
+		<property key="1155" value="155" />
+		<property key="1241" value="241" />
+		<property key="2001" value="242" />
+		<property key="2002" value="242" />
+		<property key="2003" value="242" />
+		<property key="2015" value="242" />
+		<property key="2016" value="242" />
+		<property key="2017" value="242" />
+		<property key="2018" value="242" />
+		<property key="2019" value="242" />
+		<property key="2101" value="242" />
+		<property key="2102" value="242" />
+		<property key="2103" value="242" />
+		<property key="2104" value="242" />
+		<property key="2301" value="242" />
+		<property key="2302" value="242" />
+		<property key="2303" value="242" />
+		<property key="2304" value="242" />
+		<property key="2305" value="242" />
+		<property key="2306" value="242" />
+		<property key="2307" value="242" />
+		<property key="2308" value="242" />
+		<property key="2309" value="242" />
+		<property key="2310" value="242" />
+		<property key="2311" value="242" />
+		<property key="2312" value="242" />
+		<property key="2313" value="242" />
+		<property key="2314" value="242" />
+		<property key="2315" value="242" />
+		<property key="2316" value="242" />
+		<property key="2317" value="242" />
+		<property key="2318" value="242" />
+		<property key="2319" value="242" />
+		<property key="2320" value="242" />
+		<property key="2321" value="242" />
+		<property key="2322" value="242" />
+		<property key="2323" value="242" />
+		<property key="2324" value="242" />
+		<property key="2325" value="242" />
+		<property key="2326" value="242" />
+
+	</section>
+
+
+<!-- Ported the UsageTimingWindow Properties --Started -->
+	<section id="Global_usageTimingsStartWindow" description="usageTimingsStartWindow">
+		<property key="usageTimingWindow1" value="19.01" />
+		<property key="usageTimingWindow2" value="17:00" />
+	</section>
+
+	<section id="Global_usageTimingsEndWindow" description="usageTimingsEndWindow">
+		<property key="usageTimingWindow1" value="19.01" />
+		<property key="usageTimingWindow2" value="19:00" />
+	</section>
+
+	<section id="uc_walletUsage_usageTimingWindow1" description="walletUsage">
+		<property key="UnliMocOnCtl" value="1" />
+		<property key="UnliMocGblCtl" value="3" />
+		<property key="UnliSmsOnCtl" value="4" />
+		<property key="UnliSmsGblCtl" value="6" />
+	</section>
+
+	<section id="uc_walletUsage_usageTimingWindow2" description="walletUsage">
+		<property key="UnliMocOnCtl" value="1" />
+		<property key="UnliMocGblCtl" value="3" />
+		<property key="UnliSmsOnCtl" value="4" />
+		<property key="UnliSmsGblCtl" value="6" />
+	</section>
+
+
+	<section id="ut_walletUsage_usageTimingWindow1" description="walletUsage">
+		<property key="UnliMocOnCtl" value="1" />
+		<property key="UnliMocGblCtl" value="5" />
+		<property key="UnliSmsOnCtl" value="7" />
+		<property key="UnliSmsGblCtl" value="11" />
+	</section>
+
+	<section id="ut_walletUsage_usageTimingWindow2" description="walletUsage">
+		<property key="UnliMocOnCtl" value="2" />
+		<property key="UnliMocGblCtl" value="6" />
+		<property key="UnliSmsOnCtl" value="8" />
+		<property key="UnliSmsGblCtl" value="12" />
+	</section>
+
+<!-- Ported the UsageTimingWindow Properties --ended -->
+
+<section id="Global_smscClients" description="walletUsage">
+<property key="smsc-client" value=""</property>
 </section>
 
 </config>
