@@ -5,7 +5,6 @@ import com.ericsson.sef.bes.api.entities.Subscriber;
 
 public class EntireReadResponse extends AbstractSubscriptionResponse {
 
-	
 	private static final long serialVersionUID = 1643475627465673346L;
 	private TransactionStatus fault;
 	private String subscriptionId;
@@ -29,6 +28,4 @@ public class EntireReadResponse extends AbstractSubscriptionResponse {
 	public void setSubscriber(Subscriber subscriber) {
 		this.subscriber = subscriber;
 	}
-	
-	
-	}
+}
