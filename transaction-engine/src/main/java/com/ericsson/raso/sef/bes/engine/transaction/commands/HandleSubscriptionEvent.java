@@ -58,12 +58,19 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		
+		if (((HandleSubscriptionEventRequest)this.getRequest()).getSubscriberId() == null) {
+			logger.debug("MSISDN/ Subscriber Id is missing in request!!");
+			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(505, "Technical Error")));
+			this.sendResponse();
+		}
+		
 		//TODO: its hack specific to SMART. address this through calling discoverOfferByFederatedId in purchase processor
 		String offerId = ((HandleSubscriptionEventRequest)this.getRequest()).getOfferId();
 		Offer prodcatOffer = catalog.getOfferByExternalHandle(offerId);
 		if (prodcatOffer == null) {
 			logger.debug("Offer (" + offerId + ") not defined in the offerStore!!");
-			throw new TransactionException("txe", new ResponseCode(999, "Invalid Event Name"));
+			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(999, "Invalid Event Name")));
+			this.sendResponse();
 		}
 		logger.debug("Offer retrieved from catalog: " + prodcatOffer.getName());
 		
@@ -89,10 +96,8 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 												((HandleSubscriptionEventRequest)this.getRequest()).getMetas()));
 			logger.debug("Offer executed successfully!!!. Total tasks to be orchestrated = " + tasks.size());
 		} catch (CatalogException e) {
-			logger.error("Offer execution failed??. Cause: " + e.getMessage());
-			e.printStackTrace();
-			// TODO - Logger unable to fetch the workflow configured for the use-case
-			throw new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e);
+			logger.error("Offer execution failed??. Cause: " + e.getMessage(), e);
+			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(11614, "Generic Exception!!")));
 		}
 		
 		Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);

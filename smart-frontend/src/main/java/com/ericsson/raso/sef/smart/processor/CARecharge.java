@@ -74,7 +74,8 @@ public class CARecharge implements Processor {
 			if (msisdn == null) {
 				throw new SmException(new ResponseCode(8002, "CustomerId or AccesKey is not defined in input parameter"));
 			}
-		
+			metas.put("msisdn", msisdn);
+			metas.put("SUBSCRIBER_ID", msisdn);
 		
 //			//TODO: Subscriber validation/caching goes here
 //			logger.debug("Getting subscriber info....");
