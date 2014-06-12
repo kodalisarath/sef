@@ -31,4 +31,11 @@ public class OpcoGroup extends Owner {
 		 */
 	}
 
+	@Override
+	public String toString() {
+		return "OpcoGroup [getType()=" + getType() + ", getName()=" + getName() + "]";
+	}
+	
+	
+
 }

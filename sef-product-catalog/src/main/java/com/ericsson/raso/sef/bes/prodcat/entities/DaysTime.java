@@ -52,7 +52,7 @@ public class DaysTime extends AbstractTimeCharacteristic {
 
 	@Override
 	public String toString() {
-		return "<TimeCharacteristic name='Days' numberOfDays='" + ((int)(this.expiryInMillis/24)) + "'/>";
+		return "DaysTime [expiryInMillis=" + expiryInMillis + "]";
 	}
 	
 	

@@ -8,5 +8,11 @@ public class Opco extends Owner {
 		this.setType(Type.Opco);
 	}
 
+	@Override
+	public String toString() {
+		return "Opco [getType()=" + getType() + ", getName()=" + getName() + "]";
+	}
+
+	
 
 }

@@ -49,7 +49,7 @@ public class CommitHardDate extends AbstractMinimumCommitment {
 
 	@Override
 	public String toString() {
-		return "<MinimumCommitment name='HardDate' date='" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(this.date) + "' />";
+		return "CommitHardDate [date=" + date + "]";
 	}
 
 

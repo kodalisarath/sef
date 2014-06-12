@@ -96,6 +96,12 @@ public final class ProductPackage extends Product {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "ProductPackage [products=" + products + ", getName()=" + getName() + ", getOwner()=" + getOwner() + ", getCriteria()="
+				+ getCriteria() + "]";
+	}
+
 	
 	
 

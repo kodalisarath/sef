@@ -492,6 +492,12 @@ public class Subscription extends Offer {
 	public void setClosedTimeFuture(long timestamp) {
 		subscriptionHistory.add(SubscriptionLifeCycleState.CLOSED, timestamp); 
 	}
+
+	@Override
+	public String toString() {
+		return "Subscription [subscriberId=" + subscriberId + ", subscriptionId=" + subscriptionId + ", subscriptionHistory="
+				+ subscriptionHistory + ", purchaseHistory=" + purchaseHistory + ", provisionedProducts=" + provisionedProducts + "]";
+	}
 	
 	
 	

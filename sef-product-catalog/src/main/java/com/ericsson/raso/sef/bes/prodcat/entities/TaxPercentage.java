@@ -55,7 +55,7 @@ public final class TaxPercentage extends Tax {
 
 	@Override
 	public String toString() {
-		return "<Tax type='" + this.getTaxation() + "' name='" + this.getName() + "' tax='" + taxPercentile + "' />";
+		return "TaxPercentage [taxPercentile=" + taxPercentile + "]";
 	}
 	
 	

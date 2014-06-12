@@ -62,7 +62,7 @@ public class CommitUntilNDays extends AbstractMinimumCommitment {
 	
 	@Override
 	public String toString() {
-		return "<MinimumCommitment name='UntilNDays' days='" + this.days + "' />";
+		return "CommitUntilNDays [days=" + days + "]";
 	}
 
 

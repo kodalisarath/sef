@@ -88,6 +88,11 @@ public class Partner extends Owner {
 		 * any sub stakeholders, there is no need to remove it.
 		 */	
 	}
+
+	@Override
+	public String toString() {
+		return "Partner [getType()=" + getType() + ", getName()=" + getName() + "]";
+	}
 	
 	
 

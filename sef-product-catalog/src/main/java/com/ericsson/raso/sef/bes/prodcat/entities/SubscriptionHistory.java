@@ -172,9 +172,23 @@ public class SubscriptionHistory implements Serializable {
 		private SubscriptionHistory getOuterType() {
 			return SubscriptionHistory.this;
 		}
+
+		@Override
+		public String toString() {
+			return "HistoryEvent [state=" + state + ", timestamp=" + timestamp + "]";
+		}
 		
 		
 
+	}
+
+
+
+
+
+	@Override
+	public String toString() {
+		return "SubscriptionHistory [subscriptionHistory=" + subscriptionHistory + "]";
 	}
 
 

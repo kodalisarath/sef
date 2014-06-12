@@ -60,7 +60,7 @@ public class CommitUntilNRenewals extends AbstractMinimumCommitment {
 
 	@Override
 	public String toString() {
-		return "<MinimumCommitment name='UntilNRenewals' renewals='" + this.renewals + "' />";
+		return "CommitUntilNRenewals [renewals=" + renewals + "]";
 	}
 
 

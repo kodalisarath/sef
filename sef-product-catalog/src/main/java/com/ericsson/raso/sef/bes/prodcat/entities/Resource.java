@@ -475,7 +475,12 @@ public abstract class Resource implements Serializable {
 
 	@Override
 	public String toString() {
-		return "<Resource name=" + name + "/>";
+		return "Resource [name=" + name + ", description=" + description + ", isAbstract=" + isAbstract + ", isDiscoverable="
+				+ isDiscoverable + ", isExternallyConsumed=" + isExternallyConsumed + ", concreteChildren=" + concreteChildren
+				+ ", isConsumable=" + isConsumable + ", consumptionUnitName=" + consumptionUnitName + ", enforcedMinQuota="
+				+ enforcedMinQuota + ", enforcedMaxQuota=" + enforcedMaxQuota + ", dependantOnMe=" + dependantOnMe + ", dependantOnThem="
+				+ dependantOnThem + ", cost=" + cost + ", fulfillmentProfiles=" + fulfillmentProfiles + ", owner=" + owner
+				+ ", resourceGroup=" + resourceGroup + "]";
 	}
 
 }

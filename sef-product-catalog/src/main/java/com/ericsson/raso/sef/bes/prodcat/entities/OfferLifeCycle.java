@@ -249,12 +249,9 @@ public class OfferLifeCycle implements Serializable {
 
 	@Override
 	public String toString() {
-		String xmlFormat = "<OfferLifeCycle>";
-		for (HistoryEvent event: this.lifecycle) {
-			xmlFormat += "<lifecycle event='" + event.state + "' time='" + event.timestamp + "' /> ";
-		}
-		xmlFormat += "</OfferLifeCycle>";
-		return xmlFormat;
+		return "OfferLifeCycle [lifecycle=" + lifecycle + ", getCreationTime()=" + getCreationTime() + ", getTestingTime()="
+				+ getTestingTime() + ", getPublishedTime()=" + getPublishedTime() + ", getLastDisabledTime()=" + getLastDisabledTime()
+				+ ", getRetiredTime()=" + getRetiredTime() + "]";
 	}
 	
 	

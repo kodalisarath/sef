@@ -77,14 +77,7 @@ public final class EventProfile implements Serializable {
 
 	@Override
 	public String toString() {
-		String xmlFormat = "<EventProfile>";
-		for (Integer sequence: profile.navigableKeySet()) {
-			xmlFormat += "<Profile sequence='" + sequence + "' event='" + profile.get(sequence) + "' />"; 
-		}
-		
-		xmlFormat += "<Sequencing currentSequence='" + this.currentSequence + "' sequence='" + this.sequence + "' />";
-		xmlFormat += "</EventProfile>";
-		return xmlFormat;
+		return "EventProfile [profile=" + profile + ", currentSequence=" + currentSequence + ", sequence=" + sequence + "]";
 	}
 	
 	

@@ -15,7 +15,7 @@ public final class TaxFree extends Tax {
 
 	@Override
 	public String toString() {
-		return "<Tax type='" + this.getTaxation() + "' name='" + this.getName() + "' />";
+		return "TaxFree [getName()=" + getName() + ", getTaxation()=" + getTaxation() + "]";
 	}
 	
 	

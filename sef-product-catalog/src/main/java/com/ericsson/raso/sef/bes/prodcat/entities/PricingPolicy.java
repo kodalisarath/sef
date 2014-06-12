@@ -66,7 +66,7 @@ public class PricingPolicy extends Policy {
 
 	@Override
 	public String toString() {
-		return "<PricingPolicy>" + super.toString() + "</PricingPolicy>";
+		return "PricingPolicy [getName()=" + getName() + ", getRule()=" + getRule() + ", getTransforms()=" + getTransforms() + "]";
 	}
 
 

@@ -55,7 +55,7 @@ public final class TaxAbsolute extends Tax {
 	
 	@Override
 	public String toString() {
-		return "<Tax type='" + this.getTaxation() + "' name='" + this.getName() + "' tax='" + taxAbsolute + "' />";
+		return "TaxAbsolute [taxAbsolute=" + taxAbsolute + ", getName()=" + getName() + ", getTaxation()=" + getTaxation() + "]";
 	}
 	
 

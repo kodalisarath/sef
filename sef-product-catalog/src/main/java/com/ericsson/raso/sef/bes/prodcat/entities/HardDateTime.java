@@ -1,6 +1,5 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class HardDateTime extends AbstractTimeCharacteristic {
@@ -50,7 +49,7 @@ public class HardDateTime extends AbstractTimeCharacteristic {
 	
 	@Override
 	public String toString() {
-		return "<TimeCharacteristic name='HardDate' date='" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(this.date) + "'/>";
+		return "HardDateTime [date=" + date + "]";
 	}
 	
 

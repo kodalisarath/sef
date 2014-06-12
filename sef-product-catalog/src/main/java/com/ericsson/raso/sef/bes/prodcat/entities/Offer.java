@@ -1059,14 +1059,13 @@ public class Offer implements Serializable {
 
 	@Override
 	public String toString() {
-		return "<Offer name='" + name + "' description='" + description + "' version='" + version + "' offerState='" + offerState + "'"
-				+ " isCommercial='"	+ isCommercial + "' isRecurrent='" + isRecurrent + "' owner='" + owner + "' offerGroup='" + offerGroup 
-				+ "' exitOfferId='" + exitOfferId + "' externalHandles='" + externalHandles + "'> "
-				+ renewalPeriod +  trialPeriod + immediateTermination
-				+ autoTermination + minimumCommitment + "<products>" 
-				+ products + "</products> " + price + eligibility + accumulation
-				+ switching + " <whiteListedUsers value='" + whiteListedUsers + "'/>" + history 
-				+ "<preExiry>" + preExiry + "</preExpiry> <preRenewal>" + preRenewal + "</preRenewal> </Offer>";
+		return "Offer [name=" + name + ", description=" + description + ", externalHandles=" + externalHandles + ", version=" + version
+				+ ", offerState=" + offerState + ", isRecurrent=" + isRecurrent + ", renewalPeriod=" + renewalPeriod + ", trialPeriod="
+				+ trialPeriod + ", immediateTermination=" + immediateTermination + ", autoTermination=" + autoTermination
+				+ ", minimumCommitment=" + minimumCommitment + ", products=" + products + ", isCommercial=" + isCommercial + ", owner="
+				+ owner + ", offerGroup=" + offerGroup + ", price=" + price + ", eligibility=" + eligibility + ", accumulation="
+				+ accumulation + ", switching=" + switching + ", whiteListedUsers=" + whiteListedUsers + ", exitOfferId=" + exitOfferId
+				+ ", history=" + history + ", preExiry=" + preExiry + ", preRenewal=" + preRenewal + "]";
 	}
 	
 	

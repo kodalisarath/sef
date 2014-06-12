@@ -50,13 +50,7 @@ public final class ImmediateTermination implements Serializable {
 
 	@Override
 	public String toString() {
-		String xmlFormat = "<ImmediateTermination>";
-		for (SubscriberType key: this.isAllowed.keySet()) {
-			xmlFormat += "<IsAllowed subscriberType='" + key + "' allowed='" + this.isAllowed.get(key) + "' />";
-		}
-		xmlFormat += "</ImmediateTermination>";
-		
-		return xmlFormat;
+		return "ImmediateTermination [isAllowed=" + isAllowed + "]";
 	}
 	
 	

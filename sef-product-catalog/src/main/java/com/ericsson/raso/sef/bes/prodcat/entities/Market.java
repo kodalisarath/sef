@@ -8,5 +8,10 @@ public final class Market extends Owner {
 		this.setType(Type.Market);
 	}
 
+	@Override
+	public String toString() {
+		return "Market [getType()=" + getType() + ", getName()=" + getName() + "]";
+	}
+
 
 }

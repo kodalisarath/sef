@@ -30,7 +30,7 @@ public final class UnlimitedQuota extends AbstractQuotaCharacteristic {
 
 	@Override
 	public String toString() {
-		return "<UnlimitedQuota type='" + this.getType() + "' /> ";
+		return "UnlimitedQuota [getType()=" + getType() + "]";
 	}
 	
 	

@@ -8,5 +8,10 @@ public final class EndUser extends Owner {
 		this.setType(Type.EndUser);
 	}
 
+	@Override
+	public String toString() {
+		return "EndUser [getType()=" + getType() + ", getName()=" + getName() + "]";
+	}
+
 
 }

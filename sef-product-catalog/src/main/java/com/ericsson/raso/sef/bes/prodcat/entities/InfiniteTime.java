@@ -14,7 +14,7 @@ public final class InfiniteTime extends AbstractTimeCharacteristic {
 
 	@Override
 	public String toString() {
-		return "<TimeCharacteristic name='Infinite' />";
+		return "InfiniteTime [getType()=" + getType() + ", getActivationTime()=" + getActivationTime() + "]";
 	}
 	
 	

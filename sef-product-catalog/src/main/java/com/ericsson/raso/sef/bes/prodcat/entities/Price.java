@@ -185,16 +185,8 @@ public final class Price extends MonetaryUnit {
 	
 	@Override
 	public String toString() {
-		String xmlFormat =  "<Price> <cost>'" + cost + "</cost> <taxes>" + taxes + "</taxed> <ratingRules>" + ratingRules + "</ratingRules> <criteria>" + criteria
-				+ "</criteria> <context='";
-		if (context != null) {
-			for (String key: context.keySet()) {
-				xmlFormat += "<context key='" + key + "' value='" + this.context.get(key) + "' />";
-			}
-		}
-		xmlFormat += "</context> </Price>";
-		
-		return xmlFormat;
+		return "Price [cost=" + cost + ", taxes=" + taxes + ", ratingRules=" + ratingRules + ", criteria=" + criteria + ", context="
+				+ context + ", getIso4217CurrencyCode()=" + getIso4217CurrencyCode() + ", getAmount()=" + getAmount() + "]";
 	}
 
 

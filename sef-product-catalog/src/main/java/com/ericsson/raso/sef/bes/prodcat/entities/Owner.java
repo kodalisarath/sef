@@ -353,6 +353,11 @@ public abstract class Owner implements Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Owner [name=" + name + ", type=" + type + ", members=" + members + "]";
+	}
+
 
 	
 

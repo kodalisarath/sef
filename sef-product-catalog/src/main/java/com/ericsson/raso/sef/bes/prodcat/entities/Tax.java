@@ -74,7 +74,9 @@ public abstract class Tax implements Serializable {
 	}
 
 	@Override
-	public abstract String toString();
+	public String toString() {
+		return "Tax [name=" + name + ", taxation=" + taxation + "]";
+	}
 	
 	
 

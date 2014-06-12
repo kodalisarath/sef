@@ -88,6 +88,11 @@ public class TenantMvno extends Owner {
 		 * any sub stakeholders, there is no need to remove it.
 		 */	
 	}
+
+	@Override
+	public String toString() {
+		return "TenantMvno [getType()=" + getType() + ", getName()=" + getName() + "]";
+	}
 	
 
 

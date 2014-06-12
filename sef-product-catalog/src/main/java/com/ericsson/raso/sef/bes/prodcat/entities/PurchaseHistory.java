@@ -166,6 +166,15 @@ public class PurchaseHistory implements Serializable {
 	}
 
 
+
+
+
+	@Override
+	public String toString() {
+		return "PurchaseHistory [purchaseHistory=" + purchaseHistory + "]";
+	}
+
+
 	
 
 }

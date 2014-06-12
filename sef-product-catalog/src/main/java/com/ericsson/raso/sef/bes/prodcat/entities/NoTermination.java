@@ -23,7 +23,7 @@ public final class NoTermination extends AbstractAutoTermination {
 
 	@Override
 	public String toString() {
-		return "<AutoTermination name='Infinite' />" ;
+		return "NoTermination [getType()=" + getType() + "]";
 	}
 
 	
