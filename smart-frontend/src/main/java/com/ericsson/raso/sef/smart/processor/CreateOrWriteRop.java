@@ -12,6 +12,7 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -82,25 +83,12 @@ public class CreateOrWriteRop implements Processor {
 
 			SubscriberInfo subscriberInfo = updateSubscriber(requestId,
 					request.getCustomerId(), metas);
-
-			if (subscriberInfo.getStatus() != null) {
-				if (subscriberInfo.getStatus().getCode() == 0)
-					DummyProcessor.response(exchange);
-				else if (subscriberInfo.getStatus().getCode() == 504)
-					throw new SmException(new ResponseCode(504,
-							"Invalid Account"));
-				else if (subscriberInfo.getStatus().getCode() == 4020)
-					throw new SmException(new ResponseCode(4020,
-							"Invalid Operation State"));
-				else
-					throw new SmException(new ResponseCode(11614,
-							"System Error - Hard Fault!!"));
-			} else
-				throw new SmException(new ResponseCode(11614,
-						"System Error - Hard Fault!!"));
+			exchange.getOut().setBody(subscriberInfo);
+		if (subscriberInfo.getStatus() != null) {
 			
-
-		} catch (Exception e) {
+			ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+			
+		} }catch (Exception e) {
 			logger.error("Error in the processor:", e.getClass().getName(), e);
 		}
 

@@ -12,8 +12,6 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.ContractState;
-import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -22,11 +20,6 @@ import com.ericsson.raso.sef.smart.usecase.BucketCreateOrWriteRopRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class BucketCreateOrWriteRop implements Processor {
 	private static final Logger logger = LoggerFactory
@@ -46,74 +39,13 @@ public class BucketCreateOrWriteRop implements Processor {
 				.getOnPeakAccountID_FU()));
 		metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
 		String requestId = RequestContextLocalStore.get().getRequestId();
-
-		SubscriberInfo subscriberinfo = readSubscriber(requestId,
-				request.getCustomerId(), null);
-
-		if (subscriberinfo == null) {
-			logger.error("Subscriber Not Found. msisdn: "
-					+ request.getCustomerId());
-			throw ExceptionUtil.toSmException(ErrorCode.nonExistentAccount);
-		} else if (!ContractState.PREACTIVE.name().equals(
-				subscriberinfo.getLocalState())) {
-
-			logger.error("Subscriber should be in GRACE state to extend the graceEndDate. msisdn: "
-					+ request.getCustomerId());
-			throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
+		SubscriberInfo subscriberInfo=updateSubscriber(requestId, request.getCustomerId(), metas);
+		exchange.getOut().setBody(subscriberInfo);
+		if (subscriberInfo.getStatus() != null) {
+			
+			ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+			
 		}
-
-		updateSubscriber(requestId, request.getCustomerId(), metas);
-
-		CommandResponseData responseData = createResponse(request.getUsecase()
-				.getOperation(), request.getUsecase().getModifier(),
-				request.isTransactional());
-		exchange.getOut().setBody(responseData);
-
-	}
-
-	private SubscriberInfo readSubscriber(String requestId,
-			String subscriberId, List<Meta> metas) {
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
-				.getSubscriberRequest();
-		SubscriberInfo subInfo = new SubscriberInfo();
-		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
-		try {
-			semaphore.init(0);
-			semaphore.acquire();
-		} catch (InterruptedException e) {
-		}
-		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.remove(requestId);
-		return subscriberInfo;
-
-	}
-
-	private CommandResponseData createResponse(String operationName,
-			String modifier, boolean isTransactional) {
-		logger.info("Invoking create Response");
-		CommandResponseData responseData = new CommandResponseData();
-		CommandResult result = new CommandResult();
-		responseData.setCommandResult(result);
-
-		Operation operation = new Operation();
-		operation.setName(operationName);
-		operation.setModifier(modifier);
-
-		OperationResult operationResult = new OperationResult();
-
-		if (isTransactional) {
-			TransactionResult transactionResult = new TransactionResult();
-			result.setTransactionResult(transactionResult);
-			transactionResult.getOperationResult().add(operationResult);
-		} else {
-			result.setOperationResult(operationResult);
-		}
-
-		return responseData;
 	}
 
 	private SubscriberInfo updateSubscriber(String requestId,

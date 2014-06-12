@@ -70,7 +70,7 @@
 		parameterType="String">
 		select *
 		from subscriber
-		where msisdn = #{msisdn}
+		where user_id = #{userId}
 	</select>
 	<delete id="deleteSubscriberMetas" parameterType="String" >
 	delete from susbcriber_meta where user_id=#{userId}
@@ -94,7 +94,7 @@
 		and attribute_name = #{key}
 	</update>
 	<update id="changeContractStatus" parameterType="String">
-	update subscriber set contract_state=#{contractState} where msisdn=#{msisdn}
+	update subscriber set contract_state=#{contractState} where user_id=#{userId}
 	</update>
 	<select id="getContractState" parameterType="String">
 	select contract_state from subscriber where user_id=#{userId}

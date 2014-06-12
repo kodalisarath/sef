@@ -45,11 +45,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 			// This enity must contains the subscriber and his metas from the DB
 			subscriberEntity = ((UpdateSubscriberRequest) this.getRequest())
 					.persistableEntity();
-			LOGGER.debug("PIN" + subscriberEntity.getPin() + "   "
-					+ subscriberEntity.getContractState() + "  "
-					+ subscriberEntity.getAccountId() + " "
-					+ subscriberEntity.getMsisdn());
-			LOGGER.debug(subscriberEntity.toString());
+			
 			SubscriberService subscriberStore = SefCoreServiceResolver
 					.getSusbcriberStore();
 			if (subscriberStore == null) {
@@ -65,35 +61,20 @@ public class UpdateSubscriber extends AbstractTransaction {
 			if (subscriberEntity == null) {
 				LOGGER.error("Subscriber not found in database");
 
-				this.getResponse().setReturnFault(
-						new TransactionException("tx-engine", new ResponseCode(
-								504, "Subscriber not found")));
+				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
 				sendResponse();
-				return false;
+				return true;
 			} else {
-				LOGGER.debug("Enum " + ContractState.apiValue("PRE_ACTIVE"));
-				LOGGER.debug("Meta contract state from "
-						+ subscriberEntity.getContractState().toString());
-				LOGGER.debug("Checking size of meta  from DB"
-						+ subscriberEntity.getMetas().size());
-				List<Meta> listMetas = ((UpdateSubscriberRequest) this
-						.getRequest()).getRequestMetas();
-				LOGGER.debug("Check for the metas from processors"
-						+ listMetas.size());
-				if (ContractState.apiValue("PRE_ACTIVE").toString().equals(
-						subscriberEntity.getContractState().toString())) {
-					LOGGER.debug("Meta list from the processor"
-							+ listMetas.size());
-					LOGGER.debug("Iterating the metas from then processor");
+				List<Meta> listMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
+				
+				if (ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberEntity.getContractState().toString())) {
 					for (Meta meta : listMetas) {
 						if (subscriberEntity.getMetas().contains(meta)) {
 							try {
 								subscriberStore.updateMeta(this.getRequestId(),
 										subscriberEntity.getMsisdn(), meta);
 							} catch (PersistenceError e) {
-								LOGGER.error(
-										"Error in the updatemeta at UpdateSubscriber",
-										e);
+								LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
 							}
 						} else {
 							try {
@@ -101,9 +82,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 								subscriberStore.createMeta(this.getRequestId(),
 										subscriberEntity.getMsisdn(), meta);
 							} catch (PersistenceError e) {
-								LOGGER.error(
-										"Error in the createmeta at UpdateSubscriber",
-										e);
+								LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
 							}
 						}
 
@@ -118,6 +97,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 
 				}
 			}
+			
 			LOGGER.debug("Got Persistable Entity: Subscriber: "
 					+ subscriberEntity);
 

@@ -329,8 +329,24 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 	@Override
 	public List<Meta> getMetas(String nbCorrelator, String userId,
 			List<String> metaKeys) throws PersistenceError {
-		// TODO Auto-generated method stub
-		return null;
+		if(userId == null)
+			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"UserId  provided was null!!"));
+		Collection<SubscriberMeta> metas=new ArrayList<SubscriberMeta>();
+		List<Meta> metaList=new ArrayList<Meta>();
+		try {
+			metas= (List<SubscriberMeta>) subscriberMapper.getSubscriberMetas(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
+			if(! metas.isEmpty()){
+			 metaList=convertToMetaList(metas);
+			}
+			
+		} catch (PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber metas with the  provided userid in getSubscriber"), e);
+		} catch (FrameworkException e) {
+			logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting msisdn",e);
+			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e);
+		}
+		return metaList;
 	}
 	private List<Meta> convertToMetaList(Collection<SubscriberMeta> subscriberMetas){
 		List<Meta> metaList=new ArrayList<Meta>();

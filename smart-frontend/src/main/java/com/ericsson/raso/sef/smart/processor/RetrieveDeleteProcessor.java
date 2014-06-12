@@ -8,7 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -29,10 +32,12 @@ public class RetrieveDeleteProcessor implements Processor {
 			String requestId = RequestContextLocalStore.get().getRequestId();
 		   String subscriberId=request.getCustomerId();
 			SubscriberInfo subscriberInfo= deleteSubscriber(requestId,subscriberId);
-			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-			//iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.READY_TO_DELETE.getName(), null);
-			//exchange.getOut().setBody();
-		} catch (Exception e) {
+			exchange.getOut().setBody(subscriberInfo);
+			if (subscriberInfo.getStatus() != null) {
+				
+				ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+				
+			}}catch (Exception e) {
 			logger.error("Error in processor class:",e.getClass().getName(),e);
 		}
 		 
