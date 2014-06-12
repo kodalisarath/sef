@@ -16,7 +16,7 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 import com.hazelcast.core.ISemaphore;
 
 public class SubscriberResponseHandler implements ISubscriberResponse {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(SubscriberResponseHandler.class);
 
 	@Override
@@ -24,28 +24,28 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 
 		logger.debug("readSubscriber CorrelationID: " + requestCorrelator);
 
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
+		SubscriberInfo subscriberInfo = ((SubscriberInfo)SubscriberResponseStore.get(requestCorrelator));
 
 		if (fault != null) {
 			subscriberInfo.setStatus(fault);
 			this.triggerResponse(requestCorrelator, subscriberInfo);
 			return;
 		} 
-		
+
 		if (subscriber == null) {
 			subscriberInfo.setStatus(new TransactionStatus("txe", 504, "Invalid Account - Subscriber canot be found!!"));
 			this.triggerResponse(requestCorrelator, subscriberInfo);
 			logger.debug("Subscriber is null: " + requestCorrelator);
 			return;
 		}
-		
+
 		else if (subscriber.getMsisdn() == null || 
 				subscriber.getUserId() == null|| 
 				subscriber.getCustomerId() == null|| 
 				subscriber.getContractId() == null || 
 				subscriber.getContractState() == null ||
 				subscriber.getMetas() == null ) {
-			
+
 			subscriberInfo.setStatus(new TransactionStatus("txe", 2002, "Invalid Account - Subscriber entity seems to be corrupt or badly managed!!"));
 			this.triggerResponse(requestCorrelator, subscriberInfo);
 			return;
@@ -98,23 +98,26 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			logger.error("Processing error while handling ReadSubscriberResponse. Cause: " + e.getMessage(), e);
 			subscriberInfo.setStatus(new TransactionStatus("txe", 11614, "Processing error while handling ReadSubscriberResponse. Cause: " + e.getMessage()));
 		}
+
+
+		subscriberInfo.setSubscriber(subscriber);
 		this.triggerResponse(requestCorrelator, subscriberInfo);
-	
-		
+
+
 	}
-	
+
 	private void triggerResponse(String requestId, SubscriberInfo subscriber) {
 		SubscriberResponseStore.put(requestId, subscriber);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		semaphore.release();
-		
+
 	}
 
 	@Override
 	public void readSubscriberMeta(String requestCorrelator,
 			TransactionStatus fault, String subscriberId, List<Meta> metaNames) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -122,8 +125,8 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		if(subInfo !=null)
-		subInfo.setStatus(fault);
-        SubscriberResponseStore.put(requestCorrelator, subInfo);
+			subInfo.setStatus(fault);
+		SubscriberResponseStore.put(requestCorrelator, subInfo);
 
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
@@ -134,8 +137,8 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		if(subInfo !=null)
-		subInfo.setStatus(fault);
-        SubscriberResponseStore.put(requestCorrelator, subInfo);
+			subInfo.setStatus(fault);
+		SubscriberResponseStore.put(requestCorrelator, subInfo);
 
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
@@ -146,12 +149,12 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		if(subInfo !=null)
-		subInfo.setStatus(fault);
-        SubscriberResponseStore.put(requestCorrelator, subInfo);
+			subInfo.setStatus(fault);
+		SubscriberResponseStore.put(requestCorrelator, subInfo);
 
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
-		
+
 	}
 
 	@Override
@@ -159,12 +162,12 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			TransactionStatus fault, Boolean result) {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		if(subInfo !=null)
-		subInfo.setStatus(fault);
-        SubscriberResponseStore.put(requestCorrelator, subInfo);
+			subInfo.setStatus(fault);
+		SubscriberResponseStore.put(requestCorrelator, subInfo);
 
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
-		
+
 	}
 
 }

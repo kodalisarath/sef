@@ -19,8 +19,6 @@ public class UpdateBalanceAndDateRequest extends AbstractAirRequest {
 	private String transactionCode;
 	private String externalData1;
 	private String externalData2;
-	
-	
 	private List<DedicatedAccountUpdateInformation> dedicatedAccountUpdateInformation;
 
 	public String getTransactionCurrency() {
