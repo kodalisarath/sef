@@ -32,10 +32,11 @@ public class OfferVerification {
 			System.out.println("\n3. Modify Tagging:\n" + offerStore.getOfferById("MODIFY_TAGGING"));
 			System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
 			
-			Offer taggingOffer = offerStore.getOfferById("READ_SUBSCRIBER");
+			Offer taggingOffer = offerStore.getOfferById("CREATE_SUBSCRIBER");
 			for (AtomicProduct product: taggingOffer.getAllAtomicProducts()) {
 				System.out.println("Product name: " + product.getName());
 				System.out.println("Product resource: " + product.getResource());
+				System.out.println("Service Registry instance: " + serviceRegistry.get(product.getResource().getName()));
 				
 				Service resource = (Service) product.getResource();
 				System.out.println("Resource name: " + resource.getName());
@@ -43,8 +44,8 @@ public class OfferVerification {
 				for (String profileId: resource.getFulfillmentProfiles()) {
 					System.out.println("Profile Id: " + profileId);
 					FulfillmentProfile profile = profileRegistry.get(profileId);
-					System.out.println("Profile class: " + profile.getClass().getCanonicalName());
-					System.out.println("Profile contents: " + profile.toString());
+					System.out.println("Profile Registry class: " + profile.getClass().getCanonicalName());
+					System.out.println("Profile Registry contents: " + profile.toString());
 				}
 			}
 			

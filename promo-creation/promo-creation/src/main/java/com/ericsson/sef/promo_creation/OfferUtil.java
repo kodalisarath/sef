@@ -166,7 +166,6 @@ public class OfferUtil {
 		// Resource acipRes =
 		// lookupResourcesByName.get("InstallSubscriberACIP_Cmd");
 		offerResources.add(dnsRes);
-
 		offer = helper.createNonCommercialOffer("CREATE_SUBSCRIBER", "Create Subscriber", planCodes, offerResources);
 		offerManager.createOffer(offer);
 		// ----------------------------------------------------------
@@ -233,9 +232,9 @@ public class OfferUtil {
 		// // ----------------------------------------------------------
 		offerResources = new ArrayList<Resource>();
 		planCodes = new HashSet<String>();
-		planCodes.add("ENTIRE_READ");
+		planCodes.add("READ_SUBSCRIBER");
 		offerResources.add(entireRead);
-		offer = helper.createNonCommercialOffer("ENTIRE_READ", "Entire REad", planCodes, offerResources);
+		offer = helper.createNonCommercialOffer("READ_SUBSCRIBER", "Entire REad", planCodes, offerResources);
 		offerManager.createOffer(offer);
 		// ----------------------------------------------------------
 		// Offer.name=DELETE_SUBSCRIBER
