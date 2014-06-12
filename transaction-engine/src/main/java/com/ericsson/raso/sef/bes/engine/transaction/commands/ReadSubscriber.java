@@ -151,7 +151,7 @@ public class ReadSubscriber extends AbstractTransaction {
 						// products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep)
 						// step).getResult().getFulfillmentResult()));
 						FulfillmentStepResult stepResult = (FulfillmentStepResult) this.getResponse().getAtomicStepResults().get(step);
-						if (stepResult != null) {
+						if (stepResult != null && stepResult.getFulfillmentResult() !=null) {
 							for (AtomicProduct atomicProduct : stepResult.getFulfillmentResult()) {
 								
 								if(atomicProduct !=null && atomicProduct.getMetas() !=null)
