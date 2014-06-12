@@ -11,6 +11,16 @@ public class RopVersionRead {
 	private String onPeakAccountExpiryDate;
 	private String sOfferId;
 
+	@Override
+	public String toString() {
+		return "RopVersionRead [customerId=" + customerId
+				+ ", offerProfileKey=" + offerProfileKey + ", key=" + key
+				+ ", vValidFrom=" + vValidFrom + ", vInvalidFrom="
+				+ vInvalidFrom + ", category=" + category
+				+ ", onPeakAccountExpiryDate=" + onPeakAccountExpiryDate
+				+ ", sOfferId=" + sOfferId + "]";
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}

@@ -16,6 +16,20 @@ public class WelcomePackRead {
 	private Long sActivationStartTime;
 	private Integer sPeriodStartPoint;
 
+	@Override
+	public String toString() {
+		return "WelcomePackRead [customerId=" + customerId
+				+ ", offerProfileKey=" + offerProfileKey + ", key=" + key
+				+ ", category=" + category + ", prefetchFilter="
+				+ prefetchFilter + ", sCrmTitle=" + sCrmTitle
+				+ ", sCanBeSharedByMultipleRops=" + sCanBeSharedByMultipleRops
+				+ ", sInsertedViaBatch=" + sInsertedViaBatch + ", sPackageId="
+				+ sPackageId + ", sPreActive=" + sPreActive
+				+ ", sActivationEndTime=" + sActivationEndTime
+				+ ", sActivationStartTime=" + sActivationStartTime
+				+ ", sPeriodStartPoint=" + sPeriodStartPoint + "]";
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}

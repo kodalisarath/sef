@@ -10,6 +10,15 @@ public class RopBucketRead {
 	private String bInvalidFrom;
 	private Long onPeakFuBalance;
 
+	
+	@Override
+	public String toString() {
+		return "RopBucketRead [customerId=" + customerId + ", key=" + key
+				+ ", bCategory=" + bCategory + ", bSeriesId=" + bSeriesId
+				+ ", bValidFrom=" + bValidFrom + ", bInvalidFrom="
+				+ bInvalidFrom + ", onPeakFuBalance=" + onPeakFuBalance + "]";
+	}
+
 	public Integer getKey() {
 		return key;
 	}

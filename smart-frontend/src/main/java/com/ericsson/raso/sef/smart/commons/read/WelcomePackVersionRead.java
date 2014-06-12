@@ -8,6 +8,13 @@ public class WelcomePackVersionRead {
 	private String vValidFrom;
 	private String vInvalidFrom;
 	private String category;
+	@Override
+	public String toString() {
+		return "WelcomePackVersionRead [customerId=" + customerId
+				+ ", offerProfileKey=" + offerProfileKey + ", key=" + key
+				+ ", vValidFrom=" + vValidFrom + ", vInvalidFrom="
+				+ vInvalidFrom + ", category=" + category + "]";
+	}
 	public String getCustomerId() {
 		return customerId;
 	}

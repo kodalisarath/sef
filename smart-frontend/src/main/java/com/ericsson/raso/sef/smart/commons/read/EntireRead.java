@@ -5,6 +5,12 @@ import java.util.Collection;
 
 public class EntireRead {
 	
+	@Override
+	public String toString() {
+		return "EntireRead [customer=" + customer + ", rop=" + rop
+				+ ", welcomePack=" + welcomePack + ", rpps=" + rpps + "]";
+	}
+
 	private Customer customer;
 	private Rop rop;
 	private WelcomePack welcomePack;

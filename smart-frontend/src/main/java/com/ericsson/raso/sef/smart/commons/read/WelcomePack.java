@@ -6,6 +6,12 @@ public class WelcomePack {
 	private WelcomePackVersionRead versionRead;
 	private WelcomePackBucketRead bucketRead;
 
+	@Override
+	public String toString() {
+		return "WelcomePack [read=" + read + ", versionRead=" + versionRead
+				+ ", bucketRead=" + bucketRead + "]";
+	}
+
 	public WelcomePackRead getRead() {
 		return read;
 	}

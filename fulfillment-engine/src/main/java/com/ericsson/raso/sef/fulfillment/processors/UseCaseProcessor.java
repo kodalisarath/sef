@@ -40,6 +40,7 @@ public class UseCaseProcessor implements Processor {
 		//String correlationId = (String) arg0.getIn().getHeader("CORRELATIONID");
 		String correlationId = (String) objectArray[0];
 		IServiceRegistry serviceRegistry = FulfillmentServiceResolver.getServiceRegistry();
+		logger.info("Manila: Fulfillment Request:Product Resource Name " + product.getResourceName());
 		Resource resource = serviceRegistry.readResource(product.getResourceName());
 		List<String> fulfillmentProfileIds = resource.getFulfillmentProfiles();
 		List<FulfillmentProfile> fulfillmentProfiles = getProfiles(fulfillmentProfileIds);

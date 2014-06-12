@@ -3,6 +3,13 @@ package com.ericsson.raso.sef.smart.commons.read;
 
 public class CustomerBucketRead {
 
+	@Override
+	public String toString() {
+		return "CustomerBucketRead [customerId=" + customerId + ", bSeriesId="
+				+ bSeriesId + ", bCategory=" + bCategory + ", bValidFrom="
+				+ bValidFrom + ", bInvalidFrom=" + bInvalidFrom + "]";
+	}
+
 	private String customerId;
 	private Integer bSeriesId;
 	private String bCategory;
