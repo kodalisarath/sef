@@ -27,6 +27,7 @@ import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TaskType;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
@@ -58,7 +59,12 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		
 		//TODO: its hack specific to SMART. address this through calling discoverOfferByFederatedId in purchase processor
-		Offer prodcatOffer = catalog.getOfferByExternalHandle((((HandleSubscriptionEventRequest)this.getRequest()).getOfferId()));
+		String offerId = ((HandleSubscriptionEventRequest)this.getRequest()).getOfferId();
+		Offer prodcatOffer = catalog.getOfferByExternalHandle(offerId);
+		if (prodcatOffer == null) {
+			logger.debug("Offer (" + offerId + ") not defined in the offerStore!!");
+			throw new TransactionException("txe", new ResponseCode(999, "Invalid Event Name"));
+		}
 		logger.debug("Offer retrieved from catalog: " + prodcatOffer.getName());
 		
 		try {

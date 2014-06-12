@@ -140,12 +140,12 @@ public class ProfileRegistry implements IProfileRegistry {
 	
 	
 	@Override
-	public List<FulfillmentProfile<?>> getAllProfiles()
-			throws CatalogException {
-		Collection<FulfillmentProfile<?>> allResources = this.profiles.values();
-		if (allResources.isEmpty())
-			return new ArrayList<FulfillmentProfile<?>>();
-		return Arrays.asList((FulfillmentProfile<?>[]) allResources.toArray());
+	public List<FulfillmentProfile<?>> getAllProfiles() throws CatalogException {
+		List<FulfillmentProfile<?>> profiles = new ArrayList<FulfillmentProfile<?>>();
+		for (FulfillmentProfile<?> profile: this.profiles.values()) {
+			profiles.add(profile);
+		}
+		return profiles;
 	}
 
 	@Override
