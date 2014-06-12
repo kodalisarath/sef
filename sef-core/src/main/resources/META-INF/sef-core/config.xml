@@ -15,6 +15,12 @@
 		<property key="readCustomerInfoChargeOffer" value="readCustomerCharge" />
 	</section>
 
+	<section id="SMART_services" description="SMART Specific proprietary services that are unique to customer, which cannot be achieved
+	thru out of the box functionality and it does not make sense to develop a generic architecture, since they cannot be reused across
+	other customers.">
+		<property key="pasaloadRules" value="id=pasa15,name=Pasaload(15PHP),aPartyCountThreshold=5,aPartyAmountThreshold=65,bPartyCountThreshold=10,bPartyAmountThreshold=30;id=pasa45,name=Pasaload(45PHP),aPartyCountThreshold=2,aPartyAmountThreshold=90,bPartyCountThreshold=3,bPartyAmountThreshold=30;"/>
+	</section>
+	
 	<section id="GLOBAL_walletMapping" description="smart wallet mapping">
 		<property key="1001" value="OnPeakAccountID" />
 		<property key="1002" value="RwdMocTri" />
