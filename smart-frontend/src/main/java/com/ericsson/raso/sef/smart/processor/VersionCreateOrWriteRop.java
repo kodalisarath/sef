@@ -13,7 +13,6 @@ import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ContractState;
-import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -45,27 +44,16 @@ public class VersionCreateOrWriteRop implements Processor {
 			metas.add(new Meta("expiryDate", DateUtil
 					.convertISOToSimpleDateFormat(request.getExpiryDate())));
 			String requestId = RequestContextLocalStore.get().getRequestId();
-	SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),metas);
 			
+			SubscriberInfo subscriberInfo = updateSubscriber(requestId,
+					request.getCustomerId(), metas);
 			
-if(subscriberinfo ==null)
-{
-	logger.error("Subscriber Not Found. msisdn: "
-			+ request.getCustomerId());	
-	throw ExceptionUtil.toSmException(ErrorCode.nonExistentAccount);
-}
-else	if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
+			exchange.getOut().setBody(subscriberInfo);
+             if (subscriberInfo.getStatus() != null) {
 				
-				logger.error("Subscriber should be in GRACE state to extend the graceEndDate. msisdn: "
-						+ request.getCustomerId());	
-				throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
-			}
-
-			
-			updateSubscriber(requestId, request.getCustomerId(), metas);
-			logger.info("Sending subscriber response");
-			DummyProcessor.response(exchange);
-		} catch (Exception e) {
+				ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+				
+			}} catch (Exception e) {
 			logger.error("Error in the processor class:", e.getClass()
 					.getName(), e);
 		}
@@ -110,27 +98,6 @@ else	if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState()))
 		}
 			}
 		return subscriberInfo;
-	}
-
-	private SubscriberInfo readSubscriber(String requestId,
-			String subscriberId, List<Meta> metas) {
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
-				.getSubscriberRequest();
-		SubscriberInfo subInfo = new SubscriberInfo();
-		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
-		try {
-			semaphore.init(0);
-			semaphore.acquire();
-		} catch (InterruptedException e) {
-		}
-		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.remove(requestId);
-		return subscriberInfo;
-
 	}
 
 }

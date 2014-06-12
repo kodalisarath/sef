@@ -12,8 +12,6 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.ContractState;
-import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -38,83 +36,37 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		
-		SubscriberInfo subscriberinfo = readSubscriber(requestId, request.getCustomerId(),metas);
+		SubscriberInfo subscriberInfo = updateSubscriber(requestId,request.getCustomerId(), metas);
+		exchange.getOut().setBody(subscriberInfo);
+	if (subscriberInfo.getStatus() != null) {
 		
+		ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 		
-if(subscriberinfo ==null)
-{
-logger.error("Subscriber Not Found. msisdn: "
-		+ request.getCustomerId());	
-throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-}
-else
-		if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
-			
-			logger.error("Subscriber should be in GRACE state to extend the graceEndDate. msisdn: "
-					+ request.getCustomerId());	
-			throw ExceptionUtil.toSmException(ErrorCode.notPreActive);
-		}
-
-		
-		updateSubscriber(requestId, request.getCustomerId(), metas);
-		DummyProcessor.response(exchange);
+	}
 
 	}
 	
-	private SubscriberInfo readSubscriber(String requestId, String subscriberId, List<Meta> metas){
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		SubscriberInfo subInfo = new SubscriberInfo();
-		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-		try {
-		semaphore.init(0);
-		semaphore.acquire();
-		} catch(InterruptedException e) {
-		}
-		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		return subscriberInfo;
-		
-	}
-	
-	
-	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) throws SmException {
+	private SubscriberInfo updateSubscriber(String requestId,
+			String customer_id, List<Meta> metas) throws SmException {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
-
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
+				.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
-
-		iSubscriberRequest.updateSubscriber(requestId,customer_id, metas);
-
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		logger.debug("Requesting ");
+		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
+				.getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
-		} catch(InterruptedException e) {
-			logger.warn("Interrupted while waiting for response to " + requestId);
+		} catch (InterruptedException e) {
+			logger.error("Error while calling acquire()");
 		}
-		
 		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-	/*	if(subscriberInfo != null){
-			try{
-			if(subscriberInfo.getStatus().getCode() > 0){
-				if(subscriberInfo.getStatus().getCode() != 504){
-					if(!ContractState.PREACTIVE.name().equals(subscriberInfo.getLocalState()))
-					{
-						ResponseCode responseCode=new ResponseCode(4020,"Invalid Operation State");
-						throw new SmException(responseCode);
-					}
-				}
-				}
-		}catch(Exception e){
-			logger.error("subscriberInfo fields are null",e.getMessage(),e);
-			
-		}
-			}*/
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
+				.remove(requestId);
+		
 		return subscriberInfo;
 	}
 

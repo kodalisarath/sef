@@ -12,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.config.IConfig;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -69,8 +71,12 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		logger.debug("Subscriber Metas: " + metas);
 
 		// Creating user first...
-		createSubscriber(requestId,subscriber);
-
+		SubscriberInfo subscriberInfo=createSubscriber(requestId,subscriber);
+		if (subscriberInfo.getStatus() != null) {
+			
+			ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+			
+		}
 		
 		//logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
 		//ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
@@ -81,9 +87,6 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		//String id = iSubscriberRequest.readSubscriber(requestId, request.getCustomerId());
 		// RecycleJobCommand command = new RecycleJobCommand(subscriber, preActiveEndDate);
 		// command.execute();
-
-		logger.info("Sending subscriber response");
-		DummyProcessor.response(exchange);
 
 	}
 
