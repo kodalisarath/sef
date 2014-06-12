@@ -74,9 +74,7 @@ public class CARecharge implements Processor {
 			if (msisdn == null) {
 				throw new SmException(new ResponseCode(8002, "CustomerId or AccesKey is not defined in input parameter"));
 			}
-			metas.put("msisdn", msisdn);
-			metas.put("SUBSCRIBER_ID", msisdn);
-		
+			
 //			//TODO: Subscriber validation/caching goes here
 //			logger.debug("Getting subscriber info....");
 //			SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
@@ -116,6 +114,9 @@ public class CARecharge implements Processor {
 			requestId = RequestContextLocalStore.get().getRequestId();
 			ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 			PurchaseResponse response = new PurchaseResponse();
+			
+			metas.put("msisdn", msisdn);
+			metas.put("SUBSCRIBER_ID", msisdn);
 			List<Meta> listMeta=convertToList(metas);
 			String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
 			logger.debug("Got past event class....");
