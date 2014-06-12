@@ -74,10 +74,10 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		SubscriberInfo subscriberInfo=createSubscriber(requestId,subscriber);
 		if (subscriberInfo.getStatus() != null) {
 			
-			ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			
 		}
-		
+		DummyProcessor.response(exchange);
 		//logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
 		//ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		//iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), useCaseMetas);

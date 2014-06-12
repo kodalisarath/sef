@@ -86,9 +86,11 @@ public class CreateOrWriteRop implements Processor {
 			exchange.getOut().setBody(subscriberInfo);
 		if (subscriberInfo.getStatus() != null) {
 			
-			ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			
-		} }catch (Exception e) {
+		}
+		DummyProcessor.response(exchange);
+		}catch (Exception e) {
 			logger.error("Error in the processor:", e.getClass().getName(), e);
 		}
 

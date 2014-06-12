@@ -1,11 +1,9 @@
 package com.ericsson.raso.sef.smart.subscriber.response;
 
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
-import com.ericsson.raso.sef.smart.subscription.response.AbstractSubscriptionResponse;
 
 
 public class SubscriberResponseStore {

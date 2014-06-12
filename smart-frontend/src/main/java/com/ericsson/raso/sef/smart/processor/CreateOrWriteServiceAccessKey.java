@@ -40,9 +40,10 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		exchange.getOut().setBody(subscriberInfo);
 	if (subscriberInfo.getStatus() != null) {
 		
-		ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+		throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 		
 	}
+	DummyProcessor.response(exchange);
 
 	}
 	

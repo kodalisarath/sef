@@ -28,7 +28,7 @@ public class VersionCreateOrWriteCustomer implements Processor {
 	
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		try {
+		
 			// get the method signature of web service [Standard]
 			logger.debug("Getting exchange body....");
 			VersionCreateOrWriteCustomerRequest versionCreateOrWriteCustomerRequest = (VersionCreateOrWriteCustomerRequest) exchange
@@ -53,13 +53,10 @@ public class VersionCreateOrWriteCustomer implements Processor {
 			exchange.getOut().setBody(subscriberInfo);
 		if (subscriberInfo.getStatus() != null) {
 			
-			ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			
 		} 
-			exchange.getOut().setBody(subscriberInfo);
-		} catch (Exception e) {
-			logger.error("Error in the processor",e.getClass().getName());
-		}
+	         DummyProcessor.response(exchange);
 		
 	}
 

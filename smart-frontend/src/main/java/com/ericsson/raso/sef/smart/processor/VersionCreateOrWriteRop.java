@@ -28,7 +28,7 @@ public class VersionCreateOrWriteRop implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		try {
+		
 			VersionCreateOrWriteROPRequest request = (VersionCreateOrWriteROPRequest) exchange
 					.getIn().getBody();
 			List<Meta> metas = new ArrayList<Meta>();
@@ -51,12 +51,9 @@ public class VersionCreateOrWriteRop implements Processor {
 			exchange.getOut().setBody(subscriberInfo);
              if (subscriberInfo.getStatus() != null) {
 				
-				ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 				
-			}} catch (Exception e) {
-			logger.error("Error in the processor class:", e.getClass()
-					.getName(), e);
-		}
+			} 
 
 	}
 
