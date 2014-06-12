@@ -591,8 +591,8 @@
 
 <!-- Ported the UsageTimingWindow Properties --ended -->
 
-<section id="Global_smscClients" description="walletUsage">
-<property key="smsc-client" value=""</property>
+<section id="Global_smscClients" description="smscClients">
+<property key="smsc-client" value="smsc-client"</property>
 </section>
 
 </config>
