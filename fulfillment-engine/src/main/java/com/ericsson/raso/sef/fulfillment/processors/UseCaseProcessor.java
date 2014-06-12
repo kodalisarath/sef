@@ -78,11 +78,12 @@ public class UseCaseProcessor implements Processor {
 		List<FulfillmentProfile> profiles = new ArrayList<FulfillmentProfile>();
 		
 		try {
-			for(String profile: fulfillmentProfileIds) {
+				logger.debug("Profile Registry contents: " + FulfillmentServiceResolver.getProfileRegistry().getAllProfiles());
+				for(String profile: fulfillmentProfileIds) {
 				if(FulfillmentServiceResolver.getProfileRegistry() != null){
 					logger.debug("Checking for Profile: " + profile);
 					FulfillmentProfile fulfillmentProfile =  FulfillmentServiceResolver.getProfileRegistry().readProfile(profile);
-					logger.debug("Profile found: " + fulfillmentProfile.getName());
+					logger.debug("Profile found: " + fulfillmentProfile);
 					profiles.add(fulfillmentProfile);
 				}
 				
