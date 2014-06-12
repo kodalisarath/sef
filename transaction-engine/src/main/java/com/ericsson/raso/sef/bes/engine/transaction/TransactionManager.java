@@ -164,9 +164,9 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 
 
 	@Override
-	public String updateSubscriber(String requestId, String subscriberId, Map<String, String> metas) {
+	public String updateSubscriber(String requestId, String subscriberId, Map<String, String> metas,String useCase) {
 		logger.debug("Entered into the Transaction manager :update subscriber with metas of size"+metas.size());
-	UpdateSubscriber command=new UpdateSubscriber(requestId,subscriberId,metas);
+	UpdateSubscriber command=new UpdateSubscriber(requestId,subscriberId,metas,useCase);
 	executor.submit(command);
 	return requestId;
 	}

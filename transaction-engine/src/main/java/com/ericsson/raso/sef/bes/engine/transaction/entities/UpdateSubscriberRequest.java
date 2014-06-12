@@ -15,11 +15,13 @@ public final class UpdateSubscriberRequest extends AbstractRequest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateSubscriberRequest.class);
 	private String subscriberId = null;
 	private Map<String, String> metas = null;
+	private String useCase=null;
 
-	public UpdateSubscriberRequest(String requestCorrelator, String subscriberId, Map<String, String> metas) {
+	public UpdateSubscriberRequest(String requestCorrelator, String subscriberId, Map<String, String> metas,String useCase) {
 		super(requestCorrelator);
 		this.subscriberId = subscriberId;
 		this.setMetas(metas);
+		this.setUseCase(useCase);
 	}
 
 	public String getSubscriberId() {
@@ -87,5 +89,16 @@ public final class UpdateSubscriberRequest extends AbstractRequest {
 	public List<Meta> getRequestMetas() {
 		List<Meta> metaList=TransactionServiceHelper.getSefCoreList(this.metas);
 		return metaList;
+	}
+
+	public String getRequestUseCase(){
+		return this.useCase;
+	}
+	public String getUseCase() {
+		return useCase;
+	}
+
+	public void setUseCase(String useCase) {
+		this.useCase = useCase;
 	}
 }

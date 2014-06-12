@@ -1,7 +1,9 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -40,6 +42,15 @@ public class DateUtil {
 			}
 		}
 		return simpleDateStr;
+	}
+	
+public static String addDaysToDate(String dateStr,int days){
+SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+Calendar c = Calendar.getInstance();
+c.setTime(new Date()); 
+c.add(Calendar.DATE, days); 
+String output = sdf.format(c.getTime());
+return output;
 	}
 	
 	public static final String convertISOToSimpleDateFormat(XMLGregorianCalendar date) {

@@ -33,4 +33,5 @@ public interface ISubscriptionRequest {
 	public @WebMethod abstract String preRenewal(String requestId, String subscriptionId, Boolean override, Map<String, Object> metas);
 	
 	public @WebMethod abstract String querySubscription(String requestId, String subscriptionId);
+
 }

@@ -8,6 +8,7 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
@@ -44,7 +45,7 @@ public class BalanceAdjustment implements Processor {
 		     metas.add(new Meta("eventInfo",request.getEventInfo()));
 		     
 		     String requestId = RequestContextLocalStore.get().getRequestId();
-		     SubscriberInfo subscriberInfo= updateSusbcriber(requestId, request.getCustomerId(), metas);
+		     SubscriberInfo subscriberInfo= updateSusbcriber(requestId, request.getCustomerId(), metas,Constants.ModifyCustomerPreActive);
 		     
 		     
 		} catch (Exception e) {
@@ -54,12 +55,12 @@ public class BalanceAdjustment implements Processor {
     
      
 	}
-	private SubscriberInfo updateSusbcriber(String requestId,String customerId,List<Meta> metas) throws SmException{
+	private SubscriberInfo updateSusbcriber(String requestId,String customerId,List<Meta> metas,String useCase) throws SmException{
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.updateSubscriber(requestId, customerId, metas);
+		iSubscriberRequest.updateSubscriber(requestId, customerId, metas,useCase);
 		
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		

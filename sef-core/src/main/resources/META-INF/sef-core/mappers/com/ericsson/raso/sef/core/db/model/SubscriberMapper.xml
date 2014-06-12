@@ -96,6 +96,15 @@
 	<update id="changeContractStatus" parameterType="String">
 	update subscriber set contract_state=#{contractState} where user_id=#{userId}
 	</update>
+	<update id="updateSubscriberTable" >
+	update subscriber
+	<set>
+      <if test="activeDate != null">active_date=#{activeDate},</if>
+      <if test="registrationDate != null">registrationDate=#{registration_date}</if>
+    </set>
+     where user_id=#{userId}
+	</update>
+	
 	<select id="getContractState" parameterType="String">
 	select contract_state from subscriber where user_id=#{userId}
 	</select>

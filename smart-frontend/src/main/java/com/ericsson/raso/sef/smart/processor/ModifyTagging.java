@@ -9,11 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
-import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.ContractState;
-import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -56,40 +53,38 @@ public class ModifyTagging implements Processor {
 		metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
 
 		String tagging = String.valueOf(request.getTagging());
+		String handle_life_cycle=null;
 		switch(tagging) {
 			case "0":
-				metas.add(new Meta("HANDLE_LIFE_CYCLE", "resetBit"));
+				handle_life_cycle="resetBit";
+				
 				break;
 			case "1":
-				metas.add(new Meta("HANDLE_LIFE_CYCLE", "forcedDeleteBit"));
+				handle_life_cycle="forcedDeleteBit";
 				break;
 			case "2":
-				metas.add(new Meta("HANDLE_LIFE_CYCLE", "barGeneralBit"));
+				handle_life_cycle="barGeneralBit";
 				break;
 			case "3":
-				metas.add(new Meta("HANDLE_LIFE_CYCLE", "barIrmBit"));
+				handle_life_cycle="barIrmBit";
 				break;
 			case "4":
-				metas.add(new Meta("HANDLE_LIFE_CYCLE", "barOtherBit"));
+				handle_life_cycle="barOtherBit";
 				break;
 			case "5":
-				metas.add(new Meta("HANDLE_LIFE_CYCLE", "specialFraudBit"));
+				handle_life_cycle="specialFraudBit";
 				break;
 			case "6":
-				metas.add(new Meta("HANDLE_LIFE_CYCLE", "accountBlockingBit"));
+				handle_life_cycle="accountBlockingBit";
 				break;
 			case "7":
-				metas.add(new Meta("HANDLE_LIFE_CYCLE", "recycleBit"));
+				handle_life_cycle="recycleBit";
 				break;
 			default:
-				/*if("PRE_ACTIVE".equals(localState)){
-					logger.debug("PreActive Subscriber", localState);
-					throw ExceptionUtil.toSmException(new ResponseCode(4020, "Invalid Operation State"));
-				}else if("ACTIVE".equals(localState)){
-					logger.debug("Active Subscriber", localState);
-					throw ExceptionUtil.toSmException(new ResponseCode(4020, "Invalid Operation State"));
-				}*/
+				
 		}
+		metas.add(new Meta("HANDLE_LIFE_CYCLE", handle_life_cycle));
+		
 		logger.debug("Usecase Metas: " + metas);
 
 		// subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
@@ -133,19 +128,6 @@ public class ModifyTagging implements Processor {
 		return responseData;
 	}
 
-	private SubscriberInfo validateSubscriber(String requestId, String customerId) throws SmException {
-
-		SubscriberInfo subscriberInfo = readSubscriber(requestId, customerId, null);
-
-		// SubscriberManagement subscriberManagement = SmartContext.getSubscriberManagement();
-		// Subscriber subscriber = subscriberManagement.getSubscriberProfile(customerId, null);
-		if (subscriberInfo != null && subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() == 504) {
-			throw new SmException(new ResponseCode(504, "Invalid Account"));
-		}
-		logger.debug("If I am here, then it means the subscriber exists or may be other problem......" );
-		return subscriberInfo;
-	}
-
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas) {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		
@@ -167,21 +149,5 @@ public class ModifyTagging implements Processor {
 		return subscriberInfo;
 	}
 
-	private SubscriberInfo readSubscriber(String requestId, String subscriberId, List<Meta> metas) {
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		SubscriberInfo subInfo = new SubscriberInfo();
-		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-		try {
-			semaphore.init(0);
-			semaphore.acquire();
-		} catch (InterruptedException e) {
-		}
-		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		return subscriberInfo;
-
-	}
 
 }

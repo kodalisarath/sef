@@ -52,6 +52,7 @@ public class CreateSubscriber extends AbstractTransaction {
 			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
 			if(subscriberEntity == null){
 				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(4020,"Invalid operation state")));
+				sendResponse();
 			}else{
 				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 				Offer workflow = catalog.getOfferById(Constants.CREATE_SUBSCRIBER.name());
@@ -75,6 +76,7 @@ public class CreateSubscriber extends AbstractTransaction {
 			
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e1));
+			sendResponse();
 		}
 	
 		return true;

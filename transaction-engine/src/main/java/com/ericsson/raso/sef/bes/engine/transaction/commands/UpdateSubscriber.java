@@ -11,6 +11,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
@@ -28,10 +29,8 @@ public class UpdateSubscriber extends AbstractTransaction {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(UpdateSubscriber.class);
 
-	public UpdateSubscriber(String requestId, String subscriberId,
-			Map<String, String> metas) {
-		super(requestId, new UpdateSubscriberRequest(requestId, subscriberId,
-				metas));
+	public UpdateSubscriber(String requestId, String subscriberId,Map<String, String> metas,String useCase) {
+		super(requestId, new UpdateSubscriberRequest(requestId, subscriberId,metas,useCase));
 		this.setResponse(new UpdateSubscriberResponse(requestId, true));
 		LOGGER.debug("FFE Sanity Check: " + subscriberId + ", " + metas);
 	}
@@ -40,62 +39,73 @@ public class UpdateSubscriber extends AbstractTransaction {
 	public Boolean execute() throws TransactionException {
 		LOGGER.debug("Entering Update Subscriber...");
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = null;
+		SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
 
 		try {
-			// This enity must contains the subscriber and his metas from the DB
-			subscriberEntity = ((UpdateSubscriberRequest) this.getRequest())
-					.persistableEntity();
 			
-			SubscriberService subscriberStore = SefCoreServiceResolver
-					.getSusbcriberStore();
 			if (subscriberStore == null) {
 				LOGGER.error("Unable to access persistence tier service!!");
-				this.getResponse()
-						.setReturnFault(
-								new TransactionException(
-										this.getRequestId(),
-										new ResponseCode(1006,
-												"Unable to access persistence tier service!! Check configuration (beans.xml)")));
+				this.getResponse().setReturnFault(new TransactionException(this.getRequestId(),new ResponseCode(1006,"Unable to access persistence tier service!! Check configuration (beans.xml)")));
 				return false;
 			}
-			if (subscriberEntity == null) {
-				LOGGER.error("Subscriber not found in database");
-
-				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
-				sendResponse();
-				return true;
-			} else {
-				List<Meta> listMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
+			List<Meta> listMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
+			String useCaseProcess = ((UpdateSubscriberRequest) this.getRequest()).getRequestUseCase();
+			switch(useCaseProcess){
+			
+case Constants.CreateOrWriteROP: 
+	
+case Constants.CreateOrWriteCustomer:
+	
+case Constants.CreateOrWriteServiceAccessKey:	
+	
+	          // This entity must contains the subscriber and his meta from the DB
+				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 				
-				if (ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberEntity.getContractState().toString())) {
-					for (Meta meta : listMetas) {
-						if (subscriberEntity.getMetas().contains(meta)) {
-							try {
-								subscriberStore.updateMeta(this.getRequestId(),
-										subscriberEntity.getMsisdn(), meta);
-							} catch (PersistenceError e) {
-								LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
+				
+				if (subscriberEntity == null) {
+					LOGGER.error("Subscriber not found in database");
+					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
+					sendResponse();
+					return true;
+				} else {
+					if (ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberEntity.getContractState().toString())) {
+						for (Meta meta : listMetas) {
+							if (subscriberEntity.getMetas().contains(meta)) {
+								try {
+									subscriberStore.updateMeta(this.getRequestId(),
+											subscriberEntity.getMsisdn(), meta);
+								} catch (PersistenceError e) {
+									LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
+								}
+							} else {
+								try {
+									LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
+									subscriberStore.createMeta(this.getRequestId(),
+											subscriberEntity.getMsisdn(), meta);
+								} catch (PersistenceError e) {
+									LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
+								}
 							}
-						} else {
-							try {
-								LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
-								subscriberStore.createMeta(this.getRequestId(),
-										subscriberEntity.getMsisdn(), meta);
-							} catch (PersistenceError e) {
-								LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
-							}
+
 						}
 
+					} else {
+
+						this.getResponse().setReturnFault(
+								new TransactionException("tx-engine",new ResponseCode(4020,"Invalid Operation State")));
+
 					}
-
-				} else {
-
-					this.getResponse().setReturnFault(
-							new TransactionException("tx-engine",
-									new ResponseCode(4020,
-											"Invalid Operation State")));
-
 				}
+				
+case Constants.ModifyCustomerPreActive:	
+case Constants.ModifyCustomerGrace:
+	LOGGER.debug("Invoked ModifyCustomer Case");
+	for(Meta meta:listMetas){
+		
+		if(meta.getKey().equalsIgnoreCase("daysOfExtension")){
+			subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+		}
+    }
 			}
 			
 			LOGGER.debug("Got Persistable Entity: Subscriber: "

@@ -124,7 +124,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			subscriber.setPaymentResponsible(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentResponsible()))));
 			subscriber.setPin(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPin()))));
 			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
-			subscriber.setContractState(ContractState.apiValue("PRE_ACTIVE"));
+			subscriber.setContractState(ContractState.valueOf(ContractState.PREACTIVE.getName()));
 
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator,"Could not prepare entity for persistence. Cause: Encrypting Identities",e);

@@ -17,6 +17,20 @@ public class Constants {
 	public static final String TRANSPARENT_META3 = "transparentMeta3";
 	// TO:DO remove after fixing an issue with Hazlecast
 	public static final String SMFE_TXE_CORRELLATOR = "CorrelationStore";
+	
+	
+	//Constants to deferrentiate use cases
+	
+	public static final String ModifyCustomerGrace = "ModifyCustomerGrace";
+	public static final String ModifyCustomerPreActive = "ModifyCustomerPreActive";
+	public static final String CreateOrWriteROP = "CreateOrWriteROP";
+	public static final String VersionCreateOrWriteRop = "VersionCreateOrWriteRop";
+	public static final String BucketCreateOrWriteRop = "BucketCreateOrWriteRop";
+	public static final String BalanceAdjustment = "BalanceAdjustment";
+	public static final String ModiFyTagging = "ModiFyTagging";
+	public static final String VersionCreateOrWriteCustomer = "VersionCreateOrWriteCustomer";
+	public static final String CreateOrWriteCustomer = "CreateOrWriteCustomer";
+	public static final String CreateOrWriteServiceAccessKey = "CreateOrWriteServiceAccessKey";
 
 	// Flattened out metas returned from back end for subscriber profile
 

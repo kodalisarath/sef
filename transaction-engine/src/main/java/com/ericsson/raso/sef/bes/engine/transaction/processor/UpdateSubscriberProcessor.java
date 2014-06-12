@@ -23,8 +23,9 @@ public class UpdateSubscriberProcessor implements Processor{
 			String requestId = (String) objectArray[0];
 			String subscriberId = (String) objectArray[1];
 			List<Meta> metas=(List<Meta>) objectArray[2];
+			String useCase=(String) objectArray[2];
 			TransactionManager transactionManager = ServiceResolver.getTransactionManager();
-			transactionManager.updateSubscriber(requestId, subscriberId, getMap(metas));
+			transactionManager.updateSubscriber(requestId, subscriberId, getMap(metas),useCase);
 		} catch (Exception e) {
 			logger.error("Error in processor class:",this.getClass().getName(),e);
 		}

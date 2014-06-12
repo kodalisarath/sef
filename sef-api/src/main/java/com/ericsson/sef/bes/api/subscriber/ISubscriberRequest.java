@@ -18,7 +18,7 @@ public interface ISubscriberRequest {
 	
 	public @WebMethod abstract String createSubscriber(String requestId, Subscriber subscriber);
 	
-	public @WebMethod abstract String updateSubscriber(String requestId, String subscriberId, List<Meta> metas);
+	public @WebMethod abstract String updateSubscriber(String requestId, String subscriberId, List<Meta> metas,String useCase);
 	
 	public @WebMethod abstract String deleteSubscriber(String requestId, String subscriberId);
 	

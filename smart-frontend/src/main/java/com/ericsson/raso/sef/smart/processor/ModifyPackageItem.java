@@ -8,6 +8,7 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.ContractState;
@@ -45,7 +46,7 @@ public class ModifyPackageItem implements Processor {
 				metas.add(new Meta("federation-profile", "modifypackageItem"));
 
 				//subscriberManagement.updateSubscriber(request.getCustomerId(), metas);
-				updateSubscriber(requestId, request.getCustomerId(), metas);
+				updateSubscriber(requestId, request.getCustomerId(), metas,Constants.ModifyCustomerPreActive);
 		} catch (Exception e) {
 			logger.error("Error in process class:",e.getClass().getName(),e);
 		}
@@ -70,12 +71,12 @@ public class ModifyPackageItem implements Processor {
 		return subscriberInfo;
 		
 	}
-	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) {
+	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas,String useCase) {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.updateSubscriber(requestId,customer_id, metas);
+		iSubscriberRequest.updateSubscriber(requestId,customer_id, metas,useCase);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 		semaphore.init(0);

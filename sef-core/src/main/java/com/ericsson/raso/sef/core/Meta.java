@@ -10,6 +10,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="meta")
 public class Meta implements Serializable{
 
+	@Override
+	public String toString() {
+		return "Meta [key=" + key + ", value=" + value + "]";
+	}
+
 	private static final long serialVersionUID = 1L;
 	private String key;
 	private String value;

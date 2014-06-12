@@ -8,6 +8,7 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
@@ -49,7 +50,7 @@ public class VersionCreateOrWriteCustomer implements Processor {
 			// functional service logic to be ported here [Porting work]
 			String customerId = versionCreateOrWriteCustomerRequest.getCustomerId();
 			
-			SubscriberInfo subscriberInfo = updateSubscriber(requestId,versionCreateOrWriteCustomerRequest.getCustomerId(), metas);
+			SubscriberInfo subscriberInfo = updateSubscriber(requestId,versionCreateOrWriteCustomerRequest.getCustomerId(), metas,Constants.ModifyCustomerPreActive);
 			exchange.getOut().setBody(subscriberInfo);
 		if (subscriberInfo.getStatus() != null) {
 			
@@ -62,14 +63,14 @@ public class VersionCreateOrWriteCustomer implements Processor {
 
 	
 	private SubscriberInfo updateSubscriber(String requestId,
-			String customer_id, List<Meta> metas) throws SmException {
+			String customer_id, List<Meta> metas,String useCase) throws SmException {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
 				.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
 		logger.debug("Requesting ");
-		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas);
+		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas,useCase);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
 				.getSemaphore(requestId);
 		try {

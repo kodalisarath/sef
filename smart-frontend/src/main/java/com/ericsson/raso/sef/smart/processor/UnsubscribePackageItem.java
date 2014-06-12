@@ -8,6 +8,7 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
@@ -126,7 +127,7 @@ public class UnsubscribePackageItem implements Processor {
 
 		// subscriberManagement.updateSubscriber(customerId, metas);
 
-		updateSubscriber(requestId, customerId, metas);
+		updateSubscriber(requestId, customerId, metas,Constants.ModifyCustomerPreActive);
 
 	}
 
@@ -170,12 +171,12 @@ public class UnsubscribePackageItem implements Processor {
 
 	}
 
-	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas) {
+	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas,String useCase) {
 		log.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas);
+		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas,useCase);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
