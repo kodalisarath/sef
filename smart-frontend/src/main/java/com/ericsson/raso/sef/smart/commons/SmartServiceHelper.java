@@ -293,10 +293,15 @@ public abstract class SmartServiceHelper {
 		SubscriberInfo subscriberInfo = readEntireSubscriberInfo(requestId,
 				msisdn, metaList);
 
+		logger.debug("Manila: subscriberInfo returned is " +subscriberInfo);
 		Subscriber subscriber = subscriberInfo.getSubscriber();
-
+		logger.debug("Manila: subscriber object returned is " +subscriber);
 		if (subscriber == null)
+		{
+			logger.error("Manila: Subscriber Information is empty -- Returning Null.");
 			return null;
+			
+		}
 
 		entireRead.setWelcomePack(getWelcomePack(subscriber));
 		entireRead.setCustomer(EntireReadUtil.getCustomer(subscriber, currentTime));
