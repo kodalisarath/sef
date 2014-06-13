@@ -229,7 +229,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The userid provided was null!!"));
 		try {
 			Subscriber subscriber=new Subscriber();
-			subscriber.setContractState(ContractState.apiValue("READY_TO_DELETE"));
+			subscriber.setContractState(ContractState.READY_TO_DELETE);
 			subscriberMapper.changeContractStatus(subscriber);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
@@ -267,7 +267,6 @@ public class SubscriberServiceImpl implements SubscriberService{
     	 throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The subscriber entity provided was null!!"));
      }
      Subscriber subscriber=null;
-     Subscriber subscriberDecode=new Subscriber();
      try {
     	try {
     		logger.debug("Parameter msisdn"+msisdn);
@@ -281,22 +280,18 @@ public class SubscriberServiceImpl implements SubscriberService{
     		Collection<SubscriberMeta> metas= subscriberMapper.getSubscriberMetas(subscriber.getMsisdn());
     		List<Meta> metaList=convertToMetaList(metas);
     		subscriber.setMetas(metaList);
-    		subscriberDecode.setMetas(metaList);
     	}
     	
 	} catch (PersistenceException e) {
 		logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 		throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber with the provided msisdn"), e);
 	}
-     
-     
-     
      subscriber.setMsisdn(msisdn);
      subscriber.setAccountId(msisdn);
      subscriber.setContractId(msisdn);
      subscriber.setCustomerId(msisdn);
      subscriber.setUserId(msisdn);
-     
+     subscriber.setPin("1234");
 	 return subscriber;
 	}
 	

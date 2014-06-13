@@ -94,7 +94,7 @@
 		and attribute_name = #{key}
 	</update>
 	<update id="changeContractStatus" parameterType="String">
-	update subscriber set contract_state=#{contractState} where user_id=#{userId}
+	update subscriber set contract_state=#{contractState.name} where user_id=#{userId}
 	</update>
 	<update id="updateSubscriberTable" >
 	update subscriber
