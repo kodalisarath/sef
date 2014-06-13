@@ -36,7 +36,6 @@ public class SubscriberServiceImpl implements SubscriberService{
 	static final int PersistentError = 9970;
 	static final int CriticalError = 9990;
 	static final int SubscriberStateError = 9100;
-	static final String PRE_ACTIVE="PRE_ACTIVE";
 	private SubscriberMapper subscriberMapper;
 
 	public void setSubscriberMapper(SubscriberMapper subscriberMapper) {
@@ -124,7 +123,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			subscriber.setPaymentResponsible(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentResponsible()))));
 			subscriber.setPin(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPin()))));
 			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
-			subscriber.setContractState(ContractState.valueOf(ContractState.PREACTIVE.getName()));
+			subscriber.setContractState(ContractState.PREACTIVE);
 
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator,"Could not prepare entity for persistence. Cause: Encrypting Identities",e);
@@ -132,11 +131,6 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		try {
 			logger.debug("Crossing fingers... About to insert subscriber:"+ subscriber);
-			//To:DO   optimize it
-			//Subscriber subscriberDB=getSubscriber(subscriber.getMsisdn());
-			//if(subscriberDB != null){
-				//throw new PersistenceError(nbCorrelator, this.getClass().getName(), new ResponseCode(SubscriberStateError,"Failed to insert Subscriber Metas!!"));
-			//}else{
 				subscriberMapper.createSubscriber(subscriber);
 				List<Meta> metaList=(List<Meta>) subscriber.getMetas();
 				if(metaList != null){
@@ -164,10 +158,6 @@ public class SubscriberServiceImpl implements SubscriberService{
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to insert Subscriber entity!!"), e);
 		}
-
-		
-		
-		
 		return true;
 	}
 
@@ -276,29 +266,41 @@ public class SubscriberServiceImpl implements SubscriberService{
      if(msisdn == null){
     	 throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The subscriber entity provided was null!!"));
      }
-     Subscriber subcriber=null;
+     Subscriber subscriber=null;
+     Subscriber subscriberDecode=new Subscriber();
      try {
     	try {
     		logger.debug("Parameter msisdn"+msisdn);
     		logger.debug("Parameter msisdn after encryption"+ new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
-			subcriber=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
+			subscriber=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. Cause: Encrypting msisdn",e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e);
 		}
-    	if(subcriber != null){
-    		Collection<SubscriberMeta> metas= subscriberMapper.getSubscriberMetas(subcriber.getMsisdn());
+    	if(subscriber != null){
+    		Collection<SubscriberMeta> metas= subscriberMapper.getSubscriberMetas(subscriber.getMsisdn());
     		List<Meta> metaList=convertToMetaList(metas);
-    		subcriber.setMetas(metaList);
+    		subscriber.setMetas(metaList);
+    		subscriberDecode.setMetas(metaList);
     	}
     	
 	} catch (PersistenceException e) {
 		logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 		throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber with the provided msisdn"), e);
 	}
-	 return subcriber;
+     
+     
+     
+     subscriber.setMsisdn(msisdn);
+     subscriber.setAccountId(msisdn);
+     subscriber.setContractId(msisdn);
+     subscriber.setCustomerId(msisdn);
+     subscriber.setUserId(msisdn);
+     
+	 return subscriber;
 	}
 	
+
 private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 	if(msisdn == null)
 		throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The msisdn entity provided was null!!"));
@@ -396,5 +398,5 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 		}
 		return true;
 	}
-
+	
 }

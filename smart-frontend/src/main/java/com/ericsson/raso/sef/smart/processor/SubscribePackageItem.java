@@ -8,7 +8,9 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
@@ -23,6 +25,7 @@ import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.SubscribePackageItemRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.hazelcast.core.ISemaphore;
@@ -39,18 +42,49 @@ public class SubscribePackageItem implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		SubscribePackageItemRequest request = (SubscribePackageItemRequest) exchange.getIn().getBody();
 		String requestId = RequestContextLocalStore.get().getRequestId();
-
+		List<Meta> metas = new ArrayList<Meta>();
+		metas.add(new Meta("accessKey",request.getAccessKey()));
+		metas.add(new Meta("packaze",request.getPackaze()));
+		metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
+		//To:DO Find an alternative to distinguish between the use-cases,currently its been added as a Meta key,
+		
 		SubscriberValidationProcessor.process(request.getCustomerId());
-
-		if(isWelcomePack(request.getPackaze())) {
-			installWelcomePack(requestId,request.getCustomerId(), request.getPackaze(), String.valueOf(request.getMessageId()));
-		} else {
-			rechargePackage(requestId,request.getCustomerId(), request.getPackaze());
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subscriberInfo = readSubscriber(requestId,request.getCustomerId(),metas);
+		if(subscriberInfo != null){
+			
+			if(subscriberInfo.getSubscriber() != null){
+				Subscriber subscriber=subscriberInfo.getSubscriber();
+				if (ContractState.PREACTIVE.name().equals(subscriber.getContractState().toString())){
+					
+					if(isWelcomePack(request.getPackaze())) {
+						metas.add(new Meta("HANDLE_LIFE_CYCLE","Subscriber_Package_Item_WelcomePackServiceClass"));
+						iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), metas);
+						installWelcomePack(requestId,request.getCustomerId(), request.getPackaze(), String.valueOf(request.getMessageId()));
+					} else {
+						throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
+						/*metas.add(new Meta("HANDLE_LIFE_CYCLE","SubscribePackageItem "));
+						rechargePackage(requestId,request.getCustomerId(), request.getPackaze());*/
+					}
+					
+					/*if(request.getPackaze() != "InitialSC" ){}else{
+						
+					}*/
+				}
+				
+			}
+			
+			
 		}
+	
+		SubscriberInfo subscriberInfoUpdate=updateSubscriber(requestId,request.getCustomerId(),metas,Constants.SubscribePackageItem);
+          if(subscriberInfoUpdate.getStatus() != null){
+        	  throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfoUpdate.getStatus().getCode(),subscriberInfoUpdate.getStatus().getDescription()));
+          }
+          DummyProcessor.response(exchange);
+	/*	CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional());
 
-		CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional());
-
-		exchange.getOut().setBody(responseData);
+		exchange.getOut().setBody(responseData);*/
 	}
 
 
@@ -114,7 +148,7 @@ public class SubscribePackageItem implements Processor {
 		metas.add(new Meta("messageId", messageId));
 		metas.add(new Meta("HANDLE_LIFE_CYCLE", "preloadSubscribe"));
 		//subscriberManagement.updateSubscriber(customerId, metas);
-		updateSubscriber(requestId, customerId, metas);
+		
 
 
 	}
@@ -160,24 +194,23 @@ public class SubscribePackageItem implements Processor {
 
 	}
 
-	private SubscriberInfo updateSubscriber(String requestId, String customer_id,List<Meta> metas) {
+	private SubscriberInfo updateSubscriber(String requestId,String customer_id, List<Meta> metas,String useCase) {
 		log.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.handleLifeCycle(requestId,customer_id, ContractState.PREACTIVE.getName(), metas);
+		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas,useCase);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
-		} catch(InterruptedException e) {
+		} catch (InterruptedException e) {
 
 		}
 		log.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
-
 
 
 }
