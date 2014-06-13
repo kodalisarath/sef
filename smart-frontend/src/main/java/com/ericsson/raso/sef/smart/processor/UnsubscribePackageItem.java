@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
@@ -24,6 +25,7 @@ import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.UnSubscribePackageItemRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.hazelcast.core.ISemaphore;
@@ -40,22 +42,49 @@ public class UnsubscribePackageItem implements Processor {
 	public void process(Exchange exchange) throws Exception {
 
 		UnSubscribePackageItemRequest request = (UnSubscribePackageItemRequest) exchange.getIn().getBody();
-
+		List<Meta> metas = new ArrayList<Meta>();
+		metas.add(new Meta("accessKey",request.getAccessKey()));
+		metas.add(new Meta("packaze",request.getPackaze()));
+		metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
 		String requestId = RequestContextLocalStore.get().getRequestId();
 
-		SubscriberValidationProcessor.process(request.getCustomerId());
-
-		if (isWelcomePack(request.getPackaze())) {
-			unInstallWelcomePack(requestId, request.getCustomerId(), request.getAccessKey(), request.getPackaze(),
-					String.valueOf(request.getMessageId()));
-		} else {
-			unsubscribePackage(requestId, request.getCustomerId(), request.getPackaze());
+		//SubscriberValidationProcessor.process(request.getCustomerId());
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subscriberInfo = readSubscriber(requestId,request.getCustomerId(),metas);
+        if(subscriberInfo != null){
+			
+			if(subscriberInfo.getSubscriber() != null){
+				Subscriber subscriber=subscriberInfo.getSubscriber();
+				if (ContractState.PREACTIVE.name().equals(subscriber.getContractState().toString())){
+					
+					if(isWelcomePack(request.getPackaze())) {
+						metas.add(new Meta("HANDLE_LIFE_CYCLE","Workflow - Value Retrieved"));
+						iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), metas);
+						//installWelcomePack(requestId,request.getCustomerId(), request.getPackaze(), String.valueOf(request.getMessageId()));
+					} else {
+						throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
+					
+					}
+					
+				}else{
+					metas.add(new Meta("HANDLE_LIFE_CYCLE","Workflow - Package"));
+					iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
+				}
+				
+			}
+			
+			
 		}
+        SubscriberInfo subscriberInfoUpdate=updateSubscriber(requestId,request.getCustomerId(),metas,Constants.UnSubscribePackageItem);
+        if(subscriberInfoUpdate.getStatus() != null){
+      	  throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfoUpdate.getStatus().getCode(),subscriberInfoUpdate.getStatus().getDescription()));
+        }
+        DummyProcessor.response(exchange);
 
-		CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),
+		/*CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),
 				request.isTransactional());
 
-		exchange.getOut().setBody(responseData);
+		exchange.getOut().setBody(responseData);*/
 	}
 
 	private static boolean isWelcomePack(String packaze) {

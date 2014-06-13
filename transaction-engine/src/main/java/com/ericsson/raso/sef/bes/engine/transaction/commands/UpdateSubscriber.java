@@ -105,9 +105,22 @@ case Constants.ModifyCustomerGrace:
 		
 		if(meta.getKey().equalsIgnoreCase("daysOfExtension")){
 			subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-			
 		}
     }
+	
+case Constants.SubscribePackageItem:
+	LOGGER.debug("Invoked SubscribePackageItem ");
+for(Meta meta:listMetas){
+	subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+		
+    }
+	
+case Constants.UnSubscribePackageItem:
+	LOGGER.debug("Invoked SubscribePackageItem ");
+	for(Meta meta:listMetas){
+		subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+	}
+	
 	sendResponse();
 			}
 			

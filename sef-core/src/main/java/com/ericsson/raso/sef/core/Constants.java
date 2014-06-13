@@ -31,6 +31,8 @@ public class Constants {
 	public static final String VersionCreateOrWriteCustomer = "VersionCreateOrWriteCustomer";
 	public static final String CreateOrWriteCustomer = "CreateOrWriteCustomer";
 	public static final String CreateOrWriteServiceAccessKey = "CreateOrWriteServiceAccessKey";
+	public static final String SubscribePackageItem = "SubscribePackageItem";
+	public static final String UnSubscribePackageItem = "UnSubscribePackageItem";
 
 	// Flattened out metas returned from back end for subscriber profile
 
