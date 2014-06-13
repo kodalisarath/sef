@@ -45,7 +45,7 @@ public class ModifyCustomerPreActive implements Processor {
 			metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
 			SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
 			logger.info("Before read subscriber call");
-			if(subscriberInfo.getSubscriber() == null){
+			if(subscriberInfo.getStatus() != null){
 				throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
 			}
 		}else{

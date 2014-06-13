@@ -79,7 +79,7 @@ public class ModifyCustomerGrace implements Processor {
 						String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
 						metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
 						SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
-						if(subscriberInfo.getSubscriber() == null){
+						if(subscriberInfo.getStatus() != null){
 							throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
 						}
 						DummyProcessor.response(exchange);
