@@ -50,13 +50,13 @@ public class UpdateSubscriber extends AbstractTransaction {
 			}
 			List<Meta> listMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
 			String useCaseProcess = ((UpdateSubscriberRequest) this.getRequest()).getRequestUseCase();
+			//Differentiated use cases for updating  subscriber and metas
 			switch(useCaseProcess){
 			
 case Constants.CreateOrWriteROP: 
 	
-case Constants.CreateOrWriteCustomer:
-	
-case Constants.CreateOrWriteServiceAccessKey:	
+case Constants.CreateOrWriteServiceAccessKey:
+case Constants.VersionCreateOrWriteRop:
 	
 	          // This entity must contains the subscriber and his meta from the DB
 				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
@@ -93,6 +93,7 @@ case Constants.CreateOrWriteServiceAccessKey:
 
 						this.getResponse().setReturnFault(
 								new TransactionException("tx-engine",new ResponseCode(4020,"Invalid Operation State")));
+						sendResponse();
 
 					}
 				}
@@ -104,8 +105,10 @@ case Constants.ModifyCustomerGrace:
 		
 		if(meta.getKey().equalsIgnoreCase("daysOfExtension")){
 			subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+			
 		}
     }
+	sendResponse();
 			}
 			
 			LOGGER.debug("Got Persistable Entity: Subscriber: "

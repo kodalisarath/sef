@@ -59,7 +59,7 @@ public class ModifyCustomerGrace implements Processor {
 					logger.info("Recieved a Subscriber, it is not null");
 					if(ContractState.apiValue("GRACE").toString().equals(apiSubscriber.getContractState().toString()))
 					{
-						String date=apiSubscriber.getMetas().get("preActiveEndDate");
+						String date=apiSubscriber.getMetas().get("graceEndDate");
 						String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
 						metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
 						logger.info("Yes!!! Subscriber is in Preactive contract state");

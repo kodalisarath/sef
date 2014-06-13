@@ -83,7 +83,7 @@ public class CreateOrWriteRop implements Processor {
 			String requestId = RequestContextLocalStore.get().getRequestId();
 
 			SubscriberInfo subscriberInfo = updateSubscriber(requestId,
-					request.getCustomerId(), metas,Constants.ModifyCustomerPreActive);
+					request.getCustomerId(), metas,Constants.CreateOrWriteROP);
 			exchange.getOut().setBody(subscriberInfo);
 		if (subscriberInfo.getStatus() != null) {
 			
