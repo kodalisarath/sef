@@ -276,6 +276,7 @@ public class SubscriberServiceImpl implements SubscriberService{
     	 throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The subscriber entity provided was null!!"));
      }
      Subscriber subcriber=null;
+     Subscriber subscriberDecode=new Subscriber();
      try {
     	try {
     		logger.debug("Parameter msisdn"+msisdn);
@@ -289,13 +290,27 @@ public class SubscriberServiceImpl implements SubscriberService{
     		Collection<SubscriberMeta> metas= subscriberMapper.getSubscriberMetas(subcriber.getMsisdn());
     		List<Meta> metaList=convertToMetaList(metas);
     		subcriber.setMetas(metaList);
+    		subscriberDecode.setMetas(metaList);
     	}
     	
 	} catch (PersistenceException e) {
 		logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 		throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber with the provided msisdn"), e);
 	}
-	 return subcriber;
+    
+     subscriberDecode.setAccountId(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getAccountId()).toString());
+     subscriberDecode.setBillCycleDay(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getBillCycleDay()).toString());
+     subscriberDecode.setContractId(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getContractId()).toString());
+     subscriberDecode.setCustomerSegment(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getCustomerSegment()).toString());
+     subscriberDecode.setEmail(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getEmail()).toString());
+     subscriberDecode.setImeiSv(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getImeiSv()).toString());
+     subscriberDecode.setImsi(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getImsi()).toString());
+     subscriberDecode.setGender(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getGender()).toString());
+     subscriberDecode.setPaymentParent(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getPaymentType()).toString());
+     subscriberDecode.setPaymentResponsible(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getPaymentResponsible()).toString());
+     subscriberDecode.setPaymentParent(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getPaymentParent()).toString());
+     subscriberDecode.setPin(org.apache.commons.codec.binary.Base64.decodeBase64(subcriber.getPin()).toString());
+	 return subscriberDecode;
 	}
 	
 private Subscriber getSubscriber(String msisdn) throws PersistenceError{
