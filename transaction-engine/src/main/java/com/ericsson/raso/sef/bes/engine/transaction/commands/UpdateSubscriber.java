@@ -66,7 +66,7 @@ case Constants.VersionCreateOrWriteRop:
 					LOGGER.error("Subscriber not found in database");
 					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
 					sendResponse();
-					return true;
+					return false;
 				} else {
 					if (ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberEntity.getContractState().toString())) {
 						for (Meta meta : listMetas) {
@@ -120,6 +120,81 @@ case Constants.UnSubscribePackageItem:
 	for(Meta meta:listMetas){
 		subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 	}
+	
+	
+case Constants.ModiFyTagging:
+	LOGGER.debug("Invoked ModifyTagging Case");
+	// This entity must contains the subscriber and his meta from the DB for modify tagging
+	subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+	if (subscriberEntity == null) {
+		LOGGER.error("Subscriber not found in database");
+		this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
+		sendResponse();
+		return true;
+	} else {
+		listMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
+		LOGGER.debug("Update Subscriber Metas are :", listMetas);
+		if(!listMetas.isEmpty()){
+			if(ContractState.apiValue("PREACTIVE").toString().equals(subscriberEntity.getContractState().toString()) 
+					|| ContractState.apiValue("ACTIVE").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString()) 
+					|| ContractState.apiValue("GRACE").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
+				LOGGER.debug("Subscriber Contract State for Tagging is :", subscriberEntity.getContractState().toString());
+				// if subscriber state is active,preActive,grace then tagging required
+				// get segmentation code for Subscriber based on tag value
+				LOGGER.debug("Subscriber Contract State for Tagging is :", subscriberEntity.getContractState().toString());
+				LOGGER.debug("Check for the metas from processors :"+ listMetas.size());
+				String modifyTaggingCodeKey = null;
+				String modifyTaggingCodeValue = null;
+				String validTagKey = null;
+				String validTagValue = null;
+				boolean tagCode = Boolean.FALSE;
+				for (Meta metas : listMetas) {
+					modifyTaggingCodeKey = metas.getKey();
+					modifyTaggingCodeValue = metas.getValue();
+					if(modifyTaggingCodeValue != null){
+					if(modifyTaggingCodeValue.equalsIgnoreCase("invalidBit")){
+						tagCode = Boolean.TRUE;
+					}
+				}
+			}
+				if(tagCode){
+					if(ContractState.apiValue("GRACE").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
+						this.getResponse().setReturnFault(
+								new TransactionException("tx-engine", new ResponseCode(
+										504, "Invalid Operation State GRACE")));
+					}else if(ContractState.apiValue("ACTIVE").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
+						this.getResponse().setReturnFault(
+								new TransactionException("tx-engine", new ResponseCode(
+										4020, "Invalid Operation State ACTIVE")));
+					}else{
+						this.getResponse().setReturnFault(
+								new TransactionException("tx-engine", new ResponseCode(
+										4020, "Invalid Operation State PRE-ACTIVE")));
+					}
+					sendResponse();
+					return false;
+				}else{
+					this.sendResponse();
+					return true;
+				}
+			}
+			
+			// for Subscriber Recycle state and Unknown Subscriber State tagging not required
+			else{
+				if(ContractState.apiValue("RECYCLED").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
+				LOGGER.error("Subscriber State is Recycled");
+				this.getResponse().setReturnFault(
+						new TransactionException("tx-engine", new ResponseCode(
+								504, "Invalid Operation State RECYCLED")));
+				sendResponse();
+				return false;
+				}
+		    }
+        }
+	}
+	
+	
+	
 	
 	sendResponse();
 			}
