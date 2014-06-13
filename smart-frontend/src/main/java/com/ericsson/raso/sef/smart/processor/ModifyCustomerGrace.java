@@ -40,7 +40,7 @@ public class ModifyCustomerGrace implements Processor {
 			keys.add(SmartConstants.GRACE_ENDDATE);
 			
 			List<Meta> metas = new ArrayList<Meta>();
-			metas.add(new Meta("daysOfExtension" , String.valueOf(request.getDaysOfExtension())));
+			//metas.add(new Meta("daysOfExtension" , String.valueOf(request.getDaysOfExtension())));
 			metas.add(new Meta("EX_DATA_2" , String.valueOf(request.getDaysOfExtension())));
 			metas.add(new Meta("eventInfo" , String.valueOf(request.getEventInfo())));
 			metas.add(new Meta("messageId" , String.valueOf(request.getMessageId())));
@@ -59,6 +59,9 @@ public class ModifyCustomerGrace implements Processor {
 					logger.info("Recieved a Subscriber, it is not null");
 					if(ContractState.apiValue("GRACE").toString().equals(apiSubscriber.getContractState().toString()))
 					{
+						String date=apiSubscriber.getMetas().get("preActiveEndDate");
+						String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
+						metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
 						logger.info("Yes!!! Subscriber is in Preactive contract state");
 						iSubscriberRequest .handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
 						logger.info("Now calling an update subcriber");
@@ -72,11 +75,6 @@ public class ModifyCustomerGrace implements Processor {
 					}
 				}
 			}
-	
-	
-			
-			
-		
 	}
 
 	private SubscriberInfo updateSubscriber(String requestId,String customer_id, List<Meta> metas,String useCase) {
