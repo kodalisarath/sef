@@ -36,7 +36,6 @@ public class SubscriberServiceImpl implements SubscriberService{
 	static final int PersistentError = 9970;
 	static final int CriticalError = 9990;
 	static final int SubscriberStateError = 9100;
-	static final String PRE_ACTIVE="PRE_ACTIVE";
 	private SubscriberMapper subscriberMapper;
 
 	public void setSubscriberMapper(SubscriberMapper subscriberMapper) {
@@ -124,7 +123,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			subscriber.setPaymentResponsible(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentResponsible()))));
 			subscriber.setPin(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPin()))));
 			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
-			subscriber.setContractState(ContractState.valueOf(ContractState.PREACTIVE.getName()));
+			subscriber.setContractState(ContractState.PREACTIVE);
 
 		} catch (FrameworkException e) {
 			logger.error(nbCorrelator,"Could not prepare entity for persistence. Cause: Encrypting Identities",e);

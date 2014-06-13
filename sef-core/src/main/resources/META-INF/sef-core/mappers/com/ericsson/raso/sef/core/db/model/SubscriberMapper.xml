@@ -42,7 +42,7 @@
 		(user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
 		values
 		(#{userId},#{accountId},#{msisdn},#{registrationDate
-		jdbcType=TIMESTAMP},#{contractState},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment})
+		jdbcType=TIMESTAMP},#{contractState.value},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment})
 	</insert>
 	
 	<resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
