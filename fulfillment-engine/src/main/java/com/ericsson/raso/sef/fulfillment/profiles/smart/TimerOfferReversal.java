@@ -5,15 +5,26 @@ import java.io.Serializable;
 public class TimerOfferReversal implements Serializable {
 	private static final long serialVersionUID = 7236937351035766353L;
 
+	Integer offerID = null;
 	Integer dedicatedAccountInformationID = null;
 	Integer hoursToReverse = null;
 	
 	public TimerOfferReversal() { }
 	
-	public TimerOfferReversal(Integer dedicatedAccountInformationID, Integer hoursToReverse) {
+	public TimerOfferReversal(Integer offerID, Integer dedicatedAccountInformationID, Integer hoursToReverse) {
 		super();
+		this.offerID = offerID;
 		this.dedicatedAccountInformationID = dedicatedAccountInformationID;
 		this.hoursToReverse = hoursToReverse;
+	}
+
+
+	public Integer getOfferID() {
+		return offerID;
+	}
+
+	public void setOfferID(Integer offerID) {
+		this.offerID = offerID;
 	}
 
 	public Integer getDedicatedAccountInformationID() {
@@ -25,11 +36,11 @@ public class TimerOfferReversal implements Serializable {
 	}
 
 	public Integer getHoursToReverse() {
-		return hoursToReverse;
+		return hoursToReverse / 3600000;
 	}
 
 	public void setHoursToReverse(Integer hoursToReverse) {
-		this.hoursToReverse = hoursToReverse;
+		this.hoursToReverse = hoursToReverse * 3600000;
 	}
 
 	@Override

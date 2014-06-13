@@ -115,6 +115,7 @@ public class UseCaseProcessor implements Processor {
 				for(Product prod:  prods) {
 					if(prod != null) {
 						products.add(prod);
+						map.putAll(prod.getMetas());
 					}
 				}
 			}
@@ -125,7 +126,12 @@ public class UseCaseProcessor implements Processor {
 			status.setDescription(e.getStatusCode().getMessage());
 		}
 		
+		
 		List<Meta> metas = new ArrayList<Meta>();
+		for (String key: map.keySet()) {
+			Meta meta = new Meta(key, map.get(key));
+			metas.add(meta);
+		}
 		
 		logger.info("Sending fulfillment Response now");
 		

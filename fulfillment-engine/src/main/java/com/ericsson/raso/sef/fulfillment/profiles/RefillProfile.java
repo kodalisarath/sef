@@ -145,6 +145,18 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	//TODO: Move to smart-commons
 	private List<Product> createResponse(Product p, RefillResponse response) {
 		
+		AccBefAndAfterRef accBef= response.getAccountBeforeRefill();
+		accBef.getDedicatedAccInfo().get(0).getDedicatedAccountActiveValue1(); // prev balance
+		accBef.getDedicatedAccInfo().get(0).getExpiryDate(); // prev expiry
+		
+		AccBefAndAfterRef  accAft=  response.getAccountAfterRefill();
+		accBef.getDedicatedAccInfo().get(0).getDedicatedAccountActiveValue1(); // prev balance
+		accBef.getDedicatedAccInfo().get(0).getExpiryDate(); // prev expiry
+		
+		
+		
+		
+		
 		LOGGER.debug("Convering CS - IL response");
 		List<Product> products = new ArrayList<Product>();
 		

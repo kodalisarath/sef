@@ -14,6 +14,7 @@ import com.ericsson.raso.sef.client.air.request.DedicatedAccountUpdateInformatio
 import com.ericsson.raso.sef.client.air.request.UpdateBalanceAndDateRequest;
 import com.ericsson.raso.sef.client.air.response.DedicatedAccountChangeInformation;
 import com.ericsson.raso.sef.client.air.response.UpdateBalanceAndDateResponse;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.sef.bes.api.entities.Product;
@@ -26,11 +27,11 @@ public class BalanceAdjustmentProfile extends BlockingFulfillment<Product> {
 	private static final String DA_UNIT_TYPE = null; 
 
 	private String transactionCurrency;
-	private Date serviceFeeExpiryDate;
-	private Date supervisionExpiryDate;
 	private String transactionType;
 	private String transactionCode;
-	private List<DedicatedAccountUpdateInformation> dedicatedAccountUpdateInformation;
+	private int dedicatedAccountID;
+	private int dedicatedAccountUnitType;
+	
 
 	public BalanceAdjustmentProfile(String name) {
 		super(name);
@@ -44,10 +45,19 @@ public class BalanceAdjustmentProfile extends BlockingFulfillment<Product> {
 		List<Product> products = new ArrayList<Product>();	
 		
 		String msisdn = map.get("msisdn");
-		String externalData1 = map.get("chargeCode");
+		String externalData1 = map.get("eventName");
 		String externalData2 = map.get("eventInfo");
-
+		String amount = map.get("amountOfUnits");
+		
 		UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
+		
+		List<DedicatedAccountUpdateInformation> dedicatedAccountUpdateInformation = new ArrayList<DedicatedAccountUpdateInformation>();
+		DedicatedAccountUpdateInformation daUpdateInfo = new DedicatedAccountUpdateInformation();
+		daUpdateInfo.setDedicatedAccountID(this.dedicatedAccountID);
+		daUpdateInfo.setDedicatedAccountUnitType(dedicatedAccountUnitType);
+		daUpdateInfo.setAdjustmentAmountRelative(amount);
+		dedicatedAccountUpdateInformation.add(daUpdateInfo);
+		
 		request.setDedicatedAccountUpdateInformation(dedicatedAccountUpdateInformation);
 		request.setExternalData1(externalData1);
 		request.setExternalData2(externalData2);
@@ -122,35 +132,6 @@ public class BalanceAdjustmentProfile extends BlockingFulfillment<Product> {
 
 
 
-
-	public Date getServiceFeeExpiryDate() {
-		return serviceFeeExpiryDate;
-	}
-
-
-
-
-	public void setServiceFeeExpiryDate(Date serviceFeeExpiryDate) {
-		this.serviceFeeExpiryDate = serviceFeeExpiryDate;
-	}
-
-
-
-
-	public Date getSupervisionExpiryDate() {
-		return supervisionExpiryDate;
-	}
-
-
-
-
-	public void setSupervisionExpiryDate(Date supervisionExpiryDate) {
-		this.supervisionExpiryDate = supervisionExpiryDate;
-	}
-
-
-
-
 	public String getTransactionType() {
 		return transactionType;
 	}
@@ -179,26 +160,24 @@ public class BalanceAdjustmentProfile extends BlockingFulfillment<Product> {
 
 
 
-	
-
-
-	public List<DedicatedAccountUpdateInformation> getDedicatedAccountUpdateInformation() {
-		return dedicatedAccountUpdateInformation;
-	}
-
-
-
-
-	public void setDedicatedAccountUpdateInformation(List<DedicatedAccountUpdateInformation> dedicatedAccountUpdateInformation) {
-		this.dedicatedAccountUpdateInformation = dedicatedAccountUpdateInformation;
-	}
-
-
-
-
 	@Override
 	public String toString() {
 		return "ReadBalancesProfile []";
+	}
+
+
+
+
+	public void setDedicatedAccountID(int dedicatedAccountID) {
+		this.dedicatedAccountID = dedicatedAccountID;		
+	}
+
+
+
+
+	public void setDedicatedAccountUnitType(int dedicatedAccountUnitType) {
+		this.dedicatedAccountUnitType = dedicatedAccountUnitType;
+		
 	}
 
 }

@@ -70,6 +70,7 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		dnsRequest.setTtl(this.getTtl());
 		dnsRequest.setZname(this.getZname());
 		
+		//TODO: After the requisite Router implementation, move this to smfe and cleanup....
 		LOGGER.debug("Fetching the sdpId from Router");
 		String sdpId= (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
 		dnsRequest.setSdpId(sdpId);
