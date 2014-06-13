@@ -21,20 +21,25 @@ import com.ericsson.raso.sef.client.air.request.PamInformation;
 import com.ericsson.raso.sef.client.air.request.ServiceOffering;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
 import com.ericsson.raso.sef.fulfillment.profiles.AddPeriodicAccountManagementDataProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.BalanceAdjustmentProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.DedicatedAccountProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.DnsUpdateProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.EntireReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.OfferProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.PamInformationList;
+import com.ericsson.raso.sef.fulfillment.profiles.PartialReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry;
 import com.ericsson.raso.sef.fulfillment.profiles.ReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.RefillProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.UpdateServiceClassProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.UpdateSubscriberSegmentationProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.CreateSubscriberProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.smart.DedicatedAccountReversal;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.DeleteSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.ModifyCustomerGraceProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.smart.ReversalProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.SubscribePackageItemProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.smart.TimerOfferReversal;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.UnsubscribePackageItemProfile;
 
 public class BusinessConfigurationTool {
@@ -73,6 +78,14 @@ public class BusinessConfigurationTool {
 			handles = new ArrayList<String>();
 			handles.add("READ_SUBSCRIBER");
 			bizConfig = this.getSimpleBcWorkflow("ENTIRE_READ_SUBSCRIBER", "Entire Read SmartTnt Subsriber", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+			
+			System.out.println("Offer, Resource & Profile - READ_SUBSCRIBER...");
+			resource = this.createSmartPartialReadProfile("PARTIAL_READ_SUBSCRIBER", "Partial Read Subscriber");
+			handles = new ArrayList<String>();
+			handles.add("PARTIAL_READ_SUBSCRIBER");
+			bizConfig = this.getSimpleBcWorkflow("PARTIAL_READ_SUBSCRIBER", "Entire Read SmartTnt Subsriber", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
@@ -180,6 +193,34 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
+			System.out.println("Offer, Resource & Profile - ModifyCustomerPreactive...");
+			resource =  this.createSmartModifyCustomerPreactiveProfile("ModifyCustomerPreactive", "Tag Subsriber AccountActivation");
+			handles = new ArrayList<String>();
+			handles.add("ModifyCustomerPreactive");
+			bizConfig = this.getSimpleBcWorkflow("ModifyCustomerPreactive", "ModifyCustomerPreactive", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - ModifyCustomerGrace...");
+			resource =  this.createSmartModifyCustomerGraceProfile("ModifyCustomerGrace", "Tag Subsriber Grace");
+			handles = new ArrayList<String>();
+			handles.add("ModifyCustomerGrace");
+			bizConfig = this.getSimpleBcWorkflow("ModifyCustomerGrace", "ModifyCustomerGrace", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - UnsubscribePackageItem...");
+			resource =  this.createSmartUnscribePackageItemProfile("UnsubscribePackageItem", "UnsubsribePackageItem");
+			handles = new ArrayList<String>();
+			handles.add("UnsubscribePackageItem");
+			bizConfig = this.getSimpleBcWorkflow("UnsubscribePackageItem", "UnsubscribePackageItem", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			
+			
+			System.out.println("CREATING COMMERCIAL OFFERS NOW.....\n======================.....\n\n");
+			
 			System.out.println("Offer, Resource & Profile - Predefined Refill...");
 			resource = this.createRefill("Economy 30", "L001", 1, "3000", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -225,47 +266,53 @@ public class BusinessConfigurationTool {
 			resource = this.createRefill("CallingCircle", "KT25", 1, "2500", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
 			handles.add("RB506");
-			handles.add("");
 			handles.add("W2");
 			bizConfig = this.getSimpleBcWorkflow("katok-AT25-TEX25", "2 way Calling Circle", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
+			//==========================================		
+			
+			System.out.println("Offer, Resource & Profile - Recharge Reversal...");
+			List<DedicatedAccountReversal> daReversals = new ArrayList<DedicatedAccountReversal>();
+			DedicatedAccountReversal daReversal = new DedicatedAccountReversal();
+			daReversal.setDedicatedAccountInformationID(1);
+			daReversal.setAmountToReverse(3000);
+			daReversal.setHoursToReverse(360);
+			daReversals.add(daReversal);
 			
 			
-			System.out.println("Offer, Resource & Profile - ModifyCustomerPreactive...");
-			resource =  this.createSmartModifyCustomerPreactiveProfile("ModifyCustomerPreactive", "Tag Subsriber AccountActivation");
-			handles = new ArrayList<String>();
-			handles.add("ModifyCustomerPreactive");
-			bizConfig = this.getSimpleBcWorkflow("ModifyCustomerPreactive", "ModifyCustomerPreactive", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-			System.out.println("Offer, Resource & Profile - ModifyCustomerGrace...");
-			resource =  this.createSmartModifyCustomerPreactiveProfile("ModifyCustomerGrace", "Tag Subsriber Practive");
-			handles = new ArrayList<String>();
-			handles.add("ModifyCustomerGrace");
-			bizConfig = this.getSimpleBcWorkflow("ModifyCustomerGrace", "ModifyCustomerGrace", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-			System.out.println("Offer, Resource & Profile - ModifyCustomerGrace...");
-			resource =  this.createSmartModifyCustomerGraceProfile("ModifyCustomerGrace", "Tag Subsriber Grace");
-			handles = new ArrayList<String>();
-			handles.add("ModifyCustomerGrace");
-			bizConfig = this.getSimpleBcWorkflow("ModifyCustomerGrace", "ModifyCustomerGrace", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-			System.out.println("Offer, Resource & Profile - UnsubscribePackageItem...");
-			resource =  this.createSmartUnscribePackageItemProfile("UnsubscribePackageItem", "UnsubsribePackageItem");
-			handles = new ArrayList<String>();
-			handles.add("ModifyCustomerGrace");
-			bizConfig = this.getSimpleBcWorkflow("ModifyCustomerGrace", "ModifyCustomerGrace", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
+			List<TimerOfferReversal> toReversals = new ArrayList<TimerOfferReversal>();
+			TimerOfferReversal toReversal = new TimerOfferReversal();
+			toReversal.setOfferID(1001);
+			toReversal.setDedicatedAccountInformationID(1);
+			toReversal.setHoursToReverse(360);
+			toReversals.add(toReversal);
 			
+			resource = this.createSmartReversalRefill("Rev Economy 30", daReversals, toReversals);
+			handles = new ArrayList<String>();
+			handles.add("RevA");
+			handles.add("RevT1");
+			handles.add("RevSM2");
+			handles.add("RevSM12");
+			
+			bizConfig = this.getSimpleBcWorkflow("Reversal Economy (30)", "Reversal Economy (30)", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+			
+			//=====================================
+			System.out.println("Offer, Balance Adjustment...");
+			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			bizConfig = this.getSimpleBcWorkflow("OnPeakAccountID", "On Peak Account", handles, resource);
+			handles = new ArrayList<String>();
+			handles.add("OnPeakAccountID");
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+	
+			
+			
+			
+						
 			
 
 		//TODO: insert new bizconfig here...
@@ -519,6 +566,48 @@ public class BusinessConfigurationTool {
 		
 		return resource;
 	}
+	
+	public Resource createSmartReversalRefill(String name, List<DedicatedAccountReversal> daReversals, List<TimerOfferReversal> toReversals) throws CatalogException {
+
+		Resource resource = new Service(name);
+		resource.setDescription("SMART Reversal Profile");
+		resource.setConsumable(true);
+		resource.setDiscoverable(true);
+		resource.setExternallyConsumed(true);
+		resource.setConsumptionUnitName("PHP");
+
+		ReversalProfile fulfillmentProfile = new ReversalProfile(name);
+		fulfillmentProfile.setDaReversals(daReversals);
+		fulfillmentProfile.setToReversals(toReversals);
+		
+
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		profileRegistry.createProfile(fulfillmentProfile);
+
+		return resource;
+	}
+
+	public Resource createSmartBalanceAdjustmentProfile(String name, int dedicatedAccountID, int dedicatedAccountUnitType) throws CatalogException {
+
+		Resource resource = new Service(name);
+		resource.setDescription("Balance Adjustment Profile");
+		resource.setConsumable(true);
+		resource.setDiscoverable(true);
+		resource.setExternallyConsumed(true);
+		resource.setConsumptionUnitName("PHP");
+
+		BalanceAdjustmentProfile fulfillmentProfile = new BalanceAdjustmentProfile(name);
+		fulfillmentProfile.setDedicatedAccountID(dedicatedAccountID);
+		fulfillmentProfile.setDedicatedAccountUnitType(dedicatedAccountUnitType);
+		
+
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		profileRegistry.createProfile(fulfillmentProfile);
+
+		return resource;
+	}
+
+	
 
 	public Resource createSmartInitialSCWelcomePackProfile(String name, String description) throws Exception
 	{
@@ -713,6 +802,25 @@ public class BusinessConfigurationTool {
 		resource.setEnforcedMinQuota(-1L);
 
 		EntireReadSubscriberProfile fulfillmentProfile = new EntireReadSubscriberProfile(name);
+
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+
+		return resource;		
+	}
+
+	public Resource createSmartPartialReadProfile(String name, String description) throws CatalogException
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+
+		PartialReadSubscriberProfile fulfillmentProfile = new PartialReadSubscriberProfile(name);
 
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
