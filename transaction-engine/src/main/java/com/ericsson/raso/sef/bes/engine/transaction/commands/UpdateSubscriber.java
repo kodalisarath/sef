@@ -71,7 +71,7 @@ case Constants.VersionCreateOrWriteCustomer:
 					LOGGER.debug("Printing Subscriber entity "+subscriberEntity.toString());
 					LOGGER.debug("Subscriber exists and checking for the preactive state");
 					LOGGER.debug("checking if this equals working fine ");
-					if (ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState())) {
+					if (ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState().getName())) {
 						LOGGER.debug("It is PRE_ACTIVE state");
 						for (Meta meta : listMetas) {
 							if (subscriberEntity.getMetas().contains(meta)) {
