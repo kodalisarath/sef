@@ -33,14 +33,14 @@ public class VersionCreateOrWriteRop implements Processor {
 			VersionCreateOrWriteROPRequest request = (VersionCreateOrWriteROPRequest) exchange
 					.getIn().getBody();
 			List<Meta> metas = new ArrayList<Meta>();
-			metas.add(new Meta("key", String.valueOf(request.getKey())));
+			metas.add(new Meta("Key", String.valueOf(request.getKey())));
 			metas.add(new Meta("vValidFrom", request.getvValidFrom()));
 			metas.add(new Meta("vInvalidFrom", request.getvInvalidFrom()));
 			metas.add(new Meta("s_OfferId", request.getS_OfferId()));
 			metas.add(new Meta("category", request.getCategory()));
-			metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
-			metas.add(new Meta("precision", String.valueOf(request.getPrecision())));
-			metas.add(new Meta("expiryDate", DateUtil.convertISOToSimpleDateFormat(request.getExpiryDate())));
+			metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
+			metas.add(new Meta("Precision", String.valueOf(request.getPrecision())));
+			metas.add(new Meta("ExpiryDate", DateUtil.convertISOToSimpleDateFormat(request.getExpiryDate())));
 			String requestId = RequestContextLocalStore.get().getRequestId();
 			
 			SubscriberInfo subscriberInfo = updateSubscriber(requestId,request.getCustomerId(), metas,Constants.VersionCreateOrWriteRop);

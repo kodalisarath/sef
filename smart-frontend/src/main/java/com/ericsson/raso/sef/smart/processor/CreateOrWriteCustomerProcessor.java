@@ -40,7 +40,7 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		Map<String,String> metas = new HashMap<String,String>();
 		metas.put("category", request.getCategory());
 		metas.put("billCycleId", String.valueOf(request.getBillCycleId()));
-		metas.put("messageId",  String.valueOf(request.getMessageId()));
+		metas.put("MessageId",  String.valueOf(request.getMessageId()));
 		metas.put("package",  "initialSC");
 		
 		IConfig config = SefCoreServiceResolver.getConfigService();
@@ -77,16 +77,8 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			
 		}
-		DummyProcessor.response(exchange);
-		//logger.info("Invoking handleLifeCycle on tx-engine subscriber interface");
-		//ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		//iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), useCaseMetas);
-		//iSubscriberRequest.updateSubscriber(requestId, subscriberId, metas)
+		exchange.getOut().setBody(subscriberInfo);
 		
-		// 	 TODO:  To be completed after scheduler is ready
-		//String id = iSubscriberRequest.readSubscriber(requestId, request.getCustomerId());
-		// RecycleJobCommand command = new RecycleJobCommand(subscriber, preActiveEndDate);
-		// command.execute();
 
 	}
 
@@ -99,8 +91,6 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
          logger.debug("Creating a subscriber,calling method with metas of size"+subscriber.getMetas().size());
 		iSubscriberRequest.createSubscriber(requestId, subscriber);
-
-
 		try {
 			semaphore.init(0);
 			semaphore.acquire();

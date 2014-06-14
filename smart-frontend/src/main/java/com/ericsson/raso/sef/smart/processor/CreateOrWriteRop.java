@@ -42,22 +42,23 @@ public class CreateOrWriteRop implements Processor {
 			// SubscriberManagement subscriberManagement =
 			// SmartContext.getSubscriberManagement();
 			List<Meta> metas = new ArrayList<Meta>();
-			metas.add(new Meta("key", String.valueOf(request.getKey())));
-			metas.add(new Meta("isSmsAllowed", String.valueOf(request
+			metas.add(new Meta("Key", String.valueOf(request.getKey())));
+			metas.add(new Meta("IsSmsAllowed", String.valueOf(request
 					.getIsSmsAllowed())));
-			metas.add(new Meta("isUSCAllowed", String.valueOf(request
+			metas.add(new Meta("IsUSCAllowed", String.valueOf(request
 					.getIsUSCAllowed())));
-			metas.add(new Meta("isGPRSUsed", String.valueOf(request
+			metas.add(new Meta("IsGPRSUsed", String.valueOf(request
 					.getIsGPRSUsed())));
-			metas.add(new Meta("isLastTransactionEnqUsed", String
+			metas.add(new Meta("IsLastTransactionEnqUsed", String
 					.valueOf(request.getIsLastTransactionEnqUsed())));
-			metas.add(new Meta("languageId", String.valueOf(request
+			metas.add(new Meta("LanguageID", String.valueOf(request
 					.getLanguageId())));
 
 			if (request.getActiveEndDate() != null)
 				metas.add(new Meta("activeEndDate", DateUtil
 						.convertISOToSimpleDateFormat(request
 								.getActiveEndDate())));
+			//These are not getting from the DB,
 
 			if (request.getGraceEndDate() != null)
 				metas.add(new Meta("graceEndDate",
@@ -68,14 +69,14 @@ public class CreateOrWriteRop implements Processor {
 					.convertISOToSimpleDateFormat(request.getPreActiveEndDate());
 
 			if (request.getPreActiveEndDate() != null)
-				metas.add(new Meta("preActiveEndDate", preActiveEndDate));
+				metas.add(new Meta("PreActiveEndDate", preActiveEndDate));
 
-			metas.add(new Meta("firstCallDate", request.getFirstCallDate()));
-			metas.add(new Meta("isFirstCallPassed", String.valueOf(request
+			metas.add(new Meta("FirstCallDate", request.getFirstCallDate()));
+			metas.add(new Meta("IsFirstCallPassed", String.valueOf(request
 					.getIsFirstCallPassed())));
-			metas.add(new Meta("lastKnownPeriod", request.getLastKnownPeriod()));
+			metas.add(new Meta("LastKnownPeriod", request.getLastKnownPeriod()));
 			metas.add(new Meta("category", request.getCategory()));
-			metas.add(new Meta("messageId", String.valueOf(request
+			metas.add(new Meta("MessageId", String.valueOf(request
 					.getMessageId())));
 
 			// subscriberManagement.updateSubscriber(request.getCustomerId(),

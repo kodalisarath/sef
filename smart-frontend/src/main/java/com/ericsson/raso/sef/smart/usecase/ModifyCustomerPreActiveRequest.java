@@ -14,6 +14,16 @@ public class ModifyCustomerPreActiveRequest extends SmartRequest {
 	private int daysOfExtension;
 	private int eventInfo;
 	private long messageId;
+	private String accessKey;
+	
+
+	public String getAccessKey() {
+		return accessKey;
+	}
+
+	public void setAccessKey(String accessKey) {
+		this.accessKey = accessKey;
+	}
 
 	public String getCustomerId() {
 		return customerId;

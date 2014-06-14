@@ -43,9 +43,11 @@ public class ModifyCustomerGrace implements Processor {
 			
 			List<Meta> metas = new ArrayList<Meta>();
 			//metas.add(new Meta("daysOfExtension" , String.valueOf(request.getDaysOfExtension())));
-			metas.add(new Meta("EX_DATA_2" , String.valueOf(request.getDaysOfExtension())));
-			metas.add(new Meta("eventInfo" , String.valueOf(request.getEventInfo())));
-			metas.add(new Meta("messageId" , String.valueOf(request.getMessageId())));
+			metas.add(new Meta("DaysOfExtension" , String.valueOf(request.getDaysOfExtension())));
+			//metas.add(new Meta("AccessKey" , String.valueOf(request.get)));
+			metas.add(new Meta("EventInfo" , String.valueOf(request.getEventInfo())));
+			metas.add(new Meta("MessageId" , String.valueOf(request.getMessageId())));
+			metas.add(new Meta("AccessKey",request.getAccessKey()));
 			metas.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
 			metas.add(new Meta("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER"));
 			
@@ -55,9 +57,6 @@ public class ModifyCustomerGrace implements Processor {
 			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
 			//if(subscriberObj.getSubscriber() == null)
 			//ISubscriberResponse response=
-			if(subscriberObj ==  null)
-				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-			
 			if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0)
 				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 			logger.info("Recieved a SubscriberInfo Object and it is not null");
@@ -83,8 +82,10 @@ public class ModifyCustomerGrace implements Processor {
 					logger.debug("Got past event class....");
 						RequestCorrelationStore.put(resultId, response);
 						String date=subscriberObj.getSubscriber().getMetas().get("graceEndDate");
-						String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
-						metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
+						if(date != null){
+							String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
+							metas.add(new Meta("graceEndDate",String.valueOf(newDate)));
+						}
 						SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
 						if(subscriberInfo.getStatus() != null){
 							throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);

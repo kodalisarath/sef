@@ -36,15 +36,15 @@ public class VersionCreateOrWriteCustomer implements Processor {
 					.getIn().getBody();
 			logger.debug("Got it!");
 			List<com.ericsson.sef.bes.api.entities.Meta> metas = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
-			metas.add(new com.ericsson.sef.bes.api.entities.Meta("customerId", versionCreateOrWriteCustomerRequest.getCustomerId()));
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("CustomerId", versionCreateOrWriteCustomerRequest.getCustomerId()));
 			metas.add(new com.ericsson.sef.bes.api.entities.Meta("category", versionCreateOrWriteCustomerRequest.getCategory()));
 			if(versionCreateOrWriteCustomerRequest.getvValidFrom()!=null){
-			metas.add(new com.ericsson.sef.bes.api.entities.Meta("validFrom", DateUtil.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest.getvValidFrom())));
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("vValidFrom", DateUtil.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest.getvValidFrom())));
 			}
 			if(versionCreateOrWriteCustomerRequest.getvInvalidFrom()!=null){
 			metas.add(new com.ericsson.sef.bes.api.entities.Meta("vInvalidFrom", DateUtil.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest.getvInvalidFrom())));
 		    }
-			metas.add(new com.ericsson.sef.bes.api.entities.Meta("messageId", String.valueOf(versionCreateOrWriteCustomerRequest.getMessageId())));
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("MessageId", String.valueOf(versionCreateOrWriteCustomerRequest.getMessageId())));
 			String requestId = RequestContextLocalStore.get().getRequestId();
 
 			// functional service logic to be ported here [Porting work]

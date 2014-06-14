@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ErrorCode;
@@ -33,30 +34,32 @@ public class ModifyCustomerPreActive implements Processor {
 				.getIn().getBody();
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta("eventInfo",String.valueOf(request.getEventInfo())));
-		metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
-		metas.add(new Meta("customerId",String.valueOf(request.getCustomerId())));
+		metas.add(new Meta("EventInfo",String.valueOf(request.getEventInfo())));
+		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
+		metas.add(new Meta("CustomerId",String.valueOf(request.getCustomerId())));
+		metas.add(new Meta("DaysOfExtension",String.valueOf(request.getCustomerId())));
+		metas.add(new Meta("AccessKey",request.getAccessKey()));
 		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
 		SubscriberInfo subscriberInfo=null;
 		
-		//ISubscriberResponse response=
-		if(subscriberObj ==  null)
+		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
+			logger.debug("Inside the if condition for status check");
 			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-		
-		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0)
-			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		}
 		logger.info("Recieved a SubscriberInfo Object and it is not null");
 		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		
-		
 		if( ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())){
-			String date=subscriberObj.getSubscriber().getMetas().get("activeEndDate");
-			String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
-			metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
+			String date=subscriberObj.getSubscriber().getMetas().get("preActiveEndDate");
+			if(date != null){
+				logger.debug("There is a preActive end date entered and adding days to it now"+date);
+				String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
+				metas.add(new Meta("preActiveEndDate",String.valueOf(newDate)));
+			}
 			subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
 			logger.info("Before read subscriber call");
 			if(subscriberInfo.getStatus() != null){
-				throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
+				throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			}
 		}else{
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
@@ -68,7 +71,7 @@ public class ModifyCustomerPreActive implements Processor {
 	
 	
 	private SubscriberInfo readSubscriber(String requestId,String customer_id, List<Meta> metas) {
-		logger.info("Invoking update subscriber on tx-engine subscriber interface");
+		//logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
