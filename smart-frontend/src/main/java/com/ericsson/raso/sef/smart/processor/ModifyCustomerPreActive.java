@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
-import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
@@ -38,20 +37,22 @@ public class ModifyCustomerPreActive implements Processor {
 		metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
 		metas.add(new Meta("customerId",String.valueOf(request.getCustomerId())));
 		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
+		SubscriberInfo subscriberInfo=null;
 		if(ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberObj.getSubscriber().getContractState().toString())){
 			
 			String date=subscriberObj.getSubscriber().getMetas().get("activeEndDate");
 			String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
 			metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
-			SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
+			subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
 			logger.info("Before read subscriber call");
 			if(subscriberInfo.getStatus() != null){
 				throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
 			}
 		}else{
-			throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
+			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
-		DummyProcessor.response(exchange);
+		//DummyProcessor.response(exchange);
+		exchange.getOut().setBody(subscriberInfo);
 		
 	}
 	

@@ -47,16 +47,22 @@ public class ModifyCustomerGrace implements Processor {
 			metas.add(new Meta("eventInfo" , String.valueOf(request.getEventInfo())));
 			metas.add(new Meta("messageId" , String.valueOf(request.getMessageId())));
 			metas.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
+			metas.add(new Meta("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER"));
 			
 			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 			//ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 			logger.info("Before read subscriber call");
 			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
+			//if(subscriberObj.getSubscriber() == null)
+			
+			//ISubscriberResponse response=
 			if(subscriberObj ==  null)
-				throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
+				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+			
 			logger.info("Recieved a SubscriberInfo Object and it is not null");
+			logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 			if(ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberObj.getSubscriber().getContractState().toString()))
-				throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
+				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 			
 					 Map<String, String> subscriberMetas = subscriberObj.getMetas();
 						int index = 0;
@@ -82,7 +88,7 @@ public class ModifyCustomerGrace implements Processor {
 						if(subscriberInfo.getStatus() != null){
 							throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
 						}
-						DummyProcessor.response(exchange);
+						exchange.getOut().setBody(subscriberInfo);
 					}
 					
 			
