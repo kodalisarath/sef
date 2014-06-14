@@ -12,6 +12,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberResponse;
+import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
@@ -46,11 +47,12 @@ public class CreateSubscriber extends AbstractTransaction {
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = null;
 		try {
 			LOGGER.debug("In execute method before getting persistable Entity");
-			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).persistableEntity();
+			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).getEntityFromDb();
 			if(subscriberEntity == null){
 				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(4020,"Invalid operation state")));
 				sendResponse();
 			}else{
+				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 				Offer workflow = catalog.getOfferById(Constants.CREATE_SUBSCRIBER.name());
 				if (workflow != null) {
@@ -75,7 +77,7 @@ public class CreateSubscriber extends AbstractTransaction {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e1));
 			sendResponse();
 		}
-	
+		sendResponse();
 		return true;
 	}
 	

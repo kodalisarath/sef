@@ -62,6 +62,11 @@ public final class CreateSubscriberRequest extends AbstractRequest {
 		return TransactionServiceHelper.getPersistableEntity(this.subscriber);
 		
 	}
+	public com.ericsson.raso.sef.core.db.model.Subscriber getEntityFromDb() throws FrameworkException {
+		logger.debug("In the persistable entity,querying the getPersistableEntity");
+		return TransactionServiceHelper.fetchSubscriberFromDb(this.subscriber.getMsisdn());
+		
+	}
 
 	
 	
