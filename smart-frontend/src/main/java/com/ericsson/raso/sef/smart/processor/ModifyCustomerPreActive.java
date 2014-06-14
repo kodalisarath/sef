@@ -49,8 +49,7 @@ public class ModifyCustomerPreActive implements Processor {
 		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		
 		
-		if(ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberObj.getSubscriber().getContractState().toString())){
-			
+		if( ContractState.apiValue("PRE_ACTIVE").toString() == subscriberObj.getSubscriber().getContractState()){
 			String date=subscriberObj.getSubscriber().getMetas().get("activeEndDate");
 			String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
 			metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
