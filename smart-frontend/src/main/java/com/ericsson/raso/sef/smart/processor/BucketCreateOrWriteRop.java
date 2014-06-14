@@ -33,12 +33,12 @@ public class BucketCreateOrWriteRop implements Processor {
 				.getIn().getBody();
 		List<Meta> metas = new ArrayList<Meta>();
 		metas.add(new Meta("category", request.getCategory()));
-		metas.add(new Meta("key", String.valueOf(request.getKey())));
+		metas.add(new Meta("Key", String.valueOf(request.getKey())));
 		metas.add(new Meta("bValidFrom", request.getbValidFrom()));
 		metas.add(new Meta("bInvalidFrom", request.getbInvalidFrom()));
 		metas.add(new Meta("OnPeakAccountID_FU", request
 				.getOnPeakAccountID_FU()));
-		metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
+		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		SubscriberInfo subscriberInfo=updateSubscriber(requestId, request.getCustomerId(), metas,Constants.BucketCreateOrWriteRop);
 		exchange.getOut().setBody(subscriberInfo);

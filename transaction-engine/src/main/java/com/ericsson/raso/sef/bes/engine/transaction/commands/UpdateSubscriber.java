@@ -74,6 +74,7 @@ case Constants.VersionCreateOrWriteCustomer:
 					if (ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState().getName())) {
 						LOGGER.debug("It is PRE_ACTIVE state");
 						for (Meta meta : listMetas) {
+							LOGGER.debug("Printing the metas in the loop "+meta.getKey()+" "+meta.getValue()+""+subscriberEntity.getMsisdn());
 							if (subscriberEntity.getMetas().contains(meta)) {
 								try {
 									subscriberStore.updateMeta(this.getRequestId(),

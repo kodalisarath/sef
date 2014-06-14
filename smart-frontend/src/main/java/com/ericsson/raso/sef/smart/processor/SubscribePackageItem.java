@@ -82,9 +82,6 @@ public class SubscribePackageItem implements Processor {
         	  throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfoUpdate.getStatus().getCode(),subscriberInfoUpdate.getStatus().getDescription()));
           }
           DummyProcessor.response(exchange);
-	/*	CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional());
-
-		exchange.getOut().setBody(responseData);*/
 	}
 
 

@@ -43,13 +43,11 @@ Integer tag = Integer.valueOf(request.getTagging());
 logger.error("Subscriber Tagging Code is:", tag);
 
 List<Meta> metas = new ArrayList<Meta>();
-metas.add(new Meta("customerId", request.getCustomerId()));
-metas.add(new Meta("accessKey", request.getAccessKey()));
-metas.add(new Meta("tagging", String.valueOf(request.getTagging())));
-metas.add(new Meta("eventInfo", String.valueOf(request
-		.getEventInfo())));
-metas.add(new Meta("messageId", String.valueOf(request
-		.getMessageId())));
+metas.add(new Meta("CustomerId", request.getCustomerId()));
+metas.add(new Meta("AccessKey", request.getAccessKey()));
+metas.add(new Meta("Tagging", String.valueOf(request.getTagging())));
+metas.add(new Meta("EventInfo", String.valueOf(request.getEventInfo())));
+metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
 
 String tagging = String.valueOf(request.getTagging());
 switch (tagging) {

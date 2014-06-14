@@ -30,10 +30,10 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		CreateOrWriteServiceAccessKeyRequest request = (CreateOrWriteServiceAccessKeyRequest) exchange.getIn().getBody();
 		logger.info("Printing values from SOAP before Processing :"+request.getCategory()+" "+request.getKeyType()+" "+request.getvInvalidFrom()+" "+request.getMessageId());
 		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta("key", request.getCategory()));
-		metas.add(new Meta("keyType", request.getKeyType()));
-		metas.add(new Meta("vInvalidFrom", DateUtil.convertISOToSimpleDateFormat(request.getvInvalidFrom())));
-		metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
+		metas.add(new Meta("Key", request.getCategory()));
+		metas.add(new Meta("KeyType", request.getKeyType()));
+		metas.add(new Meta("vValidFrom", DateUtil.convertISOToSimpleDateFormat(request.getvInvalidFrom())));
+		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
 
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		
