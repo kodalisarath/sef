@@ -5,6 +5,7 @@ package com.ericsson.raso.sef.smart.processor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,18 +20,17 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.core.UniqueIdGenerator;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.PasaloadRule;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
-import com.ericsson.raso.sef.smart.commons.SmartServiceHelper;
-import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.RechargeRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
-import com.ericsson.sef.bes.api.entities.Product;
+import com.ericsson.sef.bes.api.entities.Subscriber;
+import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
@@ -46,6 +46,15 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 public class CARecharge implements Processor {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CARecharge.class);
+	private static final ThreadLocal<String> eventClassCache = new ThreadLocal<String>();
+	private static final ThreadLocal<Subscriber> subscriberCache = new ThreadLocal<Subscriber>();
+	
+	private static final String REVERSAL_DEDICATED_ACCOUNT_ID = "REVERSAL_DEDICATED_ACCOUNT_ID";
+	private static final String REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE = "REVERSAL_BALANCES_DEDICATED_ACCOUNT_NEW_VALUE";
+	private static final String REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT = "REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT";
+	private static final String REVERSAL_OFFER_ID = "REVERSAL_OFFER_ID";
+	private static final String REVERSAL_OFFER_EXPIRY = "REVERSAL_OFFER_EXPIRY";
+
 
 	@Override
 	public void process(Exchange arg0) throws SmException {
@@ -76,19 +85,6 @@ public class CARecharge implements Processor {
 			}
 			
 //			//TODO: Subscriber validation/caching goes here
-//			logger.debug("Getting subscriber info....");
-//			SubscriberInfo subInfo = SmartServiceHelper.getAndRefreshSubscriber(msisdn);
-//			logger.error("At least I can break hear");
-//			if(subInfo.getRemoteState().equals(ContractState.RECYCLED)) {
-//				logger.error("Subscriber is in recycle state.. cannot continue futher");
-//				throw new SmException(ErrorCode.invalidCustomerLifecycleStateRecycle);
-//			}
-//			logger.debug("Got past subs info....");
-//			if(subInfo.isLocked()) {
-//				logger.error("Subscriber is Barred/locked.. cannot continue further");
-//				throw new SmException(ErrorCode.subscriberLocked);
-//			}
-//			
 			
 			
 			logger.debug("Getting event class....");
@@ -109,6 +105,7 @@ public class CARecharge implements Processor {
 			} else {
 				throw new SmException(new ResponseCode(500, "Recharge Type is not defined"));
 			}
+			eventClassCache.set(eventClass);
 			
 			logger.debug("Got event class....");
 			requestId = RequestContextLocalStore.get().getRequestId();
@@ -203,12 +200,25 @@ public class CARecharge implements Processor {
 	}
 
 
-	private Map<String, String> prepareFlexibleRecharge(RechargeRequest rechargeRequest) {
+	private Map<String, String> prepareFlexibleRecharge(RechargeRequest rechargeRequest) throws SmException {
+		/*
+		 * Step 1: GetAccountDetails first....
+		 *  - Collect all DA
+		 *  - Collect all Offers
+		 *  - Determine longest expiry date
+		 *  - Check if customer is in Grace
+		 */
+		
+		this.partialReadSubscriber(rechargeRequest.getCustomerId());
+		
+		
+		
+		
 		Map<String, String> map = new HashMap<String, String>();
 		
 		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
-		map.put(Constants.CHANNEL_NAME, rechargeRequest.getRatingInput0());
-		map.put(Constants.EX_DATA3, rechargeRequest.getRatingInput0());
+		map.put(Constants.TX_TYPE, rechargeRequest.getRatingInput0());
+		map.put(Constants.TX_CODE, rechargeRequest.getEventName());
 		map.put(SmartConstants.EXPIRY_POLICY, rechargeRequest.getRatingInput2());
 
 		int expiryDatePolicy = Integer.valueOf(rechargeRequest.getRatingInput2());
@@ -237,6 +247,17 @@ public class CARecharge implements Processor {
 		return map;
 	}
 	
+	private void partialReadSubscriber(String customerId) throws SmException {
+		List<Meta> metas = new ArrayList<Meta>();
+		metas.add(new Meta("msisdn", customerId));
+		
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		//subscriberRequest.readSubscriber(UniqueIdGenerator.generateId(), customerId, metas);
+		throw new SmException(new ResponseCode(999, "Not Ready Yet"));
+		
+	}
+
+
 	private Map<String,String> preparePasaload(RechargeRequest rechargeRequest) {
 		// evaluate truth table for eligibilities (2do: this will be later moved to imlicit ootb features of prodcat when subscription db is available
 		
@@ -288,55 +309,215 @@ public class CARecharge implements Processor {
 			result.setOperationResult(operationResult);
 		}
 		
-		if(response.getFault().getCode() > 0) {
+		if( response != null && response.getFault().getCode() > 0) {
 			logger.info("No products found in the response");
 			ResponseCode responseCode=new ResponseCode(response.getFault().getCode(), response.getFault().getDescription());
 			throw new SmException(responseCode);
 		}
 		
 		//convert resulted products to SMART response
-
-		List<Product> products = response.getProducts();
-		if(products != null) {
-			for (Product product: products) {
-				StringElement stringElement = new StringElement();
-				String offer = product.getResourceName();
-				int offerId = Integer.parseInt(offer);
-				String name = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offer);
-				String walletName = name;
-				logger.debug("OfferID: " + offerId + "WalletName: " + name);
-
-				long delta = product.getQuotaConsumed() - product.getQuotaDefined();
-				long curr = product.getQuotaConsumed();
-				long validity = product.getValidity();
-				logger.debug("Current bal: " + curr + "Delta: " + delta + "Validity: " + validity);
-				if(offerId != SmartConstants.AIRTIME_OFFER_ID && offerId != SmartConstants.ALKANSYA_OFFER_ID) {
-					name += ":s_PeriodicBonus";
-				}
-
-
-				if(offerId >= SmartConstants.UNLI_OFFER_START_ID) {
-					delta = 1;
-					curr = 1;
-				} else {
-					String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
-					logger.debug("Conversion factor for this offer: " + conversionFactor);
-					long confec= Long.parseLong(conversionFactor); 
-					delta = delta/confec;
-					curr = curr/confec;
-				}
-
-				String val = name + ";" + delta + ";" + curr + ";" + getMillisToDate(validity);
-
-				logger.debug("Balance String: " + val);
-
-				stringElement.setValue(val);
-				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
-			}
+		String eventClass = eventClassCache.get();
+		if (eventClass.equals("predefined") || eventClass.equals("unli")) {
+			this.handleRefillResponse(listParameter, response);
+		} else if (eventClass.equals("flexible")) {
+			this.handleFlexiRefillResponse(listParameter, response);
+		} else if (eventClass.equals("pasaload")) {
+			this.handlePasaloadRefillResponse(listParameter, response);
+		} else if (eventClass.equals("reversal")) {
+			this.handleReversalResponse(listParameter, response);
 		} 
+		
+		
+		
+
+//		List<Product> products = response.getProducts();
+//		if(products != null) {
+//			for (Product product: products) {
+//				StringElement stringElement = new StringElement();
+//				String offer = product.getResourceName();
+//				int offerId = Integer.parseInt(offer);
+//				String name = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offer);
+//				String walletName = name;
+//				logger.debug("OfferID: " + offerId + "WalletName: " + name);
+//
+//				long delta = product.getQuotaConsumed() - product.getQuotaDefined();
+//				long curr = product.getQuotaConsumed();
+//				long validity = product.getValidity();
+//				logger.debug("Current bal: " + curr + "Delta: " + delta + "Validity: " + validity);
+//				if(offerId != SmartConstants.AIRTIME_OFFER_ID && offerId != SmartConstants.ALKANSYA_OFFER_ID) {
+//					name += ":s_PeriodicBonus";
+//				}
+//
+//
+//				if(offerId >= SmartConstants.UNLI_OFFER_START_ID) {
+//					delta = 1;
+//					curr = 1;
+//				} else {
+//					String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
+//					logger.debug("Conversion factor for this offer: " + conversionFactor);
+//					long confec= Long.parseLong(conversionFactor); 
+//					delta = delta/confec;
+//					curr = curr/confec;
+//				}
+//
+//				String val = name + ";" + delta + ";" + curr + ";" + getMillisToDate(validity);
+//
+//				logger.debug("Balance String: " + val);
+//
+//				stringElement.setValue(val);
+//				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+//			}
+//		} 
 		
 		return responseData;
 	}
+	
+	private void handleRefillResponse(ListParameter listParameter, PurchaseResponse response) {
+		
+		long beforeServiceFeeExpiry = 0;
+		long beforeSupervisionFeeExpiry = 0;
+		long afterServiceFeeExpiry = 0;
+		long afterSupervisionFeeExpiry = 0;
+		
+		logger.debug("Processing Refill Metas: " + response.getBillingMetas());
+		String index = "1"; BalInfo balInfo = null;
+		Map<String, BalInfo> beforeEntries = new HashMap<String, CARecharge.BalInfo>();
+		Map<String, BalInfo> afterEntries = new HashMap<String, CARecharge.BalInfo>();
+		
+		for (Meta meta: response.getBillingMetas()) {
+			if (meta.getKey().equals("ACC_BEFORE_SERVICE_FEE_EXPIRY_DATE")) 
+				beforeServiceFeeExpiry = Long.parseLong(meta.getValue());
+			if (meta.getKey().equals("ACC_BEFORE_SUPERVISION_EXPIRY_DATE")) 
+				beforeSupervisionFeeExpiry = Long.parseLong(meta.getValue());
+			if (meta.getKey().equals("ACC_AFTER_SERVICE_FEE_EXPIRY_DATE")) 
+				afterServiceFeeExpiry = Long.parseLong(meta.getValue());
+			if (meta.getKey().equals("ACC_AFTER_SUPERVISION_EXPIRY_DATE")) 
+				afterSupervisionFeeExpiry = Long.parseLong(meta.getValue());
+			
+			String[] keyPart = meta.getKey().split(".");
+			if (keyPart[0].contains("BEFORE_")) {
+				if (!beforeEntries.containsKey(keyPart[1])) {
+					balInfo = new BalInfo();
+					beforeEntries.put(keyPart[0], balInfo);
+				} else {
+					balInfo = beforeEntries.get(keyPart[1]);
+				}	
+			} else if (keyPart[0].contains("AFTER_")) {
+				if (!afterEntries.containsKey(keyPart[1])) {
+					balInfo = new BalInfo();
+					afterEntries.put(keyPart[0], balInfo);
+				} else {
+					balInfo = afterEntries.get(keyPart[1]);
+				}	
+			}
+			
+			if (meta.getKey().equals("ACC_BEFORE_DA_ID")) 
+				balInfo.daID = meta.getValue();
+
+			if (meta.getKey().equals("ACC_BEFORE_DA_VALUE")) 
+				balInfo.daValue = Integer.parseInt(meta.getValue());
+
+			if (meta.getKey().equals("ACC_BEFORE_OFFER_ID")) 
+				balInfo.offerId = meta.getValue();
+
+			if (meta.getKey().equals("ACC_BEFORE_OFFER_EXPIRY_DATE")) 
+				balInfo.offerExpiry = Long.parseLong(meta.getValue());
+
+			if (meta.getKey().equals("ACC_AFTER_DA_ID")) 
+				balInfo.daID = meta.getValue();
+
+			if (meta.getKey().equals("ACC_AFTER_DA_VALUE")) 
+				balInfo.daValue = Integer.parseInt(meta.getValue());
+
+			if (meta.getKey().equals("ACC_AFTER_OFFER_ID")) 
+				balInfo.offerId = meta.getValue();
+
+			if (meta.getKey().equals("ACC_AFTER_OFFER_EXPIRY_DATE")) 
+				balInfo.offerExpiry = Long.parseLong(meta.getValue());
+
+		}
+		
+		// Calculate...
+		for (String key: beforeEntries.keySet()) {
+			BalInfo before = beforeEntries.get(key);
+			BalInfo after = afterEntries.get(key);
+			
+			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", before.offerId) + "s_PeriodicBonus";
+			int daBalanceDiff = after.daValue - before.daValue;
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String responseEntry = balanceId + ";" + daBalanceDiff + ";" + after.daValue  + ";" + format.format(new Date(after.offerExpiry));
+			
+			StringElement stringElement = new StringElement();
+			stringElement.setValue(responseEntry);
+			listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+			logger.debug("Adding response item to CARecharge: " + responseEntry);		
+		}
+		
+		return;
+	}
+
+
+	
+	private void handleReversalResponse(ListParameter listParameter, PurchaseResponse response) {
+		Map<String, ReversalEntry> reversalEntries = new HashMap<String, CARecharge.ReversalEntry>();
+		
+		
+		logger.debug("Processing Reversal Metas: " + response.getBillingMetas());
+		String index = "1"; ReversalEntry entry = null;
+		for (Meta meta: response.getBillingMetas()) {
+			String[] keyPart = meta.getKey().split(".");
+			if (!reversalEntries.containsKey(keyPart[1])) {
+				entry = new ReversalEntry();
+				reversalEntries.put(keyPart[0], entry);
+			} else {
+				entry = reversalEntries.get(keyPart[1]);
+			}
+			
+			//Process the entries....
+			if (keyPart[0].equals(REVERSAL_OFFER_ID)) {
+				String timerOffer; 
+				timerOffer = meta.getValue();
+				entry.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", timerOffer);
+			}
+			
+			if (keyPart[0].equals(REVERSAL_OFFER_EXPIRY)) {
+				entry.finalExpiryDate = meta.getValue();
+			}
+			
+			if (keyPart[0].equals(REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE)) {
+				entry.finalBalance = meta.getValue();
+			}
+			
+			if (keyPart[0].equals(REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT)) {
+				entry.reversedAmount = meta.getValue();
+			}
+			
+			if (entry.isComplete()) {
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(entry.toString());
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("Adding response item to CARecharge: " + entry.toString());
+			}
+		}
+		
+		return;
+	}
+
+	
+
+	private CommandResponseData handlePasaloadRefillResponse(ListParameter listParameter, PurchaseResponse response) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private CommandResponseData handleFlexiRefillResponse(ListParameter listParameter, PurchaseResponse response) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	
 	private String getMillisToDate(long millis) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -355,6 +536,38 @@ public class CARecharge implements Processor {
 			metaList.add(meta);
 		}
 		return metaList;
+		
+	}
+	
+	class BalInfo {
+		private String daID;
+		private Integer daValue;
+		private String offerId;
+		private Long offerExpiry;
+		
+		public boolean isComplete() {
+			if (daID != null && daValue != null && offerId != null && offerExpiry != null)
+				return true;
+			return false;
+		}
+	}
+	
+	class ReversalEntry {
+		private String walletName;
+		private String reversedAmount;
+		private String finalBalance;
+		private String finalExpiryDate;
+		
+		@Override
+		public String toString() {
+			return walletName + ";" + reversedAmount + ";" + finalBalance + ";" + finalExpiryDate;
+		}
+		
+		public boolean isComplete() {
+			if (walletName != null && reversedAmount != null && finalBalance != null && finalExpiryDate != null)
+				return true;
+			return false;
+		}
 		
 	}
 }

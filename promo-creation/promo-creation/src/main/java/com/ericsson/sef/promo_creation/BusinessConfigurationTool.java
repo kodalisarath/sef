@@ -29,6 +29,7 @@ import com.ericsson.raso.sef.fulfillment.profiles.OfferProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.PamInformationList;
 import com.ericsson.raso.sef.fulfillment.profiles.PartialReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry;
+import com.ericsson.raso.sef.fulfillment.profiles.ReadBalancesProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.ReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.RefillProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.UpdateServiceClassProfile;
@@ -73,7 +74,7 @@ public class BusinessConfigurationTool {
 			// Workflows....
 			System.out.println("CREATING WORKFLOWS NOW.....\n======================.....\n\n");
 			
-			System.out.println("Offer, Resource & Profile - READ_SUBSCRIBER...");
+			System.out.println("Offer, Resource & Profile - ENTIRE_READ_SUBSCRIBER...");
 			resource = this.createSmartEntireReadProfile("ENTIRE_READ_SUBSCRIBER", "Entire Read Subscriber");
 			handles = new ArrayList<String>();
 			handles.add("READ_SUBSCRIBER");
@@ -81,7 +82,7 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
-			System.out.println("Offer, Resource & Profile - READ_SUBSCRIBER...");
+			System.out.println("Offer, Resource & Profile - PARTIAL_READ_SUBSCRIBER...");
 			resource = this.createSmartPartialReadProfile("PARTIAL_READ_SUBSCRIBER", "Partial Read Subscriber");
 			handles = new ArrayList<String>();
 			handles.add("PARTIAL_READ_SUBSCRIBER");
@@ -89,11 +90,11 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
-			System.out.println("Offer, Resource & Profile - READ_SUBSCRIBER...");
-			resource = this.createSmartReadProfile("READ_SUBSCRIBER", "Read Subscriber");
+			System.out.println("Offer, Resource & Profile - READ_BALANCES...");
+			resource = this.createSmartReadBalancesProfile("READ_BALANCES", "Read Subscriber Balances");
 			handles = new ArrayList<String>();
-			handles.add("READ_SUBSCRIBER");
-			bizConfig = this.getSimpleBcWorkflow("READ_SUBSCRIBER", "Read SmartTnt Subsriber", handles, resource);
+			handles.add("READ_BALANCES");
+			bizConfig = this.getSimpleBcWorkflow("READ_BALANCES", "Read Balances SmartTnt Subsriber", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
@@ -821,6 +822,25 @@ public class BusinessConfigurationTool {
 		resource.setEnforcedMinQuota(-1L);
 
 		PartialReadSubscriberProfile fulfillmentProfile = new PartialReadSubscriberProfile(name);
+
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+
+		return resource;		
+	}
+
+	public Resource createSmartReadBalancesProfile(String name, String description) throws CatalogException
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+
+		ReadBalancesProfile fulfillmentProfile = new ReadBalancesProfile(name);
 
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());

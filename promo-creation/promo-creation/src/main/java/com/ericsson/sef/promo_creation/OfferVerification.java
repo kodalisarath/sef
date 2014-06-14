@@ -35,8 +35,9 @@ public class OfferVerification {
 			
 			System.out.println("Verifying all offers...");
 			
-			//for(String offerId: offerStore.getOffersById().keySet()) {
-				Offer taggingOffer = offerStore.getOfferById("katok-AT25-TEX25");
+			for(String offerId: offerStore.getOffersById().keySet()) {
+				Offer taggingOffer = offerStore.getOfferById(offerId);
+				//Offer taggingOffer = offerStore.getOfferById("katok-AT25-TEX25");
 				System.out.println("\nOffer name: " + taggingOffer.getName());
 				System.out.println("Offer contents: " + taggingOffer);
 				for (AtomicProduct product: taggingOffer.getAllAtomicProducts()) {
@@ -55,7 +56,7 @@ public class OfferVerification {
 						System.out.println("Profile Registry contents: " + profile.toString());
 					}
 				}
-			//}
+			}
 			
 		} catch (FrameworkException e) {
 			// TODO Auto-generated catch block

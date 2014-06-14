@@ -2,6 +2,7 @@ package com.ericsson.raso.sef.fulfillment.profiles;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,114 +145,45 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	
 	//TODO: Move to smart-commons
 	private List<Product> createResponse(Product p, RefillResponse response) {
-		
-		AccBefAndAfterRef accBef= response.getAccountBeforeRefill();
-		accBef.getDedicatedAccInfo().get(0).getDedicatedAccountActiveValue1(); // prev balance
-		accBef.getDedicatedAccInfo().get(0).getExpiryDate(); // prev expiry
-		
-		AccBefAndAfterRef  accAft=  response.getAccountAfterRefill();
-		accBef.getDedicatedAccInfo().get(0).getDedicatedAccountActiveValue1(); // prev balance
-		accBef.getDedicatedAccInfo().get(0).getExpiryDate(); // prev expiry
-		
-		
-		
-		
-		
-		LOGGER.debug("Convering CS - IL response");
 		List<Product> products = new ArrayList<Product>();
 		
-		//Fetch accounts before and after refill 
-		AccBefAndAfterRef accBefore = response.getAccountBeforeRefill();
-		AccBefAndAfterRef accAfter = response.getAccountAfterRefill();
-
-		List<DedicatedAccountInformation> beforeDas = accBefore.getDedicatedAccInfo();
-		List<DedicatedAccountInformation> afterDas = accAfter.getDedicatedAccInfo();
-
-		Map<Integer, DedicatedAccountInformation> beforeDaMap = toDaMap(beforeDas);
-		Map<Integer, DedicatedAccountInformation> afterDaMap = toDaMap(afterDas);
-
-		// Fetch all accounts after refill
-		List<OfferInformation> offerInformationList = accAfter.getOfferInformationList();
-
-		Map<Integer, OfferInformation> offerMap = toOfferMap(offerInformationList);
-
-		LOGGER.debug("Retrieved refill balance information");
-		// For each CS offer Id associated to the refill prepare balance statement.. Product represent the recharged balance & validity
-		if(this.getAbstractResources() != null) {
-		for(String resource: this.getAbstractResources()) {
-			
-			Product product = new Product();
-			product.setResourceName(resource);
-			//Assumption here is all abstracted resource Id are Integers represented in string format. logic specific to SMART
-			OfferInformation offerInformation = offerMap.get(Integer.parseInt(resource));
-			
-			if(offerInformation != null) {
-				LOGGER.debug("Validity of offer: " + offerInformation.getExpiryDateTime());
-			}
-			
-			//prepare validity
-			if (offerInformation != null && offerInformation.getExpiryDateTime() != null) {
-				product.setValidity(offerInformation.getExpiryDateTime().getTime());
-			} else {
-				product.setValidity(new Date(Long.MAX_VALUE).getTime());
-			}
-			
-			// Fetch DA and prepare balances
-			String daID = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_offerMapping", resource);
-			if (daID == null) {
-				LOGGER.debug("Associated DA not found.. continuing with next offer");
-				continue;
-			}
-			
-			LOGGER.debug("Proceeding with balance population");
-			DedicatedAccountInformation beforeDa = beforeDaMap.get(Integer.valueOf(daID));
-			DedicatedAccountInformation afterDa = afterDaMap.get(Integer.valueOf(daID));
-
-			if (beforeDa != null) {
-				if (beforeDa.getDedicatedAccountValue1() != null) {
-					Long prevBalance = Long.valueOf(beforeDa.getDedicatedAccountValue1());
-					if (beforeDa.getDedicatedAccountValue2() != null) {
-						prevBalance += Long.valueOf(beforeDa.getDedicatedAccountValue2());
-					}
-					product.setQuotaDefined(prevBalance);
-				}
-			}
-			if (afterDa != null) {
-				if (afterDa.getDedicatedAccountValue1() != null) {
-					Long currentBalance = Long.valueOf(afterDa.getDedicatedAccountValue1());
-					if (afterDa.getDedicatedAccountValue2() != null) {
-						currentBalance += Long.valueOf(afterDa.getDedicatedAccountValue2());
-					}
-					product.setQuotaConsumed(currentBalance);
-				}
-			}
-			product.setName(p.getName());
-			products.add(product);
+		Map<String, String> responseDetails = new HashMap<String, String>();
+		
+		AccBefAndAfterRef accBef= response.getAccountBeforeRefill();
+		int index = 0;
+		for (DedicatedAccountInformation daInfo: accBef.getDedicatedAccInfo()) {
+			responseDetails.put("ACC_BEFORE_DA_ID" + ++index, "" + daInfo.getDedicatedAccountID());
+			responseDetails.put("ACC_BEFORE_DA_VALUE" + index, "" + daInfo.getDedicatedAccountValue1());
 		}
-		} else {
-			LOGGER.debug("No associated offers found. Empty response will be sent");
+		responseDetails.put("ACC_BEFORE_SERVICE_FEE_EXPIRY_DATE", "" + accBef.getServiceFeeExpiryDate().getTime());
+		responseDetails.put("ACC_BEFORE_SUPERVISION_EXPIRY_DATE", "" + accBef.getSupervisionExpiryDate().getTime());
+	
+		index = 0;
+		for (OfferInformation offerInfo: accBef.getOfferInformationList()) {
+			responseDetails.put("ACC_BEFORE_OFFER_ID" + ++index, "" + offerInfo.getOfferID());
+			responseDetails.put("ACC_BEFORE_OFFER_EXPIRY_DATE" + index, "" + offerInfo.getExpiryDate().getTime());			
 		}
-		LOGGER.debug("Total products in response" + products.size());
+		
+		AccBefAndAfterRef  accAft=  response.getAccountAfterRefill();
+		index = 0;
+		for (DedicatedAccountInformation daInfo: accAft.getDedicatedAccInfo()) {
+			responseDetails.put("ACC_AFTER_DA_ID" + ++index, "" + daInfo.getDedicatedAccountID());
+			responseDetails.put("ACC_AFTER_DA_VALUE" + index, "" + daInfo.getDedicatedAccountValue1());
+		}
+		responseDetails.put("ACC_AFTER_SERVICE_FEE_EXPIRY_DATE", "" + accAft.getServiceFeeExpiryDate().getTime());
+		responseDetails.put("ACC_AFTER_SUPERVISION_EXPIRY_DATE", "" + accAft.getSupervisionExpiryDate().getTime());
+	
+		index = 0;
+		for (OfferInformation offerInfo: accAft.getOfferInformationList()) {
+			responseDetails.put("ACC_AFTER_OFFER_ID" + ++index, "" + offerInfo.getOfferID());
+			responseDetails.put("ACC_AFTER_OFFER_EXPIRY_DATE" + index, "" + offerInfo.getExpiryDate().getTime());			
+		}
+		
+		p.setMetas(responseDetails);
+		products.add(p);
 		return products;
 	}
 	
-	
-	private Map<Integer, OfferInformation> toOfferMap(List<OfferInformation> list) {
-		Map<Integer, OfferInformation> map = new LinkedHashMap<Integer, OfferInformation>();
-		for (OfferInformation offer : list) {
-			map.put(offer.getOfferID(), offer);
-		}
-		return map;
-	}
-	
-	private Map<Integer, DedicatedAccountInformation> toDaMap(List<DedicatedAccountInformation> list) {
-		Map<Integer, DedicatedAccountInformation> map = new LinkedHashMap<Integer, DedicatedAccountInformation>();
-		for (DedicatedAccountInformation da : list) {
-			map.put(da.getDedicatedAccountID(), da);
-		}
-		return map;
-	}
-
 
 	@Override
 	public int hashCode() {
