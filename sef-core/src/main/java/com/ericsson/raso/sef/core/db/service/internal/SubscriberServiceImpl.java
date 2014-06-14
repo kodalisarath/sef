@@ -286,12 +286,14 @@ public class SubscriberServiceImpl implements SubscriberService{
 		logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 		throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber with the provided msisdn"), e);
 	}
-     subscriber.setMsisdn(msisdn);
-     subscriber.setAccountId(msisdn);
-     subscriber.setContractId(msisdn);
-     subscriber.setCustomerId(msisdn);
-     subscriber.setUserId(msisdn);
-     subscriber.setPin("1234");
+     if(subscriber != null){
+    	 subscriber.setMsisdn(msisdn);
+         subscriber.setAccountId(msisdn);
+         subscriber.setContractId(msisdn);
+         subscriber.setCustomerId(msisdn);
+         subscriber.setUserId(msisdn);
+         subscriber.setPin("1234");
+     }
 	 return subscriber;
 	}
 	
