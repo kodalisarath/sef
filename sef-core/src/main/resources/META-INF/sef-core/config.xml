@@ -465,6 +465,59 @@
 
 	</section>
 
+	<section id="SMART_daUnitType" description="Unit Type for the Dedicated Account">
+		<property key="1" value="1" />
+		<property key="2" value="1" />
+		<property key="3" value="1" />
+		<property key="4" value="1" />
+		<property key="5" value="1" />
+		<property key="6" value="1" />
+		<property key="7" value="1" />
+		<property key="8" value="1" />
+		<property key="9" value="1" />
+		<property key="10" value="1" />
+		<property key="11" value="1" />
+		<property key="12" value="1" />
+		<property key="13" value="1" />
+		<property key="14" value="1" />
+		<property key="15" value="1" />
+		<property key="51" value="1" />
+		<property key="52" value="1" />
+		<property key="53" value="1" />
+		<property key="54" value="1" />
+		<property key="55" value="1" />
+		<property key="56" value="1" />
+		<property key="57" value="1" />
+		<property key="58" value="1" />
+		<property key="59" value="1" />
+		<property key="60" value="1" />
+		<property key="61" value="1" />
+		<property key="101" value="1" />
+		<property key="102" value="1" />
+		<property key="103" value="1" />
+		<property key="104" value="1" />
+		<property key="105" value="1" />
+		<property key="141" value="6" />
+		<property key="142" value="0" />
+		<property key="143" value="0" />
+		<property key="144" value="6" />
+		<property key="145" value="6" />
+		<property key="146" value="6" />
+		<property key="147" value="6" />
+		<property key="148" value="6" />
+		<property key="149" value="6" />
+		<property key="150" value="6" />
+		<property key="151" value="0" />
+		<property key="152" value="6" />
+		<property key="153" value="1" />
+		<property key="154" value="1" />
+		<property key="155" value="6" />
+		<property key="241" value="1" />
+		<property key="242" value="1" />
+			
+	</section>
+
+
 	<section id="Global_offerMapping" description="offerMapping">
 		<property key="1001" value="1" />
 		<property key="1002" value="2" />
