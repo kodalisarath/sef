@@ -3,7 +3,6 @@ package com.ericsson.raso.sef.bes.engine.transaction.commands;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +69,7 @@ case Constants.VersionCreateOrWriteRop:
 					LOGGER.debug("Printing Subscriber entity "+subscriberEntity.toString());
 					LOGGER.debug("Subscriber exists and checking for the preactive state");
 					LOGGER.debug("checking if this equals working fine ");
-					if (ContractState.apiValue("PRE_ACTIVE") == subscriberEntity.getContractState()) {
+					if (ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState())) {
 						LOGGER.debug("It is PRE_ACTIVE state");
 						for (Meta meta : listMetas) {
 							if (subscriberEntity.getMetas().contains(meta)) {

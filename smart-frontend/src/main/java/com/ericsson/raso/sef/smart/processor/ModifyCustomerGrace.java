@@ -62,7 +62,7 @@ public class ModifyCustomerGrace implements Processor {
 				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 			logger.info("Recieved a SubscriberInfo Object and it is not null");
 			logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
-			if(ContractState.apiValue("PRE_ACTIVE").toString() == (subscriberObj.getSubscriber().getContractState()))
+			if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState()))
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 			
 					 Map<String, String> subscriberMetas = subscriberObj.getMetas();
