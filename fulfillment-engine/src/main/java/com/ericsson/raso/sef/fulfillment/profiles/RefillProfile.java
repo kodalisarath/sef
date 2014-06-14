@@ -50,6 +50,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		refillRequest.setTransacAmount(this.transactionAmount);
 		refillRequest.setTransacCurrency(this.transactionCurrency.name());
 		refillRequest.setRefAccBeforeFlag(true);
+		refillRequest.setRefAccAfterFlag(true);
 		
 		String extData1 = map.get(Constants.EX_DATA1);
 		if(extData1 != null) {
@@ -123,7 +124,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		index = 0;
 		for (OfferInformation offerInfo: accBef.getOfferInformationList()) {
 			responseDetails.put("ACC_BEFORE_OFFER_ID" + ++index, "" + offerInfo.getOfferID());
-			responseDetails.put("ACC_BEFORE_OFFER_EXPIRY_DATE" + index, "" + offerInfo.getExpiryDateTime().getTime());			
+			responseDetails.put("ACC_BEFORE_OFFER_EXPIRY_DATE" + index, "" + ((offerInfo.getExpiryDateTime() == null)? null: offerInfo.getExpiryDateTime().getTime()));			
 		}
 		
 		AccBefAndAfterRef  accAft=  response.getAccountAfterRefill();
