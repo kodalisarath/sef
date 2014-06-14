@@ -573,14 +573,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private ParallelExecution packPreparation(Queue<Fulfillment> toProcess) {
 		ParallelExecution prepFulfill = new ParallelExecution();
 		
-		for (TransactionTask task: toProcess) {
-			if (task instanceof Fulfillment && ((Fulfillment)task).getMode() == FulfillmentMode.FULFILL) {
-				String southBoundRequestId = UniqueIdGenerator.generateId();
-				Fulfillment clonedTask = CloneHelper.deepClone((Fulfillment)task);
-				clonedTask.setMode(FulfillmentMode.PREPARE);
-				prepFulfill.add(new FulfillmentStep(southBoundRequestId, (Fulfillment)clonedTask));
-			}
-		}
+		//2do: uncomment this when rollback is ready!!!
+//		for (TransactionTask task: toProcess) {
+//			if (task instanceof Fulfillment && ((Fulfillment)task).getMode() == FulfillmentMode.FULFILL) {
+//				String southBoundRequestId = UniqueIdGenerator.generateId();
+//				Fulfillment clonedTask = CloneHelper.deepClone((Fulfillment)task);
+//				clonedTask.setMode(FulfillmentMode.PREPARE);
+//				prepFulfill.add(new FulfillmentStep(southBoundRequestId, (Fulfillment)clonedTask));
+//			}
+//		}
 		logger.debug("Extracted prepare fulfilment tasks. Total: " + prepFulfill.size());
 		return prepFulfill;
 	}

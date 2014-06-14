@@ -112,6 +112,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		
 		Map<String, String> responseDetails = new HashMap<String, String>();
 		
+		
 		AccBefAndAfterRef accBef= response.getAccountBeforeRefill();
 		int index = 0;
 		for (DedicatedAccountInformation daInfo: accBef.getDedicatedAccInfo()) {

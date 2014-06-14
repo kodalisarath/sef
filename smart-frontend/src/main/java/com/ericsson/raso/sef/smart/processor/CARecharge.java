@@ -553,46 +553,48 @@ public class CARecharge implements Processor {
 			if (meta.getKey().equals("ACC_AFTER_SUPERVISION_EXPIRY_DATE")) 
 				afterSupervisionFeeExpiry = Long.parseLong(meta.getValue());
 			
-			String[] keyPart = meta.getKey().split(".");
-			if (keyPart[0].contains("BEFORE_")) {
-				if (!beforeEntries.containsKey(keyPart[1])) {
-					balInfo = new BalInfo();
-					beforeEntries.put(keyPart[0], balInfo);
-				} else {
-					balInfo = beforeEntries.get(keyPart[1]);
-				}	
-			} else if (keyPart[0].contains("AFTER_")) {
-				if (!afterEntries.containsKey(keyPart[1])) {
-					balInfo = new BalInfo();
-					afterEntries.put(keyPart[0], balInfo);
-				} else {
-					balInfo = afterEntries.get(keyPart[1]);
-				}	
+			if (meta.getKey().contains(".")) {
+				String[] keyPart = meta.getKey().split(".");
+				if (keyPart[0].contains("BEFORE_")) {
+					if (!beforeEntries.containsKey(keyPart[1])) {
+						balInfo = new BalInfo();
+						beforeEntries.put(keyPart[0], balInfo);
+					} else {
+						balInfo = beforeEntries.get(keyPart[1]);
+					}	
+				} else if (keyPart[0].contains("AFTER_")) {
+					if (!afterEntries.containsKey(keyPart[1])) {
+						balInfo = new BalInfo();
+						afterEntries.put(keyPart[0], balInfo);
+					} else {
+						balInfo = afterEntries.get(keyPart[1]);
+					}	
+				}
+
+				if (meta.getKey().startsWith("ACC_BEFORE_DA_ID")) 
+					balInfo.daID = meta.getValue();
+
+				if (meta.getKey().startsWith("ACC_BEFORE_DA_VALUE")) 
+					balInfo.daValue = Integer.parseInt(meta.getValue());
+
+				if (meta.getKey().startsWith("ACC_BEFORE_OFFER_ID")) 
+					balInfo.offerId = meta.getValue();
+
+				if (meta.getKey().startsWith("ACC_BEFORE_OFFER_EXPIRY_DATE")) 
+					balInfo.offerExpiry = ((meta.getValue() != null)?Long.parseLong(meta.getValue()):0);
+
+				if (meta.getKey().startsWith("ACC_AFTER_DA_ID")) 
+					balInfo.daID = meta.getValue();
+
+				if (meta.getKey().startsWith("ACC_AFTER_DA_VALUE")) 
+					balInfo.daValue = Integer.parseInt(meta.getValue());
+
+				if (meta.getKey().startsWith("ACC_AFTER_OFFER_ID")) 
+					balInfo.offerId = meta.getValue();
+
+				if (meta.getKey().startsWith("ACC_AFTER_OFFER_EXPIRY_DATE")) 
+					balInfo.offerExpiry = ((meta.getValue() != null) ?Long.parseLong(meta.getValue()): 0);
 			}
-			
-			if (meta.getKey().equals("ACC_BEFORE_DA_ID")) 
-				balInfo.daID = meta.getValue();
-
-			if (meta.getKey().equals("ACC_BEFORE_DA_VALUE")) 
-				balInfo.daValue = Integer.parseInt(meta.getValue());
-
-			if (meta.getKey().equals("ACC_BEFORE_OFFER_ID")) 
-				balInfo.offerId = meta.getValue();
-
-			if (meta.getKey().equals("ACC_BEFORE_OFFER_EXPIRY_DATE")) 
-				balInfo.offerExpiry = (meta.getValue() != null) ?Long.parseLong(meta.getValue()): 0;
-
-			if (meta.getKey().equals("ACC_AFTER_DA_ID")) 
-				balInfo.daID = meta.getValue();
-
-			if (meta.getKey().equals("ACC_AFTER_DA_VALUE")) 
-				balInfo.daValue = Integer.parseInt(meta.getValue());
-
-			if (meta.getKey().equals("ACC_AFTER_OFFER_ID")) 
-				balInfo.offerId = meta.getValue();
-
-			if (meta.getKey().equals("ACC_AFTER_OFFER_EXPIRY_DATE")) 
-				balInfo.offerExpiry = (meta.getValue() != null) ?Long.parseLong(meta.getValue()): 0;
 
 		}
 		

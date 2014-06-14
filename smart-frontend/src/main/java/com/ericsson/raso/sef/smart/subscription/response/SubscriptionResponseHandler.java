@@ -34,17 +34,24 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 	}
 
 	@Override
-	public void discoverOfferById(String requestCorrelator,
-			TransactionStatus fault, Offer offer) {
+	public void discoverOfferById(String requestCorrelator, TransactionStatus fault, Offer offer) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void discoverOfferByFederatedId(String requestCorrelator,
-			TransactionStatus fault, Offer offer) {
-		// TODO Auto-generated method stub
+	public void discoverOfferByFederatedId(String requestCorrelator, TransactionStatus fault, Offer offer) {
+		logger.debug("Fetching relavant response from correlation for updating the received response");
 		
+		//Step 1: Place the response in a location where the original node can access
+		DiscoveryResponse response = (DiscoveryResponse) RequestCorrelationStore.get(requestCorrelator);
+		response.setOffer(offer);
+		response.setFault(fault);
+		RequestCorrelationStore.put(requestCorrelator, response);
+
+		//Step 2: Trigger the original node that is waiting for response
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
+		semaphore.release();
 	}
 
 	@Override
