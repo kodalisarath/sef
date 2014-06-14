@@ -124,7 +124,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		index = 0;
 		for (OfferInformation offerInfo: accBef.getOfferInformationList()) {
 			responseDetails.put("ACC_BEFORE_OFFER_ID" + ++index, "" + offerInfo.getOfferID());
-			responseDetails.put("ACC_BEFORE_OFFER_EXPIRY_DATE" + index, "" + ((offerInfo.getExpiryDateTime() == null)? null: offerInfo.getExpiryDateTime().getTime()));			
+			responseDetails.put("ACC_BEFORE_OFFER_EXPIRY_DATE" + index, "" + ((offerInfo.getExpiryDateTime() == null)? offerInfo.getExpiryDate().getTime(): offerInfo.getExpiryDateTime().getTime()));			
 		}
 		
 		AccBefAndAfterRef  accAft=  response.getAccountAfterRefill();
@@ -139,7 +139,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		index = 0;
 		for (OfferInformation offerInfo: accAft.getOfferInformationList()) {
 			responseDetails.put("ACC_AFTER_OFFER_ID" + ++index, "" + offerInfo.getOfferID());
-			responseDetails.put("ACC_AFTER_OFFER_EXPIRY_DATE" + index, "" + ((offerInfo.getExpiryDateTime() == null)? null: offerInfo.getExpiryDateTime().getTime()));			
+			responseDetails.put("ACC_AFTER_OFFER_EXPIRY_DATE" + index, "" + ((offerInfo.getExpiryDateTime() == null)? offerInfo.getExpiryDate().getTime(): offerInfo.getExpiryDateTime().getTime()));			
 		}
 		
 		p.setMetas(responseDetails);
