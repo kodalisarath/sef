@@ -17,6 +17,7 @@ import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -73,7 +74,7 @@ case Constants.VersionCreateOrWriteRop:
 								try {
 									subscriberStore.updateMeta(this.getRequestId(),
 											subscriberEntity.getMsisdn(), meta);
-								} catch (PersistenceException e) {
+								} catch (PersistenceError e) {
 									LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
 								}
 							} else {
@@ -81,7 +82,7 @@ case Constants.VersionCreateOrWriteRop:
 									LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
 									subscriberStore.createMeta(this.getRequestId(),
 											subscriberEntity.getMsisdn(), meta);
-								} catch (PersistenceException e) {
+								} catch (PersistenceError e) {
 									LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
 								}
 							}
