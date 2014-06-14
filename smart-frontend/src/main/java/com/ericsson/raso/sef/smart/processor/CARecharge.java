@@ -580,7 +580,7 @@ public class CARecharge implements Processor {
 				balInfo.offerId = meta.getValue();
 
 			if (meta.getKey().equals("ACC_BEFORE_OFFER_EXPIRY_DATE")) 
-				balInfo.offerExpiry = Long.parseLong(meta.getValue());
+				balInfo.offerExpiry = (meta.getValue() != null) ?Long.parseLong(meta.getValue()): 0;
 
 			if (meta.getKey().equals("ACC_AFTER_DA_ID")) 
 				balInfo.daID = meta.getValue();
@@ -592,7 +592,7 @@ public class CARecharge implements Processor {
 				balInfo.offerId = meta.getValue();
 
 			if (meta.getKey().equals("ACC_AFTER_OFFER_EXPIRY_DATE")) 
-				balInfo.offerExpiry = Long.parseLong(meta.getValue());
+				balInfo.offerExpiry = (meta.getValue() != null) ?Long.parseLong(meta.getValue()): 0;
 
 		}
 		
