@@ -42,19 +42,17 @@ public class ModifyCustomerGrace implements Processor {
 			keys.add(SmartConstants.GRACE_ENDDATE);
 			
 			List<Meta> metas = new ArrayList<Meta>();
-			//metas.add(new Meta("daysOfExtension" , String.valueOf(request.getDaysOfExtension())));
-			metas.add(new Meta("DaysOfExtension" , String.valueOf(request.getDaysOfExtension())));
-			//metas.add(new Meta("AccessKey" , String.valueOf(request.get)));
 			metas.add(new Meta("EventInfo" , String.valueOf(request.getEventInfo())));
 			metas.add(new Meta("MessageId" , String.valueOf(request.getMessageId())));
 			metas.add(new Meta("AccessKey",request.getAccessKey()));
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
-			metas.add(new Meta("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER"));
+			List<Meta> metasReadSubscriber = new ArrayList<Meta>();
+			metasReadSubscriber.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
+			metasReadSubscriber.add(new Meta("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER"));
 			
 			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 			//ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 			logger.info("Before read subscriber call");
-			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
+			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metasReadSubscriber);
 			//if(subscriberObj.getSubscriber() == null)
 			//ISubscriberResponse response=
 			if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0)

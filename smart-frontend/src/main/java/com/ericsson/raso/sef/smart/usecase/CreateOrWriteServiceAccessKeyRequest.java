@@ -2,20 +2,18 @@ package com.ericsson.raso.sef.smart.usecase;
 
 import java.util.List;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.DateParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 
 public class CreateOrWriteServiceAccessKeyRequest extends SmartRequest {
 
 	private String customerId;
 	private String category;
 	private String keyType;
-	private XMLGregorianCalendar vInvalidFrom;
+	private String vValidFrom;
 	private long messageId;
 
 	public String getCustomerId() {
@@ -42,12 +40,12 @@ public class CreateOrWriteServiceAccessKeyRequest extends SmartRequest {
 		this.keyType = keyType;
 	}
 
-	public XMLGregorianCalendar getvInvalidFrom() {
-		return vInvalidFrom;
+	public String getvValidFrom() {
+		return vValidFrom;
 	}
 
-	public void setvInvalidFrom(XMLGregorianCalendar vInvalidFrom) {
-		this.vInvalidFrom = vInvalidFrom;
+	public void setvValidFrom(String vValidFrom) {
+		this.vValidFrom = vValidFrom;
 	}
 
 	public long getMessageId() {
@@ -72,13 +70,14 @@ public class CreateOrWriteServiceAccessKeyRequest extends SmartRequest {
 			} else if (param instanceof EnumerationValueParameter) {
 				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
 				this.setKeyType(parameter.getValue().trim());
-			} else if (param instanceof DateParameter) {
-				DateParameter parameter = (DateParameter) param;
-				this.setvInvalidFrom(parameter.getValue());
 			} else if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
 				this.setMessageId(parameter.getValue());
 			}
+			 else if (param instanceof SymbolicParameter) {
+				 SymbolicParameter parameter = (SymbolicParameter) param;
+				 this.setvValidFrom(parameter.getValue());
+				}
 		}
 	}
 
@@ -86,7 +85,7 @@ public class CreateOrWriteServiceAccessKeyRequest extends SmartRequest {
 	public String toString() {
 		return "CreateOrWriteServiceAccessKeyRequest [customerId=" + customerId
 				+ ", category=" + category + ", keyType=" + keyType
-				+ ", vInvalidFrom=" + vInvalidFrom + ", messageId=" + messageId
+				+ ", vInvalidFrom="  + ", messageId=" + messageId
 				+ "]";
 	}
 
