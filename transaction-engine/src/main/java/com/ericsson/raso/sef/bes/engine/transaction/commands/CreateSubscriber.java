@@ -12,11 +12,8 @@ import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceStep;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Step;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
@@ -101,6 +98,17 @@ public class CreateSubscriber extends AbstractTransaction {
 		boolean result = true;
 		TransactionStatus txnStatus = new TransactionStatus();
 		if (this.getResponse() != null) {
+			   if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
+			    TransactionException fault = this.getResponse().getReturnFault();
+			    if (fault != null) {
+			     txnStatus.setCode(fault.getStatusCode().getCode());
+			     txnStatus.setDescription(fault.getStatusCode().getMessage());
+			     txnStatus.setComponent(fault.getComponent());
+			    }
+			   }
+		} else
+			result = false;
+		/*if (this.getResponse() != null) {
 			if (this.getResponse().getAtomicStepResults() != null) {
 				for (Step<?> step: this.getResponse().getAtomicStepResults().keySet()) {
 					AbstractStepResult stepResult = this.getResponse().getAtomicStepResults().get(step);
@@ -120,7 +128,7 @@ public class CreateSubscriber extends AbstractTransaction {
 					}
 				}
 			}
-		}
+		}*/
 		
 		if (result != false)
 			result = true;

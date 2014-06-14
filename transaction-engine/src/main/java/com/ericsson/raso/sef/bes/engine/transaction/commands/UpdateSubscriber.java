@@ -3,6 +3,7 @@ package com.ericsson.raso.sef.bes.engine.transaction.commands;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,7 @@ case Constants.VersionCreateOrWriteRop:
 								try {
 									subscriberStore.updateMeta(this.getRequestId(),
 											subscriberEntity.getMsisdn(), meta);
-								} catch (PersistenceError e) {
+								} catch (PersistenceException e) {
 									LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
 								}
 							} else {
@@ -82,7 +83,7 @@ case Constants.VersionCreateOrWriteRop:
 									LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
 									subscriberStore.createMeta(this.getRequestId(),
 											subscriberEntity.getMsisdn(), meta);
-								} catch (PersistenceError e) {
+								} catch (PersistenceException e) {
 									LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
 								}
 							}
@@ -260,6 +261,18 @@ case Constants.ModiFyTagging:
 		TransactionStatus txnStatus = new TransactionStatus();
 		boolean result = true;
 		if (this.getResponse() != null) {
+			   if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
+			    TransactionException fault = this.getResponse().getReturnFault();
+			    if (fault != null) {
+			     txnStatus.setCode(fault.getStatusCode().getCode());
+			     txnStatus.setDescription(fault.getStatusCode().getMessage());
+			     txnStatus.setComponent(fault.getComponent());
+			    }
+			   }
+		} else
+			result = false;
+		//What are you doing here?? not required
+		/*if (this.getResponse() != null) {
 			if (this.getResponse().getAtomicStepResults() != null) {
 				for (AbstractStepResult stepResult : this.getResponse()
 						.getAtomicStepResults().values()) {
@@ -277,8 +290,7 @@ case Constants.ModiFyTagging:
 					}
 				}
 			}
-		} else
-			result = false;
+		}*/
 
 		if (result != false)
 			result = true;
