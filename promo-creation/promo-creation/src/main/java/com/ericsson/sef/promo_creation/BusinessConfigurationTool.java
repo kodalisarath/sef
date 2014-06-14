@@ -253,14 +253,268 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 			
 			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP2", "PL01", 1, "200", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("2");
+			handles.add("O1");
+			handles.add("W1");
+			handles.add("PasaloadP2");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload2", "Pasaload 2PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+			
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
 			resource = this.createRefill("PasaloadP5", "PL01", 1, "500", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
 			handles.add("5");
 			handles.add("O2");
 			handles.add("W2");
+			handles.add("PasaloadP5");
 			bizConfig = this.getSimpleBcWorkflow("Pasaload5", "Pasaload 5PHP", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
+			
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP10", "PL01", 1, "1000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("10");
+			handles.add("O3");
+			handles.add("W3");
+			handles.add("PasaloadP10");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload10", "Pasaload 10PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP15", "PL01", 1, "1500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("15");
+			handles.add("O4");
+			handles.add("W4");
+			handles.add("PasaloadP15");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload15", "Pasaload 15PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP20", "PL01", 1, "2000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("20");
+			handles.add("O5");
+			handles.add("W5");
+			handles.add("PasaloadP20");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload20", "Pasaload 20PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP30", "PL01", 1, "3000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("30");
+			handles.add("O7");
+			handles.add("W6");
+			handles.add("PasaloadP30");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload30", "Pasaload 30PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP35", "PL01", 1, "3500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("35T");
+			handles.add("O8");
+			handles.add("Y2");
+			handles.add("PasaloadP35");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload35", "Pasaload 35PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP60", "PL01", 1, "6000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("60");
+			handles.add("O9");
+			handles.add("W7");
+			handles.add("PasaloadP60");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload60", "Pasaload 60PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP100", "PL01", 1, "10000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("1H");
+			handles.add("1O");
+			handles.add("W8");
+			handles.add("PasaloadP100");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload100", "Pasaload 100PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Pasaload Refill...");
+			resource = this.createRefill("PasaloadP200", "PL01", 1, "20000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("2H");
+			handles.add("2O");
+			handles.add("W9");
+			handles.add("PasaloadP200");
+			bizConfig = this.getSimpleBcWorkflow("Pasaload200", "Pasaload 200PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP2", "EGP1", 1, "200", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("2");
+			handles.add("EgamePasaloadP2");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP2", "Egame Pasaload 2PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP5", "EGP1", 1, "500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("5");
+			handles.add("EgamePasaloadP5");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP5", "Egame Pasaload 5PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP10", "EGP1", 1, "1000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("10");
+			handles.add("EgamePasaloadP10");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP10", "Egame Pasaload 10PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP15", "EGP1", 1, "1500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("15");
+			handles.add("EgamePasaloadP15");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP15", "Egame Pasaload 15PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP20", "EGP1", 1, "2000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("E6");
+			handles.add("EgamePasaloadP20");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP20", "Egame Pasaload 20PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP30", "EGP1", 1, "3000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("E7");
+			handles.add("EgamePasaloadP30");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP30", "Egame Pasaload 30PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP60", "EGP1", 1, "6000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("E8");
+			handles.add("EgamePasaloadP60");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP60", "Egame Pasaload 60PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP100", "EGP1", 1, "10000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("1H");
+			handles.add("EgamePasaloadP100");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP100", "Egame Pasaload 100PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Egame Pasaload Refill...");
+			resource = this.createRefill("EgamePasaloadP200", "EGP1", 1, "20000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("2H");
+			handles.add("EgamePasaloadP200");
+			bizConfig = this.getSimpleBcWorkflow("EgamePasaloadP200", "Egame Pasaload 200PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Hellow Card Pasaload Refill...");
+			resource = this.createRefill("HellowPasaloadP10", "HLC1", 1, "1000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("10");
+			handles.add("HellowPasaloadP10");
+			bizConfig = this.getSimpleBcWorkflow("HellowPasaloadP10", "Hellow Card Pasaload 10PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Hellow Card Pasaload Refill...");
+			resource = this.createRefill("HellowPasaloadP15", "HLC1", 1, "1500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("15");
+			handles.add("HellowPasaloadP15");
+			bizConfig = this.getSimpleBcWorkflow("HellowPasaloadP15", "Hellow Card Pasaload 15PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Hellow Card Pasaload Refill...");
+			resource = this.createRefill("HellowPasaloadP20", "HLC1", 1, "2000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("20");
+			handles.add("HellowPasaloadP20");
+			bizConfig = this.getSimpleBcWorkflow("HellowPasaloadP20", "Hellow Card Pasaload 20PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Hellow Card Pasaload Refill...");
+			resource = this.createRefill("HellowPasaloadP30", "HLC1", 1, "3000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("30");
+			handles.add("HellowPasaloadP30");
+			bizConfig = this.getSimpleBcWorkflow("HellowPasaloadP30", "Hellow Card Pasaload 30PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Hellow Card Pasaload Refill...");
+			resource = this.createRefill("HellowPasaloadP60", "HLC1", 1, "6000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("60");
+			handles.add("HellowPasaloadP60");
+			bizConfig = this.getSimpleBcWorkflow("HellowPasaloadP60", "Hellow Card Pasaload 60PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Hellow Card Pasaload Refill...");
+			resource = this.createRefill("HellowPasaloadP100", "HLC1", 1, "10000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("1H");
+			handles.add("HellowPasaloadP100");
+			bizConfig = this.getSimpleBcWorkflow("HellowPasaloadP100", "Hellow Card Pasaload 100PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Hellow Card Pasaload Refill...");
+			resource = this.createRefill("HellowPasaloadP200", "HLC1", 1, "20000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("2H");
+			handles.add("HellowPasaloadP200");
+			bizConfig = this.getSimpleBcWorkflow("HellowPasaloadP200", "Hellow Card Pasaload 200PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+			
+			System.out.println("Offer, Resource & Profile - Ask 4 Load Refill...");
+			resource = this.createRefill("Ask4LoadP5", "ASL1", 1, "500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("5");
+			handles.add("Ask4LoadP5");
+			bizConfig = this.getSimpleBcWorkflow("Ask4LoadP5", "Ask4Load 5PHP", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
 			
 			System.out.println("Offer, Resource & Profile - Araw Araw Refill...");
 			resource = this.createRefill("ArawAraw", "PL01", 1, "500", CurrencyCode.PHP);
