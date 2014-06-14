@@ -354,29 +354,31 @@ public class CARecharge implements Processor {
 		OfferInfo oInfo = null; long longestExpiry = 0; OfferInfo endurantOffer = null;
 		Map<String, OfferInfo> subscriberOffers = new HashMap<String, CARecharge.OfferInfo>(); 
 		for (String key: subscriberMetas.keySet()) {
-			String[] keyPart = key.split("\\.");
-			if (subscriberOffers.containsKey(keyPart[1])) {
-				oInfo = subscriberOffers.get(keyPart[1]);
-			} else {
-				oInfo = new OfferInfo();
-				subscriberOffers.put(keyPart[1], oInfo);
-			}
-			
-			if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_OFFER_ID")) {
-				oInfo.offerID = subscriberMetas.get(key);
-				oInfo.daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
-				oInfo.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
-				
-				if (oInfo.offerID.equals("2"))
-					requestContext.put("inGrace", "true");
-			}
-			
-			if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE")) {
-				oInfo.offerExpiry = Long.parseLong(subscriberMetas.get(key));
-				
-				if (longestExpiry < oInfo.offerExpiry) {
-					longestExpiry = oInfo.offerExpiry;
-					endurantOffer = oInfo;
+			if (key.contains(".")) {
+				String[] keyPart = key.split("\\.");
+				if (subscriberOffers.containsKey(keyPart[1])) {
+					oInfo = subscriberOffers.get(keyPart[1]);
+				} else {
+					oInfo = new OfferInfo();
+					subscriberOffers.put(keyPart[1], oInfo);
+				}
+
+				if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_OFFER_ID")) {
+					oInfo.offerID = subscriberMetas.get(key);
+					oInfo.daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+					oInfo.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
+
+					if (oInfo.offerID.equals("2"))
+						requestContext.put("inGrace", "true");
+				}
+
+				if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE")) {
+					oInfo.offerExpiry = Long.parseLong(subscriberMetas.get(key));
+
+					if (longestExpiry < oInfo.offerExpiry) {
+						longestExpiry = oInfo.offerExpiry;
+						endurantOffer = oInfo;
+					}
 				}
 			}
 		}
