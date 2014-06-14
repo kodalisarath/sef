@@ -612,7 +612,7 @@ public class CARecharge implements Processor {
 			listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
 			logger.debug("Adding response item to CARecharge: " + responseEntry);		
 		}
-		
+		logger.debug("Done with the processing of Refill reponse...");
 		return;
 	}
 
@@ -659,21 +659,35 @@ public class CARecharge implements Processor {
 				logger.debug("Adding response item to CARecharge: " + entry.toString());
 			}
 		}
-		
+		logger.debug("Finished processing of response for Reversal....");
 		return;
 	}
 
 	
 
-	private CommandResponseData handlePasaloadRefillResponse(ListParameter listParameter, PurchaseResponse response) {
+	private void handlePasaloadRefillResponse(ListParameter listParameter, PurchaseResponse response) {
 		// TODO Auto-generated method stub
-		return null;
+		return;
 	}
 
 
-	private CommandResponseData handleFlexiRefillResponse(ListParameter listParameter, PurchaseResponse response) {
-		// TODO Auto-generated method stub
-		return null;
+	private void handleFlexiRefillResponse(ListParameter listParameter, PurchaseResponse response) {
+		Map<String, String> requestContext = requestContextCache.get();
+		
+		Map<String, String> airResponse = this.convertToMap(response.getBillingMetas());
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String responseEntry = requestContext.get("walletName") + ";" + 
+				requestContext.get("amountOfUnits") + ";" + 
+				airResponse.get("DA_VALUE_1.1") + ";" + 
+				format.format(new Date(Long.parseLong(requestContext.get("longestExpiry"))));
+		
+		StringElement stringElement = new StringElement();
+		stringElement.setValue(responseEntry);
+		listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+		logger.debug("Adding response item to CARecharge: " + responseEntry);		
+		logger.debug("Done with the processing of Refill reponse...");
+		
 	}
 
 
@@ -693,6 +707,15 @@ public class CARecharge implements Processor {
 			meta.setKey(metaKey);
 			meta.setValue(metas.get(metaKey));
 			metaList.add(meta);
+		}
+		return metaList;
+		
+	}
+	
+	private Map<String,String> convertToMap(List<Meta> metas){
+		Map<String,String> metaList = new HashMap<String, String>();
+		for(Meta meta:metas){
+			metaList.put(meta.getKey(), meta.getValue());
 		}
 		return metaList;
 		

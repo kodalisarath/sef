@@ -200,11 +200,11 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 					responseMetas.put(REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE + "." + index, "" + daResultInfo.getDedicatedAccountValue1());
 					responseMetas.put(REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT + "." + index, "" + this.getReversalDA(associatedDaId).getAmountToReverse());
 				}
-				
 			}
-			
 		}
-		
+			
+	
+
 		
 		p.setMetas(responseMetas);
 		products.add(p);
