@@ -365,9 +365,16 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 		throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The userid  provided was null!!"));
 	try {
 		SubscriberMeta susbscriberMeta=new SubscriberMeta();
-		susbscriberMeta.setKey(meta.getKey());
-		susbscriberMeta.setValue(meta.getValue());
-		susbscriberMeta.setSubscriberId(userId);
+		if(meta.getKey() != null && meta.getValue() != null){
+			susbscriberMeta.setKey(meta.getKey());
+			susbscriberMeta.setValue(meta.getValue());
+			try {
+				susbscriberMeta.setSubscriberId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
+			} catch (FrameworkException e) {
+				logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting userid",e);
+				throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt userid identities!!"), e);
+			}
+		}
 		subscriberMapper.insertSubscriberMeta(susbscriberMeta);
 	} catch (PersistenceException e) {
 		logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
@@ -383,9 +390,16 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The userid  provided was null!!"));
 		try {
 			SubscriberMeta susbscriberMeta=new SubscriberMeta();
-			susbscriberMeta.setKey(meta.getKey());
-			susbscriberMeta.setValue(meta.getValue());
-			susbscriberMeta.setSubscriberId(userId);
+			if(meta.getKey() != null && meta.getValue() != null){
+				susbscriberMeta.setKey(meta.getKey());
+				susbscriberMeta.setValue(meta.getValue());
+				try {
+					susbscriberMeta.setSubscriberId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
+				} catch (FrameworkException e) {
+					logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting userid",e);
+					throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt userid identities!!"), e);
+				}
+			}
 			subscriberMapper.updateSubscriberMeta(susbscriberMeta);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);

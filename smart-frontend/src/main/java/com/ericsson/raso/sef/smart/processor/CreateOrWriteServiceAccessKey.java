@@ -28,7 +28,7 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		logger.info("CreateOrWriteServiceAccessKey: process()");
 		CreateOrWriteServiceAccessKeyRequest request = (CreateOrWriteServiceAccessKeyRequest) exchange.getIn().getBody();
-
+		logger.info("Printing values from SOAP before Processing :"+request.getCategory()+" "+request.getKeyType()+" "+request.getvInvalidFrom()+" "+request.getMessageId());
 		List<Meta> metas = new ArrayList<Meta>();
 		metas.add(new Meta("key", request.getCategory()));
 		metas.add(new Meta("keyType", request.getKeyType()));
