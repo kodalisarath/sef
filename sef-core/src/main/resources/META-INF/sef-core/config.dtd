@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ELEMENT config (section+)>
-<!ELEMENT section (property+)>
-<!ATTLIST section
-	id ID #REQUIRED
-	description CDATA #REQUIRED
->
+<!ELEMENT section (property+, router*)>
 <!ELEMENT property EMPTY>
+<!ELEMENT router (ranges, values)>
+<!ELEMENT ranges (range+)>
+<!ELEMENT values (value+)>
+<!ELEMENT range EMPTY>
+
+<!ATTLIST section
+	id 			ID 		#REQUIRED
+	description	CDATA 	#REQUIRED
+>
+
 <!ATTLIST property
 	key CDATA #REQUIRED
 	value CDATA #REQUIRED
+>
+
+<!ATTLIST range
+	start CDATA #REQUIRED
+	end   CDATA #REQUIRED
+	value IDREF #REQURED
+>
+
+<!ATTLIST value
+	id		ID		#REQURIED
+	sdpId 	CDATA	#REQUIRED
+	siteId 	CDATA 	#REQUIRED
 >

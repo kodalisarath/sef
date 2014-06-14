@@ -21,6 +21,22 @@
 		<property key="pasaloadRules" value="id=pasa15,name=Pasaload(15PHP),aPartyCountThreshold=5,aPartyAmountThreshold=65,bPartyCountThreshold=10,bPartyAmountThreshold=30;id=pasa45,name=Pasaload(45PHP),aPartyCountThreshold=2,aPartyAmountThreshold=90,bPartyCountThreshold=3,bPartyAmountThreshold=30;"/>
 	</section>
 	
+	<section id="SMART_router" description="smart proprietary service logic for routing the msisdn in administrative use-cases only">
+		<property key="sanity" value="compliance"/>
+		<router>
+			<ranges>
+				<range start="639000000000" end="639999999999" value="route_1"/>
+				<range start="636000000000" end="636666666666" value="route_2"/>
+			</ranges>
+			<values>
+				<value id="route_1" siteId="MANILA" sdpId="PIDCSDP01"/>
+				<value id="route_2" siteId="CEBU" sdpId="PIDCSDP01"/>
+				
+			</values>
+		</router> 
+	</section>
+	
+	
 	<section id="SMART_pasaLoad" description="SMART Pasa Load, Ask 4 Load services">
 		<property key="PasaloadP2" value="-1" />
 		<property key="PasaloadP5" value="-1" />
