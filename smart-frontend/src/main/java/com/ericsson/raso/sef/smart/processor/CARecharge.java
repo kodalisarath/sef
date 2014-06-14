@@ -354,7 +354,7 @@ public class CARecharge implements Processor {
 		OfferInfo oInfo = null; long longestExpiry = 0; OfferInfo endurantOffer = null;
 		Map<String, OfferInfo> subscriberOffers = new HashMap<String, CARecharge.OfferInfo>(); 
 		for (String key: subscriberMetas.keySet()) {
-			String[] keyPart = key.split(".");
+			String[] keyPart = key.split("\\.");
 			if (subscriberOffers.containsKey(keyPart[1])) {
 				oInfo = subscriberOffers.get(keyPart[1]);
 			} else {
@@ -605,6 +605,8 @@ public class CARecharge implements Processor {
 		
 		// Calculate...
 		logger.debug("PREDEFINED:: About process extracted entries. Before " + beforeEntries.size() + ", After " + afterEntries.size());
+		logger.debug("Before Entries: " + beforeEntries);
+		logger.debug("After Entries: " + afterEntries);
 		
 		for (String key: beforeEntries.keySet()) {
 			BalInfo before = beforeEntries.get(key);
