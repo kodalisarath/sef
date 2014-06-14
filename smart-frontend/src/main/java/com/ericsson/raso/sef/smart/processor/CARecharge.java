@@ -102,6 +102,7 @@ public class CARecharge implements Processor {
 				offerid = rechargeRequest.getRatingInput1();
 			} else if (eventClass.equals("pasaload")) {
 				rechargeRequest.setRatingInput0("pasaload");
+				
 				metas = prepareRecharge(rechargeRequest);
 				offerid = rechargeRequest.getEventName();
 			} else if (eventClass.equals("reversal")) {
@@ -439,13 +440,7 @@ public class CARecharge implements Processor {
 
 	}
 
-	private List<PasaloadRule> getPasaloadRules() {
-		List<PasaloadRule> rules = null;
-		String pasaloadRules = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "pasaload-eiligibility");
-		
-		return rules;
-	}
-	
+
 	private CommandResponseData createResponse(boolean isTransactional, PurchaseResponse response) throws SmException {
 		CommandResponseData responseData = new CommandResponseData();
 		CommandResult result = new CommandResult();
@@ -753,6 +748,13 @@ public class CARecharge implements Processor {
 				return true;
 			return false;
 		}
+
+		@Override
+		public String toString() {
+			return "BalInfo [daID=" + daID + ", daValue=" + daValue + ", offerId=" + offerId + ", offerExpiry=" + offerExpiry + "]";
+		}
+		
+		
 	}
 	
 	class ReversalEntry {
