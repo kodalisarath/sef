@@ -361,7 +361,7 @@ public class CARecharge implements Processor {
 		for (String key: subscriberMetas.keySet()) {
 			logger.debug("FLEXI:: Am I in the loop of GetAccountDetails!!!");
 			if (key.contains(".")) {
-				logger.debug("FLEXI:: Am I in recursive index loop?/?");
+				logger.debug("FLEXI:: Am I in recursive index loop?/?   " + key);
 				String[] keyPart = key.split("\\.");
 				if (subscriberOffers.containsKey(keyPart[1])) {
 					oInfo = subscriberOffers.get(keyPart[1]);
@@ -369,9 +369,11 @@ public class CARecharge implements Processor {
 					oInfo = new OfferInfo();
 					subscriberOffers.put(keyPart[1], oInfo);
 				}
+				
+				logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
 
 				if (keyPart[0].startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID)) {
-					logger.debug("FLEXI:: OFFER_ID....");
+					logger.debug("FLEXI:: OFFER_ID...." + keyPart[0]);
 					oInfo.offerID = subscriberMetas.get(key);
 					oInfo.daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
 					oInfo.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
@@ -384,7 +386,7 @@ public class CARecharge implements Processor {
 				}
 
 				if (keyPart[0].startsWith(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE)) {
-					logger.debug("FLEXI:: EXPIRY_DATE...");
+					logger.debug("FLEXI:: EXPIRY_DATE..." + keyPart[0]);
 					oInfo.offerExpiry = Long.parseLong(subscriberMetas.get(key));
 
 					if (longestExpiry < oInfo.offerExpiry) {
