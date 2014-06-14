@@ -137,6 +137,8 @@ public class CARecharge implements Processor {
 			
 			logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 			
+			
+			logger.debug("If noli really did a pull & rebuild, you would see this!!");
 			PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 			logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 			if(purchaseResponse == null) {
