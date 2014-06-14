@@ -365,7 +365,7 @@ public class CARecharge implements Processor {
 					subscriberOffers.put(keyPart[1], oInfo);
 				}
 
-				if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_OFFER_ID")) {
+				if (keyPart[0].startsWith("READ_SUBSCRIBER_OFFER_INFO_OFFER_ID")) {
 					logger.debug("FLEXI:: OFFER_ID....");
 					oInfo.offerID = subscriberMetas.get(key);
 					oInfo.daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
@@ -378,7 +378,7 @@ public class CARecharge implements Processor {
 					}
 				}
 
-				if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE")) {
+				if (keyPart[0].startsWith("READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE")) {
 					logger.debug("FLEXI:: EXPIRY_DATE...");
 					oInfo.offerExpiry = Long.parseLong(subscriberMetas.get(key));
 
