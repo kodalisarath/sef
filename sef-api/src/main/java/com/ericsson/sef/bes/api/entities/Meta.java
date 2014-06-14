@@ -1,12 +1,15 @@
 package com.ericsson.sef.bes.api.entities;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="meta")
-public class Meta {
+public class Meta implements Serializable {
+	private static final long	serialVersionUID	= 6968121130562187529L;
 
 	private String key;
 	private String value;
@@ -35,5 +38,12 @@ public class Meta {
 	public void setValue(String value) {
 		this.value = value;
 	}
+
+	@Override
+	public String toString() {
+		return "Meta [key=" + key + ", value=" + value + "]";
+	}
+	
+	
 	
 }

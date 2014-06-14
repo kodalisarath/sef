@@ -1,5 +1,6 @@
 package com.ericsson.sef.bes.api.entities;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,8 +10,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="product")
-public final class Product {
-	
+public final class Product implements Serializable {
+	private static final long	serialVersionUID	= -7676120441931768658L;
+
 	private String name = null;
 	private String resourceName = null;
 	private long quotaDefined = -1;
@@ -67,6 +69,12 @@ public final class Product {
 
 	public void setMetas(Map<String, String> metas) {
 		this.metas = metas;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [name=" + name + ", resourceName=" + resourceName + ", quotaDefined=" + quotaDefined + ", quotaConsumed="
+				+ quotaConsumed + ", validity=" + validity + ", metas=" + metas + "]";
 	}
 	
 	

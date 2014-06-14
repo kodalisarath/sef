@@ -1,12 +1,14 @@
 package com.ericsson.sef.bes.api.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="offer")
-public class Offer {
-	
+public class Offer implements Serializable {
+	private static final long	serialVersionUID	= -7648416263412619160L;
+
 	private String			subscriptionId		= null;
 	private String			name				= null;
 	private String			description			= null;
@@ -106,6 +108,13 @@ public class Offer {
 	
 	public void setProducts(Set<Product> products) {
 		this.products = products;
+	}
+
+	@Override
+	public String toString() {
+		return "Offer [subscriptionId=" + subscriptionId + ", name=" + name + ", description=" + description + ", validity=" + validity
+				+ ", recurrence=" + recurrence + ", trial=" + trial + ", minimumCommitment=" + minimumCommitment + ", autoTerminate="
+				+ autoTerminate + ", price=" + price + ", currency=" + currency + ", products=" + products + "]";
 	}
 	
 	
