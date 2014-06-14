@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
-import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -27,21 +26,23 @@ public class RetrieveDeleteProcessor implements Processor {
 	
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		try {
+		
 			RetrieveDeleteRequest request = (RetrieveDeleteRequest) exchange.getIn().getBody();
 			String requestId = RequestContextLocalStore.get().getRequestId();
-		   String subscriberId=request.getCustomerId();
-			SubscriberInfo subscriberInfo= deleteSubscriber(requestId,subscriberId);
-			exchange.getOut().setBody(subscriberInfo);
-			if (subscriberInfo.getStatus() != null) {
+			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), null);
+			if(subscriberObj != null){
+				  String subscriberId=request.getCustomerId();
+					SubscriberInfo subscriberInfo= deleteSubscriber(requestId,subscriberId);
+					exchange.getOut().setBody(subscriberInfo);
+					if (subscriberInfo.getStatus() != null) {
+						
+						ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+						
+					}
 				
-				ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
-				
-			}}catch (Exception e) {
-			logger.error("Error in processor class:",e.getClass().getName(),e);
-		}
-		 
-	}
+			}
+		  
+			}
 	
 	
 	private SubscriberInfo deleteSubscriber(String requestId,String subscriberId) {

@@ -10,17 +10,16 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
-import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.ModifyCustomerPreActiveRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
-import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
 
@@ -33,41 +32,46 @@ public class ModifyCustomerPreActive implements Processor {
 
 		ModifyCustomerPreActiveRequest request = (ModifyCustomerPreActiveRequest) exchange
 				.getIn().getBody();
-		IConfig config = SefCoreServiceResolver.getConfigService();
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		List<Meta> metas = new ArrayList<Meta>();
 		metas.add(new Meta("eventInfo",String.valueOf(request.getEventInfo())));
 		metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
-		//To:DO Find an alternative to distinguish between the use-cases,currently its been added as a Meta key,
-		metas.add(new Meta("HANDLE_LIFE_CYCLE","ModifyCustomerPreactive"));
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		logger.info("Before read subscriber call");
+		metas.add(new Meta("customerId",String.valueOf(request.getCustomerId())));
 		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
-		if(subscriberObj != null){
-			logger.info("Recieved a SubscriberInfo Object and it is not null");
-			Subscriber apiSubscriber=subscriberObj.getSubscriber();
-			if(apiSubscriber == null){
-				throw ExceptionUtil.toSmException(new ResponseCode(504,"Subscriber Not Found"));
-			}else{
-				logger.info("Recieved a Subscriber, it is not null");
-				if(ContractState.apiValue("PRE_ACTIVE").toString().equals(apiSubscriber.getContractState().toString()))
-				{
-					String date=apiSubscriber.getMetas().get("preActiveEndDate");
-					String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
-					metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
-					logger.info("Yes!!! Subscriber is in Preactive contract state");
-					iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), metas);
-					logger.info("Now calling an update subcriber");
-					SubscriberInfo subscriberInfo=updateSubscriber(requestId,request.getCustomerId(),metas,Constants.ModifyCustomerPreActive);
-					if(subscriberInfo.getStatus() != null){
-						throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription() ));
-					}
-					DummyProcessor.response(exchange);
-				}else{
-					throw ExceptionUtil.toSmException(new ResponseCode(4020, "Invalid Operation State"));
-				}
+		if(ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberObj.getSubscriber().getContractState().toString())){
+			
+			String date=subscriberObj.getSubscriber().getMetas().get("activeEndDate");
+			String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
+			metas.add(new Meta("daysOfExtension",String.valueOf(newDate)));
+			SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
+			logger.info("Before read subscriber call");
+			if(subscriberInfo.getStatus() != null){
+				throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
 			}
+		}else{
+			throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
 		}
+		DummyProcessor.response(exchange);
+		
+	}
+	
+	
+	private SubscriberInfo readSubscriber(String requestId,String customer_id, List<Meta> metas) {
+		logger.info("Invoking update subscriber on tx-engine subscriber interface");
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		iSubscriberRequest.readSubscriber(requestId, customer_id, metas);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+
+		}
+		logger.info("Check if response received for update subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		return subscriberInfo;
 	}
 	private SubscriberInfo updateSubscriber(String requestId,String customer_id, List<Meta> metas,String useCase) {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
@@ -85,24 +89,6 @@ public class ModifyCustomerPreActive implements Processor {
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
 				.remove(requestId);
-		return subscriberInfo;
-	}
-	
-	private SubscriberInfo readSubscriber(String requestId,String customer_id, List<Meta> metas) {
-		logger.info("Invoking update subscriber on tx-engine subscriber interface");
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		SubscriberInfo subInfo = new SubscriberInfo();
-		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.readSubscriber(requestId, customer_id, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-		try {
-			semaphore.init(0);
-			semaphore.acquire();
-		} catch (InterruptedException e) {
-
-		}
-		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
 
