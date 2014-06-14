@@ -26,12 +26,14 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 
 		SubscriberInfo subscriberInfo = ((SubscriberInfo)SubscriberResponseStore.get(requestCorrelator));
 
-		if (fault != null) {
+		if (fault != null && fault.getCode() !=0) {
 			subscriberInfo.setStatus(fault);
 			this.triggerResponse(requestCorrelator, subscriberInfo);
 			return;
-		} 
-
+		}
+	/*	if (fault != null) {
+			
+		} */
 		if (subscriber == null) {
 			subscriberInfo.setStatus(new TransactionStatus("txe", 504, "Invalid Account - Subscriber canot be found!!"));
 			this.triggerResponse(requestCorrelator, subscriberInfo);

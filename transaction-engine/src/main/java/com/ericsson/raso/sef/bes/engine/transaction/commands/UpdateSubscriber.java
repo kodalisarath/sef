@@ -3,7 +3,6 @@ package com.ericsson.raso.sef.bes.engine.transaction.commands;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,8 +66,11 @@ case Constants.VersionCreateOrWriteRop:
 					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
 					sendResponse();
 				} else {
+					LOGGER.debug("Printing Subscriber entity "+subscriberEntity.toString());
 					LOGGER.debug("Subscriber exists and checking for the preactive state");
-					if (ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberEntity.getContractState().toString())) {
+					LOGGER.debug("checking if this equals working fine ");
+					if (ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState())) {
+						LOGGER.debug("It is PRE_ACTIVE state");
 						for (Meta meta : listMetas) {
 							if (subscriberEntity.getMetas().contains(meta)) {
 								try {
@@ -90,11 +92,9 @@ case Constants.VersionCreateOrWriteRop:
 						}
 
 					} else {
-
 						this.getResponse().setReturnFault(
 								new TransactionException("tx-engine",new ResponseCode(4020,"Invalid Operation State")));
 						sendResponse();
-
 					}
 				}
 				

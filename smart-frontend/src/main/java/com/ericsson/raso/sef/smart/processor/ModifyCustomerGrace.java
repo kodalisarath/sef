@@ -54,14 +54,15 @@ public class ModifyCustomerGrace implements Processor {
 			logger.info("Before read subscriber call");
 			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
 			//if(subscriberObj.getSubscriber() == null)
-			
 			//ISubscriberResponse response=
 			if(subscriberObj ==  null)
 				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 			
+			if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0)
+				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 			logger.info("Recieved a SubscriberInfo Object and it is not null");
 			logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
-			if(ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberObj.getSubscriber().getContractState().toString()))
+			if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState()))
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 			
 					 Map<String, String> subscriberMetas = subscriberObj.getMetas();
@@ -128,6 +129,7 @@ public class ModifyCustomerGrace implements Processor {
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		//SubscriberResponseStore.get(requestId);
 		return subscriberInfo;
 	}
 }
