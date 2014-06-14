@@ -354,7 +354,9 @@ public class CARecharge implements Processor {
 		OfferInfo oInfo = null; long longestExpiry = 0; OfferInfo endurantOffer = null;
 		Map<String, OfferInfo> subscriberOffers = new HashMap<String, CARecharge.OfferInfo>(); 
 		for (String key: subscriberMetas.keySet()) {
+			logger.debug("FLEXI:: Am I in the loop of GetAccountDetails!!!");
 			if (key.contains(".")) {
+				logger.debug("FLEXI:: Am I in recursive index loop?/?");
 				String[] keyPart = key.split("\\.");
 				if (subscriberOffers.containsKey(keyPart[1])) {
 					oInfo = subscriberOffers.get(keyPart[1]);
@@ -364,20 +366,27 @@ public class CARecharge implements Processor {
 				}
 
 				if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_OFFER_ID")) {
+					logger.debug("FLEXI:: OFFER_ID....");
 					oInfo.offerID = subscriberMetas.get(key);
 					oInfo.daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
 					oInfo.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
-
-					if (oInfo.offerID.equals("2"))
+					logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
+					
+					if (oInfo.offerID.equals("2")) {
 						requestContext.put("inGrace", "true");
+						logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
+					}
 				}
 
 				if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE")) {
+					logger.debug("FLEXI:: EXPIRY_DATE...");
 					oInfo.offerExpiry = Long.parseLong(subscriberMetas.get(key));
 
 					if (longestExpiry < oInfo.offerExpiry) {
+						logger.debug("FLEXI:: Is this the longest Expiry? " + longestExpiry + " <==> " + oInfo);
 						longestExpiry = oInfo.offerExpiry;
 						endurantOffer = oInfo;
+						
 					}
 				}
 			}
@@ -742,6 +751,12 @@ public class CARecharge implements Processor {
 		private long offerExpiry;
 		private String daID;
 		private String walletName;
+		@Override
+		public String toString() {
+			return "OfferInfo [offerID=" + offerID + ", offerExpiry=" + offerExpiry + ", daID=" + daID + ", walletName=" + walletName + "]";
+		}
+		
+		
 	}
 	
 	class BalInfo {
