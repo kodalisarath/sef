@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.fulfillment.profiles.smart;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -129,8 +130,9 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 			LOGGER.error("Installing new subscriber failed!!", e1);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
-		returned.add(e);
 		
+		e.setMetas(new HashMap<String, String>());
+		returned.add(e);
 		return returned;	
 	}
 
