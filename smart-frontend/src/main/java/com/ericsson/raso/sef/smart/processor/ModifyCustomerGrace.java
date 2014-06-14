@@ -59,6 +59,8 @@ public class ModifyCustomerGrace implements Processor {
 			if(subscriberObj ==  null)
 				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 			
+			if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0)
+				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 			logger.info("Recieved a SubscriberInfo Object and it is not null");
 			logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 			if(ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberObj.getSubscriber().getContractState().toString()))
@@ -128,6 +130,7 @@ public class ModifyCustomerGrace implements Processor {
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		//SubscriberResponseStore.get(requestId);
 		return subscriberInfo;
 	}
 }

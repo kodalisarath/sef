@@ -38,6 +38,17 @@ public class ModifyCustomerPreActive implements Processor {
 		metas.add(new Meta("customerId",String.valueOf(request.getCustomerId())));
 		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
 		SubscriberInfo subscriberInfo=null;
+		
+		//ISubscriberResponse response=
+		if(subscriberObj ==  null)
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		
+		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0)
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		logger.info("Recieved a SubscriberInfo Object and it is not null");
+		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
+		
+		
 		if(ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberObj.getSubscriber().getContractState().toString())){
 			
 			String date=subscriberObj.getSubscriber().getMetas().get("activeEndDate");
