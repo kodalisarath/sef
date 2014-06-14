@@ -21,6 +21,37 @@
 		<property key="pasaloadRules" value="id=pasa15,name=Pasaload(15PHP),aPartyCountThreshold=5,aPartyAmountThreshold=65,bPartyCountThreshold=10,bPartyAmountThreshold=30;id=pasa45,name=Pasaload(45PHP),aPartyCountThreshold=2,aPartyAmountThreshold=90,bPartyCountThreshold=3,bPartyAmountThreshold=30;"/>
 	</section>
 	
+	<section id="SMART_pasaLoad" description="SMART Pasa Load, Ask 4 Load services">
+		<property key="PasaloadP2" value="-1" />
+		<property key="PasaloadP5" value="-1" />
+		<property key="PasaloadP10" value="-1" />
+		<property key="PasaloadP15" value="-1" />
+		<property key="PasaloadP20" value="10" />
+		<property key="PasaloadP30" value="7" />
+		<property key="PasaloadP35" value="-1" />
+		<property key="PasaloadP60" value="4" />
+		<property key="PasaloadP100" value="-1" />
+		<property key="PasaloadP200" value="-1" />
+		<property key="EgamePasaloadP2" value="-1" />
+		<property key="EgamePasaloadP5" value="-1" />
+		<property key="EgamePasaloadP10" value="-1" />
+		<property key="EgamePasaloadP15" value="-1" />
+		<property key="EgamePasaloadP20" value="-1" />
+		<property key="EgamePasaloadP30" value="-1" />
+		<property key="EgamePasaloadP60" value="-1" />
+		<property key="EgamePasaloadP100" value="-1" />
+		<property key="EgamePasaloadP200" value="-1" />
+		<property key="HellowPasaloadP10" value="-1" />
+		<property key="HellowPasaloadP15" value="-1" />
+		<property key="HellowPasaloadP20" value="10" />
+		<property key="HellowPasaloadP30" value="7" />
+		<property key="HellowPasaloadP60" value="4" />
+		<property key="HellowPasaloadP100" value="-1" />
+		<property key="HellowPasaloadP200" value="-1" />
+		<property key="Ask4LoadP5" value="-1"/>
+	</section>
+
+	
 	<section id="GLOBAL_walletMapping" description="smart wallet mapping">
 		<property key="1001" value="OnPeakAccountID" />
 		<property key="1002" value="RwdMocTri" />
