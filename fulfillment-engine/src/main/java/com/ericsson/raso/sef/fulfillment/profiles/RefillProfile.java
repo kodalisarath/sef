@@ -119,8 +119,8 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			responseDetails.put("ACC_BEFORE_DA_ID." + ++index, "" + daInfo.getDedicatedAccountID());
 			responseDetails.put("ACC_BEFORE_DA_VALUE." + index, "" + daInfo.getDedicatedAccountValue1());
 		}
-		responseDetails.put("ACC_BEFORE_SERVICE_FEE_EXPIRY_DATE.", "" + accBef.getServiceFeeExpiryDate().getTime());
-		responseDetails.put("ACC_BEFORE_SUPERVISION_EXPIRY_DATE.", "" + accBef.getSupervisionExpiryDate().getTime());
+		responseDetails.put("ACC_BEFORE_SERVICE_FEE_EXPIRY_DATE", "" + accBef.getServiceFeeExpiryDate().getTime());
+		responseDetails.put("ACC_BEFORE_SUPERVISION_EXPIRY_DATE", "" + accBef.getSupervisionExpiryDate().getTime());
 	
 		index = 0;
 		for (OfferInformation offerInfo: accBef.getOfferInformationList()) {
@@ -135,8 +135,8 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			responseDetails.put("ACC_AFTER_DA_ID." + ++index, "" + daInfo.getDedicatedAccountID());
 			responseDetails.put("ACC_AFTER_DA_VALUE." + index, "" + daInfo.getDedicatedAccountValue1());
 		}
-		responseDetails.put("ACC_AFTER_SERVICE_FEE_EXPIRY_DATE.", "" + accAft.getServiceFeeExpiryDate().getTime());
-		responseDetails.put("ACC_AFTER_SUPERVISION_EXPIRY_DATE.", "" + accAft.getSupervisionExpiryDate().getTime());
+		responseDetails.put("ACC_AFTER_SERVICE_FEE_EXPIRY_DATE", "" + accAft.getServiceFeeExpiryDate().getTime());
+		responseDetails.put("ACC_AFTER_SUPERVISION_EXPIRY_DATE", "" + accAft.getSupervisionExpiryDate().getTime());
 	
 		index = 0;
 		for (OfferInformation offerInfo: accAft.getOfferInformationList()) {
