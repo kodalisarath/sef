@@ -343,6 +343,11 @@ public class CARecharge implements Processor {
 	}
 	
 	
+	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER_ID = "READ_SUBSCRIBER_OFFER_ID";
+	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE = "READ_SUBSCRIBER_START_DATE";
+	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE = "READ_SUBSCRIBER_EXPIRY_DATE";
+	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME = "READ_SUBSCRIBER_START_DATE_TIME";
+	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME = "READ_SUBSCRIBER_EXPIRY_DATE_TIME";
 
 
 	private void checkGraceAndLongestExpiryDate() {
@@ -365,7 +370,7 @@ public class CARecharge implements Processor {
 					subscriberOffers.put(keyPart[1], oInfo);
 				}
 
-				if (keyPart[0].startsWith("READ_SUBSCRIBER_OFFER_INFO_OFFER_ID")) {
+				if (keyPart[0].startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID)) {
 					logger.debug("FLEXI:: OFFER_ID....");
 					oInfo.offerID = subscriberMetas.get(key);
 					oInfo.daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
@@ -378,7 +383,7 @@ public class CARecharge implements Processor {
 					}
 				}
 
-				if (keyPart[0].startsWith("READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE")) {
+				if (keyPart[0].startsWith(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE)) {
 					logger.debug("FLEXI:: EXPIRY_DATE...");
 					oInfo.offerExpiry = Long.parseLong(subscriberMetas.get(key));
 
