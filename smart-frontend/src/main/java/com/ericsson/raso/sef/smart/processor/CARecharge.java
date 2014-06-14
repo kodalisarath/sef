@@ -25,6 +25,10 @@ import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.PasaloadRule;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
+import com.ericsson.raso.sef.smart.commons.WalletOfferMapping;
+import com.ericsson.raso.sef.smart.commons.WalletOfferMappingHelper;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.RechargeRequest;
@@ -48,6 +52,8 @@ public class CARecharge implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(CARecharge.class);
 	private static final ThreadLocal<String> eventClassCache = new ThreadLocal<String>();
 	private static final ThreadLocal<Subscriber> subscriberCache = new ThreadLocal<Subscriber>();
+	private static final ThreadLocal<Map<String, String>> requestContextCache = new ThreadLocal<Map<String, String>>();
+	private static final ThreadLocal<Map<String, OfferInfo>> subscriberOffersCache = new ThreadLocal<Map<String, OfferInfo>>();
 	
 	private static final String REVERSAL_DEDICATED_ACCOUNT_ID = "REVERSAL_DEDICATED_ACCOUNT_ID";
 	private static final String REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE = "REVERSAL_BALANCES_DEDICATED_ACCOUNT_NEW_VALUE";
@@ -76,7 +82,7 @@ public class CARecharge implements Processor {
 			String msisdn = rechargeRequest.getCustomerId();
 			String offerid= null;
 			String requestId = null;
-			Map<String, String> metas = null;
+			Map<String, String> metas = new HashMap<String, String>();
 			
 			logger.debug("Finished preparing params....");
 			
@@ -84,8 +90,7 @@ public class CARecharge implements Processor {
 				throw new SmException(new ResponseCode(8002, "CustomerId or AccesKey is not defined in input parameter"));
 			}
 			
-//			//TODO: Subscriber validation/caching goes here
-			
+			requestContextCache.set(metas);
 			
 			logger.debug("Getting event class....");
 			String eventClass = rechargeRequest.getEventClass();
@@ -201,6 +206,17 @@ public class CARecharge implements Processor {
 
 
 	private Map<String, String> prepareFlexibleRecharge(RechargeRequest rechargeRequest) throws SmException {
+		Map<String, String> requestContext = requestContextCache.get();
+		requestContext.put("amountOfUnits", "" + rechargeRequest.getAmountOfUnits());
+		requestContext.put("externalData1", "" + rechargeRequest.getEventName());
+		requestContext.put("externalData2", "" + rechargeRequest.getEventInfo());
+		requestContext.put("channelName", "" + rechargeRequest.getRatingInput0());
+		requestContext.put("walletName", "" + rechargeRequest.getRatingInput1());
+		requestContext.put("expirationDatePolicy", "" + rechargeRequest.getRatingInput2());
+		requestContext.put("daysOfExtension", "" + rechargeRequest.getRatingInput3());
+		requestContext.put("absoluteDate", "" + rechargeRequest.getRatingInput4());
+		
+		
 		/*
 		 * Step 1: GetAccountDetails first....
 		 *  - Collect all DA
@@ -210,50 +226,193 @@ public class CARecharge implements Processor {
 		 */
 		
 		this.partialReadSubscriber(rechargeRequest.getCustomerId());
+		this.checkGraceAndLongestExpiryDate();
 		
+	/*	 Step 2: Evaluate the Flexible request
+		   - Event Class should be "flexible"
+		   - Amount of Unit - Units to be recharged
+		   - Input 0 is channel
+		   - Input 1 is "Wallet Name"
+		   - Input 2 (Expiration date policy):
+		    if 0
+		     then set the expiry date as "absolute date" as, mentioned in input 4
+		    if 1
+		     then set it relative to the expiry date of the offer
+		    if 2 
+		     then no change in expiry date
+		    if 3 
+		     then set it relative to the current date of the offer
+		     
+		   Input 3 (relative days extension):
+		    - If Input 2 is (1 or 3)
+		     Then consider it and use "No. of days" to be extended
+		    - Else ignore
+		   - Input 4 (Absolute Date) 
+		    - If Input 2 is (0)
+		     - Then consider it and set the expiry dates to absolute datetime sent here.
+		     - The value sent here is dateitme in Unixtime (EPOCH)
+		    - Else ignore
 		
+		*/
 		
-		
-		Map<String, String> map = new HashMap<String, String>();
-		
-		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
-		map.put(Constants.TX_TYPE, rechargeRequest.getRatingInput0());
-		map.put(Constants.TX_CODE, rechargeRequest.getEventName());
-		map.put(SmartConstants.EXPIRY_POLICY, rechargeRequest.getRatingInput2());
-
-		int expiryDatePolicy = Integer.valueOf(rechargeRequest.getRatingInput2());
-		switch (expiryDatePolicy) {
-		case 0://absolute
-			map.put(SmartConstants.EXPIRY_DATE, rechargeRequest.getRatingInput4());
-			break;
-		case 2://No change to expiry date. days of extension = 0
-			map.put(SmartConstants.EXPIRY_DAYS_OF_EXTENSION, String.valueOf(0));
-			break;
-		case 3://releative to current date (make it absolute) 
-		case 1://releative to expiry date
-		case 4:// 
-			map.put(SmartConstants.EXPIRY_DAYS_OF_EXTENSION, rechargeRequest.getRatingInput3());
-			break;
-		default:
-			break;
+		long currentExpiryDate = Long.parseLong(requestContext.get("longestExpiry"));
+		switch (rechargeRequest.getRatingInput2()) {
+			case "0": // ABSOLUTE DATE SCENARIO
+				long requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
+				if (requestedExpiryDate > currentExpiryDate) {
+					requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
+					requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
+					requestContext.put("longestExpiry", "" + requestedExpiryDate);
+				}
+				logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate);
+				break;
+			case "1": // relative to current expiry date
+				boolean found = false;
+				Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
+				for (OfferInfo oInfo: subscriberOffers.values()) {
+					if (oInfo.walletName.equals(rechargeRequest.getRatingInput1())) {
+						long newExpiryDate = oInfo.offerExpiry + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
+						if (newExpiryDate > currentExpiryDate) {
+							requestContext.put("supervisionExpiryPeriod", "" + newExpiryDate);
+							requestContext.put("serviceFeeExpiryPeriod", "" + newExpiryDate);
+							requestContext.put("longestExpiry", "" + newExpiryDate);
+							found = true;
+							logger.debug("Found the right offer: " + oInfo.offerID + ", wallet: " + oInfo.walletName );
+						}
+					}
+				}
+				
+				if (!found) {
+					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
+					WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(rechargeRequest.getRatingInput1());
+					 String requiredOfferID = offerMapping.getOfferID();
+					 String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
+					 
+					 long startTime = new Date().getTime();
+					 long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
+					 if (endTime > currentExpiryDate) {
+							requestContext.put("supervisionExpiryPeriod", "" + endTime);
+							requestContext.put("serviceFeeExpiryPeriod", "" + endTime);
+							requestContext.put("longestExpiry", "" + endTime);
+					 }
+					 requestContext.put("newDaID", requiredDA);
+					 requestContext.put("newOfferID", requiredOfferID);
+					 requestContext.put("daStartTime", "" + startTime);
+					 requestContext.put("daEndTime", "" + endTime);
+				}
+				break;
+			case "3": // relative to current date
+				found = false;
+				subscriberOffers = subscriberOffersCache.get();
+				for (OfferInfo oInfo: subscriberOffers.values()) {
+					if (oInfo.walletName.equals(rechargeRequest.getRatingInput1())) {
+						long newExpiryDate = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
+						if (newExpiryDate > currentExpiryDate) {
+							requestContext.put("supervisionExpiryPeriod", "" + newExpiryDate);
+							requestContext.put("serviceFeeExpiryPeriod", "" + newExpiryDate);
+							requestContext.put("longestExpiry", "" + newExpiryDate);
+							found = true;
+							logger.debug("Found the right offer: " + oInfo.offerID + ", wallet: " + oInfo.walletName );
+						}
+					}
+				}
+				
+				if (!found) {
+					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
+					WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(rechargeRequest.getRatingInput1());
+					 String requiredOfferID = offerMapping.getOfferID();
+					 String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
+					 
+					 long startTime = new Date().getTime();
+					 long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
+					 if (endTime > currentExpiryDate) {
+							requestContext.put("supervisionExpiryPeriod", "" + endTime);
+							requestContext.put("serviceFeeExpiryPeriod", "" + endTime);
+							requestContext.put("longestExpiry", "" + endTime);
+					 }
+					 requestContext.put("newDaID", requiredDA);
+					 requestContext.put("newOfferID", requiredOfferID);
+					 requestContext.put("daStartTime", "" + startTime);
+					 requestContext.put("daEndTime", "" + endTime);
+				}
+				break;
 		}
-
-		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
-		if(rechargeRequest.getEventInfo() != null) {
-			map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
-		}
-		map.put(SmartConstants.USECASE, "recharge");
-
-		return map;
+		
+		return requestContext;
 	}
 	
+	
+
+
+	private void checkGraceAndLongestExpiryDate() {
+		Map<String, String> requestContext = requestContextCache.get();
+		
+		Subscriber subscriber = subscriberCache.get();
+		Map<String, String> subscriberMetas = subscriber.getMetas();
+		
+		OfferInfo oInfo = null; long longestExpiry = 0; OfferInfo endurantOffer = null;
+		Map<String, OfferInfo> subscriberOffers = new HashMap<String, CARecharge.OfferInfo>(); 
+		for (String key: subscriberMetas.keySet()) {
+			String[] keyPart = key.split(".");
+			if (subscriberOffers.containsKey(keyPart[1])) {
+				oInfo = subscriberOffers.get(keyPart[1]);
+			} else {
+				oInfo = new OfferInfo();
+				subscriberOffers.put(keyPart[1], oInfo);
+			}
+			
+			if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_OFFER_ID")) {
+				oInfo.offerID = subscriberMetas.get(key);
+				oInfo.daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+				oInfo.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
+				
+				if (oInfo.offerID.equals("2"))
+					requestContext.put("inGrace", "true");
+			}
+			
+			if (keyPart[0].equals("READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE")) {
+				oInfo.offerExpiry = Long.parseLong(subscriberMetas.get(key));
+				
+				if (longestExpiry < oInfo.offerExpiry) {
+					longestExpiry = oInfo.offerExpiry;
+					endurantOffer = oInfo;
+				}
+			}
+		}
+		
+		requestContext.put("longestExpiry", "" + longestExpiry);
+		requestContext.put("endurantOfferID", endurantOffer.offerID);
+		requestContext.put("endurantDA", "" + endurantOffer.daID);
+		
+		subscriberOffersCache.set(subscriberOffers);
+	}
+
+
 	private void partialReadSubscriber(String customerId) throws SmException {
-		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta("msisdn", customerId));
+		Map<String, String> metas = requestContextCache.get();
+		metas.put("msisdn", customerId);
+		metas.put("SUBSCRIBER_ID", customerId);
+		metas.put("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER");
+		
 		
 		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		//subscriberRequest.readSubscriber(UniqueIdGenerator.generateId(), customerId, metas);
-		throw new SmException(new ResponseCode(999, "Not Ready Yet"));
+		String requestId = subscriberRequest.readSubscriber(UniqueIdGenerator.generateId(), customerId, convertToList(metas));
+		
+		SubscriberResponseStore.put(requestId, new SubscriberInfo());
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+
+		}
+		logger.info("Check if response received for update subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		if (subscriberInfo.getStatus() != null)
+			throw new SmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
+		
+		subscriberCache.set(subscriberInfo.getSubscriber());
+
 		
 	}
 
@@ -537,6 +696,14 @@ public class CARecharge implements Processor {
 		}
 		return metaList;
 		
+	}
+	
+	
+	class OfferInfo {
+		private String offerID;
+		private long offerExpiry;
+		private String daID;
+		private String walletName;
 	}
 	
 	class BalInfo {
