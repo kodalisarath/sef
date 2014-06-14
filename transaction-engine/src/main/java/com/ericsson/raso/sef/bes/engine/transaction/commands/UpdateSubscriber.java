@@ -53,9 +53,11 @@ public class UpdateSubscriber extends AbstractTransaction {
 			switch(useCaseProcess){
 			
 case Constants.CreateOrWriteROP: 
-	
 case Constants.CreateOrWriteServiceAccessKey:
 case Constants.VersionCreateOrWriteRop:
+case Constants.BucketCreateOrWriteRop:
+case Constants.VersionCreateOrWriteCustomer:
+	
 	            LOGGER.debug("called createorwrite case in transaction manager");
 	          // This entity must contains the subscriber and his meta from the DB
 				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
@@ -69,7 +71,7 @@ case Constants.VersionCreateOrWriteRop:
 					LOGGER.debug("Printing Subscriber entity "+subscriberEntity.toString());
 					LOGGER.debug("Subscriber exists and checking for the preactive state");
 					LOGGER.debug("checking if this equals working fine ");
-					if (ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState())) {
+					if (ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState().getName())) {
 						LOGGER.debug("It is PRE_ACTIVE state");
 						for (Meta meta : listMetas) {
 							if (subscriberEntity.getMetas().contains(meta)) {
@@ -97,7 +99,7 @@ case Constants.VersionCreateOrWriteRop:
 						sendResponse();
 					}
 				}
-				
+				break;
 case Constants.ModifyCustomerPreActive:	
 case Constants.ModifyCustomerGrace:
 	LOGGER.debug("Invoked ModifyCustomer Case");
@@ -107,20 +109,21 @@ case Constants.ModifyCustomerGrace:
 			subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 		}
     }
-	
+	break;
 case Constants.SubscribePackageItem:
 	LOGGER.debug("Invoked SubscribePackageItem ");
 for(Meta meta:listMetas){
 	subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 		
     }
+break;
 	
 case Constants.UnSubscribePackageItem:
 	LOGGER.debug("Invoked SubscribePackageItem ");
 	for(Meta meta:listMetas){
 		subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 	}
-	
+	break;
 	
 case Constants.ModiFyTagging:
 	LOGGER.debug("Invoked ModifyTagging Case");
@@ -193,10 +196,7 @@ case Constants.ModiFyTagging:
         }
 	}
 	
-	
-	
-	
-	sendResponse();
+	break;
 			}
 			
 			LOGGER.debug("Got Persistable Entity: Subscriber: "

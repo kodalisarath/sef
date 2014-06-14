@@ -40,7 +40,7 @@ public class BucketCreateOrWriteRop implements Processor {
 				.getOnPeakAccountID_FU()));
 		metas.add(new Meta("messageId", String.valueOf(request.getMessageId())));
 		String requestId = RequestContextLocalStore.get().getRequestId();
-		SubscriberInfo subscriberInfo=updateSubscriber(requestId, request.getCustomerId(), metas,Constants.ModifyCustomerPreActive);
+		SubscriberInfo subscriberInfo=updateSubscriber(requestId, request.getCustomerId(), metas,Constants.BucketCreateOrWriteRop);
 		exchange.getOut().setBody(subscriberInfo);
 		if (subscriberInfo.getStatus() != null) {
 			
