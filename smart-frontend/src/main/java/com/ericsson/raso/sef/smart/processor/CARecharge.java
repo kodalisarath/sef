@@ -556,7 +556,7 @@ public class CARecharge implements Processor {
 			
 			if (meta.getKey().contains(".")) {
 				logger.debug("PREDEFINED::Processing recursive key: " + meta.getKey());
-				String[] keyPart = meta.getKey().split(".");
+				String[] keyPart = meta.getKey().split("\\.");
 				logger.debug("PREDEFINED:: Split Key - keyPart size: " + keyPart.length);
 				if (keyPart[0].contains("BEFORE_")) {
 					if (!beforeEntries.containsKey(keyPart[1])) {
