@@ -67,5 +67,13 @@ public class OfferInformation extends NativeAirResponse {
 	public void setExpiryDateTime(Date expiryDateTime) {
 		this.expiryDateTime = expiryDateTime;
 	}
+
+	@Override
+	public String toString() {
+		return "OfferInformation [offerID=" + offerID + ", startDate=" + startDate + ", expiryDate=" + expiryDate + ", startDateTime="
+				+ startDateTime + ", expiryDateTime=" + expiryDateTime + "]";
+	}
+	
+	
 	
 }
