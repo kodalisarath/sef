@@ -605,9 +605,12 @@ public class CARecharge implements Processor {
 		
 		// Calculate...
 		logger.debug("PREDEFINED:: About process extracted entries. Before " + beforeEntries.size() + ", After " + afterEntries.size());
+		
 		for (String key: beforeEntries.keySet()) {
 			BalInfo before = beforeEntries.get(key);
+			logger.debug("Before Entry: " + before);
 			BalInfo after = afterEntries.get(key);
+			logger.debug("After Entry: " + after);
 			
 			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", before.offerId) + "s_PeriodicBonus";
 			int daBalanceDiff = after.daValue - before.daValue;
