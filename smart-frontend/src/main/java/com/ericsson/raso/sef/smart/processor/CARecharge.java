@@ -363,9 +363,12 @@ public class CARecharge implements Processor {
 			if (key.contains(".")) {
 				logger.debug("FLEXI:: Am I in recursive index loop?/?   " + key);
 				String[] keyPart = key.split("\\.");
+				logger.debug("FLEXI:: split? keyParts size: " + keyPart.length);
 				if (subscriberOffers.containsKey(keyPart[1])) {
+					logger.debug("FLEXI:: existing index:" + keyPart[1]);
 					oInfo = subscriberOffers.get(keyPart[1]);
 				} else {
+					logger.debug("FLEXI:: new index: " + keyPart[1]);
 					oInfo = new OfferInfo();
 					subscriberOffers.put(keyPart[1], oInfo);
 				}
