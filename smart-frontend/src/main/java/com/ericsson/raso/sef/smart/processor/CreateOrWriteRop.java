@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
-import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
@@ -33,7 +33,7 @@ public class CreateOrWriteRop implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		try {
+	
 
 			logger.info("CreateOrWriteRop: process()");
 			CreateOrWriteRopRequest request = (CreateOrWriteRopRequest) exchange
@@ -84,17 +84,13 @@ public class CreateOrWriteRop implements Processor {
 
 			SubscriberInfo subscriberInfo = updateSubscriber(requestId,
 					request.getCustomerId(), metas,Constants.CreateOrWriteROP);
-			exchange.getOut().setBody(subscriberInfo);
 		if (subscriberInfo.getStatus() != null) {
-			
-			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+			logger.error("Response about to send with SOAP ",subscriberInfo.getStatus().getDescription());
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+			/*throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));*/
 			
 		}
 		DummyProcessor.response(exchange);
-		}catch (Exception e) {
-			logger.error("Error in the processor:", e.getClass().getName(), e);
-		}
-
 	}
 
 	private CommandResponseData createResponse(String operationName,
@@ -141,20 +137,7 @@ public class CreateOrWriteRop implements Processor {
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
 				.remove(requestId);
-		/*if (subscriberInfo != null) {
-			
-				if (subscriberInfo.getStatus().getCode() > 0) {
-					if (subscriberInfo.getStatus().getCode() != 504) {
-						if (!ContractState.PREACTIVE.name().equals(
-								subscriberInfo.getLocalState())) {
-							logger.debug("Before sending response preparing a response code");
-							ResponseCode responseCode = new ResponseCode(4020,
-									"Invalid Operation State");
-							throw new SmException(responseCode);
-						}
-					}
-				}
-		}*/
+		
 		return subscriberInfo;
 	}
 

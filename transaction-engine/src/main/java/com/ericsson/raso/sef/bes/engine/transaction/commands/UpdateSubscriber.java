@@ -11,14 +11,12 @@ import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberResponse;
-import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.ContractState;
-import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
@@ -47,7 +45,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 			if (subscriberStore == null) {
 				LOGGER.error("Unable to access persistence tier service!!");
 				this.getResponse().setReturnFault(new TransactionException(this.getRequestId(),new ResponseCode(1006,"Unable to access persistence tier service!! Check configuration (beans.xml)")));
-				return false;
+				sendResponse();
 			}
 			List<Meta> listMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
 			String useCaseProcess = ((UpdateSubscriberRequest) this.getRequest()).getRequestUseCase();
@@ -58,7 +56,7 @@ case Constants.CreateOrWriteROP:
 	
 case Constants.CreateOrWriteServiceAccessKey:
 case Constants.VersionCreateOrWriteRop:
-	
+	            LOGGER.debug("called createorwrite case in transaction manager");
 	          // This entity must contains the subscriber and his meta from the DB
 				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 				
@@ -67,8 +65,8 @@ case Constants.VersionCreateOrWriteRop:
 					LOGGER.error("Subscriber not found in database");
 					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
 					sendResponse();
-					return false;
 				} else {
+					LOGGER.debug("Subscriber exists and checking for the preactive state");
 					if (ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberEntity.getContractState().toString())) {
 						for (Meta meta : listMetas) {
 							if (subscriberEntity.getMetas().contains(meta)) {
