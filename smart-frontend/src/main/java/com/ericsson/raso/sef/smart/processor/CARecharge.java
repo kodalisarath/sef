@@ -468,7 +468,7 @@ public class CARecharge implements Processor {
 			result.setOperationResult(operationResult);
 		}
 		
-		if( response != null && response.getFault().getCode() > 0) {
+		if( response != null && response.getFault() != null && response.getFault().getCode() > 0) {
 			logger.info("No products found in the response");
 			ResponseCode responseCode=new ResponseCode(response.getFault().getCode(), response.getFault().getDescription());
 			throw new SmException(responseCode);
