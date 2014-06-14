@@ -50,7 +50,7 @@ public class VersionCreateOrWriteCustomer implements Processor {
 			// functional service logic to be ported here [Porting work]
 			String customerId = versionCreateOrWriteCustomerRequest.getCustomerId();
 			
-			SubscriberInfo subscriberInfo = updateSubscriber(requestId,versionCreateOrWriteCustomerRequest.getCustomerId(), metas,Constants.ModifyCustomerPreActive);
+			SubscriberInfo subscriberInfo = updateSubscriber(requestId,versionCreateOrWriteCustomerRequest.getCustomerId(), metas,Constants.VersionCreateOrWriteCustomer);
 			exchange.getOut().setBody(subscriberInfo);
 		if (subscriberInfo.getStatus() != null) {
 			

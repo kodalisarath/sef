@@ -90,7 +90,8 @@ public class CreateOrWriteRop implements Processor {
 			/*throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));*/
 			
 		}
-		DummyProcessor.response(exchange);
+		//DummyProcessor.response(exchange);
+		exchange.getOut().setBody(subscriberInfo);
 	}
 
 	private CommandResponseData createResponse(String operationName,
