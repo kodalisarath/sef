@@ -538,12 +538,13 @@ public class CARecharge implements Processor {
 		long afterServiceFeeExpiry = 0;
 		long afterSupervisionFeeExpiry = 0;
 		
-		logger.debug("Processing Refill Metas: " + response.getBillingMetas());
+		logger.debug("PREDEFINED:: Processing Refill Metas: " + response.getBillingMetas());
 		String index = "1"; BalInfo balInfo = null;
 		Map<String, BalInfo> beforeEntries = new HashMap<String, CARecharge.BalInfo>();
 		Map<String, BalInfo> afterEntries = new HashMap<String, CARecharge.BalInfo>();
 		
 		for (Meta meta: response.getBillingMetas()) {
+			logger.debug("PREDEFINED::Next Meta: " + meta.getKey());
 			if (meta.getKey().equals("ACC_BEFORE_SERVICE_FEE_EXPIRY_DATE")) 
 				beforeServiceFeeExpiry = Long.parseLong(meta.getValue());
 			if (meta.getKey().equals("ACC_BEFORE_SUPERVISION_EXPIRY_DATE")) 
@@ -554,19 +555,24 @@ public class CARecharge implements Processor {
 				afterSupervisionFeeExpiry = Long.parseLong(meta.getValue());
 			
 			if (meta.getKey().contains(".")) {
+				logger.debug("PREDEFINED::Processing recursive key: " + meta.getKey());
 				String[] keyPart = meta.getKey().split(".");
 				if (keyPart[0].contains("BEFORE_")) {
 					if (!beforeEntries.containsKey(keyPart[1])) {
+						logger.debug("BPREDEFINED::efore Enties: Existing Index: " + keyPart[1]);
 						balInfo = new BalInfo();
 						beforeEntries.put(keyPart[0], balInfo);
 					} else {
+						logger.debug("PREDEFINED::Before Enties: New Index: " + keyPart[1]);
 						balInfo = beforeEntries.get(keyPart[1]);
 					}	
 				} else if (keyPart[0].contains("AFTER_")) {
 					if (!afterEntries.containsKey(keyPart[1])) {
+						logger.debug("PREDEFINED::After Enties: Existing Index: " + keyPart[1]);
 						balInfo = new BalInfo();
 						afterEntries.put(keyPart[0], balInfo);
 					} else {
+						logger.debug("PREDEFINED::After Enties: New Index: " + keyPart[1]);
 						balInfo = afterEntries.get(keyPart[1]);
 					}	
 				}
@@ -594,11 +600,15 @@ public class CARecharge implements Processor {
 
 				if (meta.getKey().startsWith("ACC_AFTER_OFFER_EXPIRY_DATE")) 
 					balInfo.offerExpiry = ((meta.getValue() != null) ?Long.parseLong(meta.getValue()): 0);
+				
+				logger.debug("PREDEFINED::Building up BalInfo: " + balInfo);
+				logger.debug("PREDEFINED::Before Entries Size: " + beforeEntries.size() + ", After Entries Size: " + afterEntries.size());
 			}
 
 		}
 		
 		// Calculate...
+		logger.debug("PREDEFINED:: About process extracted entries. Before " + beforeEntries.size() + ", After " + afterEntries.size());
 		for (String key: beforeEntries.keySet()) {
 			BalInfo before = beforeEntries.get(key);
 			BalInfo after = afterEntries.get(key);
@@ -612,9 +622,9 @@ public class CARecharge implements Processor {
 			StringElement stringElement = new StringElement();
 			stringElement.setValue(responseEntry);
 			listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
-			logger.debug("Adding response item to CARecharge: " + responseEntry);		
+			logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);		
 		}
-		logger.debug("Done with the processing of Refill reponse...");
+		logger.debug("PREDEFINED:: Done with the processing of Refill reponse...");
 		return;
 	}
 
