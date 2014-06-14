@@ -12,6 +12,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.InfiniteTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.NoTermination;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
+import com.ericsson.raso.sef.bes.prodcat.entities.Price;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.Service;
 import com.ericsson.raso.sef.bes.prodcat.entities.State;
@@ -79,6 +80,14 @@ public class BusinessConfigurationTool {
 			handles = new ArrayList<String>();
 			handles.add("READ_SUBSCRIBER");
 			bizConfig = this.getSimpleBcWorkflow("ENTIRE_READ_SUBSCRIBER", "Entire Read SmartTnt Subsriber", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+			
+			System.out.println("Offer, Resource & Profile - CUSTOMER_INFO_CHARGE...");
+			resource = this.createSmartEntireReadProfile("CUSTOMER_INFO_CHARGE", "Entire Read Subscriber");
+			handles = new ArrayList<String>();
+			handles.add("CUSTOMER_INFO_CHARGE");
+			bizConfig = this.getSimpleOffer("CUSTOMER_INFO_CHARGE", "Entire Read SmartTnt Subsriber", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
@@ -341,6 +350,31 @@ public class BusinessConfigurationTool {
 		templatedOffer.setRecurrent(false);
 		templatedOffer.setTrialPeriod(new InfiniteTime());
 		templatedOffer.setCommercial(false);
+
+		for (String handle: handles)
+			templatedOffer.addExternalHandle(handle);
+
+		AtomicProduct product = new AtomicProduct(name);
+		product.setQuota(new UnlimitedQuota());
+		product.setResource(resource);
+		product.setValidity(new InfiniteTime());
+
+		templatedOffer.addProduct(product);
+
+		return templatedOffer;
+	}
+	
+	public Offer getSimpleOffer(String name, String description, List<String> handles, Resource resource) throws CatalogException {
+		Offer templatedOffer = new Offer(name);
+		templatedOffer.setDescription(description);
+		templatedOffer.setAutoTermination(new NoTermination());
+		templatedOffer.setRenewalPeriod(new InfiniteTime());
+		templatedOffer.setOfferState(State.TESTING);
+		templatedOffer.setOfferState(State.PUBLISHED);
+		templatedOffer.setRecurrent(false);
+		templatedOffer.setTrialPeriod(new InfiniteTime());
+		templatedOffer.setCommercial(true);
+		templatedOffer.setPrice(new Price("PHP", 100));
 
 		for (String handle: handles)
 			templatedOffer.addExternalHandle(handle);
@@ -792,6 +826,25 @@ public class BusinessConfigurationTool {
 
 	
 	public Resource createSmartEntireReadProfile(String name, String description) throws CatalogException
+	{
+		Resource resource = new Service(name);
+		resource.setDescription(description);
+		resource.setAbstract(false);
+		resource.setDiscoverable(false);
+		resource.setExternallyConsumed(false);
+		resource.setConsumable(false);
+		resource.setEnforcedMaxQuota(-1L);
+		resource.setEnforcedMinQuota(-1L);
+
+		EntireReadSubscriberProfile fulfillmentProfile = new EntireReadSubscriberProfile(name);
+
+		profileRegistry.createProfile(fulfillmentProfile);
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+
+		return resource;		
+	}
+
+	public Resource createSmartCusomerInfoChargeProfile(String name, String description) throws CatalogException
 	{
 		Resource resource = new Service(name);
 		resource.setDescription(description);
