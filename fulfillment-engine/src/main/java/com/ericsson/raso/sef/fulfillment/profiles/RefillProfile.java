@@ -1,9 +1,7 @@
 package com.ericsson.raso.sef.fulfillment.profiles;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,17 +16,12 @@ import com.ericsson.raso.sef.client.air.response.OfferInformation;
 import com.ericsson.raso.sef.client.air.response.RefillResponse;
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.ResponseCode;
-import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.CurrencyCode;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.sef.bes.api.entities.Product;
 
 public class RefillProfile extends BlockingFulfillment<Product> {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5706705833688931767L;
 	private String refillProfileId;
 
@@ -42,38 +35,6 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		super(name);
 	}
 	
-	
-	public String getRefillProfileId() {
-		return refillProfileId;
-	}
-
-	public void setRefillProfileId(String refillProfileId) {
-		this.refillProfileId = refillProfileId;
-	}
-
-	public Integer getRefillType() {
-		return refillType;
-	}
-
-	public void setRefillType(Integer refillType) {
-		this.refillType = refillType;
-	}
-
-	public String getTransactionAmount() {
-		return transactionAmount;
-	}
-
-	public void setTransactionAmount(String transactionAmount) {
-		this.transactionAmount = transactionAmount;
-	}
-
-	public CurrencyCode getTransactionCurrency() {
-		return transactionCurrency;
-	}
-
-	public void setTransactionCurrency(CurrencyCode transactionCurrency) {
-		this.transactionCurrency = transactionCurrency;
-	}
 
 
 	@Override
@@ -88,6 +49,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		refillRequest.setRefType(this.refillType);
 		refillRequest.setTransacAmount(this.transactionAmount);
 		refillRequest.setTransacCurrency(this.transactionCurrency.name());
+		refillRequest.setRefAccBeforeFlag(true);
 		
 		String extData1 = map.get(Constants.EX_DATA1);
 		if(extData1 != null) {
@@ -185,6 +147,41 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	}
 	
 
+	
+	public String getRefillProfileId() {
+		return refillProfileId;
+	}
+
+	public void setRefillProfileId(String refillProfileId) {
+		this.refillProfileId = refillProfileId;
+	}
+
+	public Integer getRefillType() {
+		return refillType;
+	}
+
+	public void setRefillType(Integer refillType) {
+		this.refillType = refillType;
+	}
+
+	public String getTransactionAmount() {
+		return transactionAmount;
+	}
+
+	public void setTransactionAmount(String transactionAmount) {
+		this.transactionAmount = transactionAmount;
+	}
+
+	public CurrencyCode getTransactionCurrency() {
+		return transactionCurrency;
+	}
+
+	public void setTransactionCurrency(CurrencyCode transactionCurrency) {
+		this.transactionCurrency = transactionCurrency;
+	}
+
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
