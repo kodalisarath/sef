@@ -77,7 +77,8 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			
 		}
-		exchange.getOut().setBody(subscriberInfo);
+		//exchange.getOut().setBody(subscriberInfo);
+		DummyProcessor.response(exchange);
 		
 
 	}
