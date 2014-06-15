@@ -27,7 +27,7 @@ public class Constants {
 	public static final String VersionCreateOrWriteRop = "VersionCreateOrWriteRop";
 	public static final String BucketCreateOrWriteRop = "BucketCreateOrWriteRop";
 	public static final String BalanceAdjustment = "BalanceAdjustment";
-	public static final String ModiFyTagging = "ModiFyTagging";
+	public static final String ModifyTagging = "ModifyTagging";
 	public static final String VersionCreateOrWriteCustomer = "VersionCreateOrWriteCustomer";
 	public static final String CreateOrWriteCustomer = "CreateOrWriteCustomer";
 	public static final String CreateOrWriteServiceAccessKey = "CreateOrWriteServiceAccessKey";

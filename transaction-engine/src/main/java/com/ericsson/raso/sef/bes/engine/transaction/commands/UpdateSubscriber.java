@@ -107,7 +107,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 			case Constants.ModifyCustomerGrace:
 				LOGGER.debug("Invoked ModifyCustomer Case");
 				for(Meta meta:listMetas){
-
+                  LOGGER.debug("In the for loop ");
 					if(meta.getKey().equalsIgnoreCase("daysOfExtension")){
 						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 					}
@@ -128,7 +128,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 				}
 				break;
 
-			case Constants.ModiFyTagging:
+			case Constants.ModifyTagging:
 				LOGGER.debug("Invoked ModifyTagging Case");
 				// This entity must contains the subscriber and his meta from the DB for modify tagging
 				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();

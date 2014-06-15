@@ -7,6 +7,8 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StructElement;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StructParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 
 public class BucketCreateOrWriteRopRequest extends SmartRequest {
@@ -90,10 +92,15 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				this.setCustomerId(parameter.getValue().trim());
+				if(parameter.getName().equalsIgnoreCase("CustomerId")){
+					this.setCustomerId(parameter.getValue().trim());
+				}
 			} else if (param instanceof EnumerationValueParameter) {
 				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
-				this.setCategory(parameter.getValue().trim());
+				if(parameter.getName().equalsIgnoreCase("category")){
+					this.setCategory(parameter.getValue().trim());
+				}
+				
 			} else if (param instanceof SymbolicParameter) {
 				SymbolicParameter parameter = (SymbolicParameter) param;
 				if (parameter.getName().equalsIgnoreCase("bValidFrom")) {
@@ -103,10 +110,21 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 				}
 			} else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
-				this.setKey(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("Key")){
+					this.setKey(parameter.getValue());
+				}
+				
 			} else if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
-				this.setMessageId(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("MessageId")){
+					this.setMessageId(parameter.getValue());
+				}
+				
+			} else if (param instanceof StructParameter) {
+				StructParameter parameter = (StructParameter) param;
+				if (parameter.getName().equalsIgnoreCase("OnPeakAccountID_FU")) {
+					this.setOnPeakAccountID_FU("2000"); // TODO Still have to parse struct. Not able to do it. Vinay, its your turn 
+				}
 			}
 		}
 	}

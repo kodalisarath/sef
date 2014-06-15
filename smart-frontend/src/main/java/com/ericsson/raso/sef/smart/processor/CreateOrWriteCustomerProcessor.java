@@ -63,7 +63,7 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		useCaseMetas.add(meta);
 		logger.debug("Usecase Metas: " + useCaseMetas);
 
-		// Subscriber...
+		// Subscriber...RequestContextLocalStore
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		Subscriber subscriber = new Subscriber();
 		subscriber.setMsisdn(request.getCustomerId());

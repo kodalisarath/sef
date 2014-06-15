@@ -10,7 +10,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 
 public class CreateOrWriteCustomerRequest extends SmartRequest {
 	private static final String CATEGORY = "category";
-	private static final String CUSTOMERID = "customerId";
+	private static final String CUSTOMERID = "CustomerId";
 	private String customerId;
 	private String category;
 	private int billCycleId;
@@ -60,19 +60,24 @@ public class CreateOrWriteCustomerRequest extends SmartRequest {
 				if(parameter.getName().equalsIgnoreCase(CUSTOMERID)) {
 					this.setCustomerId(parameter.getValue().trim());
 				}
-				if(parameter.getName().equalsIgnoreCase(CATEGORY)) {
-					this.setCategory(parameter.getValue().trim());
-				} 
 		    	} else if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
+				if(parameter.getName().equalsIgnoreCase("MessageId")){
+					this.setMessageId(parameter.getValue());
+				}
 				
-				this.setMessageId(parameter.getValue());
 			}else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
-				 this.setBillCycleId(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("billCycleId")){
+					this.setBillCycleId(parameter.getValue());
+				}
+				 
 			}else if(param instanceof EnumerationValueParameter){
 				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
-				this.setCategory(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("category")){
+					this.setCategory(parameter.getValue());
+				}
+				
 			}
 			
 		}

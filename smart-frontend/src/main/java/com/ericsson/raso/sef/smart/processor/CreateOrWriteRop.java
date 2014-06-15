@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.smart.ErrorCode;
@@ -38,6 +39,7 @@ public class CreateOrWriteRop implements Processor {
 			logger.info("CreateOrWriteRop: process()");
 			CreateOrWriteRopRequest request = (CreateOrWriteRopRequest) exchange
 					.getIn().getBody();
+			//logger.debug("");
 
 			// SubscriberManagement subscriberManagement =
 			// SmartContext.getSubscriberManagement();
@@ -53,7 +55,7 @@ public class CreateOrWriteRop implements Processor {
 						.convertISOToSimpleDateFormat(request
 								.getActiveEndDate())));
 			//These are not getting from the DB,
-
+OwningCustomerId
 			if (request.getGraceEndDate() != null)
 				metas.add(new Meta("graceEndDate",
 						DateUtil.convertISOToSimpleDateFormat(request
@@ -62,7 +64,7 @@ public class CreateOrWriteRop implements Processor {
 			String preActiveEndDate = DateUtil
 					.convertISOToSimpleDateFormat(request.getPreActiveEndDate());
 
-			if (request.getPreActiveEndDate() != null)
+			
 			metas.add(new Meta("PreActiveEndDate", String.valueOf(preActiveEndDate)));
 			metas.add(new Meta("FirstCallDate", request.getFirstCallDate()));
 			metas.add(new Meta("IsFirstCallPassed", String.valueOf(request.getIsFirstCallPassed())));
@@ -81,12 +83,10 @@ public class CreateOrWriteRop implements Processor {
 			// metas);
 			String requestId = RequestContextLocalStore.get().getRequestId();
 
-			SubscriberInfo subscriberInfo = updateSubscriber(requestId,
-					request.getCustomerId(), metas,Constants.CreateOrWriteROP);
+			SubscriberInfo subscriberInfo = updateSubscriber(requestId,request.getCustomerId(), metas,Constants.CreateOrWriteROP);
 		if (subscriberInfo.getStatus() != null) {
 			logger.error("Response about to send with SOAP ",subscriberInfo.getStatus().getDescription());
-			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-			/*throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));*/
+			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			
 		}
 		//DummyProcessor.response(exchange);

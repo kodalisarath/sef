@@ -44,8 +44,8 @@ public class ModifyTagging implements Processor {
 		logger.error("Subscriber Tagging Code is:", tag);
 //
 		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta("CustomerId", request.getCustomerId()));
-		metas.add(new Meta("AccessKey", request.getAccessKey()));
+		metas.add(new Meta("CustomerId", String.valueOf(request.getCustomerId())));
+		metas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
 		metas.add(new Meta("Tagging", String.valueOf(request.getTagging())));
 		metas.add(new Meta("EventInfo", String.valueOf(request.getEventInfo())));
 		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
@@ -85,8 +85,12 @@ public class ModifyTagging implements Processor {
 		SubscriberInfo updateSubscriberInfo;
 
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subscriberObj = readSubscriber(requestId, request.getCustomerId(), metas);
 
-		updateSubscriberInfo = updateSubscriber(requestId, request.getCustomerId(), metas,Constants.ModiFyTagging);
+		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0)
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		
+		updateSubscriberInfo = updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyTagging);
 
 		if (updateSubscriberInfo.getStatus().getCode() == 0) {
 			Collection<Meta> updateInfoMetasMap = (Collection<Meta>) updateSubscriberInfo.getMetas();
@@ -139,14 +143,12 @@ public class ModifyTagging implements Processor {
 
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas,String processRequestKey) throws SmException {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
-				.getSubscriberRequest();
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
 		logger.debug("Requesting ");
-		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas,processRequestKey);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas, processRequestKey);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
@@ -154,8 +156,7 @@ public class ModifyTagging implements Processor {
 			logger.error("Error while calling acquire()");
 		}
 		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.remove(requestId);
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
 
@@ -180,6 +181,26 @@ public class ModifyTagging implements Processor {
 		return subscriberInfo;
 
 	}
+	
+	private SubscriberInfo readSubscriber(String requestId,String customer_id, List<Meta> metas) {
+		logger.info("Invoking update subscriber on tx-engine subscriber interface");
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		iSubscriberRequest.readSubscriber(requestId, customer_id, metas);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+
+		}
+		logger.info("Check if response received for update subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		//SubscriberResponseStore.get(requestId);
+		return subscriberInfo;
+	}
+	
 	private List<Meta> convertToMetaList(Collection<Meta> subscriberMetas) {
 		List<Meta> metaList=new ArrayList<Meta>();
 		if(subscriberMetas != null){
