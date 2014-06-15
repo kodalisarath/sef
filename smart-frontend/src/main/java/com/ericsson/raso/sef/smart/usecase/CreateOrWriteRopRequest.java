@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.smart.usecase;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -175,7 +176,7 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 	public void setActiveEndDate(String activeEndDate) {
 		this.activeEndDate = activeEndDate;
 	}
-
+	
 	public String getGraceEndDate() {
 		return graceEndDate;
 	}
@@ -191,7 +192,7 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 	public void setPreActiveEndDate(XMLGregorianCalendar preActiveEndDate) {
 		this.preActiveEndDate = preActiveEndDate;
 	}
-
+	
 	public String getFirstCallDate() {
 		return firstCallDate;
 	}
@@ -203,7 +204,7 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 	public boolean getIsFirstCallPassed() {
 		return isFirstCallPassed;
 	}
-
+	
 	public void setIsFirstCallPassed(boolean isFirstCallPassed) {
 		this.isFirstCallPassed = isFirstCallPassed;
 	}
@@ -240,18 +241,17 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 				StringParameter parameter = (StringParameter) param;
 				if(parameter.getName().equalsIgnoreCase(CUSTOMER_ID)) {
 					this.setCustomerId(parameter.getValue().trim());
-				}
-				else if (parameter.getName().equalsIgnoreCase(CATEGORY)) {
+				} else if (parameter.getName().equalsIgnoreCase(CATEGORY)) {
 					this.setCategory(parameter.getValue().trim());
-				} 
-				 else if (parameter.getName().equalsIgnoreCase(GRACEENDDATE)) {
-						this.setGraceEndDate(parameter.getValue().trim());
-					}else if (parameter.getName().equalsIgnoreCase(S_CRMTITLE)) {
-						this.setS_CRMTitle(parameter.getValue().trim());
-					}
-					else if (parameter.getName().equalsIgnoreCase(LastKnownPeriod)) {
-						this.setLastKnownPeriod(parameter.getValue().trim());
-					}
+				} else if (parameter.getName().equalsIgnoreCase(GRACEENDDATE)) {
+					this.setGraceEndDate((parameter.getValue().trim() == null ? new String("1900-01-01 01:01:01") : parameter.getValue().trim()));
+				} else if (parameter.getName().equalsIgnoreCase(ACTIVEENDDATE)) {
+					this.setActiveEndDate((parameter.getValue().trim() == null ? new String("1900-01-01 01:01:01") : parameter.getValue().trim()));
+				} else if (parameter.getName().equalsIgnoreCase(S_CRMTITLE)) {
+					this.setS_CRMTitle(parameter.getValue().trim());
+				} else if (parameter.getName().equalsIgnoreCase(LastKnownPeriod)) {
+					this.setLastKnownPeriod(parameter.getValue().trim());
+				}
 					
 			}else if(param instanceof LongParameter){
 				LongParameter parameter = (LongParameter) param;
