@@ -20,8 +20,8 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 public class CreateOrWriteRopRequest extends SmartRequest {
 	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteRopRequest.class);
 	private static final String CUSTOMER_ID = "CustomerId";
-	private static final String ACTIVEENDDATE = "activeEndDate";
-	private static final String GRACEENDDATE = "graceEndDate";
+	/*private static final String ACTIVEENDDATE = "activeEndDate";
+	private static final String GRACEENDDATE = "graceEndDate";*/
 	private static final String LastKnownPeriod = "lastKnownPeriod";
 	private static final String CATEGORY = "category";
 	private static final String  S_CRMTITLE="s_CRMTitle";
@@ -243,11 +243,11 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 					this.setCustomerId(parameter.getValue().trim());
 				} else if (parameter.getName().equalsIgnoreCase(CATEGORY)) {
 					this.setCategory(parameter.getValue().trim());
-				} else if (parameter.getName().equalsIgnoreCase(GRACEENDDATE)) {
+				} /*else if (parameter.getName().equalsIgnoreCase(GRACEENDDATE)) {
 					this.setGraceEndDate((parameter.getValue().trim() == null ? new String("1900-01-01 01:01:01") : parameter.getValue().trim()));
 				} else if (parameter.getName().equalsIgnoreCase(ACTIVEENDDATE)) {
 					this.setActiveEndDate((parameter.getValue().trim() == null ? new String("1900-01-01 01:01:01") : parameter.getValue().trim()));
-				} else if (parameter.getName().equalsIgnoreCase(S_CRMTITLE)) {
+				}*/ else if (parameter.getName().equalsIgnoreCase(S_CRMTITLE)) {
 					this.setS_CRMTitle(parameter.getValue().trim());
 				} else if (parameter.getName().equalsIgnoreCase(LastKnownPeriod)) {
 					this.setLastKnownPeriod(parameter.getValue().trim());
@@ -313,8 +313,7 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 				+ key + ", isSmsAllowed=" + isSmsAllowed + ", isUSCAllowed="
 				+ isUSCAllowed + ", isGPRSUsed=" + isGPRSUsed
 				+ ", isLastTransactionEnqUsed=" + isLastTransactionEnqUsed
-				+ ", languageId=" + languageId + ", activeEndDate="
-				+ activeEndDate + ", graceEndDate=" + graceEndDate
+				+ ", languageId=" + languageId
 				+ ", preActiveEndDate=" + preActiveEndDate + ", firstCallDate="
 				+ firstCallDate + ", isFirstCallPassed=" + isFirstCallPassed
 				+ ", lastKnownPeriod=" + lastKnownPeriod + ", category="
