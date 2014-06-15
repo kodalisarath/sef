@@ -3,13 +3,14 @@ package com.ericsson.raso.sef.smart.usecase;
 import java.util.List;
 
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ShortParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 
 public class CreateOrWriteCustomerRequest extends SmartRequest {
-
+	private static final String CATEGORY = "category";
+	private static final String CUSTOMERID = "customerId";
 	private String customerId;
 	private String category;
 	private int billCycleId;
@@ -46,6 +47,9 @@ public class CreateOrWriteCustomerRequest extends SmartRequest {
 	public void setMessageId(long messageId) {
 		this.messageId = messageId;
 	}
+	
+	
+	
 
 	@Override
 	public void prepareRequest(Operation operation) {
@@ -53,17 +57,24 @@ public class CreateOrWriteCustomerRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				this.setCustomerId(parameter.getValue().trim());
-			} else if(param instanceof EnumerationValueParameter) {
-				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
-				this.setCategory(parameter.getValue().trim());
-			} else if(param instanceof ShortParameter) {
-				ShortParameter parameter = (ShortParameter) param;
-				this.setBillCycleId(parameter.getValue());
-			} else if (param instanceof LongParameter) {
+				if(parameter.getName().equalsIgnoreCase(CUSTOMERID)) {
+					this.setCustomerId(parameter.getValue().trim());
+				}
+				if(parameter.getName().equalsIgnoreCase(CATEGORY)) {
+					this.setCategory(parameter.getValue().trim());
+				} 
+		    	} else if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
+				
 				this.setMessageId(parameter.getValue());
+			}else if (param instanceof IntParameter) {
+				IntParameter parameter = (IntParameter) param;
+				 this.setBillCycleId(parameter.getValue());
+			}else if(param instanceof EnumerationValueParameter){
+				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
+				this.setCategory(parameter.getValue());
 			}
+			
 		}
 
 	}

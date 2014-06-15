@@ -11,6 +11,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StructParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 
 public class VersionCreateOrWriteROPRequest extends SmartRequest {
 
@@ -105,18 +106,23 @@ public class VersionCreateOrWriteROPRequest extends SmartRequest {
 				StringParameter parameter = (StringParameter) param;
 				if (parameter.getName().equalsIgnoreCase(CUSTOMER_ID)) {
 					this.setCustomerId(parameter.getValue().trim());
-				} else if (parameter.getName().equalsIgnoreCase("vValidFrom")) {
-					this.setvValidFrom(parameter.getValue().trim());
-				} else if (parameter.getName().equalsIgnoreCase("vInvalidFrom")) {
-					this.setvInvalidFrom(parameter.getValue().trim());
-				} else if (parameter.getName().equalsIgnoreCase("s_OfferId")) {
+				}  else if (parameter.getName().equalsIgnoreCase("s_OfferId")) {
 					this.setS_OfferId(parameter.getValue().trim());
 				}
 
 			} else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
 				this.setKey(parameter.getValue());
-			} else if (param instanceof EnumerationValueParameter) {
+			}else if (param instanceof SymbolicParameter) {
+				SymbolicParameter parameter = (SymbolicParameter) param;
+				if(parameter.getName().equalsIgnoreCase("vValidFrom")){
+					this.setvValidFrom(parameter.getValue());
+				}else if(parameter.getName().equalsIgnoreCase("vInvalidFrom")){
+					this.setvInvalidFrom(parameter.getValue());
+				}
+				
+			}
+			else if (param instanceof EnumerationValueParameter) {
 				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
 				this.setCategory(parameter.getValue().trim());
 			} else if (param instanceof LongParameter) {

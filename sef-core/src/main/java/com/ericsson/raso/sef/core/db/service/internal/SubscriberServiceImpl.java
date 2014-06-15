@@ -376,8 +376,9 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 				logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting userid",e);
 				throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt userid identities!!"), e);
 			}
+			subscriberMapper.insertSubscriberMeta(susbscriberMeta);
 		}
-		subscriberMapper.insertSubscriberMeta(susbscriberMeta);
+		
 	} catch (PersistenceException e) {
 		logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 		throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to insert subscriber meta with the provided msisdn"), e);
@@ -401,8 +402,8 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 					logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting userid",e);
 					throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt userid identities!!"), e);
 				}
+				subscriberMapper.updateSubscriberMeta(susbscriberMeta);
 			}
-			subscriberMapper.updateSubscriberMeta(susbscriberMeta);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to insert subscriber meta with the provided msisdn"), e);

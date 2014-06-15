@@ -43,18 +43,12 @@ public class CreateOrWriteRop implements Processor {
 			// SmartContext.getSubscriberManagement();
 			List<Meta> metas = new ArrayList<Meta>();
 			metas.add(new Meta("Key", String.valueOf(request.getKey())));
-			metas.add(new Meta("IsSmsAllowed", String.valueOf(request
-					.getIsSmsAllowed())));
-			metas.add(new Meta("IsUSCAllowed", String.valueOf(request
-					.getIsUSCAllowed())));
-			metas.add(new Meta("IsGPRSUsed", String.valueOf(request
-					.getIsGPRSUsed())));
-			metas.add(new Meta("IsLastTransactionEnqUsed", String
-					.valueOf(request.getIsLastTransactionEnqUsed())));
-			metas.add(new Meta("LanguageID", String.valueOf(request
-					.getLanguageId())));
-
-			if (request.getActiveEndDate() != null)
+			metas.add(new Meta("IsSmsAllowed", String.valueOf(request.getIsSmsAllowed())));
+			metas.add(new Meta("IsUSCAllowed", String.valueOf(request.getIsUSCAllowed())));
+			metas.add(new Meta("IsGPRSUsed", String.valueOf(request.getIsGPRSUsed())));
+			metas.add(new Meta("IsLastTransactionEnqUsed", String.valueOf(request.getIsLastTransactionEnqUsed())));
+			metas.add(new Meta("LanguageID", String.valueOf(request.getLanguageId())));
+			/*if (request.getActiveEndDate() != null)
 				metas.add(new Meta("activeEndDate", DateUtil
 						.convertISOToSimpleDateFormat(request
 								.getActiveEndDate())));
@@ -63,22 +57,26 @@ public class CreateOrWriteRop implements Processor {
 			if (request.getGraceEndDate() != null)
 				metas.add(new Meta("graceEndDate",
 						DateUtil.convertISOToSimpleDateFormat(request
-								.getGraceEndDate())));
+								.getGraceEndDate())));*/
 
 			String preActiveEndDate = DateUtil
 					.convertISOToSimpleDateFormat(request.getPreActiveEndDate());
 
 			if (request.getPreActiveEndDate() != null)
-				metas.add(new Meta("PreActiveEndDate", preActiveEndDate));
-
+			metas.add(new Meta("PreActiveEndDate", String.valueOf(preActiveEndDate)));
 			metas.add(new Meta("FirstCallDate", request.getFirstCallDate()));
-			metas.add(new Meta("IsFirstCallPassed", String.valueOf(request
-					.getIsFirstCallPassed())));
-			metas.add(new Meta("LastKnownPeriod", request.getLastKnownPeriod()));
-			metas.add(new Meta("category", request.getCategory()));
-			metas.add(new Meta("MessageId", String.valueOf(request
-					.getMessageId())));
-
+			metas.add(new Meta("IsFirstCallPassed", String.valueOf(request.getIsFirstCallPassed())));
+			metas.add(new Meta("LastKnownPeriod", String.valueOf(request.getLastKnownPeriod())));
+			metas.add(new Meta("category", String.valueOf(request.getCategory())));
+			metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
+			metas.add(new Meta("s_CRMTitle", String.valueOf(request.getS_CRMTitle())));
+			metas.add(new Meta("c_TaggingStatus", String.valueOf(request.getC_TaggingStatus())));
+			metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
+			metas.add(new Meta("IsBalanceClearanceOnOutpayment ", String.valueOf(request.isIsBalanceClearanceOnOutpayment())));
+			metas.add(new Meta("IsCFMOC",String.valueOf(request.isIsCFMOC())));
+			metas.add(new Meta("IsCollectCallAllowed",String.valueOf(request.isIsCollectCallAllowed())));
+			metas.add(new Meta("IsOperatorCollectCallAllowed",String.valueOf(request.isIsOperatorCollectCallAllowed())));
+			metas.add(new Meta("IsLocked",String.valueOf(request.isIsLocked())));
 			// subscriberManagement.updateSubscriber(request.getCustomerId(),
 			// metas);
 			String requestId = RequestContextLocalStore.get().getRequestId();

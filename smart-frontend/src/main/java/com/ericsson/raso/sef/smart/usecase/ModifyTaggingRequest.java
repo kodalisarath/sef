@@ -6,14 +6,13 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueParamet
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
-import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ShortParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 
 public class ModifyTaggingRequest extends SmartRequest {
 
 	private String customerId;
 	private int tagging;
-	private int eventInfo;
+	private String eventInfo;
 	private long messageId;
 	private String accessKey;
 
@@ -41,11 +40,11 @@ public class ModifyTaggingRequest extends SmartRequest {
 		this.tagging = tagging;
 	}
 
-	public int getEventInfo() {
+	public String getEventInfo() {
 		return eventInfo;
 	}
 
-	public void setEventInfo(int eventInfo) {
+	public void setEventInfo(String eventInfo) {
 		this.eventInfo = eventInfo;
 	}
 
@@ -63,16 +62,17 @@ public class ModifyTaggingRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if(param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				this.setCustomerId(parameter.getValue().trim());
+				if(parameter.getName().equalsIgnoreCase("eventInfo")){
+					this.setEventInfo(parameter.getValue().trim());
+				}else if(parameter.getName().equalsIgnoreCase("customerId")){
+					this.setCustomerId(parameter.getValue().trim());
+				}
 			} else if (param instanceof EnumerationValueParameter) {
 				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
 				this.setAccessKey(parameter.getValue().trim());
 			} else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
 				this.setTagging(parameter.getValue());
-			} else if (param instanceof ShortParameter) {
-				ShortParameter parameter = (ShortParameter) param;
-				this.setEventInfo(parameter.getValue());
 			} else if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
 				this.setMessageId(parameter.getValue());

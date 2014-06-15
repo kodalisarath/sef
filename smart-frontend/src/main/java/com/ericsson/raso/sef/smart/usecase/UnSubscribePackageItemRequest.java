@@ -11,6 +11,15 @@ public class UnSubscribePackageItemRequest extends SmartRequest{
 	private String customerId;
 	private String accessKey;
 	private String packaze;
+	private String eventInfo;
+	public String getEventInfo() {
+		return eventInfo;
+	}
+
+	public void setEventInfo(String eventInfo) {
+		this.eventInfo = eventInfo;
+	}
+
 	private long messageId;
 
 	public String getCustomerId() {
@@ -57,6 +66,9 @@ public class UnSubscribePackageItemRequest extends SmartRequest{
 					this.setAccessKey(parameter.getValue().trim());
 				} else if(parameter.getName().equalsIgnoreCase("Package")) {
 					this.setPackaze(parameter.getValue().trim());
+				}
+				else if(parameter.getName().equalsIgnoreCase("eventinfo")) {
+					this.setEventInfo(parameter.getValue().trim());
 				}
 				
 			} else if(param instanceof LongParameter) {

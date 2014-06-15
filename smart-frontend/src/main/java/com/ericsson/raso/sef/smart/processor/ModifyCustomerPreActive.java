@@ -34,11 +34,10 @@ public class ModifyCustomerPreActive implements Processor {
 				.getIn().getBody();
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		List<Meta> metas = new ArrayList<Meta>();
+		
 		metas.add(new Meta("EventInfo",String.valueOf(request.getEventInfo())));
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
-		metas.add(new Meta("CustomerId",String.valueOf(request.getCustomerId())));
-		metas.add(new Meta("DaysOfExtension",String.valueOf(request.getCustomerId())));
-		metas.add(new Meta("AccessKey",request.getAccessKey()));
+		metas.add(new Meta("AccessKey",String.valueOf(request.getAccessKey())));
 		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
 		SubscriberInfo subscriberInfo=null;
 		

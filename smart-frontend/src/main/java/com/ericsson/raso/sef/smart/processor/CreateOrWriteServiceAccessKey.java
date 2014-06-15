@@ -23,16 +23,16 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
 
 public class CreateOrWriteServiceAccessKey implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteRop.class);
+	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteServiceAccessKey.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		logger.info("CreateOrWriteServiceAccessKey: process()");
 		CreateOrWriteServiceAccessKeyRequest request = (CreateOrWriteServiceAccessKeyRequest) exchange.getIn().getBody();
-		logger.info("Printing values from SOAP before Processing :"+request.getCategory()+" "+request.getKeyType()+" "+request.getvInvalidFrom()+" "+request.getMessageId());
+		logger.info("Printing values from SOAP before Processing :"+request.getCategory()+" "+request.getKeyType()+" "+request.getvValidFrom()+" "+request.getMessageId());
 		List<Meta> metas = new ArrayList<Meta>();
 		metas.add(new Meta("Key", request.getCategory()));
 		metas.add(new Meta("KeyType", request.getKeyType()));
-		metas.add(new Meta("vValidFrom", DateUtil.convertISOToSimpleDateFormat(request.getvInvalidFrom())));
+		metas.add(new Meta("vValidFrom", request.getvValidFrom()));
 		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
 
 		String requestId = RequestContextLocalStore.get().getRequestId();
