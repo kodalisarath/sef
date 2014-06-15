@@ -31,6 +31,7 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final String READ_SUBSCRIBER_ACTIVATION_DATE = "READ_SUBSCRIBER_ACTIVATION_DATE";
 	private static final String READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE = "READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE";
 	private static final String READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE = "READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE";
+	private static final String	READ_SUBSCRIBER_SERVICE_OFFERING	= "READ_SUBSCRIBER_SERVICE_OFFERING";
 	private static final String READ_SUBSCRIBER_SERVICE_OFFERING_ID = "READ_SUBSCRIBER_SERVICE_OFFERING_ID";
 	private static final String READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG = "READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG";
 	private static final String READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG = "READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG";
@@ -45,37 +46,9 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE = "READ_SUBSCRIBER_EXPIRY_DATE";
 	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME = "READ_SUBSCRIBER_START_DATE_TIME";
 	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME = "READ_SUBSCRIBER_EXPIRY_DATE_TIME";
+	private static final String	READ_SUBSCRIBER_OFFER_INFO	= "READ_SUBSCRIBER_OFFER_INFO";
 
-	//Get Balance & Dates...
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_ID	= "READ_BALANCES_DEDICATED_ACCOUNT_ID";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1	= "READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_VALUE_2	= "READ_BALANCES_DEDICATED_ACCOUNT_VALUE_2";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_EXPIRY_DATE	= "READ_BALANCES_DEDICATED_ACCOUNT_EXPIRY_DATE";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_START_DATE	= "READ_BALANCES_DEDICATED_ACCOUNT_START_DATE";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_PAM_SERVICE_ID	= "READ_BALANCES_DEDICATED_ACCOUNT_PAM_SERVICE_ID";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_OFFER_ID	= "READ_BALANCES_DEDICATED_ACCOUNT_OFFER_ID";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_PRODUCT_ID	= "READ_BALANCES_DEDICATED_ACCOUNT_PRODUCT_ID";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_REAL_MONEY_FLAG	= "READ_BALANCES_DEDICATED_ACCOUNT_REAL_MONEY_FLAG";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_DATE	= "READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_DATE";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_1	= "READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_1";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_2	= "READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_2";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_DATE	= "READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_DATE";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_1	= "READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_1";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_2	= "READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_2";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_1	= "READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_1";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_2	= "READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_2";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_START_DATE	= "READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_START_DATE";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_EXPIRY_DATE	= "READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_EXPIRY_DATE";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_1	= "READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_1";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_2	= "READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_2";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_UNIT_TYPE	= "READ_BALANCES_DEDICATED_ACCOUNT_UNIT_TYPE";
-	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_COMPOSITE_DA_FLAG	= "READ_BALANCES_DEDICATED_ACCOUNT_COMPOSITE_DA_FLAG";
-	private static final String READ_BALANCES_OFFER_INFO_OFFER_ID = "READ_BALANCES_OFFER_ID";
-	private static final String READ_BALANCES_OFFER_INFO_START_DATE = "READ_BALANCES_START_DATE";
-	private static final String READ_BALANCES_OFFER_INFO_EXPIRY_DATE = "READ_BALANCES_EXPIRY_DATE";
-	private static final String READ_BALANCES_OFFER_INFO_START_DATE_TIME = "READ_BALANCES_START_DATE_TIME";
-	private static final String READ_BALANCES_OFFER_INFO_EXPIRY_DATE_TIME = "READ_BALANCES_EXPIRY_DATE_TIME";
-
+	
 
 	public PartialReadSubscriberProfile(String name) {
 		super(name);
@@ -159,8 +132,8 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 		// service offerings
 		int index = 0;
 		for (com.ericsson.raso.sef.client.air.response.ServiceOffering serviceOffering: response.getServiceOfferings()) {
-			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING_ID + "." + ++index, "" + serviceOffering.getServiceOfferingID());
-			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG + "." + index, "" + serviceOffering.isServiceOfferingActiveFlag());
+			LOGGER.debug("extracting service offering: " + serviceOffering);
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING + "." + ++index, "" + serviceOffering.getServiceOfferingID() + "," + serviceOffering.isServiceOfferingActiveFlag());
 		}
 		LOGGER.debug("Packed all service offerings...");
 
@@ -198,21 +171,13 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 		// offer info...
 		index = 0;
-		for (OfferInformation offerInformation: response.getOfferInformationList()) {
-			if(offerInformation != null) {
-				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID + "." + ++index, "" + offerInformation.getOfferID());
-
-				if(offerInformation.getStartDate() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE + "." + index, "" + offerInformation.getStartDate().getTime());
-
-				if(offerInformation.getStartDateTime() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME + "." + index, "" + offerInformation.getStartDateTime().getTime());
-
-				if(offerInformation.getExpiryDate() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
-
-				if(offerInformation.getExpiryDateTime() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
+		if (response.getOfferInformationList() != null) {
+			for (OfferInformation offerInformation: response.getOfferInformationList()) {
+				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO + "." + ++index, (offerInformation.getOfferID() + 
+						"," + ((offerInformation.getStartDate()==null)?"null":offerInformation.getStartDate().getTime()) + 
+						"," + ((offerInformation.getStartDateTime()==null)?"null":offerInformation.getStartDate().getTime()) + 
+						"," + offerInformation.getExpiryDate().getTime() + 
+						"," + offerInformation.getExpiryDateTime().getTime()));
 			}
 		}
 		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
@@ -220,82 +185,7 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 	}
 
 
-	private void processBalanceAndDateResponse(HashMap<String, String> balanceAndDateInfo, GetBalanceAndDateResponse response) {
-		// Dedicated Accounts...
-		int index = 0;
-		for (DedicatedAccountInformation daInformation: response.getDedicatedAccountInformation()) {
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ID + "." + ++index, "" + daInformation.getDedicatedAccountID());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1 + "." + index, "" + daInformation.getDedicatedAccountValue1());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_VALUE_2 + "." + index, "" + daInformation.getDedicatedAccountValue2());
-
-			if(daInformation.getExpiryDate() != null)
-				balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_EXPIRY_DATE + "." + index, "" + daInformation.getExpiryDate().getTime());
-
-			if(daInformation.getStartDate() != null)
-				balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_START_DATE + "." + index, "" + daInformation.getStartDate().getTime());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_PAM_SERVICE_ID + "." + index, "" + daInformation.getPamServiceID());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_OFFER_ID + "." + index, "" + daInformation.getOfferID());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_PRODUCT_ID + "." + index, "" + daInformation.getProductID());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_REAL_MONEY_FLAG + "." + index, "" + daInformation.isDedicatedAccountRealMoneyFlag());
-
-			if(daInformation.getClosestExpiryDate() != null)
-				balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_DATE + "." + index, "" + daInformation.getClosestExpiryDate().getTime());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_1 + "." + index, "" + daInformation.getClosestExpiryValue1());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_EXPIRY_VALUE_2 + "." + index, "" + daInformation.getClosestExpiryValue2());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_DATE + "." + index, "" + daInformation.getClosestAccessibleDate());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_1 + "." + index, "" + daInformation.getClosestExpiryValue1());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_2 + "." + index, "" + daInformation.getClosestExpiryValue2());
-
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_1 + "." + index, "" + daInformation.getDedicatedAccountActiveValue1());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_2 + "." + index, "" + daInformation.getDedicatedAccountActiveValue2());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_UNIT_TYPE + "." + index, "" + daInformation.getDedicatedAccountUnitType());
-			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_COMPOSITE_DA_FLAG + "." + index, "" + daInformation.isCompositeDedicatedAccountFlag());
-
-			int subindex = 0;
-			if(daInformation.getSubDedicatedAccountInformation() != null) {
-				for (SubDedicatedInfo subDedicatedInfo: daInformation.getSubDedicatedAccountInformation()) {
-					if(subDedicatedInfo != null) {
-						if(subDedicatedInfo.getDedicatedAccountValue1() != null)
-							balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_1 + "." + index+ "." + ++subindex, "" + subDedicatedInfo.getDedicatedAccountValue1());
-
-						if(subDedicatedInfo.getDedicatedAccountValue2() != null)
-							balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_VALUE_2 + "." + index+ "." + subindex, "" + subDedicatedInfo.getDedicatedAccountValue2());
-
-						if(subDedicatedInfo.getStartDate() != null)
-							balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_START_DATE + "." + index+ "." +  subindex, "" + subDedicatedInfo.getStartDate().getTime());
-
-						if(subDedicatedInfo.getExpiryDate() != null)
-							balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_SUB_DA_EXPIRY_DATE + "." + index+ "." +  subindex, "" + subDedicatedInfo.getExpiryDate().getTime());
-					}
-				}
-			}
-		}
-		LOGGER.debug("Packed all dedicated accounts...");
-
-		// offer info...
-		index = 0;
-		for (OfferInformation offerInformation: response.getOfferInformationList()) {
-			if(offerInformation != null) {
-				balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_OFFER_ID + "." + ++index, "" + offerInformation.getOfferID());
-
-				if(offerInformation.getStartDate() != null)
-					balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_START_DATE + "." + index, "" + offerInformation.getStartDate().getTime());
-
-				if(offerInformation.getStartDateTime() != null)
-					balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_START_DATE_TIME + "." + index, "" + offerInformation.getStartDateTime().getTime());
-
-				if(offerInformation.getExpiryDate() != null)
-					balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
-
-				if(offerInformation.getExpiryDateTime() != null)
-					balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
-			}
-		}
-		LOGGER.debug("Packed all offer info...");
-
-	}
-
-
+	 
 
 	@Override
 	public String toString() {
