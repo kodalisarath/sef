@@ -420,6 +420,7 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 			if(meta.getKey() != null && meta.getValue() != null){
 				susbscriberMeta.setKey(meta.getKey());
 				susbscriberMeta.setValue(meta.getValue());
+				logger.debug(meta.getKey() + " " + meta.getValue() + "ANOTHER SK");
 				try {
 					susbscriberMeta.setSubscriberId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
 				} catch (FrameworkException e) {

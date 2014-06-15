@@ -126,7 +126,9 @@ public class UpdateSubscriber extends AbstractTransaction {
 				for(Meta meta:listMetas){
                   LOGGER.debug("In the for loop ");
 					if(meta.getKey().equalsIgnoreCase("daysOfExtension")){
+						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
 						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+						
 					}
 				}
 				break;
