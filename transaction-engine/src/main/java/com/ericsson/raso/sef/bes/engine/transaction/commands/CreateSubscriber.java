@@ -49,7 +49,7 @@ public class CreateSubscriber extends AbstractTransaction {
 			LOGGER.debug("In execute method before getting persistable Entity");
 			subscriberEntity = ((CreateSubscriberRequest)this.getRequest()).getEntityFromDb();
 			if(subscriberEntity != null){
-				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(4020,"Invalid operation state")));
+				this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(4020,"Invalid Operation State")));
 				sendResponse();
 			}else{
 				subscriberEntity = ((CreateSubscriberRequest) this.getRequest()).persistableEntity();

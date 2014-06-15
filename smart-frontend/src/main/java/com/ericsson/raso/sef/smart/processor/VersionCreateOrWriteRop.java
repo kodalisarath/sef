@@ -33,7 +33,7 @@ public class VersionCreateOrWriteRop implements Processor {
 			VersionCreateOrWriteROPRequest request = (VersionCreateOrWriteROPRequest) exchange
 					.getIn().getBody();
 			List<Meta> metas = new ArrayList<Meta>();
-			metas.add(new Meta("customerId", request.getCustomerId()));
+			metas.add(new Meta("CustomerId", request.getCustomerId()));
 			metas.add(new Meta("Key", String.valueOf(request.getKey())));
 			metas.add(new Meta("vValidFrom", String.valueOf(request.getvInvalidFrom())));
 			metas.add(new Meta("vInvalidFrom", String.valueOf(request.getvInvalidFrom())));
@@ -77,22 +77,6 @@ public class VersionCreateOrWriteRop implements Processor {
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
 				.remove(requestId);
-		if(subscriberInfo != null){
-			try{
-			if(subscriberInfo.getStatus().getCode() > 0){
-				if(subscriberInfo.getStatus().getCode() != 504){
-					if(!ContractState.PREACTIVE.name().equals(subscriberInfo.getLocalState()))
-					{
-						ResponseCode responseCode=new ResponseCode(4020,"Invalid Operation State");
-						throw new SmException(responseCode);
-					}
-				}
-				}
-		}catch(Exception e){
-			logger.error("subscriberInfo fields are null",e.getMessage(),e);
-			
-		}
-			}
 		return subscriberInfo;
 	}
 

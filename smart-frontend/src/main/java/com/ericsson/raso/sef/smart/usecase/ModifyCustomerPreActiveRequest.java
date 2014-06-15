@@ -2,6 +2,9 @@ package com.ericsson.raso.sef.smart.usecase;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
@@ -9,6 +12,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 
 public class ModifyCustomerPreActiveRequest extends SmartRequest {
 
+	private static final Logger logger = LoggerFactory.getLogger(ModifyCustomerPreActiveRequest.class);
 	private String customerId;
 	private int daysOfExtension;
 	private String eventInfo;
@@ -76,16 +80,17 @@ public class ModifyCustomerPreActiveRequest extends SmartRequest {
 				
 			} else if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				if(parameter.getName().equalsIgnoreCase("eventInfo")){
+				if(parameter.getName().equalsIgnoreCase("EventInfo")){
 					this.setEventInfo(parameter.getValue());
-				}else if(parameter.getName().equalsIgnoreCase("customerId")){
+				}else if(parameter.getName().equalsIgnoreCase("CustomerId")){
 					this.setCustomerId(parameter.getValue());
 				}
-				else if(parameter.getName().equalsIgnoreCase("accessKey")){
+				else if(parameter.getName().equalsIgnoreCase("AccessKey")){
 					this.setAccessKey(parameter.getValue());
 				}
 				//this.setCustomerId(parameter.getValue().trim());
 			}
+			logger.debug("In the loop testing params"+param.toString());
 		}
 	}
 

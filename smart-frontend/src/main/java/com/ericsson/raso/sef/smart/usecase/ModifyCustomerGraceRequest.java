@@ -62,7 +62,7 @@ public class ModifyCustomerGraceRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if(param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
-				if(parameter.getName().equalsIgnoreCase("eventInfo")){
+				if(parameter.getName().equalsIgnoreCase("MessageId")){
 					this.setMessageId(parameter.getValue());
 				}
 			}  else if (param instanceof IntParameter) {
@@ -73,10 +73,13 @@ public class ModifyCustomerGraceRequest extends SmartRequest {
 				
 			} else if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				if(parameter.getName().equalsIgnoreCase("eventInfo")){
+				if(parameter.getName().equalsIgnoreCase("EventInfo")){
 					this.setEventInfo(parameter.getValue().trim());
 				}else if(parameter.getName().equalsIgnoreCase("CustomerId")){
 					this.setCustomerId(parameter.getValue().trim());
+				}
+				else if(parameter.getName().equalsIgnoreCase("AccessKey")){
+					this.setAccessKey(parameter.getValue().trim());
 				}
 				
 			}
