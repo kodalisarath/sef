@@ -34,7 +34,7 @@ import com.hazelcast.core.ISemaphore;
 
 public class BalanceAdjustment implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteCustomerProcessor.class);
-	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER";
+	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER_INFO";
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		
@@ -83,6 +83,7 @@ public class BalanceAdjustment implements Processor {
 				}
 			  else {
 				logger.info("check grace and recycle metas");
+				logger.info("SK GET METAS BALANCE " + subscriberObj.getMetas());
 				Map<String, String> subscriberMetas = subscriberObj.getMetas();
 //				int index = 0;
 //				String offers = "";
