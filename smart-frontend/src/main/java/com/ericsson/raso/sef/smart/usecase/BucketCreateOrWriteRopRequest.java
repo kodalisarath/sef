@@ -7,6 +7,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StructParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 
 public class BucketCreateOrWriteRopRequest extends SmartRequest {
@@ -118,6 +119,11 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 					this.setMessageId(parameter.getValue());
 				}
 				
+			} else if (param instanceof StructParameter) {
+				StructParameter parameter = (StructParameter) param;
+				if (parameter.getName().equalsIgnoreCase("OnPeakAccountID_FU")) {
+					this.setOnPeakAccountID_FU(parameter.getModifier().toString());
+				}
 			}
 		}
 	}
