@@ -13,7 +13,7 @@ public class Section {
 	private String id;  
 	private String description;  
 	private ArrayList<Property> property = new ArrayList<Property>() ; 
-	private Router router;
+//	private Router router;
 	
 	public Section() {}  
 	
@@ -55,14 +55,14 @@ public class Section {
 	    this.property = property;  
 	}
 
-	@XmlElement(name="router")
-	public Router getRouter() {
-		return router;
-	}
-	
-	@XmlElement(name="router")
-	public void setRouter(Router router) {
-		this.router = router;
-	}  
+//	@XmlElement(name="router")
+//	public Router getRouter() {
+//		return router;
+//	}
+//	
+//	@XmlElement(name="router")
+//	public void setRouter(Router router) {
+//		this.router = router;
+//	}  
 
 }
