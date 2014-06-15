@@ -617,7 +617,7 @@ public class CARecharge implements Processor {
 		
 		for (OfferInfo oInfo: afterOfferEntries.values()) {
 			logger.debug("Offer: " + oInfo);
-			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID) + "s_PeriodicBonus";
+			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID) + ":s_PeriodicBonus";
 			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
 			
 			logger.debug("Mapped Wallet: " + balanceId + ", DA: " + daId);
@@ -778,7 +778,7 @@ public class CARecharge implements Processor {
 		
 		for (OfferInfo oInfo: afterOfferEntries.values()) {
 			logger.debug("Offer: " + oInfo);
-			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID) + "s_PeriodicBonus";
+			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID) + ":s_PeriodicBonus";
 			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
 			
 			logger.debug("Mapped Wallet: " + balanceId + ", DA: " + daId);
@@ -790,6 +790,11 @@ public class CARecharge implements Processor {
 				DaInfo beforeDA = beforeDaEntries.get(daId);
 				DaInfo afterDA = afterDaEntries.get(daId);
 
+				if (afterDA == null) {
+					logger.warn("Seems like DA: " + daId + " can be ignored...");
+					continue;
+				}
+				
 				int daBalanceDiff = afterDA.daValue - beforeDA.daValue;
 				OfferInfo afterOffer = afterOfferEntries.get(oInfo.offerID);
 
@@ -899,7 +904,6 @@ public class CARecharge implements Processor {
 		public String toString() {
 			return "DaInfo [daID=" + daID + ", daValue=" + daValue + "]";
 		}
-		
 	}
 	
 		

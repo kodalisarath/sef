@@ -175,9 +175,9 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 			for (OfferInformation offerInformation: response.getOfferInformationList()) {
 				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO + "." + ++index, (offerInformation.getOfferID() + 
 						"," + ((offerInformation.getStartDate()==null)?"null":offerInformation.getStartDate().getTime()) + 
-						"," + ((offerInformation.getStartDateTime()==null)?"null":offerInformation.getStartDate().getTime()) + 
-						"," + offerInformation.getExpiryDate().getTime() + 
-						"," + offerInformation.getExpiryDateTime().getTime()));
+						"," + ((offerInformation.getStartDateTime()==null)?"null":offerInformation.getStartDateTime().getTime()) + 
+						"," + ((offerInformation.getExpiryDate()==null)?"null":offerInformation.getExpiryDate().getTime()) + 
+						"," + ((offerInformation.getExpiryDateTime()==null)?"null":offerInformation.getExpiryDateTime().getTime()) ));
 			}
 		}
 		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
