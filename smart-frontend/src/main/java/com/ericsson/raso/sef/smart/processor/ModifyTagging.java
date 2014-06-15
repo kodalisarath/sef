@@ -42,16 +42,24 @@ public class ModifyTagging implements Processor {
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		Integer tag = Integer.valueOf(request.getTagging());
 		logger.error("Subscriber Tagging Code is:", tag);
-
+//
 		List<Meta> metas = new ArrayList<Meta>();
+		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		metas.add(new Meta("CustomerId", String.valueOf(request.getCustomerId())));
 		metas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
 		metas.add(new Meta("Tagging", String.valueOf(request.getTagging())));
 		metas.add(new Meta("EventInfo", String.valueOf(request.getEventInfo())));
 		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
+		
+//		Object[] objectArray = (Object[]) exchange.getIn().getBody(Object[].class);
+//		metas.add(new Meta("customerId", (String) objectArray[0].toString()));
+//		metas.add(new Meta("accessKey", (String) objectArray[1].toString()));
+//		metas.add(new Meta("tagging", (String)objectArray[2].toString()));
+//		metas.add(new Meta("eventInfo", (String)objectArray[3].toString()));
+//		metas.add(new Meta("messageId", (String)objectArray[4].toString()));
 
 		String tagging = String.valueOf(request.getTagging());
-
+		//Integer tag = Integer.valueOf(tagging);
 		switch (tag) {
 			case 0: metas.add(new Meta("HANDLE_LIFE_CYCLE", "resetBit"));
 					break;
@@ -70,17 +78,17 @@ public class ModifyTagging implements Processor {
 			case 7:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "recycleBit"));
 					break;
 			default:
-					metas.add(new Meta("HANDLE_LIFE_CYCLE", "invalidBit"));
-					break;
+					throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
 		}
 		logger.debug("Usecase Metas: " + metas);
+		
 
 		SubscriberInfo updateSubscriberInfo;
 
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subscriberObj = readSubscriber(requestId, request.getCustomerId(), metas);
 
-		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() > 0)
+		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0)
 			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 		
 		updateSubscriberInfo = updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyTagging);
