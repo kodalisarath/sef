@@ -47,7 +47,6 @@ public class EntireDeleteSubscriber implements Processor{
 		} catch (Exception e) {
 			logger.error("Error in the processor class:",e.getClass().getName(),e);
 		}
-		
 	}
 
 	private CommandResponseData createResponse(String operationName, String modifier,boolean isTransactional) {
