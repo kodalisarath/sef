@@ -116,33 +116,33 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		AccBefAndAfterRef accBef= response.getAccountBeforeRefill();
 		int index = 0;
 		for (DedicatedAccountInformation daInfo: accBef.getDedicatedAccInfo()) {
-			responseDetails.put("ACC_BEFORE_DA_ID." + ++index, "" + daInfo.getDedicatedAccountID());
-			responseDetails.put("ACC_BEFORE_DA_VALUE." + index, "" + daInfo.getDedicatedAccountValue1());
+			LOGGER.debug("handling account before da: " + daInfo);
+			responseDetails.put("ACC_BEFORE_DA."+ ++index, daInfo.getDedicatedAccountID() + "," + daInfo.getDedicatedAccountValue1());
 		}
 		responseDetails.put("ACC_BEFORE_SERVICE_FEE_EXPIRY_DATE", "" + accBef.getServiceFeeExpiryDate().getTime());
 		responseDetails.put("ACC_BEFORE_SUPERVISION_EXPIRY_DATE", "" + accBef.getSupervisionExpiryDate().getTime());
 	
 		index = 0;
 		for (OfferInformation offerInfo: accBef.getOfferInformationList()) {
-			LOGGER.debug("How do I handle this biyaaatchhh... OfferInfo: " + offerInfo);
-			responseDetails.put("ACC_BEFORE_OFFER_ID." + ++index, "" + offerInfo.getOfferID());
-			responseDetails.put("ACC_BEFORE_OFFER_EXPIRY_DATE." + index, "" + ((offerInfo.getExpiryDateTime() == null)? offerInfo.getExpiryDate().getTime(): offerInfo.getExpiryDateTime().getTime()));			
+			LOGGER.debug("handling account before OfferInfo: " + offerInfo);
+			responseDetails.put("ACC_BEFORE_OFFER."+ ++index, offerInfo.getOfferID() + "," + 
+					((offerInfo.getExpiryDate()==null)?offerInfo.getExpiryDateTime().getTime():offerInfo.getExpiryDate().getTime()));
 		}
 		
 		AccBefAndAfterRef  accAft=  response.getAccountAfterRefill();
 		index = 0;
 		for (DedicatedAccountInformation daInfo: accAft.getDedicatedAccInfo()) {
-			responseDetails.put("ACC_AFTER_DA_ID." + ++index, "" + daInfo.getDedicatedAccountID());
-			responseDetails.put("ACC_AFTER_DA_VALUE." + index, "" + daInfo.getDedicatedAccountValue1());
+			LOGGER.debug("handling account before da: " + daInfo);
+			responseDetails.put("ACC_AFTER_DA."+ ++index, daInfo.getDedicatedAccountID() + "," + daInfo.getDedicatedAccountValue1());
 		}
 		responseDetails.put("ACC_AFTER_SERVICE_FEE_EXPIRY_DATE", "" + accAft.getServiceFeeExpiryDate().getTime());
 		responseDetails.put("ACC_AFTER_SUPERVISION_EXPIRY_DATE", "" + accAft.getSupervisionExpiryDate().getTime());
 	
 		index = 0;
 		for (OfferInformation offerInfo: accAft.getOfferInformationList()) {
-			LOGGER.debug("How do I handle this biyaaatchhh... OfferInfo: " + offerInfo);
-			responseDetails.put("ACC_AFTER_OFFER_ID." + ++index, "" + offerInfo.getOfferID());
-			responseDetails.put("ACC_AFTER_OFFER_EXPIRY_DATE." + index, "" + ((offerInfo.getExpiryDateTime() == null)? offerInfo.getExpiryDate().getTime(): offerInfo.getExpiryDateTime().getTime()));			
+			LOGGER.debug("handling account before OfferInfo: " + offerInfo);
+			responseDetails.put("ACC_AFTER_OFFER."+ ++index, offerInfo.getOfferID() + "," + 
+					((offerInfo.getExpiryDate()==null)?offerInfo.getExpiryDateTime().getTime():offerInfo.getExpiryDate().getTime()));
 		}
 		
 		p.setMetas(responseDetails);

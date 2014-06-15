@@ -259,6 +259,7 @@ public class CARecharge implements Processor {
 		long currentExpiryDate = Long.parseLong(requestContext.get("longestExpiry"));
 		switch (rechargeRequest.getRatingInput2()) {
 			case "0": // ABSOLUTE DATE SCENARIO
+				logger.debug("Handling ABSOLUTE DATE SCENARIO...");
 				long requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
 				if (requestedExpiryDate > currentExpiryDate) {
 					requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
@@ -268,6 +269,7 @@ public class CARecharge implements Processor {
 				logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate);
 				break;
 			case "1": // relative to current expiry date
+				logger.debug("Handling RELATIVE TO CURRENT EXPIRY SCENARIO...");
 				boolean found = false;
 				Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
 				for (OfferInfo oInfo: subscriberOffers.values()) {
@@ -303,6 +305,7 @@ public class CARecharge implements Processor {
 				}
 				break;
 			case "3": // relative to current date
+				logger.debug("Handling RELATIVE TO CURRENT DATE SCENARIO...");
 				found = false;
 				subscriberOffers = subscriberOffersCache.get();
 				for (OfferInfo oInfo: subscriberOffers.values()) {
@@ -327,9 +330,9 @@ public class CARecharge implements Processor {
 					 long startTime = new Date().getTime();
 					 long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
 					 if (endTime > currentExpiryDate) {
-							requestContext.put("supervisionExpiryPeriod", "" + endTime);
-							requestContext.put("serviceFeeExpiryPeriod", "" + endTime);
-							requestContext.put("longestExpiry", "" + endTime);
+						 requestContext.put("supervisionExpiryPeriod", "" + endTime);
+						 requestContext.put("serviceFeeExpiryPeriod", "" + endTime);
+						 requestContext.put("longestExpiry", "" + endTime);
 					 }
 					 requestContext.put("newDaID", requiredDA);
 					 requestContext.put("newOfferID", requiredOfferID);
@@ -338,18 +341,13 @@ public class CARecharge implements Processor {
 				}
 				break;
 		}
-		
+		logger.debug("Quick Check on Request Context: " + requestContext);
 		return requestContext;
 	}
 	
 	
-	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER_ID = "READ_SUBSCRIBER_OFFER_ID";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE = "READ_SUBSCRIBER_START_DATE";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE = "READ_SUBSCRIBER_EXPIRY_DATE";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME = "READ_SUBSCRIBER_START_DATE_TIME";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME = "READ_SUBSCRIBER_EXPIRY_DATE_TIME";
-
-
+	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER";
+	
 	private void checkGraceAndLongestExpiryDate() {
 		Map<String, String> requestContext = requestContextCache.get();
 		
@@ -359,48 +357,42 @@ public class CARecharge implements Processor {
 		OfferInfo oInfo = null; long longestExpiry = 0; OfferInfo endurantOffer = null;
 		Map<String, OfferInfo> subscriberOffers = new HashMap<String, CARecharge.OfferInfo>(); 
 		for (String key: subscriberMetas.keySet()) {
-			logger.debug("FLEXI:: Am I in the loop of GetAccountDetails!!!");
-			if (key.contains(".")) {
-				logger.debug("FLEXI:: Am I in recursive index loop?/?   " + key);
-				String[] keyPart = key.split("\\.");
-				logger.debug("FLEXI:: split? keyParts size: " + keyPart.length);
-				if (subscriberOffers.containsKey(keyPart[1])) {
-					logger.debug("FLEXI:: existing index:" + keyPart[1]);
-					oInfo = subscriberOffers.get(keyPart[1]);
-				} else {
-					logger.debug("FLEXI:: new index: " + keyPart[1]);
-					oInfo = new OfferInfo();
-					subscriberOffers.put(keyPart[1], oInfo);
+			logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
+
+			if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
+				logger.debug("FLEXI:: OFFER_ID...." + subscriberMetas.get(key));
+				String offerForm = subscriberMetas.get(key);
+				
+				String offerParts[] = offerForm.split(",");
+				String offerId = offerParts[0];
+				String start = offerParts[1];
+				if (start.equals("null"))
+					start = offerParts[2];
+				String expiry = offerParts[3];
+				if (expiry.equals("null"))
+					expiry = offerParts[4];
+				
+				String daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+				String walletName =  SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
+				
+				oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), daID, walletName); 
+				subscriberOffers.put(offerId, oInfo);
+				logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
+
+				if (oInfo.offerID.equals("2")) {
+					requestContext.put("inGrace", "true");
+					logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 				}
 				
-				logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
+				if (longestExpiry < oInfo.offerExpiry) {
+					logger.debug("FLEXI:: Is this the longest Expiry? " + longestExpiry + " <==> " + oInfo);
+					longestExpiry = oInfo.offerExpiry;
+					endurantOffer = oInfo;
 
-				if (keyPart[0].startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID)) {
-					logger.debug("FLEXI:: OFFER_ID...." + keyPart[0]);
-					oInfo.offerID = subscriberMetas.get(key);
-					oInfo.daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
-					oInfo.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
-					logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
-					
-					if (oInfo.offerID.equals("2")) {
-						requestContext.put("inGrace", "true");
-						logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
-					}
-				}
-
-				if (keyPart[0].startsWith(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE)) {
-					logger.debug("FLEXI:: EXPIRY_DATE..." + keyPart[0]);
-					oInfo.offerExpiry = Long.parseLong(subscriberMetas.get(key));
-
-					if (longestExpiry < oInfo.offerExpiry) {
-						logger.debug("FLEXI:: Is this the longest Expiry? " + longestExpiry + " <==> " + oInfo);
-						longestExpiry = oInfo.offerExpiry;
-						endurantOffer = oInfo;
-						
-					}
 				}
 			}
-		}
+
+			}
 		
 		requestContext.put("longestExpiry", "" + longestExpiry);
 		requestContext.put("endurantOfferID", endurantOffer.offerID);
@@ -555,9 +547,11 @@ public class CARecharge implements Processor {
 		long afterSupervisionFeeExpiry = 0;
 		
 		logger.debug("PREDEFINED:: Processing Refill Metas: " + response.getBillingMetas());
-		String index = "1"; BalInfo balInfo = null;
-		Map<String, BalInfo> beforeEntries = new HashMap<String, CARecharge.BalInfo>();
-		Map<String, BalInfo> afterEntries = new HashMap<String, CARecharge.BalInfo>();
+
+		Map<String, OfferInfo> beforeOfferEntries = new HashMap<String, CARecharge.OfferInfo>();
+		Map<String, DaInfo> beforeDaEntries = new HashMap<String, CARecharge.DaInfo>();
+		Map<String, OfferInfo> afterOfferEntries = new HashMap<String, CARecharge.OfferInfo>();
+		Map<String, DaInfo> afterDaEntries = new HashMap<String, CARecharge.DaInfo>();
 		
 		for (Meta meta: response.getBillingMetas()) {
 			logger.debug("PREDEFINED::Next Meta: " + meta.getKey());
@@ -569,77 +563,64 @@ public class CARecharge implements Processor {
 				afterServiceFeeExpiry = Long.parseLong(meta.getValue());
 			if (meta.getKey().equals("ACC_AFTER_SUPERVISION_EXPIRY_DATE")) 
 				afterSupervisionFeeExpiry = Long.parseLong(meta.getValue());
-			
-			if (meta.getKey().contains(".")) {
-				logger.debug("PREDEFINED::Processing recursive key: " + meta.getKey());
-				String[] keyPart = meta.getKey().split("\\.");
-				logger.debug("PREDEFINED:: Split Key - keyPart size: " + keyPart.length);
-				if (keyPart[0].contains("BEFORE_")) {
-					if (!beforeEntries.containsKey(keyPart[1])) {
-						logger.debug("BPREDEFINED::efore Enties: Existing Index: " + keyPart[1]);
-						balInfo = new BalInfo();
-						beforeEntries.put(keyPart[0], balInfo);
-					} else {
-						logger.debug("PREDEFINED::Before Enties: New Index: " + keyPart[1]);
-						balInfo = beforeEntries.get(keyPart[1]);
-					}	
-				} else if (keyPart[0].contains("AFTER_")) {
-					if (!afterEntries.containsKey(keyPart[1])) {
-						logger.debug("PREDEFINED::After Enties: Existing Index: " + keyPart[1]);
-						balInfo = new BalInfo();
-						afterEntries.put(keyPart[0], balInfo);
-					} else {
-						logger.debug("PREDEFINED::After Enties: New Index: " + keyPart[1]);
-						balInfo = afterEntries.get(keyPart[1]);
-					}	
-				}
 
-				if (meta.getKey().startsWith("ACC_BEFORE_DA_ID")) 
-					balInfo.daID = meta.getValue();
 
-				if (meta.getKey().startsWith("ACC_BEFORE_DA_VALUE")) 
-					balInfo.daValue = Integer.parseInt(meta.getValue());
+			if (meta.getKey().startsWith("ACC_BEFORE_OFFER")) {
+				OfferInfo oInfo = new OfferInfo();
+				String offerPart[] = meta.getValue().split(",");
+				oInfo.offerID = offerPart[0];
+				oInfo.offerExpiry = Long.parseLong(offerPart[1]);
+				beforeOfferEntries.put(oInfo.offerID, oInfo);	
+				logger.debug("Adding Before Offer " + oInfo);
+			}
 
-				if (meta.getKey().startsWith("ACC_BEFORE_OFFER_ID")) 
-					balInfo.offerId = meta.getValue();
+			if (meta.getKey().startsWith("ACC_AFTER_OFFER")) {
+				OfferInfo oInfo = new OfferInfo();
+				String offerPart[] = meta.getValue().split(",");
+				oInfo.offerID = offerPart[0];
+				oInfo.offerExpiry = Long.parseLong(offerPart[1]);
+				afterOfferEntries.put(oInfo.offerID, oInfo);				
+				logger.debug("Adding After Offer " + oInfo);
+			}
 
-				if (meta.getKey().startsWith("ACC_BEFORE_OFFER_EXPIRY_DATE")) 
-					balInfo.offerExpiry = ((meta.getValue() != null)?Long.parseLong(meta.getValue()):0);
+			if (meta.getKey().startsWith("ACC_BEFORE_DA")) {
+				DaInfo daInfo = new DaInfo();
+				String daPart[] = meta.getValue().split(",");
+				daInfo.daID = daPart[0];
+				daInfo.daValue = Integer.parseInt(daPart[1]);
+				beforeDaEntries.put(daInfo.daID, daInfo);
+				logger.debug("Adding Before DA " + daInfo);
+			}
 
-				if (meta.getKey().startsWith("ACC_AFTER_DA_ID")) 
-					balInfo.daID = meta.getValue();
-
-				if (meta.getKey().startsWith("ACC_AFTER_DA_VALUE")) 
-					balInfo.daValue = Integer.parseInt(meta.getValue());
-
-				if (meta.getKey().startsWith("ACC_AFTER_OFFER_ID")) 
-					balInfo.offerId = meta.getValue();
-
-				if (meta.getKey().startsWith("ACC_AFTER_OFFER_EXPIRY_DATE")) 
-					balInfo.offerExpiry = ((meta.getValue() != null) ?Long.parseLong(meta.getValue()): 0);
-				
-				logger.debug("PREDEFINED::Building up BalInfo: " + balInfo);
-				logger.debug("PREDEFINED::Before Entries Size: " + beforeEntries.size() + ", After Entries Size: " + afterEntries.size());
+			if (meta.getKey().startsWith("ACC_AFTER_DA")) {
+				DaInfo daInfo = new DaInfo();
+				String daPart[] = meta.getValue().split(",");
+				daInfo.daID = daPart[0];
+				daInfo.daValue = Integer.parseInt(daPart[1]);
+				afterDaEntries.put(daInfo.daID, daInfo);
+				logger.debug("Adding After DA " + daInfo);
 			}
 
 		}
-		
+
+		logger.debug("PREDEFINED::Before Offer Entries Size: " + beforeOfferEntries.size() + ", After Entries Size: " + afterOfferEntries.size());
+		logger.debug("PREDEFINED::Before DA Entries Size: " + beforeDaEntries.size() + ", After DA Size: " + afterDaEntries.size());
+	
+
 		// Calculate...
-		logger.debug("PREDEFINED:: About process extracted entries. Before " + beforeEntries.size() + ", After " + afterEntries.size());
-		logger.debug("Before Entries: " + beforeEntries);
-		logger.debug("After Entries: " + afterEntries);
 		
-		for (String key: beforeEntries.keySet()) {
-			BalInfo before = beforeEntries.get(key);
-			logger.debug("Before Entry: " + before);
-			BalInfo after = afterEntries.get(key);
-			logger.debug("After Entry: " + after);
+		for (OfferInfo oInfo: beforeOfferEntries.values()) {
 			
-			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", before.offerId) + "s_PeriodicBonus";
-			int daBalanceDiff = after.daValue - before.daValue;
+			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID) + "s_PeriodicBonus";
+			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+			DaInfo beforeDA = beforeDaEntries.get(daId);
+			DaInfo afterDA = afterDaEntries.get(daId);
+			
+			int daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+			OfferInfo afterOffer = afterOfferEntries.get(oInfo.offerID);
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String responseEntry = balanceId + ";" + daBalanceDiff + ";" + after.daValue  + ";" + format.format(new Date(after.offerExpiry));
+			String responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue  + ";" + format.format(new Date(afterOffer.offerExpiry));
 			
 			StringElement stringElement = new StringElement();
 			stringElement.setValue(responseEntry);
@@ -759,8 +740,22 @@ public class CARecharge implements Processor {
 	class OfferInfo {
 		private String offerID;
 		private long offerExpiry;
+		private long offerStart;
 		private String daID;
 		private String walletName;
+		
+		public OfferInfo() {}
+		
+		public OfferInfo(String offerID, long offerExpiry, long offerStart, String daID, String walletName) {
+			super();
+			this.offerID = offerID;
+			this.offerExpiry = offerExpiry;
+			this.offerStart = offerStart;
+			this.daID = daID;
+			this.walletName = walletName;
+		}
+
+
 		@Override
 		public String toString() {
 			return "OfferInfo [offerID=" + offerID + ", offerExpiry=" + offerExpiry + ", daID=" + daID + ", walletName=" + walletName + "]";
@@ -769,26 +764,18 @@ public class CARecharge implements Processor {
 		
 	}
 	
-	class BalInfo {
+	
+	class DaInfo {
 		private String daID;
 		private Integer daValue;
-		private String offerId;
-		private Long offerExpiry;
-		
-		public boolean isComplete() {
-			if (daID != null && daValue != null && offerId != null && offerExpiry != null)
-				return true;
-			return false;
-		}
-
 		@Override
 		public String toString() {
-			return "BalInfo [daID=" + daID + ", daValue=" + daValue + ", offerId=" + offerId + ", offerExpiry=" + offerExpiry + "]";
+			return "DaInfo [daID=" + daID + ", daValue=" + daValue + "]";
 		}
-		
 		
 	}
 	
+		
 	class ReversalEntry {
 		private String walletName;
 		private String reversedAmount;
