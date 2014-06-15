@@ -59,7 +59,7 @@ public class GetAccountDetailsResponse extends AbstractAirResponse {
 		return serviceFeeExpiryDate;
 	}
 	
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public List<OfferInformation> getOfferInformationList() {
 		if(offerInformationList == null) {
 			offerInformationList = new ArrayList<OfferInformation>();

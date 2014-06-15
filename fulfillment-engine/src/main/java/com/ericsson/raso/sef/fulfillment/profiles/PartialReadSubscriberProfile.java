@@ -172,6 +172,7 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 		// offer info...
 		index = 0;
 		if (response.getOfferInformationList() != null) {
+			LOGGER.debug("About to process OfferInfoList. Size: " + response.getOfferInformationList().size());
 			for (OfferInformation offerInformation: response.getOfferInformationList()) {
 				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO + "." + ++index, (offerInformation.getOfferID() + 
 						"," + ((offerInformation.getStartDate()==null)?"null":offerInformation.getStartDate().getTime()) + 
@@ -179,6 +180,8 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 						"," + ((offerInformation.getExpiryDate()==null)?"null":offerInformation.getExpiryDate().getTime()) + 
 						"," + ((offerInformation.getExpiryDateTime()==null)?"null":offerInformation.getExpiryDateTime().getTime()) ));
 			}
+		} else {
+			LOGGER.error("DID NOT RECEIVE Offer Info List from UCIP Response!!");
 		}
 		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
 
