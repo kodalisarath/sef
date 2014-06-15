@@ -15,7 +15,8 @@ public interface SubscriberService {
 
 	boolean updateSubscriber(String nbCorrelator, Subscriber subscriber) throws PersistenceError;
 	
-	boolean deleteSubscriber(String nbCorrelator, String userId) throws PersistenceError;
+	boolean deleteSubscriber(String nbCorrelator, Subscriber subscriber) throws PersistenceError;
+	
 	//This below 2 methods were added as part of the refactoring 
 	boolean createMeta(String nbCorrelator,String userId,Meta metas) throws PersistenceError;
 	boolean updateMeta(String nbCorrelator,String userId,Meta metas) throws PersistenceError;

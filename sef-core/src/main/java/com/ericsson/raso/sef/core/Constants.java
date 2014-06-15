@@ -28,6 +28,8 @@ public class Constants {
 	public static final String BucketCreateOrWriteRop = "BucketCreateOrWriteRop";
 	public static final String BalanceAdjustment = "BalanceAdjustment";
 	public static final String ModifyTagging = "ModifyTagging";
+	public static final String RetrieveDelete = "RetrieveDelete";
+	public static final String EntireDelete = "EntireDelete";
 	public static final String VersionCreateOrWriteCustomer = "VersionCreateOrWriteCustomer";
 	public static final String CreateOrWriteCustomer = "CreateOrWriteCustomer";
 	public static final String CreateOrWriteServiceAccessKey = "CreateOrWriteServiceAccessKey";
