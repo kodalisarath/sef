@@ -131,24 +131,26 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		List<Meta> billingMetas = null;
 		TransactionStatus txnStatus=null;
 		
-		
-		for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
-			if (result.getExecutionInputs().getType() == TaskType.PERSIST) {
-				Object saved = ((Persistence<?>)((PersistenceStep) result).getExecutionInputs()).getToSave();
-				if (saved instanceof Subscription) {
-					subscriptionId = ((Subscription)saved).getSubscriptionId(); 
-				}	
-			}
-			
-			if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
-				if(result.getFault() != null){
-					txnStatus=new TransactionStatus();
-					txnStatus.setCode(result.getFault().getStatusCode().getCode());
-					txnStatus.setComponent(result.getFault().getComponent());
-					txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
-				}else{
-					if((((FulfillmentStep) result).getResult()) != null) {
-						products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+		if (this.getResponse() != null && this.getResponse().getReturnFault() == null) {
+	
+			for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
+				if (result.getExecutionInputs().getType() == TaskType.PERSIST) {
+					Object saved = ((Persistence<?>)((PersistenceStep) result).getExecutionInputs()).getToSave();
+					if (saved instanceof Subscription) {
+						subscriptionId = ((Subscription)saved).getSubscriptionId(); 
+					}	
+				}
+
+				if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
+					if(result.getFault() != null){
+						txnStatus=new TransactionStatus();
+						txnStatus.setCode(result.getFault().getStatusCode().getCode());
+						txnStatus.setComponent(result.getFault().getComponent());
+						txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
+					}else{
+						if((((FulfillmentStep) result).getResult()) != null) {
+							products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+						}
 					}
 				}
 			}
@@ -166,7 +168,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 									billingMetas);
 		logger.debug("Subscription response posted");
 		
-	}
+	} 
 	
 	
 

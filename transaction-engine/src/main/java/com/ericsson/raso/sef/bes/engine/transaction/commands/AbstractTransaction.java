@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.AbstractResponse;
+import com.ericsson.raso.sef.core.ResponseCode;
 
 public abstract class AbstractTransaction implements Callable<Boolean>, Serializable {
 	private static final long serialVersionUID = -7350766184775285546L;
@@ -57,18 +58,19 @@ public abstract class AbstractTransaction implements Callable<Boolean>, Serializ
 			
 			if (e instanceof RuntimeException) {
 				LOGGER.error("Abnormal flow - " + e.getClass().getName() + ": " + e.getMessage());
-				this.response.setReturnFault(new TransactionException(this.requestId, "Transaction failed executing...", e));
+				this.response.setReturnFault(new TransactionException("txe", new ResponseCode(999, "Transaction failed"), e));
 				this.sendResponse();
 				return false;
 			}
 				
 			if (e instanceof Error) {
 				LOGGER.error("Container under Stress - " + e.getClass().getName() + ": " + e.getMessage());
-				this.response.setReturnFault(new TransactionException(this.requestId, "System under stress...", e));
+				this.response.setReturnFault(new TransactionException("txe", new ResponseCode(999, "System under stress..."), e));
 				this.sendResponse();
 				throw e;
 			} else {
 				LOGGER.error("Gneric Exception Handler - " + e.getClass().getName() + ": " + e.getMessage());
+				this.response.setReturnFault(new TransactionException("txe", new ResponseCode(999, "System under stress..."), e));
 				this.response.setReturnFault(new TransactionException(this.requestId, "Transaction failed executing...", e));
 				this.sendResponse();
 				return false;

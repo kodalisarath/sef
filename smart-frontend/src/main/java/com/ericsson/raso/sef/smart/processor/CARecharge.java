@@ -22,6 +22,8 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
 import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
+import com.ericsson.raso.sef.smart.PasaServiceManager;
 import com.ericsson.raso.sef.smart.PasaloadRule;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
@@ -431,9 +433,13 @@ public class CARecharge implements Processor {
 	}
 
 
-	private Map<String,String> preparePasaload(RechargeRequest rechargeRequest) {
-		// evaluate truth table for eligibilities (2do: this will be later moved to imlicit ootb features of prodcat when subscription db is available
-		
+	private Map<String,String> preparePasaload(RechargeRequest rechargeRequest) throws SmException {
+		// evaluate truth table for eligibilities (2do: this will be later moved to implicit ootb features of prodcat when subscription db is available
+		PasaServiceManager pasaService = PasaServiceManager.getInstance();
+		if (!pasaService.isPasaReceiveAllowed(rechargeRequest.getCustomerId(), rechargeRequest.getEventName())) {
+			logger.debug("Pasaload is not allowed until tomorrow for this promo: " + rechargeRequest.getEventName());
+			throw ExceptionUtil.toSmException(ErrorCode.maxCreditViolation);
+		}
 		
 		
 		// process the refill....
