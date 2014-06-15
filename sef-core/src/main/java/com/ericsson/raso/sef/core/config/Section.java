@@ -24,7 +24,6 @@ public class Section {
 	    this.property = property;    
 	}  
 	
-	@XmlAttribute
 	public String getId() {  
 	    return id;  
 	}  
@@ -34,7 +33,6 @@ public class Section {
 	    this.id = id;  
 	}
 	
-	@XmlAttribute
 	public String getDescription() {  
 	    return description;  
 	}  
@@ -45,7 +43,6 @@ public class Section {
 	}  
 	
 	
-	@XmlElement(name="property")
 	public ArrayList<Property> getProperty() {  
 	    return property;  
 	}  
