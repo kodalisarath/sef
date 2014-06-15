@@ -165,6 +165,7 @@ public class BalanceAdjustment implements Processor {
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		logger.debug("Hi HERE I AM " + subscriberInfo.getMetas());
 		return subscriberInfo;
 	}
 	
