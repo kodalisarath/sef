@@ -32,7 +32,7 @@ public class BucketCreateOrWriteRop implements Processor {
 		BucketCreateOrWriteRopRequest request = (BucketCreateOrWriteRopRequest) exchange
 				.getIn().getBody();
 		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta("customerId", request.getCustomerId()));
+		metas.add(new Meta("CustomerId", request.getCustomerId()));
 		metas.add(new Meta("category", request.getCategory()));
 		metas.add(new Meta("Key", String.valueOf(request.getKey())));
 		metas.add(new Meta("bValidFrom", request.getbValidFrom()));

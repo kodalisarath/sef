@@ -49,11 +49,15 @@ public class ModifyCustomerPreActive implements Processor {
 		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		
 		if( ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())){
-			String date=subscriberObj.getSubscriber().getMetas().get("preActiveEndDate");
+			logger.info("In pre-active method");
+			String date=subscriberObj.getSubscriber().getMetas().get("PreActiveEndDate");
 			if(date != null){
 				logger.debug("There is a preActive end date entered and adding days to it now"+date);
 				String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
-				metas.add(new Meta("preActiveEndDate",String.valueOf(newDate)));
+				metas.add(new Meta("PreActiveEndDate",String.valueOf(newDate)));
+			}
+			else{
+				logger.debug("date is not found");
 			}
 			subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
 			logger.info("Before read subscriber call");

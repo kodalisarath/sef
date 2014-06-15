@@ -89,33 +89,33 @@ OwningCustomerId
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			
 		}
-		//DummyProcessor.response(exchange);
-		exchange.getOut().setBody(subscriberInfo);
+		DummyProcessor.response(exchange);
+		//exchange.getOut().setBody(subscriberInfo);
 	}
 
-	private CommandResponseData createResponse(String operationName,
-			String modifier, boolean isTransactional) {
-		logger.info("Invoking create Response");
-		CommandResponseData responseData = new CommandResponseData();
-		CommandResult result = new CommandResult();
-		responseData.setCommandResult(result);
-
-		Operation operation = new Operation();
-		operation.setName(operationName);
-		operation.setModifier(modifier);
-
-		OperationResult operationResult = new OperationResult();
-
-		if (isTransactional) {
-			TransactionResult transactionResult = new TransactionResult();
-			result.setTransactionResult(transactionResult);
-			transactionResult.getOperationResult().add(operationResult);
-		} else {
-			result.setOperationResult(operationResult);
-		}
-
-		return responseData;
-	}
+//	private CommandResponseData createResponse(String operationName,
+//			String modifier, boolean isTransactional) {
+//		logger.info("Invoking create Response");
+//		CommandResponseData responseData = new CommandResponseData();
+//		CommandResult result = new CommandResult();
+//		responseData.setCommandResult(result);
+//
+//		Operation operation = new Operation();
+//		operation.setName(operationName);
+//		operation.setModifier(modifier);
+//
+//		OperationResult operationResult = new OperationResult();
+//
+//		if (isTransactional) {
+//			TransactionResult transactionResult = new TransactionResult();
+//			result.setTransactionResult(transactionResult);
+//			transactionResult.getOperationResult().add(operationResult);
+//		} else {
+//			result.setOperationResult(operationResult);
+//		}
+//
+//		return responseData;
+//	} 
 
 	private SubscriberInfo updateSubscriber(String requestId,
 			String customer_id, List<Meta> metas,String useCase) throws SmException {

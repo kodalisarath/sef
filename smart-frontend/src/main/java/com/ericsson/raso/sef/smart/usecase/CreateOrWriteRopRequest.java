@@ -286,6 +286,12 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 				 else if (parameter.getName().equalsIgnoreCase("IsCFMOC")) {
 						this.setIsCFMOC(parameter.isValue());
 					}
+				 else if (parameter.getName().equalsIgnoreCase("IsLastTransactionEnqUsed")) {
+						this.setIsLastTransactionEnqUsed(parameter.isValue());
+					}
+				 else if (parameter.getName().equalsIgnoreCase("IsLocked")) {
+						this.setIsLocked(parameter.isValue());
+					}
 				 else if (parameter.getName().equalsIgnoreCase("IsOperatorCollectCallAllowed")) {
 						this.setIsOperatorCollectCallAllowed(parameter.isValue());
 					}
