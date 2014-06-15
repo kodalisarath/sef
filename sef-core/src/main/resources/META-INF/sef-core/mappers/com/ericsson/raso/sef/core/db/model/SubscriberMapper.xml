@@ -93,7 +93,7 @@
 		where user_id = #{subscriberId}
 		and attribute_name = #{key}
 	</update>
-	<update id="changeContractStatus" parameterType="String">
+	<update id="changeContractStatus" parameterType="Subscriber">
 	update subscriber set contract_state=#{contractState.name} where user_id=#{userId}
 	</update>
 	<!-- <update id="updateSubscriberTable" >

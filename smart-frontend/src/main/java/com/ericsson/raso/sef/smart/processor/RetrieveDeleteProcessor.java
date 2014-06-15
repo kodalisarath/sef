@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -7,17 +8,33 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.UniqueIdGenerator;
+import com.ericsson.raso.sef.core.db.model.Subscriber;
+import com.ericsson.raso.sef.core.db.service.SubscriberService;
+import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
+import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.usecase.RetrieveDeleteRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueElement;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ListParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 
 
@@ -29,20 +46,56 @@ public class RetrieveDeleteProcessor implements Processor {
 		
 			RetrieveDeleteRequest request = (RetrieveDeleteRequest) exchange.getIn().getBody();
 			String requestId = RequestContextLocalStore.get().getRequestId();
-			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), null);
-			if(subscriberObj != null){
-				  String subscriberId=request.getCustomerId();
-					SubscriberInfo subscriberInfo= deleteSubscriber(requestId,subscriberId);
-					exchange.getOut().setBody(subscriberInfo);
+			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), new ArrayList<Meta>());
+			if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
+				logger.debug("Inside the if condition for status check");
+				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+			}
+			if(subscriberObj.getSubscriber() != null){
+				SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), new ArrayList<Meta>(), Constants.RetrieveDelete);
+				  exchange.getOut().setBody(subscriberInfo);
 					if (subscriberInfo.getStatus() != null) {
-						
-						ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
-						
+						logger.debug("Problem in persisting");
+						throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 					}
-				
 			}
-		  
+			//DummyProcessor.response(exchange);
+			CommandResponseData cr = this.createResponse(true);
+			exchange.getOut().setBody(cr);
 			}
+	
+	private CommandResponseData createResponse(boolean isTransactional) throws SmException {
+		CommandResponseData responseData = new CommandResponseData();
+		CommandResult result = new CommandResult();
+		responseData.setCommandResult(result);
+		OperationResult operationResult = new OperationResult();
+		Operation operation = new Operation();
+		operation.setName("RetrieveDelete");
+		operation.setModifier("ServiceAccessKey");
+		operationResult.getOperation().add(operation);
+		ParameterList parameterList = new ParameterList();
+		EnumerationValueElement ev = new  EnumerationValueElement ();
+		ev.setValue("ONLINE");
+		EnumerationValueParameter evp = new EnumerationValueParameter();
+		evp.setName("category");
+		evp.setValue("ONLINE");
+		ListParameter listParameter = new ListParameter();
+		listParameter.getElementOrBooleanElementOrByteElement().add(evp);
+		parameterList.getParameterOrBooleanParameterOrByteParameter().add(listParameter);
+		operation.setParameterList(parameterList);
+		
+		if(isTransactional) {
+			TransactionResult transactionResult = new TransactionResult();
+			result.setTransactionResult(transactionResult);
+			transactionResult.getOperationResult().add(operationResult);
+		} else {
+			result.setOperationResult(operationResult);
+		}
+		
+		return responseData;
+	}
+	
+	
 	
 	
 	private SubscriberInfo deleteSubscriber(String requestId,String subscriberId) {
@@ -248,6 +301,28 @@ public class RetrieveDeleteProcessor implements Processor {
 		
 	}
 	
-	
+	private SubscriberInfo updateSubscriber(String requestId,
+			String customer_id, List<Meta> metas,String useCase) throws SmException {
+		logger.info("Invoking update subscriber on tx-engine subscriber interface");
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
+				.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		logger.debug("Requesting ");
+		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas,useCase);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
+				.getSemaphore(requestId);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+			logger.error("Error while calling acquire()");
+		}
+		logger.info("Check if response received for update subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
+				.remove(requestId);
+		
+		return subscriberInfo;
+	}
 
 }

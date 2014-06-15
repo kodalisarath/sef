@@ -103,6 +103,23 @@ public class UpdateSubscriber extends AbstractTransaction {
 					}
 				}
 				break;
+				
+			case Constants.RetrieveDelete:
+				LOGGER.debug("Invoked RetrieveDelete Case");
+				// This entity must contains the subscriber and his meta from the DB
+				
+				LOGGER.debug("Getting the request: " + this.getRequest());
+				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+
+
+				if (subscriberEntity == null) {
+					LOGGER.error("Subscriber not found in database");
+					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
+					sendResponse();
+				}
+						subscriberStore.deleteSubscriber(this.getRequestId(),subscriberEntity);
+				break;
+				
 			case Constants.ModifyCustomerPreActive:	
 			case Constants.ModifyCustomerGrace:
 				LOGGER.debug("Invoked ModifyCustomer Case");
