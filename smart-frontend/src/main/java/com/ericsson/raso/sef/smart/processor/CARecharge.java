@@ -623,14 +623,21 @@ public class CARecharge implements Processor {
 			logger.debug("Mapped Wallet: " + balanceId + ", DA: " + daId);
 			if (balanceId == null || daId == null) {
 				logger.error("Please check config.xml for mapping entries for OfferID:" + oInfo.offerID + " under sections 'GLOBAL_walletMapping' & 'Global_offerMapping' ");
-				throw ExceptionUtil.toSmException(ErrorCode.missingMandatoryParameterError);
+				//throw ExceptionUtil.toSmException(ErrorCode.missingMandatoryParameterError);
+				logger.debug("Doesnt seem to be an offer that will go in SMART response... Offer: " + oInfo);
+				continue;
 			}
 			
 			
 			DaInfo beforeDA = beforeDaEntries.get(daId);
 			DaInfo afterDA = afterDaEntries.get(daId);
 			
-			int daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+			int daBalanceDiff = 0;
+			if (beforeDA == null)
+				daBalanceDiff = afterDA.daValue;
+			else
+				daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+			
 			OfferInfo afterOffer = afterOfferEntries.get(oInfo.offerID);
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
