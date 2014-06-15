@@ -10,7 +10,6 @@ public class Value {
 	private String sdpId;
 	private String siteId;
 	
-	@XmlAttribute
 	public String getId() {
 		return id;
 	}
@@ -20,7 +19,6 @@ public class Value {
 		this.id = id;
 	}
 	
-	@XmlAttribute
 	public String getSdpId() {
 		return sdpId;
 	}
@@ -30,7 +28,6 @@ public class Value {
 		this.sdpId = sdpId;
 	}
 	
-	@XmlAttribute
 	public String getSiteId() {
 		return siteId;
 	}

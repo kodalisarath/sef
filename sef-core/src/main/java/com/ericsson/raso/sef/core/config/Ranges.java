@@ -10,7 +10,6 @@ public class Ranges {
 
 	private ArrayList<Range> range;
 
-	@XmlElement(name="range")
 	public ArrayList<Range> getRange() {
 		return range;
 	}

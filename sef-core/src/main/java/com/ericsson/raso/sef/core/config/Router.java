@@ -10,7 +10,6 @@ public class Router {
 	Ranges ranges;
 	Values values;
 	
-	@XmlElement(name="ranges")
 	public Ranges getRanges() {
 		return ranges;
 	}
@@ -20,7 +19,6 @@ public class Router {
 		this.ranges = ranges;
 	}
 	
-	@XmlElement(name="values")
 	public Values getValues() {
 		return values;
 	}

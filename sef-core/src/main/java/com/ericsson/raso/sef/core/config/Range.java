@@ -10,7 +10,6 @@ public class Range {
 	private long end;
 	private Value value;
 	
-	@XmlAttribute
 	public long getStart() {
 		return start;
 	}
@@ -20,7 +19,6 @@ public class Range {
 		this.start = start;
 	}
 	
-	@XmlAttribute
 	public long getEnd() {
 		return end;
 	}
@@ -30,7 +28,6 @@ public class Range {
 		this.end = end;
 	}
 	
-	@XmlAttribute
 	public Value getValue() {
 		return value;
 	}

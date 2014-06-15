@@ -10,7 +10,6 @@ public class Values {
 
 	private ArrayList<Value> value;
 
-	@XmlElement(name="value")
 	public ArrayList<Value> getValue() {
 		return value;
 	}
