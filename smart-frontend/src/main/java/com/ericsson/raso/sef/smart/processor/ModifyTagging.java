@@ -42,43 +42,43 @@ public class ModifyTagging implements Processor {
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		Integer tag = Integer.valueOf(request.getTagging());
 		logger.error("Subscriber Tagging Code is:", tag);
-
+//
 		List<Meta> metas = new ArrayList<Meta>();
 		metas.add(new Meta("CustomerId", request.getCustomerId()));
 		metas.add(new Meta("AccessKey", request.getAccessKey()));
 		metas.add(new Meta("Tagging", String.valueOf(request.getTagging())));
 		metas.add(new Meta("EventInfo", String.valueOf(request.getEventInfo())));
 		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
+		
+//		Object[] objectArray = (Object[]) exchange.getIn().getBody(Object[].class);
+//		metas.add(new Meta("customerId", (String) objectArray[0].toString()));
+//		metas.add(new Meta("accessKey", (String) objectArray[1].toString()));
+//		metas.add(new Meta("tagging", (String)objectArray[2].toString()));
+//		metas.add(new Meta("eventInfo", (String)objectArray[3].toString()));
+//		metas.add(new Meta("messageId", (String)objectArray[4].toString()));
 
 		String tagging = String.valueOf(request.getTagging());
-		switch (tagging) {
-		case "0":
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "resetBit"));
-			break;
-		case "1":
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "forcedDeleteBit"));
-			break;
-		case "2":
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "barGeneralBit"));
-			break;
-		case "3":
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "barIrmBit"));
-			break;
-		case "4":
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "barOtherBit"));
-			break;
-		case "5":
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "specialFraudBit"));
-			break;
-		case "6":
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "accountBlockingBit"));
-			break;
-		case "7":
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "recycleBit"));
-			break;
-		default:
-			metas.add(new Meta("HANDLE_LIFE_CYCLE", "invalidBit"));
-			break;
+		//Integer tag = Integer.valueOf(tagging);
+		switch (tag) {
+			case 0: metas.add(new Meta("HANDLE_LIFE_CYCLE", "resetBit"));
+					break;
+			case 1: metas.add(new Meta("HANDLE_LIFE_CYCLE", "forcedDeleteBit"));
+					break;
+			case 2: metas.add(new Meta("HANDLE_LIFE_CYCLE", "barGeneralBit"));
+					break;
+			case 3: metas.add(new Meta("HANDLE_LIFE_CYCLE", "barIrmBit"));
+					break;
+			case 4:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "barOtherBit"));
+					break;
+			case 5:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "specialFraudBit"));
+					break;
+			case 6:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "accountBlockingBit"));
+					break;
+			case 7:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "recycleBit"));
+					break;
+			default:
+					metas.add(new Meta("HANDLE_LIFE_CYCLE", "invalidBit"));
+					break;
 		}
 		logger.debug("Usecase Metas: " + metas);
 
