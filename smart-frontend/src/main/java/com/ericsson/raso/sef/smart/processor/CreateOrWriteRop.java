@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.smart.ErrorCode;
@@ -38,6 +39,7 @@ public class CreateOrWriteRop implements Processor {
 			logger.info("CreateOrWriteRop: process()");
 			CreateOrWriteRopRequest request = (CreateOrWriteRopRequest) exchange
 					.getIn().getBody();
+			//logger.debug("");
 
 			// SubscriberManagement subscriberManagement =
 			// SmartContext.getSubscriberManagement();
@@ -81,12 +83,10 @@ OwningCustomerId
 			// metas);
 			String requestId = RequestContextLocalStore.get().getRequestId();
 
-			SubscriberInfo subscriberInfo = updateSubscriber(requestId,
-					request.getCustomerId(), metas,Constants.CreateOrWriteROP);
+			SubscriberInfo subscriberInfo = updateSubscriber(requestId,request.getCustomerId(), metas,Constants.CreateOrWriteROP);
 		if (subscriberInfo.getStatus() != null) {
 			logger.error("Response about to send with SOAP ",subscriberInfo.getStatus().getDescription());
-			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-			/*throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));*/
+			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			
 		}
 		//DummyProcessor.response(exchange);
