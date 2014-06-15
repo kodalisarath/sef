@@ -7,6 +7,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StructElement;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StructParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 
@@ -122,7 +123,7 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 			} else if (param instanceof StructParameter) {
 				StructParameter parameter = (StructParameter) param;
 				if (parameter.getName().equalsIgnoreCase("OnPeakAccountID_FU")) {
-					this.setOnPeakAccountID_FU(parameter.getModifier().toString());
+					this.setOnPeakAccountID_FU("2000"); // TODO Still have to parse struct. Not able to do it. Vinay, its your turn 
 				}
 			}
 		}
