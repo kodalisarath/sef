@@ -437,43 +437,6 @@ public abstract class TransactionServiceHelper {
 			if (value != null)
 				subscriber.setActiveDate(Long.parseLong(value));
 			
-			value = metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE.name());
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE.name(), value);
-			
-			value = metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE.name());
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE.name(), value);
-			
-			// account flags
-			value = metas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name());
-			logger.debug("Activation Status flag: " + value);
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG.name(), value);
-			
-			value = metas.get(Constants.READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG.name());
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG.name(), value);
-			
-			value = metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG.name());
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG.name(), value);
-			
-			value = metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG.name());
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG.name(), value);
-			
-			value = metas.get(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG.name());
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG.name(), value);
-			
-			value = metas.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG.name());
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG.name(), value);
-			
-			value = metas.get(Constants.READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG.name());
-			if (value != null)
-				subscriber.addMeta(Constants.READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG.name(), value);
 			
 			
 

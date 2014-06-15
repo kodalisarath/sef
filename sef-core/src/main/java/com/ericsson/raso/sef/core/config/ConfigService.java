@@ -106,7 +106,7 @@ public class ConfigService implements IConfig {
 				}
 			}
 		}
-		logger.debug("section not found");
+		logger.debug("section (" + sectionId + ") not found");
 		return null;
 	}
 	
@@ -114,6 +114,12 @@ public class ConfigService implements IConfig {
 		ArrayList<Property> propertyList = section.getProperty();
 		return propertyList;
 		
+	}
+	
+	public Value getRoute(String sectionId, long locate) {
+		
+		
+		return null;
 	}
 	
 }  
