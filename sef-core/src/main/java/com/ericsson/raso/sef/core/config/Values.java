@@ -10,11 +10,11 @@ public class Values {
 
 	private ArrayList<Value> value;
 
+	@XmlElement(name="value")
 	public ArrayList<Value> getValue() {
 		return value;
 	}
 	
-	@XmlElement(name="value")
 	public void setValue(ArrayList<Value> value) {
 		this.value = value;
 	}

@@ -17,11 +17,11 @@ public class Config {
 	} 
 	
 	
+	@XmlElement(name="section")
 	public ArrayList<Section> getSection() {
 	    return section;  
 	} 
 		
-	@XmlElement(name="section")
 	public void setSection(ArrayList<Section> section) {  
 	    this.section = section;  
 	}  

@@ -8,32 +8,32 @@ public class Range {
 	
 	private long start;
 	private long end;
-	private Value value;
+	private String value;
 	
+	@XmlAttribute
 	public long getStart() {
 		return start;
 	}
 	
-	@XmlAttribute
 	public void setStart(long start) {
 		this.start = start;
 	}
 	
+	@XmlAttribute
 	public long getEnd() {
 		return end;
 	}
 	
-	@XmlAttribute
 	public void setEnd(long end) {
 		this.end = end;
 	}
 	
-	public Value getValue() {
+	@XmlAttribute
+	public String getValue() {
 		return value;
 	}
 	
-	@XmlAttribute
-	public void setValue(Value value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 	

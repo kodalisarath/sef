@@ -24,39 +24,39 @@ public class Section {
 	    this.property = property;    
 	}  
 	
+	@XmlAttribute
 	public String getId() {  
 	    return id;  
 	}  
 	
-	@XmlAttribute
 	public void setId(String id) {  
 	    this.id = id;  
 	}
 	
+	@XmlAttribute
 	public String getDescription() {  
 	    return description;  
 	}  
 	
-	@XmlAttribute
 	public void setDescription(String description) {  
 	    this.description = description;  
 	}  
 	
 	
+	@XmlElement(name="property")
 	public ArrayList<Property> getProperty() {  
 	    return property;  
 	}  
 	
-	@XmlElement(name="property")
 	public void setProperty(ArrayList<Property> property) {  
 	    this.property = property;  
 	}
 
+	@XmlElement(name="router")
 	public Router getRouter() {
 		return router;
 	}
 	
-	@XmlElement(name="router")
 	public void setRouter(Router router) {
 		this.router = router;
 	}  

@@ -55,6 +55,7 @@
 			com.ericsson.raso.sef.core.camelprocessors,
 			com.ericsson.raso.sef.auth.*,
 			com.ericsson.raso.sef.core.config,
+			com.ericsson.raso.sef.core.config.ConfigService,
 			com.ericsson.raso.sef.logging,
 			com.ericsson.raso.sef.core.model,
 			com.ericsson.raso.sef.core.db,
