@@ -11,11 +11,12 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 
 public class ModifyTaggingRequest extends SmartRequest {
 
-	private String customerId;
-	private int tagging;
-	private String eventInfo;
-	private long messageId;
-	private String accessKey;
+	// I found out that null values introduces lots of issue, lets  fix this
+	private String customerId = "";
+	private int tagging = 0;
+	private String eventInfo = "";
+	private long messageId = -1L;
+	private String accessKey = "";
 
 	public String getCustomerId() {
 		return customerId;
@@ -72,10 +73,14 @@ public class ModifyTaggingRequest extends SmartRequest {
 				}
 			} else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
-				this.setTagging(parameter.getValue());
+				if (parameter.getName().equalsIgnoreCase("Tagging")) {
+					this.setTagging(parameter.getValue());					
+				}
 			} else if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
-				this.setMessageId(parameter.getValue());
+				if (parameter.getName().equalsIgnoreCase("MessageId")) {
+					this.setMessageId(parameter.getValue());
+				}
 			}
 		}
 	}

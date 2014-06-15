@@ -123,7 +123,12 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 			} else if (param instanceof StructParameter) {
 				StructParameter parameter = (StructParameter) param;
 				if (parameter.getName().equalsIgnoreCase("OnPeakAccountID_FU")) {
-					this.setOnPeakAccountID_FU("2000"); // TODO Still have to parse struct. Not able to do it. Vinay, its your turn 
+					List<Object> onPeakAccountIds = parameter.getParameterOrBooleanParameterOrByteParameter();
+					String onPeakAccountValue = "";
+					for (int i = 0; i < onPeakAccountIds.size(); i++) {
+						onPeakAccountValue += onPeakAccountIds.get(i).toString() + "; ";
+					}
+					this.setOnPeakAccountID_FU(onPeakAccountValue.toString()); // TODO Still have to parse struct. Not able to do it. Vinay, its your turn 
 				}
 			}
 		}
