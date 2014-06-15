@@ -90,10 +90,15 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				this.setCustomerId(parameter.getValue().trim());
+				if(parameter.getName().equalsIgnoreCase("CustomerId")){
+					this.setCustomerId(parameter.getValue().trim());
+				}
 			} else if (param instanceof EnumerationValueParameter) {
 				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
-				this.setCategory(parameter.getValue().trim());
+				if(parameter.getName().equalsIgnoreCase("category")){
+					this.setCategory(parameter.getValue().trim());
+				}
+				
 			} else if (param instanceof SymbolicParameter) {
 				SymbolicParameter parameter = (SymbolicParameter) param;
 				if (parameter.getName().equalsIgnoreCase("bValidFrom")) {
@@ -103,10 +108,16 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 				}
 			} else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
-				this.setKey(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("Key")){
+					this.setKey(parameter.getValue());
+				}
+				
 			} else if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
-				this.setMessageId(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("MessageId")){
+					this.setMessageId(parameter.getValue());
+				}
+				
 			}
 		}
 	}

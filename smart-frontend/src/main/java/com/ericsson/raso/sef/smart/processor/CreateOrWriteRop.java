@@ -53,7 +53,7 @@ public class CreateOrWriteRop implements Processor {
 						.convertISOToSimpleDateFormat(request
 								.getActiveEndDate())));
 			//These are not getting from the DB,
-
+OwningCustomerId
 			if (request.getGraceEndDate() != null)
 				metas.add(new Meta("graceEndDate",
 						DateUtil.convertISOToSimpleDateFormat(request
@@ -62,7 +62,7 @@ public class CreateOrWriteRop implements Processor {
 			String preActiveEndDate = DateUtil
 					.convertISOToSimpleDateFormat(request.getPreActiveEndDate());
 
-			if (request.getPreActiveEndDate() != null)
+			
 			metas.add(new Meta("PreActiveEndDate", String.valueOf(preActiveEndDate)));
 			metas.add(new Meta("FirstCallDate", request.getFirstCallDate()));
 			metas.add(new Meta("IsFirstCallPassed", String.valueOf(request.getIsFirstCallPassed())));

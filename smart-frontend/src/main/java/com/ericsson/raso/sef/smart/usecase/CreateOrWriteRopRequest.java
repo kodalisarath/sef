@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.BooleanParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.DateTimeParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueParameter;
@@ -14,7 +17,8 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 
 public class CreateOrWriteRopRequest extends SmartRequest {
-	private static final String CUSTOMER_ID = "customerId";
+	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteRopRequest.class);
+	private static final String CUSTOMER_ID = "CustomerId";
 	private static final String ACTIVEENDDATE = "activeEndDate";
 	private static final String GRACEENDDATE = "graceEndDate";
 	private static final String LastKnownPeriod = "lastKnownPeriod";
@@ -234,21 +238,21 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if(param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				
-				if (parameter.getName().equalsIgnoreCase(CATEGORY)) {
+				if(parameter.getName().equalsIgnoreCase(CUSTOMER_ID)) {
+					this.setCustomerId(parameter.getValue().trim());
+				}
+				else if (parameter.getName().equalsIgnoreCase(CATEGORY)) {
 					this.setCategory(parameter.getValue().trim());
 				} 
-				 else if (parameter.getName().equalsIgnoreCase(LastKnownPeriod)) {
-						this.setCustomerId(parameter.getValue().trim());
-					}
 				 else if (parameter.getName().equalsIgnoreCase(GRACEENDDATE)) {
-						this.setCustomerId(parameter.getValue().trim());
+						this.setGraceEndDate(parameter.getValue().trim());
 					}else if (parameter.getName().equalsIgnoreCase(S_CRMTITLE)) {
 						this.setS_CRMTitle(parameter.getValue().trim());
 					}
 					else if (parameter.getName().equalsIgnoreCase(LastKnownPeriod)) {
 						this.setLastKnownPeriod(parameter.getValue().trim());
 					}
+					
 			}else if(param instanceof LongParameter){
 				LongParameter parameter = (LongParameter) param;
 					this.setMessageId(parameter.getValue());
@@ -299,6 +303,7 @@ public class CreateOrWriteRopRequest extends SmartRequest {
 				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
 				this.setCategory(parameter.getValue());
 			}
+			logger.debug("In the loop testing params"+param.toString());
 		}
 	}
 

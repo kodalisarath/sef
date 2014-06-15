@@ -104,7 +104,7 @@ public class VersionCreateOrWriteROPRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				if (parameter.getName().equalsIgnoreCase(CUSTOMER_ID)) {
+				if (parameter.getName().equalsIgnoreCase("CustomerId")) {
 					this.setCustomerId(parameter.getValue().trim());
 				}  else if (parameter.getName().equalsIgnoreCase("s_OfferId")) {
 					this.setS_OfferId(parameter.getValue().trim());
@@ -112,7 +112,9 @@ public class VersionCreateOrWriteROPRequest extends SmartRequest {
 
 			} else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
-				this.setKey(parameter.getValue());
+				if (parameter.getName().equalsIgnoreCase("Key")){
+					this.setKey(parameter.getValue());
+				}
 			}else if (param instanceof SymbolicParameter) {
 				SymbolicParameter parameter = (SymbolicParameter) param;
 				if(parameter.getName().equalsIgnoreCase("vValidFrom")){
@@ -124,20 +126,34 @@ public class VersionCreateOrWriteROPRequest extends SmartRequest {
 			}
 			else if (param instanceof EnumerationValueParameter) {
 				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
-				this.setCategory(parameter.getValue().trim());
+				if(parameter.getName().equalsIgnoreCase("category"))
+				{
+					this.setCategory(parameter.getValue().trim());
+				}
+				
 			} else if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
-				this.setMessageId(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("MessageId"))
+				{
+					this.setMessageId(parameter.getValue());
+				}
+				
 			} else if (param instanceof StructParameter) {
 				StructParameter structParameter = (StructParameter) param;
 				List<Object> struct = structParameter.getParameterOrBooleanParameterOrByteParameter();
 				for (Object params : struct) {
 					if (params instanceof IntParameter) {
 						IntParameter parameter = (IntParameter) params;
-						this.setPrecision(parameter.getValue());
+						if(parameter.getName().equalsIgnoreCase("Precision")){
+							this.setPrecision(parameter.getValue());
+						}
+						
 					} else if (params instanceof DateTimeParameter) {
 						DateTimeParameter parameter = (DateTimeParameter) params;
-						this.setExpiryDate(parameter.getValue());
+						if(parameter.getName().equalsIgnoreCase("ExpiryDate")){
+							this.setExpiryDate(parameter.getValue());
+						}
+						
 					}
 				}
 

@@ -62,15 +62,20 @@ public class ModifyCustomerGraceRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if(param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
-				this.setMessageId(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("eventInfo")){
+					this.setMessageId(parameter.getValue());
+				}
 			}  else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
-				this.setDaysOfExtension(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("DaysOfExtension")){
+					this.setDaysOfExtension(parameter.getValue());
+				}
+				
 			} else if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
 				if(parameter.getName().equalsIgnoreCase("eventInfo")){
 					this.setEventInfo(parameter.getValue().trim());
-				}else if(parameter.getName().equalsIgnoreCase("customerId")){
+				}else if(parameter.getName().equalsIgnoreCase("CustomerId")){
 					this.setCustomerId(parameter.getValue().trim());
 				}
 				

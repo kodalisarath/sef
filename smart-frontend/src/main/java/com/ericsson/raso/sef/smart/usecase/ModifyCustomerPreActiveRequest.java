@@ -63,10 +63,17 @@ public class ModifyCustomerPreActiveRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if (param instanceof LongParameter) {
 				LongParameter parameter = (LongParameter) param;
-				this.setMessageId(parameter.getValue());
+				if(parameter.getName().equalsIgnoreCase("MessageId")){
+					this.setMessageId(parameter.getValue());
+				}
+				
 			}  else if (param instanceof IntParameter) {
 				IntParameter parameter = (IntParameter) param;
-				this.setDaysOfExtension(parameter.getValue());
+				//cross check 
+				if(parameter.getName().equalsIgnoreCase("DaysOfExtension")){
+					this.setDaysOfExtension(parameter.getValue());
+				}
+				
 			} else if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
 				if(parameter.getName().equalsIgnoreCase("eventInfo")){
@@ -76,7 +83,6 @@ public class ModifyCustomerPreActiveRequest extends SmartRequest {
 				}
 				else if(parameter.getName().equalsIgnoreCase("accessKey")){
 					this.setAccessKey(parameter.getValue());
-					
 				}
 				//this.setCustomerId(parameter.getValue().trim());
 			}
