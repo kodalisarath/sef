@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 
 @XmlRootElement(name="section")
-
 public class Section {
 	
 	private String id;  
@@ -46,6 +45,7 @@ public class Section {
 	}  
 	
 	
+	@XmlElement(name="property")
 	public ArrayList<Property> getProperty() {  
 	    return property;  
 	}  
@@ -59,6 +59,8 @@ public class Section {
 	public Router getRouter() {
 		return router;
 	}
+	
+	@XmlElement(name="router")
 	public void setRouter(Router router) {
 		this.router = router;
 	}  

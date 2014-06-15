@@ -117,9 +117,9 @@ public class ConfigService implements IConfig {
 	}
 	
 	public Value getRoute(String sectionId, long locate) {
+		Value  value = new Value();
 		
-		
-		return null;
+		return value;
 	}
 	
 }  
