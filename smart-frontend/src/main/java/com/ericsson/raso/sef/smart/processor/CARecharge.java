@@ -545,7 +545,7 @@ public class CARecharge implements Processor {
 		return responseData;
 	}
 	
-	private void handleRefillResponse(ListParameter listParameter, PurchaseResponse response) {
+	private void handleRefillResponse(ListParameter listParameter, PurchaseResponse response) throws SmException {
 		
 		long beforeServiceFeeExpiry = 0;
 		long beforeSupervisionFeeExpiry = 0;
@@ -615,10 +615,18 @@ public class CARecharge implements Processor {
 
 		// Calculate...
 		
-		for (OfferInfo oInfo: beforeOfferEntries.values()) {
-			
+		for (OfferInfo oInfo: afterOfferEntries.values()) {
+			logger.debug("Offer: " + oInfo);
 			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID) + "s_PeriodicBonus";
 			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+			
+			logger.debug("Mapped Wallet: " + balanceId + ", DA: " + daId);
+			if (balanceId == null || daId == null) {
+				logger.error("Please check config.xml for mapping entries for OfferID:" + oInfo.offerID + " under sections 'GLOBAL_walletMapping' & 'Global_offerMapping' ");
+				throw ExceptionUtil.toSmException(ErrorCode.missingMandatoryParameterError);
+			}
+			
+			
 			DaInfo beforeDA = beforeDaEntries.get(daId);
 			DaInfo afterDA = afterDaEntries.get(daId);
 			
@@ -634,6 +642,10 @@ public class CARecharge implements Processor {
 			logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);		
 		}
 		logger.debug("PREDEFINED:: Done with the processing of Refill reponse...");
+		
+		
+		
+		
 		return;
 	}
 
@@ -686,9 +698,106 @@ public class CARecharge implements Processor {
 
 	
 
-	private void handlePasaloadRefillResponse(ListParameter listParameter, PurchaseResponse response) {
-		// TODO Auto-generated method stub
-		return;
+	private void handlePasaloadRefillResponse(ListParameter listParameter, PurchaseResponse response) throws SmException {
+		Map<String, String> requestContext = requestContextCache.get();
+		Map<String, String> useCaseResponse = this.convertToMap(response.getBillingMetas());
+		
+		
+									
+									
+		logger.debug("PASA:: Processing Refill Metas: " + response.getBillingMetas());
+
+		Map<String, OfferInfo> beforeOfferEntries = new HashMap<String, CARecharge.OfferInfo>();
+		Map<String, DaInfo> beforeDaEntries = new HashMap<String, CARecharge.DaInfo>();
+		Map<String, OfferInfo> afterOfferEntries = new HashMap<String, CARecharge.OfferInfo>();
+		Map<String, DaInfo> afterDaEntries = new HashMap<String, CARecharge.DaInfo>();
+		
+		for (Meta meta: response.getBillingMetas()) {
+			logger.debug("PASA::Next Meta: " + meta.getKey());
+			
+			if (meta.getKey().startsWith("ACC_BEFORE_OFFER")) {
+				OfferInfo oInfo = new OfferInfo();
+				String offerPart[] = meta.getValue().split(",");
+				oInfo.offerID = offerPart[0];
+				oInfo.offerExpiry = Long.parseLong(offerPart[1]);
+				beforeOfferEntries.put(oInfo.offerID, oInfo);	
+				logger.debug("Adding Before Offer " + oInfo);
+			}
+
+			if (meta.getKey().startsWith("ACC_AFTER_OFFER")) {
+				OfferInfo oInfo = new OfferInfo();
+				String offerPart[] = meta.getValue().split(",");
+				oInfo.offerID = offerPart[0];
+				oInfo.offerExpiry = Long.parseLong(offerPart[1]);
+				
+				String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
+				if (balanceId != null)
+					oInfo.walletName = balanceId;
+				
+				afterOfferEntries.put(oInfo.offerID, oInfo);				
+				logger.debug("Adding After Offer " + oInfo);
+			}
+
+			if (meta.getKey().startsWith("ACC_BEFORE_DA")) {
+				DaInfo daInfo = new DaInfo();
+				String daPart[] = meta.getValue().split(",");
+				daInfo.daID = daPart[0];
+				daInfo.daValue = Integer.parseInt(daPart[1]);
+				beforeDaEntries.put(daInfo.daID, daInfo);
+				logger.debug("Adding Before DA " + daInfo);
+			}
+
+			if (meta.getKey().startsWith("ACC_AFTER_DA")) {
+				DaInfo daInfo = new DaInfo();
+				String daPart[] = meta.getValue().split(",");
+				daInfo.daID = daPart[0];
+				daInfo.daValue = Integer.parseInt(daPart[1]);
+				afterDaEntries.put(daInfo.daID, daInfo);
+				logger.debug("Adding After DA " + daInfo);
+			}
+
+		}
+
+		logger.debug("PASA::Before Offer Entries Size: " + beforeOfferEntries.size() + ", After Entries Size: " + afterOfferEntries.size());
+		logger.debug("PASA::Before DA Entries Size: " + beforeDaEntries.size() + ", After DA Size: " + afterDaEntries.size());
+	
+
+		// Calculate...
+		
+		for (OfferInfo oInfo: afterOfferEntries.values()) {
+			logger.debug("Offer: " + oInfo);
+			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID) + "s_PeriodicBonus";
+			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+			
+			logger.debug("Mapped Wallet: " + balanceId + ", DA: " + daId);
+			if (balanceId == null || daId == null) {
+				logger.error("Please check config.xml for mapping entries for OfferID:" + oInfo.offerID + " under sections 'GLOBAL_walletMapping' & 'Global_offerMapping' ");
+				throw ExceptionUtil.toSmException(ErrorCode.missingMandatoryParameterError);
+			} else {
+
+				DaInfo beforeDA = beforeDaEntries.get(daId);
+				DaInfo afterDA = afterDaEntries.get(daId);
+
+				int daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+				OfferInfo afterOffer = afterOfferEntries.get(oInfo.offerID);
+
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue  + ";" + format.format(new Date(afterOffer.offerExpiry));
+
+				PasaServiceManager pasaService = PasaServiceManager.getInstance();
+				pasaService.setPasaReceived(requestContext.get("msisdn"), 
+											requestContext.get("walletName"), 
+											daBalanceDiff);
+				
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PASA::Adding response item to CARecharge: " + responseEntry);	
+			}
+		}
+		logger.debug("PASA:: Done with the processing of Refill reponse...");
+									return;
 	}
 
 
