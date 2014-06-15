@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.smart.processor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
+import com.ericsson.raso.sef.smart.processor.ModifyCustomerGrace.OfferInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
@@ -32,6 +34,7 @@ import com.hazelcast.core.ISemaphore;
 
 public class BalanceAdjustment implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteCustomerProcessor.class);
+	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER";
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		
@@ -66,28 +69,57 @@ public class BalanceAdjustment implements Processor {
 		     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metaSubscriber);
 		     
 		     logger.info("subscriber call done");
-			if(subscriberObj.getSubscriber() == null){
-				throw ExceptionUtil.toSmException(new ResponseCode(504,"Subscriber Not Found"));
-			}
+			 if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
+				logger.debug("Inside the if condition for status check");
+				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+			 }
+             logger.info("Recieved a SubscriberInfo Object and it is not null");
+			 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
+
+		     
 			  logger.info("check pre_active");			
-			if(ContractState.apiValue("PRE_ACTIVE").toString().equals(subscriberObj.getSubscriber().getContractState().toString())){
-				throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
-			}else{
-				
+			  if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
+					throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+				}
+			  else {
 				logger.info("check grace and recycle metas");
-				   Map<String, String> subscriberMetas = subscriberObj.getMetas();
-					String offers = "";
-					for (String key: subscriberMetas.keySet()) {
-						if (key.contains(".")) {
-							if (key.startsWith("READ_SUBSCRIBER_OFFER_INFO_OFFER_ID"))
-								offers += "," + subscriberMetas.get(key) + " ";
+				Map<String, String> subscriberMetas = subscriberObj.getMetas();
+//				int index = 0;
+//				String offers = "";
+				OfferInfo oInfo = null;
+				Map<String, OfferInfo> subscriberOffers = new HashMap<String, BalanceAdjustment.OfferInfo>(); 
+				boolean IsGraceRecycle = false;
+				for (String key: subscriberMetas.keySet()) {
+					logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
+					if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
+						logger.debug("FLEXI:: OFFER_ID...." + subscriberMetas.get(key));
+						String offerForm = subscriberMetas.get(key);
+						
+						String offerParts[] = offerForm.split(",");
+						String offerId = offerParts[0];
+						String start = offerParts[1];
+						if (start.equals("null"))
+							start = offerParts[2];
+						String expiry = offerParts[3];
+						if (expiry.equals("null"))
+							expiry = offerParts[4];
+						
+						oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), null, null); 
+						subscriberOffers.put(offerId, oInfo);
+						logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
+
+						if (oInfo.offerID.equals("2") || oInfo.offerID.equals("4")) {
+							logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
+							IsGraceRecycle=true;
 						}
-						
 					}
-					if (offers.contains(",2 ") || offers.contains(",4 ")) {
-						throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
-						
-					}
+				}
+				
+				if (IsGraceRecycle==true) {
+					throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+					
+				}
+			  }
 					String resultId=iSubscriptionRequest.purchase(requestId, request.getBalanceId(), request.getCustomerId(), true, metaSubscriber);
 				     PurchaseResponse response = new PurchaseResponse();
 						logger.debug("Got past event class....");
@@ -116,8 +148,6 @@ public class BalanceAdjustment implements Processor {
 						DummyProcessor.response(exchange);
 			}
 				
-			
-		}
 		     
 	private SubscriberInfo readSubscriber(String requestId, String customerId,
 			List<Meta> metas) {
@@ -138,6 +168,31 @@ public class BalanceAdjustment implements Processor {
 		return subscriberInfo;
 	}
 	
-	
+	class OfferInfo {
+		private String offerID;
+		private long offerExpiry;
+		private long offerStart;
+		private String daID;
+		private String walletName;
+		
+		public OfferInfo() {}
+		
+		public OfferInfo(String offerID, long offerExpiry, long offerStart, String daID, String walletName) {
+			super();
+			this.offerID = offerID;
+			this.offerExpiry = offerExpiry;
+			this.offerStart = offerStart;
+			this.daID = daID;
+			this.walletName = walletName;
+		}
+
+
+		@Override
+		public String toString() {
+			return "OfferInfo [offerID=" + offerID + ", offerExpiry=" + offerExpiry + ", daID=" + daID + ", walletName=" + walletName + "]";
+		}
+		
+		
+	}
 	
 }

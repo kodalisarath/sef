@@ -18,7 +18,6 @@ import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
-import com.ericsson.raso.sef.smart.processor.CARecharge.OfferInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
@@ -101,7 +100,7 @@ public class ModifyCustomerGrace implements Processor {
 								}
 							}
 						}
-						if (IsGrace==false) {
+						if (IsGrace==true) {
 							throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 							
 						}

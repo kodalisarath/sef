@@ -31,8 +31,12 @@ import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueElement;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ListParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class SubscribePackageItem implements Processor {
@@ -209,5 +213,54 @@ public class SubscribePackageItem implements Processor {
 		return subscriberInfo;
 	}
 
+	private CommandResponseData createResponse(boolean isTransactional) throws SmException {
+		CommandResponseData responseData = new CommandResponseData();
+		CommandResult result = new CommandResult();
+		responseData.setCommandResult(result);
+		OperationResult operationResult = new OperationResult();
+		Operation operation = new Operation();
+		operation.setName("Subscribe");
+		operation.setModifier("PackageItem");
+		operationResult.getOperation().add(operation);
+		ParameterList parameterList = new ParameterList();
+		
+		if(isTransactional) {
+			TransactionResult transactionResult = new TransactionResult();
+			result.setTransactionResult(transactionResult);
+			transactionResult.getOperationResult().add(operationResult);
+		} else {
+			result.setOperationResult(operationResult);
+		}
+		
+		return responseData;
+	}
+	
+	class OfferInfo {
+		private String offerID;
+		private long offerExpiry;
+		private long offerStart;
+		private String daID;
+		private String walletName;
+		
+		public OfferInfo() {}
+		
+		public OfferInfo(String offerID, long offerExpiry, long offerStart, String daID, String walletName) {
+			super();
+			this.offerID = offerID;
+			this.offerExpiry = offerExpiry;
+			this.offerStart = offerStart;
+			this.daID = daID;
+			this.walletName = walletName;
+		}
+
+
+		@Override
+		public String toString() {
+			return "OfferInfo [offerID=" + offerID + ", offerExpiry=" + offerExpiry + ", daID=" + daID + ", walletName=" + walletName + "]";
+		}
+		
+		
+	}
+	
 
 }
