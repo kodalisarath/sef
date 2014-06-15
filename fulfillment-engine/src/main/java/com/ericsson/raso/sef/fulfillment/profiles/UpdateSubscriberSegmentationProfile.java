@@ -38,6 +38,7 @@ public class UpdateSubscriberSegmentationProfile extends BlockingFulfillment<Pro
 		UpdateSubscriberSegmentRequest request = new UpdateSubscriberSegmentRequest();
 		String msisdn = map.get("msisdn");
 		request.setSubscriberNumber(msisdn);
+		logger.debug("Adding Service Offerings to request: " + this.serviceOfferings);
 		request.setServiceOfferings(serviceOfferings);
 		try {
 			new UpdateSubscriberSegmentationCmd(request).execute();

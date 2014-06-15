@@ -26,4 +26,11 @@ public class ServiceOffering extends NativeAirRequest implements Serializable {
 		this.serviceOfferingActiveFlag = serviceOfferingActiveFlag;
 		addParam("serviceOfferingActiveFlag", Boolean.valueOf(serviceOfferingActiveFlag));
 	}
+
+	@Override
+	public String toString() {
+		return "ServiceOffering [serviceOfferingId=" + serviceOfferingId + ", serviceOfferingActiveFlag=" + serviceOfferingActiveFlag + "]";
+	}
+	
+	
 }

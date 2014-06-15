@@ -170,4 +170,20 @@ public class DedicatedAccountInformation extends NativeAirResponse {
 		return compositeDedicatedAccountFlag;
 	}
 
+	@Override
+	public String toString() {
+		return "DedicatedAccountInformation [dedicatedAccountID=" + dedicatedAccountID + ", dedicatedAccountValue1="
+				+ dedicatedAccountValue1 + ", dedicatedAccountValue2=" + dedicatedAccountValue2 + ", expiryDate=" + expiryDate
+				+ ", startDate=" + startDate + ", pamServiceID=" + pamServiceID + ", offerID=" + offerID + ", productID=" + productID
+				+ ", dedicatedAccountRealMoneyFlag=" + dedicatedAccountRealMoneyFlag + ", closestExpiryDate=" + closestExpiryDate
+				+ ", closestExpiryValue1=" + closestExpiryValue1 + ", closestExpiryValue2=" + closestExpiryValue2
+				+ ", closestAccessibleDate=" + closestAccessibleDate + ", closestAccessibleValue1=" + closestAccessibleValue1
+				+ ", closestAccessibleValue2=" + closestAccessibleValue2 + ", subDedicatedAccountInformation="
+				+ subDedicatedAccountInformation + ", dedicatedAccountActiveValue1=" + dedicatedAccountActiveValue1
+				+ ", dedicatedAccountActiveValue2=" + dedicatedAccountActiveValue2 + ", dedicatedAccountUnitType="
+				+ dedicatedAccountUnitType + ", compositeDedicatedAccountFlag=" + compositeDedicatedAccountFlag + "]";
+	}
+	
+	
+
 }
