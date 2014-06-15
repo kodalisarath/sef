@@ -1,7 +1,9 @@
 package com.ericsson.raso.sef.smart.processor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -19,6 +21,7 @@ import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
+import com.ericsson.raso.sef.smart.processor.SubscribePackageItem.OfferInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
@@ -40,152 +43,166 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class UnsubscribePackageItem implements Processor {
-	private static final Logger log = LoggerFactory.getLogger(UnsubscribePackageItem.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(SubscribePackageItem.class);
+	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER";
+	
 	@Override
 	public void process(Exchange exchange) throws Exception {
 
 		UnSubscribePackageItemRequest request = (UnSubscribePackageItemRequest) exchange.getIn().getBody();
-		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta("accessKey",request.getAccessKey()));
-		metas.add(new Meta("packaze",request.getPackaze()));
-		metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
 		String requestId = RequestContextLocalStore.get().getRequestId();
+		List<Meta> metas = new ArrayList<Meta>();
+		logger.info("Collecting SOAP parameters");
+		metas.add(new Meta("AccessKey",request.getAccessKey()));
+		metas.add(new Meta("Package",request.getPackaze()));
+		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 
-		//SubscriberValidationProcessor.process(request.getCustomerId());
+		List<Meta> workflowMetas= new ArrayList<Meta>();
+		workflowMetas.add(new Meta("packaze", String.valueOf(request.getPackaze())));
+		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		SubscriberInfo subscriberInfo = readSubscriber(requestId,request.getCustomerId(),metas);
-        if(subscriberInfo != null){
-			
-			if(subscriberInfo.getSubscriber() != null){
-				Subscriber subscriber=subscriberInfo.getSubscriber();
-				if (ContractState.PREACTIVE.name().equals(subscriber.getContractState().toString())){
+		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
+		
+		 metaSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
+	     metaSubscriber.add(new Meta("READ_SUBSCRIBER","PARTIAL_READ_SUBSCRIBER"));
+	     
+	     
+	     logger.info("Collected SOAP parameters");
+	     logger.info("Going for DB check and AIR call");
+	     logger.info("Before read subscriber call");
+        
+	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metaSubscriber);
+	     
+	     logger.info("subscriber call done");
+		 
+	     if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
+				logger.debug("Inside the if condition for status check");
+				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+			 }
+          logger.info("Recieved a SubscriberInfo Object and it is not null");
+			 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
+
+		 logger.info("check pre_active");			
+		  if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
+			  if(isWelcomePack(request.getPackaze())) {
+				  IConfig config = SefCoreServiceResolver.getConfigService();
+				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBER_PACKAGE_ITEM_WelcomePackServiceClass"));
+				  metas.add(new Meta("ServiceClass",config.getValue("GLOBAL_welcomePackMapping", request.getPackaze())));
+				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), metas);
+				  PurchaseResponse response = new PurchaseResponse();
+			      logger.debug("Got past event class....");
+				  RequestCorrelationStore.put(resultId, response);
+				  ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 					
-					if(isWelcomePack(request.getPackaze())) {
-						metas.add(new Meta("HANDLE_LIFE_CYCLE","Workflow - Value Retrieved"));
-						iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), metas);
-						//installWelcomePack(requestId,request.getCustomerId(), request.getPackaze(), String.valueOf(request.getMessageId()));
-					} else {
-						throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
-					
+					try {
+					semaphore.init(0);
+					semaphore.acquire();
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+						logger.debug("Exception while sleep     :"+e.getMessage());
 					}
+
 					
-				}else{
-					metas.add(new Meta("HANDLE_LIFE_CYCLE","Workflow - Package"));
-					iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
-				}
-				
+					logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
+					
+					PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+					
+					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+					if(purchaseResponse == null) {
+						logger.debug("No response arrived???");
+						throw new SmException(ErrorCode.internalServerError);
+					}
+					else{
+						 CommandResponseData cr = this.createResponse(true);
+					      exchange.getOut().setBody(cr);
+					}
+			  }
+			  else {
+				  throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
+			  }
 			}
-			
-			
-		}
-        SubscriberInfo subscriberInfoUpdate=updateSubscriber(requestId,request.getCustomerId(),metas,Constants.UnSubscribePackageItem);
-        if(subscriberInfoUpdate.getStatus() != null){
-      	  throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfoUpdate.getStatus().getCode(),subscriberInfoUpdate.getStatus().getDescription()));
-        }
-        DummyProcessor.response(exchange);
+		  
+		    logger.info("check grace and recycle metas as subscriber is not pre-active");
+			Map<String, String> subscriberMetas = subscriberObj.getMetas();
+			OfferInfo oInfo = null;
+			Map<String, OfferInfo> subscriberOffers = new HashMap<String, UnsubscribePackageItem.OfferInfo>(); 
+			boolean IsGrace = false;
+			boolean NotRecycle = false;
+			for (String key: subscriberMetas.keySet()) {
+				logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
+				if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
+					logger.debug("FLEXI:: OFFER_ID...." + subscriberMetas.get(key));
+					String offerForm = subscriberMetas.get(key);
+					
+					String offerParts[] = offerForm.split(",");
+					String offerId = offerParts[0];
+					String start = offerParts[1];
+					if (start.equals("null"))
+						start = offerParts[2];
+					String expiry = offerParts[3];
+					if (expiry.equals("null"))
+						expiry = offerParts[4];
+					
+					oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), null, null); 
+					subscriberOffers.put(offerId, oInfo);
+					logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
 
-		/*CommandResponseData responseData = createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),
-				request.isTransactional());
+					if (oInfo.offerID.equals("2")) {
+						logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
+						IsGrace=true;
+					}
+					if (oInfo.offerID.equals("4")) {
+						logger.debug("FLEXI:: CUSTOMER IN RECYCLE!!!");
+						NotRecycle=true;
+					}
+				}
+			}
+			if (IsGrace==false && NotRecycle==false) {
+				    String resultId=iSubscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, metaSubscriber);
+			        PurchaseResponse response = new PurchaseResponse();
+					logger.debug("Got past event class in subscription for grace and active....");
+					RequestCorrelationStore.put(resultId, response);
+					ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+					
+					try {
+					semaphore.init(0);
+					semaphore.acquire();
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+						logger.debug("Exception while sleep     :"+e.getMessage());
+					}
 
-		exchange.getOut().setBody(responseData);*/
+					
+					logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
+					
+					PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+					
+					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+					if(purchaseResponse == null) {
+						logger.debug("No response arrived???");
+						throw new SmException(ErrorCode.internalServerError);
+					}
+					else{
+						 CommandResponseData cr = this.createResponse(true);
+					      exchange.getOut().setBody(cr);
+					}	
+			}
+			else {
+				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+			}
+
 	}
 
 	private static boolean isWelcomePack(String packaze) {
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		if (config.getValue("GLOBAL", packaze) != null)
+		if (config.getValue("GLOBAL_welcomePackMapping", packaze)!=null)
 			return true;
-		else
-			return false;
+		else return false;
 
 	}
 
-	private void unsubscribePackage(String requestId, String customerId, String packaze) {
-
-		// SubscriptionManagement subscriptionManagement =
-		// SmartContext.getSubscriptionManagement();
-		List<Meta> metas = new ArrayList<Meta>();
-
-		metas.add(new Meta(SmartConstants.REQUEST_ID, requestId));
-		metas.add(new Meta(SmartConstants.CHANNEL_NAME, SmartConstants.IL_CHANNEL));
-		metas.add(new Meta(SmartConstants.EX_DATA3, SmartConstants.IL_CHANNEL));
-		metas.add(new Meta(SmartConstants.EX_DATA1, packaze));
-		metas.add(new Meta(SmartConstants.EX_DATA2, SmartConstants.IL_CHANNEL + "|Reversal|||" + customerId + "|"));
-		metas.add(new Meta(SmartConstants.USECASE, "reversal"));
-
-		// subscriptionManagement.purchaseProduct(customerId, packaze, metas);
-
-		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
-
-		PurchaseResponse purchaseResponse = new PurchaseResponse();
-		RequestCorrelationStore.put(requestId, purchaseResponse);
-
-		iSubscriptionRequest.purchase(requestId, packaze, customerId, false, metas);
-
-		log.info("Invoking purchasebe on tx-engine subscribtion interface");
-
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-		try {
-			semaphore.init(0);
-			semaphore.acquire();
-		} catch (InterruptedException e) {
-
-		}
-		log.info("Check if response received for purchase response");
-		PurchaseResponse purRsp = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
-
-	}
-
-	private void unInstallWelcomePack(String requestId, String customerId, String accessKey, String packaze, String messageId)
-			throws SmException {
-
-		SubscriberInfo subscriberinfo = readSubscriber(requestId, customerId, null);
-
-		if (!ContractState.PREACTIVE.name().equals(subscriberinfo.getLocalState())) {
-
-			log.error("Subscriber:" + customerId + "is not in preactive stage. Opeartion can not be performed");
-			throw ExceptionUtil.toSmException(ErrorCode.internalServerError);
-		}
-		String currentPackage = subscriberinfo.getMetas().get("package");
-		if (currentPackage == null || !currentPackage.equalsIgnoreCase(packaze)) {
-			throw new SmException(ErrorCode.invalidSubscriberStateForRequiredPackageUseCaseOperation);
-		}
-
-		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta("accessKey", accessKey));
-		metas.add(new Meta("package", "initialSC"));
-		metas.add(new Meta("currentPackage", currentPackage));
-		metas.add(new Meta("messageId", messageId));
-		// metas.add(new Meta("federation-profile", "preloadUnsubscribe"));
-
-		// subscriberManagement.updateSubscriber(customerId, metas);
-
-		updateSubscriber(requestId, customerId, metas,Constants.ModifyCustomerPreActive);
-
-	}
-
-	private CommandResponseData createResponse(String operationName, String modifier, boolean isTransactional) {
-
-		CommandResponseData responseData = new CommandResponseData();
-		CommandResult result = new CommandResult();
-		responseData.setCommandResult(result);
-
-		Operation operation = new Operation();
-		operation.setName(operationName);
-		operation.setModifier(modifier);
-
-		OperationResult operationResult = new OperationResult();
-		operationResult.getOperation().add(operation);
-
-		if (isTransactional) {
-			TransactionResult transactionResult = new TransactionResult();
-			result.setTransactionResult(transactionResult);
-			transactionResult.getOperationResult().add(operationResult);
-		} else {
-			result.setOperationResult(operationResult);
-		}
-		return responseData;
-	}
 
 	private SubscriberInfo readSubscriber(String requestId, String subscriberId, List<Meta> metas) {
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
@@ -198,14 +215,14 @@ public class UnsubscribePackageItem implements Processor {
 			semaphore.acquire();
 		} catch (InterruptedException e) {
 		}
-		log.info("Check if response received for update subscriber");
+		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 
 	}
 
 	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas,String useCase) {
-		log.info("Invoking update subscriber on tx-engine subscriber interface");
+		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
@@ -217,7 +234,7 @@ public class UnsubscribePackageItem implements Processor {
 		} catch (InterruptedException e) {
 
 		}
-		log.info("Check if response received for update subscriber");
+		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
