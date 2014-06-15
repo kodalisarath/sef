@@ -632,6 +632,11 @@ public class CARecharge implements Processor {
 			DaInfo beforeDA = beforeDaEntries.get(daId);
 			DaInfo afterDA = afterDaEntries.get(daId);
 			
+			if (afterDA == null) {
+				logger.warn("Seems like DA: " + daId + " can be ignored...");
+				continue;
+			}
+			
 			int daBalanceDiff = 0;
 			if (beforeDA == null)
 				daBalanceDiff = afterDA.daValue;
