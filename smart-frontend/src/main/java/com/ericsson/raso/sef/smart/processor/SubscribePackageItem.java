@@ -215,14 +215,14 @@ public class SubscribePackageItem implements Processor {
 			semaphore.acquire();
 		} catch(InterruptedException e) {
 		}
-		log.info("Check if response received for update subscriber");
+		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 
 	}
 
 	private SubscriberInfo updateSubscriber(String requestId,String customer_id, List<Meta> metas,String useCase) {
-		log.info("Invoking update subscriber on tx-engine subscriber interface");
+		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
@@ -234,7 +234,7 @@ public class SubscribePackageItem implements Processor {
 		} catch (InterruptedException e) {
 
 		}
-		log.info("Check if response received for update subscriber");
+		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
