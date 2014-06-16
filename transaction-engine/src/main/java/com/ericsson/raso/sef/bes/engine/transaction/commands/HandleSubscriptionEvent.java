@@ -159,6 +159,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 						txnStatus.setComponent(result.getFault().getComponent());
 						txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
 						logger.debug("Fulfillment failure found. TxStatus: " + txnStatus);
+						break;
 					}else{
 						if((((FulfillmentStep) result).getResult()) != null) {
 							products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
