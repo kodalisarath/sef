@@ -72,22 +72,23 @@ public class ModifyTagging implements Processor {
 
 		String tagging = String.valueOf(request.getTagging());
 		//Integer tag = Integer.valueOf(tagging);
+		
 		switch (tag) {
-			case 0: metas.add(new Meta("HANDLE_LIFE_CYCLE", "resetBit"));
+			case 0: metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
 					break;
-			case 1: metas.add(new Meta("HANDLE_LIFE_CYCLE", "forcedDeleteBit"));
+			case 1: metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetForcedDeleteBit"));
 					break;
-			case 2: metas.add(new Meta("HANDLE_LIFE_CYCLE", "barGeneralBit"));
+			case 2: metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarGeneralBit"));
 					break;
-			case 3: metas.add(new Meta("HANDLE_LIFE_CYCLE", "barIrmBit"));
+			case 3: metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarIRMBit"));
 					break;
-			case 4:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "barOtherBit"));
+			case 4:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarOtherBit"));
 					break;
-			case 5:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "specialFraudBit"));
+			case 5:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetSpecialFraudBit"));
 					break;
-			case 6:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "accountBlockingBit"));
+			case 6:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_AccountActivationBlockingBit"));
 					break;
-			case 7:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "recycleBit"));
+			case 7:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetRecycleBit"));
 					break;
 			default:
 					throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
