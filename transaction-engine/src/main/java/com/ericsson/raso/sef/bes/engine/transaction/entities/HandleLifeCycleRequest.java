@@ -1,9 +1,11 @@
 package com.ericsson.raso.sef.bes.engine.transaction.entities;
 
+import java.util.List;
 import java.util.Map;
 
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.Meta;
 
 
 public final class HandleLifeCycleRequest extends AbstractRequest {
@@ -61,6 +63,12 @@ public final class HandleLifeCycleRequest extends AbstractRequest {
 		return result;
 	}
 
+	//This method is to get the metas from the processor and converted to List<META>
+	public List<Meta> getRequestMetas() {
+		List<Meta> metaList=TransactionServiceHelper.getSefCoreList(this.metas);
+		return metaList;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
