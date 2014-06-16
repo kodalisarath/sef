@@ -1,4 +1,4 @@
-package com.ericsson.sef.promo_creation;
+	package com.ericsson.sef.promo_creation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -892,6 +892,7 @@ public class BusinessConfigurationTool {
 		BalanceAdjustmentProfile fulfillmentProfile = new BalanceAdjustmentProfile(name);
 		fulfillmentProfile.setDedicatedAccountID(dedicatedAccountID);
 		fulfillmentProfile.setDedicatedAccountUnitType(dedicatedAccountUnitType);
+		fulfillmentProfile.setTransactionCurrency("PHP");
 		
 
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
