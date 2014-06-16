@@ -72,29 +72,6 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 		List<Product> returned = new ArrayList<Product>();
 		
 		
-		// AF Install - function here
-		logger.debug("Preparing request pojo for CS-AF....");
-		DeleteDnsRequest dnsRequest = new DeleteDnsRequest();
-		dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
-		dnsRequest.setDclass(this.getDclass());
-		dnsRequest.setDtype(this.getDtype());
-		dnsRequest.setTtl(this.getTtl());
-		dnsRequest.setZname(this.getZname());
-		dnsRequest.setSiteId(null);
-		
-		logger.debug("Fetching the sdpId from Router");
-		String sdpId= (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
-		
-		try {
-			logger.debug("Shall I fire the command to CS-AF DNS?");
-			new DeleteDnsCommand(dnsRequest).execute();
-			logger.debug("Deleted SUbscriber in CS-AF DNS");
-		} catch (SmException e1) {
-			logger.error("Failed AddDnsCommand execute" + e1.getMessage(), e);
-			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
-		}
-
-				
 		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
 		logger.debug("Configred defaultServiceClass: " + defaultServiceClass);
 		
@@ -115,6 +92,31 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 			logger.error("Installing new subscriber failed!!", e1);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
+		
+		
+		// AF Delete - function here
+		logger.debug("Preparing request pojo for CS-AF....");
+		DeleteDnsRequest dnsRequest = new DeleteDnsRequest();
+		dnsRequest.setMsisdn(map.get("SUBSCRIBER_ID"));
+		dnsRequest.setDclass(this.getDclass());
+		dnsRequest.setDtype(this.getDtype());
+		dnsRequest.setTtl(this.getTtl());
+		dnsRequest.setZname(this.getZname());
+		dnsRequest.setSiteId(null);
+
+		logger.debug("Fetching the sdpId from Router");
+		String sdpId = (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
+
+		try {
+			logger.debug("Shall I fire the command to CS-AF DNS?");
+			new DeleteDnsCommand(dnsRequest).execute();
+			logger.debug("Deleted SUbscriber in CS-AF DNS");
+		} catch (SmException e1) {
+			logger.error("Failed AddDnsCommand execute" + e1.getMessage(), e);
+			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode()
+					.getMessage()));
+		}
+		
 		returned.add(e);
 		
 		return returned;	
