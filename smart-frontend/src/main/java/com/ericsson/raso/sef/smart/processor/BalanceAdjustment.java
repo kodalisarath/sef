@@ -26,6 +26,7 @@ import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.BalanceAdjustmentRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.hazelcast.core.ISemaphore;
@@ -83,8 +84,18 @@ public class BalanceAdjustment implements Processor {
 				}
 			  else {
 				logger.info("check grace and recycle metas");
-				logger.info("SK GET METAS BALANCE " + subscriberObj.getMetas());
-				Map<String, String> subscriberMetas = subscriberObj.getMetas();
+				//logger.info("SK GET METAS BALANCE " + subscriberObj.getMetas());
+				
+				Subscriber subscriber = subscriberObj.getSubscriber();
+				if (subscriber == null) {
+					logger.error("Unable to fetch the subscriber entity out");
+					throw ExceptionUtil.toSmException(ErrorCode.technicalError);
+				}
+				
+				logger.info("SK GET METAS BALANCE " + subscriber.getMetas());
+				
+				
+				Map<String, String> subscriberMetas = subscriber.getMetas();
 //				int index = 0;
 //				String offers = "";
 				OfferInfo oInfo = null;

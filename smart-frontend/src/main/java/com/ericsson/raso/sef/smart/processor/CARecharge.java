@@ -142,7 +142,7 @@ public class CARecharge implements Processor {
 			
 			
 			logger.debug("If noli really did a pull & rebuild, you would see this!!");
-			PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+			PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
 			logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 			if(purchaseResponse == null) {
 				//request timed out but no response. possible request missing from correlation store
