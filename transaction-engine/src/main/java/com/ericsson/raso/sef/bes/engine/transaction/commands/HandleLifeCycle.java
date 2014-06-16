@@ -15,6 +15,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleLifeCycleRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleLifeCycleResponse;
+import com.ericsson.raso.sef.bes.engine.transaction.entities.UpdateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
@@ -27,8 +28,11 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
+import com.ericsson.raso.sef.core.db.service.PersistenceError;
+import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
 
@@ -47,10 +51,11 @@ public class HandleLifeCycle extends AbstractTransaction{
 		
 
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
+		SubscriberService subscriberStore = SefCoreServiceResolver.getSusbcriberStore();
+		List<Meta> incomingMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity;
 		try {
 			subscriberEntity = ((HandleLifeCycleRequest)this.getRequest()).persistableEntity();
-			
 			if(subscriberEntity == null){
 				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504, "Subscriber not found")));
 				this.sendResponse();
@@ -59,7 +64,9 @@ public class HandleLifeCycle extends AbstractTransaction{
 //					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
 //					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
 //								((HandleLifeCycleRequest)this.getRequest()).getMetas());
-			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.UPDATE, subscriberEntity, subscriberEntity.getMsisdn()));
+			
+			
+			//tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.UPDATE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
 			// Find workflow...
 			String workflowId = ((HandleLifeCycleRequest)this.getRequest()).getMetas().get(Constants.HANDLE_LIFE_CYCLE.name());
@@ -78,14 +85,33 @@ public class HandleLifeCycle extends AbstractTransaction{
 			}
 			
 			Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
-			
 			OrchestrationManager.getInstance().submit(this, execution);
+			for (Meta meta : incomingMetas) {
+				LOGGER.debug("Printing the metas in the loop "+meta.getKey()+" "+meta.getValue()+""+subscriberEntity.getMsisdn());
+				if (subscriberEntity.getMetas().contains(meta)) {
+					try {																																									
+						subscriberStore.updateMeta(this.getRequestId(),
+								subscriberEntity.getMsisdn(), meta);
+					} catch (PersistenceError e) {
+						LOGGER.error("Error in the updatemeta at HandleLifecycle",e);
+					}
+				} else {
+					try {
+						LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
+						subscriberStore.createMeta(this.getRequestId(),
+								subscriberEntity.getMsisdn(), meta);
+					} catch (PersistenceError e) {
+						LOGGER.error("Error in the createmeta at HandleLifecycle",e);
+					}
+				}
+
+			}
+			
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault( new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));
 		}
-		return true;
-	
 		
+		return true;	
 	}
 
 	private Subscriber updateChanges(Subscriber subscriberEntity, String subscriberId, String lifeCycleState, Map<String, String> map) {
