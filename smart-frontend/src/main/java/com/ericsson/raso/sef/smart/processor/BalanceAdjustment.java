@@ -34,7 +34,7 @@ import com.hazelcast.core.ISemaphore;
 
 
 public class BalanceAdjustment implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(CreateOrWriteCustomerProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(BalanceAdjustment.class);
 	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER_INFO";
 	@Override
 	public void process(Exchange exchange) throws Exception {
@@ -177,7 +177,7 @@ public class BalanceAdjustment implements Processor {
 		}
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		logger.debug("Hi HERE I AM " + subscriberInfo.getMetas());
+		logger.debug("Hi HERE I AM::: Result " + subscriberInfo.getStatus() );
 		return subscriberInfo;
 	}
 	
