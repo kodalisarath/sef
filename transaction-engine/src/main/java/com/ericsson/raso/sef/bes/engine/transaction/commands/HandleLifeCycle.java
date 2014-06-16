@@ -55,10 +55,10 @@ public class HandleLifeCycle extends AbstractTransaction{
 				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504, "Subscriber not found")));
 				this.sendResponse();
 			}
-			this.updateChanges(subscriberEntity, 
-					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
-					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
-								((HandleLifeCycleRequest)this.getRequest()).getMetas());
+//			this.updateChanges(subscriberEntity, 
+//					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
+//					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
+//								((HandleLifeCycleRequest)this.getRequest()).getMetas());
 			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.UPDATE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
 			// Find workflow...
