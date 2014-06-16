@@ -11,6 +11,8 @@ import javax.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.RangeRouter;
+
 public class ConfigService implements IConfig {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ConfigService.class);
@@ -117,9 +119,7 @@ public class ConfigService implements IConfig {
 	}
 	
 	public Value getRoute(String sectionId, long locate) {
-		Value  value = new Value();
-		
-		return value;
+		return RangeRouter.getInstance().getRoute(sectionId, locate);
 	}
 	
 }  
