@@ -73,7 +73,7 @@ public final class ServiceRegistry implements IServiceRegistry {
 		if (resource == null)
 			throw new CatalogException("Given Resource was null!!");
 
-		if (!this.resources.containsValue(resource))
+		if (!this.resources.containsValue(resource) && !this.resources.containsKey(resource.getName()))
 			this.resources.put(resource.getName(), resource);
 		else 
 			throw new CatalogException("Given Resource (" + resource + ") already exists!!");
