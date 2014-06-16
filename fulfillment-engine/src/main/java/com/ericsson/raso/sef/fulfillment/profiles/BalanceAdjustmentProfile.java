@@ -63,6 +63,7 @@ public class BalanceAdjustmentProfile extends BlockingFulfillment<Product> {
 		request.setExternalData2(externalData2);
 		request.setSubscriberNumber(msisdn);
 		request.setSubscriberNumberNAI(1);
+		request.setTransactionCurrency(this.transactionCurrency);
 		
 		UpdateBalanceAndDateCommand command = new UpdateBalanceAndDateCommand(request);
 		UpdateBalanceAndDateResponse response = null;
