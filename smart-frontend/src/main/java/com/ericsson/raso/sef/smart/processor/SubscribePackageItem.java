@@ -65,6 +65,8 @@ public class SubscribePackageItem implements Processor {
 	     metaSubscriber.add(new Meta("READ_SUBSCRIBER","PARTIAL_READ_SUBSCRIBER"));
 	     
 	     
+	     
+	     
 	     logger.info("Collected SOAP parameters");
 	     logger.info("Going for DB check and AIR call");
 	     logger.info("Before read subscriber call");
@@ -165,7 +167,7 @@ public class SubscribePackageItem implements Processor {
 				}
 			}
 			if (IsGrace==true || NotRecycle==false) {
-				    String resultId=iSubscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, metaSubscriber);
+				    String resultId=iSubscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 			        PurchaseResponse response = new PurchaseResponse();
 					logger.debug("Got past event class in subscription for grace and active....");
 					RequestCorrelationStore.put(resultId, response);

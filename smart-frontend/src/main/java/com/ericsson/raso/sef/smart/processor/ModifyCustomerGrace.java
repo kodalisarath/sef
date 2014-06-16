@@ -50,7 +50,8 @@ public class ModifyCustomerGrace implements Processor {
 			metas.add(new Meta("MessageId" , String.valueOf(request.getMessageId())));
 			metas.add(new Meta("AccessKey",request.getAccessKey()));
 			List<Meta> metasReadSubscriber = new ArrayList<Meta>();
-			metasReadSubscriber.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
+			metas.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
+			metasReadSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
 			metasReadSubscriber.add(new Meta("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER"));
 			
 			logger.info("Collected SOAP parameters");
