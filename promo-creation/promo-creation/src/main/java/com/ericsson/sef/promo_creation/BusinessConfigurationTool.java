@@ -571,9 +571,9 @@ public class BusinessConfigurationTool {
 			//=====================================
 			System.out.println("Offer, Balance Adjustment...");
 			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
-			bizConfig = this.getSimpleBcWorkflow("OnPeakAccountID", "On Peak Account", handles, resource);
 			handles = new ArrayList<String>();
 			handles.add("OnPeakAccountID");
+			bizConfig = this.getSimpleBcWorkflow("OnPeakAccountID", "On Peak Account", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 	
