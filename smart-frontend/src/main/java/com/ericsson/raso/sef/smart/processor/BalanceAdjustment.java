@@ -149,9 +149,8 @@ public class BalanceAdjustment implements Processor {
 						
 						logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 						
-						PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(requestId);
-						
-						//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+						PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+
 						logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 						if(purchaseResponse == null) {
 							logger.debug("No response arrived???");
