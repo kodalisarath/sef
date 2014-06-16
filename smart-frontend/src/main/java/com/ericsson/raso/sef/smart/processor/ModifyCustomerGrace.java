@@ -126,10 +126,6 @@ public class ModifyCustomerGrace implements Processor {
 				     PurchaseResponse response = new PurchaseResponse();
 					logger.debug("Got past event class....");
 						RequestCorrelationStore.put(resultId, response);
-						PurchaseResponse response = new PurchaseResponse();
-						logger.debug("Got past event class....");
-						logger.debug("Got past event class in subscription for grace and active....");
-						RequestCorrelationStore.put(resultId, response);
 						ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 						
 						try {

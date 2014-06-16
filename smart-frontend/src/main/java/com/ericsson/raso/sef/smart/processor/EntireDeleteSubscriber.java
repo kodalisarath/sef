@@ -12,9 +12,12 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
+import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
+import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.EntireDeleteRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
@@ -72,7 +75,7 @@ public class EntireDeleteSubscriber implements Processor{
 		return responseData;
 	}
 
-	private SubscriberInfo deleteSubscriber(String requestId, String customerId) {
+	private SubscriberInfo deleteSubscriber(String requestId, String customerId) throws Exception {
 		logger.info("Invoking delete subscriber on tx-engine subscriber interface");
 		
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
@@ -80,7 +83,12 @@ public class EntireDeleteSubscriber implements Processor{
 
 		SubscriberResponseStore.put(requestId, subInfo);
 		
-		iSubscriberRequest.deleteSubscriber(requestId, customerId);		
+		String resultId=iSubscriberRequest.deleteSubscriber(requestId, customerId);	
+		
+		PurchaseResponse response = new PurchaseResponse();
+		logger.debug("Got past event class....");
+			RequestCorrelationStore.put(resultId, response);
+			
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
@@ -88,9 +96,21 @@ public class EntireDeleteSubscriber implements Processor{
 		} catch(InterruptedException e) {
             
 		}
+		logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
+		
+		//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+		PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+		//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+		logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+		if(purchaseResponse == null) {
+			logger.debug("No response arrived???");
+			throw new SmException(ErrorCode.internalServerError);
+		}
+		
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
+		
 	}
 
 	
