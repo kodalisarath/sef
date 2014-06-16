@@ -574,14 +574,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		ParallelExecution prepFulfill = new ParallelExecution();
 		
 		//2do: uncomment this when rollback is ready!!!
-		for (TransactionTask task: toProcess) {
-			if (task instanceof Fulfillment && ((Fulfillment)task).getMode() == FulfillmentMode.FULFILL) {
-				String southBoundRequestId = UniqueIdGenerator.generateId();
-				Fulfillment clonedTask = CloneHelper.deepClone((Fulfillment)task);
-				clonedTask.setMode(FulfillmentMode.PREPARE);
-				prepFulfill.add(new FulfillmentStep(southBoundRequestId, (Fulfillment)clonedTask));
-			}
-		}
+//		for (TransactionTask task: toProcess) {
+//			if (task instanceof Fulfillment && ((Fulfillment)task).getMode() == FulfillmentMode.FULFILL) {
+//				String southBoundRequestId = UniqueIdGenerator.generateId();
+//				Fulfillment clonedTask = CloneHelper.deepClone((Fulfillment)task);
+//				clonedTask.setMode(FulfillmentMode.PREPARE);
+//				prepFulfill.add(new FulfillmentStep(southBoundRequestId, (Fulfillment)clonedTask));
+//			}
+//		}
 		logger.debug("Extracted prepare fulfilment tasks. Total: " + prepFulfill.size());
 		return prepFulfill;
 	}
@@ -840,11 +840,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						anyFault = true;
 				} else {
 					anyFault = true;
-					if (result != null) { // check this logic when cool...
-						step.setFault(result.getResultantFault());
-						completion++;
-						logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
-					}
+					step.setFault(result.getResultantFault());
+					completion++;
+					logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
+
 				}
 			}
 		}

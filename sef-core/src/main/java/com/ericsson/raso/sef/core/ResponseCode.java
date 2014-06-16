@@ -4,11 +4,8 @@ import java.io.Serializable;
 
 
 public class ResponseCode implements StatusCode, Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7491918730221871928L;
+
 	private int code;
 	private String message;
 	
@@ -26,4 +23,11 @@ public class ResponseCode implements StatusCode, Serializable {
 	public String getMessage() {
 		return message;
 	}
+
+	@Override
+	public String toString() {
+		return "ResponseCode [code=" + code + ", message=" + message + "]";
+	}
+	
+	
 }
