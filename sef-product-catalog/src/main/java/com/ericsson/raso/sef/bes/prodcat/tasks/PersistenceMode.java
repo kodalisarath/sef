@@ -5,5 +5,6 @@ import java.io.Serializable;
 public enum PersistenceMode implements Serializable {
 	QUERY,
 	SAVE,
-	REMOVE;
+	REMOVE,
+	UPDATE;
 }

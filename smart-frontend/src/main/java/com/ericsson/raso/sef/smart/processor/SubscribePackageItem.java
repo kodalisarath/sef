@@ -45,7 +45,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 public class SubscribePackageItem implements Processor {
 
 	private static final Logger logger = LoggerFactory.getLogger(SubscribePackageItem.class);
-	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER";
+	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER_INFO";
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		SubscribePackageItemRequest request = (SubscribePackageItemRequest) exchange.getIn().getBody();
@@ -121,8 +121,16 @@ public class SubscribePackageItem implements Processor {
 			  }
 			}
 		  
+		  Subscriber subscriber = subscriberObj.getSubscriber();
+			if (subscriber == null) {
+				logger.error("Unable to fetch the subscriber entity out");
+				throw ExceptionUtil.toSmException(ErrorCode.technicalError);
+			}
+			
+			logger.info("SK GET METAS BALANCE " + subscriber.getMetas());
+		  
 		    logger.info("check grace and recycle metas as subscriber is not pre-active");
-			Map<String, String> subscriberMetas = subscriberObj.getMetas();
+			Map<String, String> subscriberMetas = subscriber.getMetas();
 			OfferInfo oInfo = null;
 			Map<String, OfferInfo> subscriberOffers = new HashMap<String, SubscribePackageItem.OfferInfo>(); 
 			boolean IsGrace = false;
