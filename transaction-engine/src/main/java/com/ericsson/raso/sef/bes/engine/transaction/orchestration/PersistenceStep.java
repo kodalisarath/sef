@@ -50,6 +50,17 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 							this.getResult().setPersistenceResult(true);
 						
 						break;
+					case UPDATE:
+						LOGGER.debug("Updating Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
+						subscriberService.updateSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity));
+						LOGGER.debug("Subscriber updated.");
+						
+						if (this.getResult() == null) {
+							this.setResult(new PersistenceStepResult(null, true));
+						} else
+							this.getResult().setPersistenceResult(true);
+						
+						break;
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
 						subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); 

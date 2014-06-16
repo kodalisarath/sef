@@ -59,7 +59,7 @@ public class HandleLifeCycle extends AbstractTransaction{
 					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
 					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
 								((HandleLifeCycleRequest)this.getRequest()).getMetas());
-			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
+			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.UPDATE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
 			// Find workflow...
 			String workflowId = ((HandleLifeCycleRequest)this.getRequest()).getMetas().get(Constants.HANDLE_LIFE_CYCLE.name());

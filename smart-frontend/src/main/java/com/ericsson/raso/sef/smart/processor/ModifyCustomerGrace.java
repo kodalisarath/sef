@@ -18,6 +18,7 @@ import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
+import com.ericsson.raso.sef.smart.processor.BalanceAdjustment.OfferInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
@@ -30,7 +31,7 @@ import com.hazelcast.core.ISemaphore;
 
 public class ModifyCustomerGrace implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(ModifyCustomerGrace.class);
-	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER";
+	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER_INFO";
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		
@@ -52,12 +53,14 @@ public class ModifyCustomerGrace implements Processor {
 			metasReadSubscriber.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
 			metasReadSubscriber.add(new Meta("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER"));
 			
+			logger.info("Collected SOAP parameters");
+		    logger.info("Going for DB check and AIR call");
+		    logger.info("Before read subscriber call");
+		     
 			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 			//ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 			logger.info("Before read subscriber call");
 			SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metasReadSubscriber);
-			//if(subscriberObj.getSubscriber() == null)
-			//ISubscriberResponse response=
 			
 			if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
 				logger.debug("Inside the if condition for status check");
@@ -65,11 +68,22 @@ public class ModifyCustomerGrace implements Processor {
 			}
 			logger.info("Recieved a SubscriberInfo Object and it is not null");
 			logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
-			if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState()))
-				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 			
-					 
-					 Map<String, String> subscriberMetas = subscriberObj.getMetas();
+			logger.info("check pre_active");	
+			if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
+				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+			}
+			else {
+			
+				logger.info("check grace metas only");
+				
+				Subscriber subscriber = subscriberObj.getSubscriber();
+				if (subscriber == null) {
+					logger.error("Unable to fetch the subscriber entity out");
+					throw ExceptionUtil.toSmException(ErrorCode.technicalError);
+				}
+				
+					 Map<String, String> subscriberMetas = subscriber.getMetas();
 //						int index = 0;
 //						String offers = "";
 						OfferInfo oInfo = null;
@@ -104,7 +118,7 @@ public class ModifyCustomerGrace implements Processor {
 							throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 							
 						}
-						
+			}						
 					String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
 				     PurchaseResponse response = new PurchaseResponse();
 					logger.debug("Got past event class....");
