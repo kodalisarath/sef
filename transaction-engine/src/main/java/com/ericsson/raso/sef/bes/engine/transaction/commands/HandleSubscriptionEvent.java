@@ -28,6 +28,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TaskType;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
@@ -170,13 +171,18 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		
 		logger.debug("Invoking subscription response!!");
 		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
-		subscriptionClient.purchase(this.getRequestId(), 
-				                    txnStatus, 
-									subscriptionId, 
-									products, 
-									billingMetas);
-		logger.debug("Subscription response posted");
-		
+		if (subscriptionClient != null) {
+			logger.debug("Subscription Response client available. Can send the response now...");
+			subscriptionClient.purchase(this.getRequestId(), 
+					                    txnStatus, 
+										subscriptionId, 
+										products, 
+										billingMetas);
+			logger.debug("Subscription response posted");
+		} else {
+			logger.error("Seems like Subscription Response Client is not available... releasing transaction(" + this.getRequestId() + ") to avoid stress accumulation!!!");
+			SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(this.getRequestId()).release();
+		}
 	} 
 	
 	
