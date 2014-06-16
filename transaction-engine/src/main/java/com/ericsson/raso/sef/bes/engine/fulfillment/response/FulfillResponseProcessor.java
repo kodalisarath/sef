@@ -32,11 +32,11 @@ public class FulfillResponseProcessor implements Processor {
 		List<Product> products =(List<Product>)objectArray[2];
 		List<Meta> metas = (List<Meta>)objectArray[3];
 
-		logger.debug("Fulfillment response received for: " + correlationId);
+		logger.debug("Fulfillment response received for: " + correlationId + ", status: " + status + ", products: " + products + ", metas: " + metas);
 
 		Set<AtomicProduct> atomicProducts = new HashSet<AtomicProduct>();
 		FulfillmentStepResult result=null;
-		if(status != null  && status.getCode() > 0){
+		if(status != null) {  //&& status.getCode() > 0){
 			ResponseCode resonseCode = new ResponseCode(status.getCode(),status.getDescription());
 			StepExecutionException stepExecutionException = new StepExecutionException(status.getComponent(),resonseCode);
 			result = new FulfillmentStepResult(stepExecutionException, null);
