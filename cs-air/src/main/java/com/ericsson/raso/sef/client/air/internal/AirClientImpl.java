@@ -4,7 +4,6 @@ import java.net.SocketTimeoutException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +23,10 @@ import com.ericsson.raso.sef.plugin.xmlrpc.internal.DefaultXmlRpcClientFactory;
 
 public class AirClientImpl implements AirClient {
 	
-	private static AtomicLong commandSequence;
-
-	
 	private String originNodeType;
 	private String originHostName;
 	private String defaultSite;
-	
+
 	private Map<String, XmlRpcClient> clientMap = new HashMap<String, XmlRpcClient>();
 	
 	Logger logger = LoggerFactory.getLogger(AirClientImpl.class);
@@ -53,7 +49,6 @@ public class AirClientImpl implements AirClient {
 			originHostName = SefCoreServiceResolver.getConfigService().getValue(sectionName, "originHostName");
 			originNodeType = SefCoreServiceResolver.getConfigService().getValue(sectionName, "originNodeType");
 			defaultSite = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultSite");
-			commandSequence = new AtomicLong(1000000000);
 			
 			logger.debug("originHostName: " + originHostName);
 			logger.debug("originNodeType: " + originNodeType);
@@ -74,7 +69,6 @@ public class AirClientImpl implements AirClient {
 		if(request.getOriginTransactionId() == null) {
 			request.setOriginTransactionId(String.valueOf(createTransactionId()));
 		}
-		logger.debug("AIR OriginTransactionId: " + request.getOriginTransactionId());
 		
 		String nai = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "subscriberNumberNAI");
 		if(nai != null) {
@@ -114,7 +108,7 @@ public class AirClientImpl implements AirClient {
 	}
 	
 	private static long createTransactionId() {
-		return commandSequence.incrementAndGet();
+		return 9999 + (int)(Math.random() * ((999999999 - 9999) + 1));
 	}
 	
 	private XmlRpcClient getXmlRpcClient(String msisdn, String site) throws SmException {
