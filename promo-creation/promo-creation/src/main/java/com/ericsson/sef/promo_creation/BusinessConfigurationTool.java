@@ -81,7 +81,11 @@ public class BusinessConfigurationTool {
 			handles.add("READ_SUBSCRIBER");
 			bizConfig = this.getSimpleBcWorkflow("ENTIRE_READ_SUBSCRIBER", "Entire Read SmartTnt Subsriber", handles, resource);
 			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
+			try {
+				serviceRegistry.createResource(resource);
+			} catch (CatalogException e) {
+				serviceRegistry.updateResource(resource);
+			}
 			
 			System.out.println("Offer, Resource & Profile - CUSTOMER_INFO_CHARGE...");
 			resource = this.createSmartEntireReadProfile("CUSTOMER_INFO_CHARGE", "Entire Read Subscriber");
