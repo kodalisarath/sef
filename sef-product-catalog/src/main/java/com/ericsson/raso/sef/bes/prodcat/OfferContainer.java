@@ -239,12 +239,12 @@ public class OfferContainer implements Serializable {
 	public Offer getOfferById(String id) {
 		Offer offer = null;
 		
-		logger.debug("E/// Getting latest version of this offer: " + id);
+		logger.debug("Fetching latest version of this offer: " + id);
 		TreeMap<Integer, Offer> versionedOffer = this.offersById.get(id);
 		if (versionedOffer != null) {
 			int latestVersion = versionedOffer.descendingKeySet().first();
 			offer = versionedOffer.get(latestVersion);
-			logger.debug("E/// Offer Name: " + offer.getName());
+			logger.debug("Native Concrete Instance Offer Name: " + offer.getName());
 		}
 
 		return offer;
@@ -264,7 +264,9 @@ public class OfferContainer implements Serializable {
 	public Offer getOfferByExternalHandle(String handle) {
 		Offer offer = null;
 
+		logger.debug("Federated ID: " + handle);
 		String offerId = this.offersByExternalHandle.get(handle);
+		logger.debug("Mapped Native Offer ID: " + offerId);
 		if (offerId != null)
 			offer = this.getOfferById(offerId);
 
