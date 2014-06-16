@@ -62,11 +62,11 @@ public class HandleLifeCycle extends AbstractTransaction{
 			}
 			List<Meta> incomingMetas = ((HandleLifeCycleRequest) this.getRequest()).getRequestMetas();
 
-//			this.updateChanges(subscriberEntity, 
-//					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
-//					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
-//								((HandleLifeCycleRequest)this.getRequest()).getMetas());
-//			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.UPDATE, subscriberEntity, subscriberEntity.getMsisdn()));
+			this.updateChanges(subscriberEntity, 
+					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
+					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
+						((HandleLifeCycleRequest)this.getRequest()).getMetas());
+			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.UPDATE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
 			// Find workflow...
 			String workflowId = ((HandleLifeCycleRequest)this.getRequest()).getMetas().get(Constants.HANDLE_LIFE_CYCLE.name());
@@ -85,27 +85,28 @@ public class HandleLifeCycle extends AbstractTransaction{
 			}
 			
 			Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
+			
 			OrchestrationManager.getInstance().submit(this, execution);
-			for (Meta meta : incomingMetas) {
-				LOGGER.debug("Printing the metas in the loop "+meta.getKey()+" "+meta.getValue()+""+subscriberEntity.getMsisdn());
-				if (subscriberEntity.getMetas().contains(meta)) {
-					try {																																									
-						subscriberStore.updateMeta(this.getRequestId(),
-								subscriberEntity.getMsisdn(), meta);
-					} catch (PersistenceError e) {
-						LOGGER.error("Error in the updatemeta at HandleLifecycle",e);
-					}
-				} else {
-					try {
-						LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
-						subscriberStore.createMeta(this.getRequestId(),
-								subscriberEntity.getMsisdn(), meta);
-					} catch (PersistenceError e) {
-						LOGGER.error("Error in the createmeta at HandleLifecycle",e);
-					}
-				}
-
-			}
+//			for (Meta meta : incomingMetas) {
+//				LOGGER.debug("Printing the metas in the loop "+meta.getKey()+" "+meta.getValue()+""+subscriberEntity.getMsisdn());
+//				if (subscriberEntity.getMetas().contains(meta)) {
+//					try {																																									
+//						subscriberStore.updateMeta(this.getRequestId(),
+//								subscriberEntity.getMsisdn(), meta);
+//					} catch (PersistenceError e) {
+//						LOGGER.error("Error in the updatemeta at HandleLifecycle",e);
+//					}
+//				} else {
+//					try {
+//						LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
+//						subscriberStore.createMeta(this.getRequestId(),
+//								subscriberEntity.getMsisdn(), meta);
+//					} catch (PersistenceError e) {
+//						LOGGER.error("Error in the createmeta at HandleLifecycle",e);
+//					}
+//				}
+//
+//			}
 			
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault( new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));

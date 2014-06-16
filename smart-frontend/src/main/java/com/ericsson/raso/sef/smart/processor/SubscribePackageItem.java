@@ -86,7 +86,7 @@ public class SubscribePackageItem implements Processor {
 		  if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
 			  if(isWelcomePack(request.getPackaze())) {
 				  IConfig config = SefCoreServiceResolver.getConfigService();
-				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBER_PACKAGE_ITEM_WelcomePackServiceClass"));
+				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
 				  metas.add(new Meta("ServiceClass",config.getValue("GLOBAL_welcomePackMapping", request.getPackaze())));
 				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
 				  PurchaseResponse response = new PurchaseResponse();
