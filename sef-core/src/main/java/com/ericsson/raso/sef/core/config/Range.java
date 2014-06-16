@@ -8,7 +8,7 @@ public class Range implements Comparable<Range> {
 	
 	private long start;
 	private long end;
-	private Value value;
+	private String value;
 	
 	@XmlAttribute
 	public long getStart() {
@@ -29,11 +29,11 @@ public class Range implements Comparable<Range> {
 	}
 	
 	@XmlAttribute
-	public Value getValue() {
+	public String getValue() {
 		return value;
 	}
 	
-	public void setValue(Value value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 	
