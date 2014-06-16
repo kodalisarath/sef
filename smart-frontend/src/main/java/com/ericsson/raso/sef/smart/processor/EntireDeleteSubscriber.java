@@ -40,7 +40,7 @@ public class EntireDeleteSubscriber implements Processor{
 			SubscriberInfo subscriberinfo = deleteSubscriber(requestId, request.getCustomerId());
 		
 			if(subscriberinfo == null) {
-				throw new SmException(new ResponseCode(-111, "13423#EntireDelete Entity - Customer with primary key Keyname:PK,CustomerId: " + request.getCustomerId()
+				throw new SmException(new ResponseCode(13423, "13423#EntireDelete Entity - Customer with primary key Keyname:PK,CustomerId: " + request.getCustomerId()
 								+ " does not exist"));
 			}
 			exchange.getOut().setBody(createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional()));

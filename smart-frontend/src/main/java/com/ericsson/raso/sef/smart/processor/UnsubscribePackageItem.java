@@ -88,7 +88,7 @@ public class UnsubscribePackageItem implements Processor {
 				  IConfig config = SefCoreServiceResolver.getConfigService();
 				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBER_PACKAGE_ITEM_WelcomePackServiceClass"));
 				  metas.add(new Meta("ServiceClass",config.getValue("GLOBAL_welcomePackMapping", request.getPackaze())));
-				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.getName(), metas);
+				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
 				  PurchaseResponse response = new PurchaseResponse();
 			      logger.debug("Got past event class....");
 				  RequestCorrelationStore.put(resultId, response);
