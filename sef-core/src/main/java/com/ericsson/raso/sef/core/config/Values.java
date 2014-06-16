@@ -18,6 +18,11 @@ public class Values {
 	public void setValue(ArrayList<Value> value) {
 		this.value = value;
 	}
+
+	@Override
+	public String toString() {
+		return "Values [value=" + value + "]";
+	}
 	
 	
 }

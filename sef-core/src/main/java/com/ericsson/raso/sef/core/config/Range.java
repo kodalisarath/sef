@@ -4,11 +4,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="range")
-public class Range {
+public class Range implements Comparable<Range> {
 	
 	private long start;
 	private long end;
-	private String value;
+	private Value value;
 	
 	@XmlAttribute
 	public long getStart() {
@@ -29,17 +29,22 @@ public class Range {
 	}
 	
 	@XmlAttribute
-	public String getValue() {
+	public Value getValue() {
 		return value;
 	}
 	
-	public void setValue(String value) {
+	public void setValue(Value value) {
 		this.value = value;
 	}
 	
 	@Override
 	public String toString() {
 		return "Range [start=" + start + ", end=" + end + ", value=" + value + "]";
+	}
+
+	@Override
+	public int compareTo(Range o) {
+		return (int) ((this.start - o.start) & Integer.MAX_VALUE);
 	}
 	
 	

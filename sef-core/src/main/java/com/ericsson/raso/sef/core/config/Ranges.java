@@ -18,6 +18,11 @@ public class Ranges {
 	public void setRange(ArrayList<Range> range) {
 		this.range = range;
 	}
+
+	@Override
+	public String toString() {
+		return "Ranges [range=" + range + "]";
+	}
 	
 	
 }

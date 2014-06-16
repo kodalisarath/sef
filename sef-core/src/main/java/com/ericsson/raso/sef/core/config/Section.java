@@ -59,6 +59,12 @@ public class Section {
 	
 	public void setRouter(Router router) {
 		this.router = router;
+	}
+
+	@Override
+	public String toString() {
+		return "Section [id=" + id + ", description=" + description + ", property=" + property + ", router=" + router + "]";
 	}  
 
+	
 }

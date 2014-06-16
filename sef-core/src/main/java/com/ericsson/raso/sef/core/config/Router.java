@@ -27,6 +27,11 @@ public class Router {
 	public void setValues(Values values) {
 		this.values = values;
 	}
+
+	@Override
+	public String toString() {
+		return "Router [ranges=" + ranges + ", values=" + values + "]";
+	}
 	
 	
 	
