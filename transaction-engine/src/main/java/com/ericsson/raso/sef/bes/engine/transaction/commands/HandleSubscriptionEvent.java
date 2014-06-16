@@ -131,7 +131,14 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		List<Meta> billingMetas = null;
 		TransactionStatus txnStatus=null;
 		
-		if (this.getResponse() != null && this.getResponse().getReturnFault() == null) {
+		
+		
+		if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
+			txnStatus = new TransactionStatus(this.getResponse().getReturnFault().getComponent(),
+						this.getResponse().getReturnFault().getStatusCode().getCode(),
+						this.getResponse().getReturnFault().getStatusCode().getMessage());
+			
+		} else {
 	
 			for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
 				if (result.getExecutionInputs().getType() == TaskType.PERSIST) {
@@ -158,6 +165,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		
 		// Handle the metas
 		billingMetas = TransactionServiceHelper.getSefApiList(this.getMetas());
+		logger.debug("Billing Metas: " + billingMetas);
 		
 		logger.debug("Invoking subscription response!!");
 		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();

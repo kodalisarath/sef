@@ -99,6 +99,7 @@ public abstract class AbstractTransaction implements Callable<Boolean>, Serializ
 	}
 
 	public void setMetas(Map<String, String> metas) {
+		LOGGER.debug("Metas received from Orchestration: " + this.metas);
 		this.metas = metas;
 	}
 
