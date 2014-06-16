@@ -122,7 +122,7 @@ public class CARecharge implements Processor {
 			logger.debug("Got past event class....");
 			RequestCorrelationStore.put(correlationId, response);
 
-			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(correlationId);
 
 			try {
 				semaphore.init(0);
@@ -137,19 +137,11 @@ public class CARecharge implements Processor {
 			logger.debug("If noli really did a pull & rebuild, you would see this!!");
 			PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
 			logger.debug("PurchaseResponse recieved here is " + purchaseResponse);
-			if (purchaseResponse == null) {
-				// request timed out but no response. possible request missing from correlation store
-				// there is no response time out error code in smart interface and hence throw internal server error
-				logger.debug("No response arrived???");
-				throw new SmException(ErrorCode.internalServerError);
-			}
 			
 			if (purchaseResponse.getFault() != null) {
 				logger.debug("Backend Error: " + purchaseResponse.getFault());
 				throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
 			}
-
-			logger.debug("Get requestId: " + purchaseResponse.getRequestId());
 
 			logger.debug("Response purchase received.. now creating front end response");
 

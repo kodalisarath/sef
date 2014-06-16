@@ -40,6 +40,7 @@ public class FulfillResponseProcessor implements Processor {
 			ResponseCode resonseCode = new ResponseCode(status.getCode(),status.getDescription());
 			StepExecutionException stepExecutionException = new StepExecutionException(status.getComponent(),resonseCode);
 			result = new FulfillmentStepResult(stepExecutionException, null);
+			logger.debug("Fulfillment failed. Fault: " + resonseCode);
 		}else{
 			if(products != null) {
 				for(Product product: products) {
