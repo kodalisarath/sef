@@ -139,10 +139,12 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 			txnStatus = new TransactionStatus(this.getResponse().getReturnFault().getComponent(),
 						this.getResponse().getReturnFault().getStatusCode().getCode(),
 						this.getResponse().getReturnFault().getStatusCode().getMessage());
+			logger.debug("Orchestration had failed. TxStatus: " + txnStatus);
 			
 		} else {
 	
 			for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
+				logger.debug("Looping thru atomic steps..."  + result);
 				if (result.getExecutionInputs().getType() == TaskType.PERSIST) {
 					Object saved = ((Persistence<?>)((PersistenceStep) result).getExecutionInputs()).getToSave();
 					if (saved instanceof Subscription) {
@@ -156,6 +158,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 						txnStatus.setCode(result.getFault().getStatusCode().getCode());
 						txnStatus.setComponent(result.getFault().getComponent());
 						txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
+						logger.debug("Fulfillment failure found. TxStatus: " + txnStatus);
 					}else{
 						if((((FulfillmentStep) result).getResult()) != null) {
 							products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));

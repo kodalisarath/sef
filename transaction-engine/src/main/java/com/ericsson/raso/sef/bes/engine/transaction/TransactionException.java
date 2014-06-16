@@ -36,6 +36,11 @@ public final class TransactionException extends FrameworkException {
 		return requestId;
 	}
 
+	@Override
+	public String toString() {
+		return "TransactionException [requestId=" + requestId + "]";
+	}
+
 	
 	
 	

@@ -58,4 +58,11 @@ public abstract class Step<Object> implements Serializable, Callable<Object>, Co
 		return t.stepCorrelator.compareTo(this.stepCorrelator);
 	}
 
+	@Override
+	public String toString() {
+		return "Step [stepCorrelator=" + stepCorrelator + ", executionInputs=" + executionInputs + ", result=" + result + ", fault="
+				+ fault + "]";
+	}
+
+	
 }

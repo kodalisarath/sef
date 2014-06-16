@@ -76,6 +76,12 @@ public abstract class AbstractResponse implements Serializable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "AbstractResponse [requestCorrelator=" + requestCorrelator + ", atomicStepResults=" + atomicStepResults + ", returnFault="
+				+ returnFault + "]";
+	}
 	
 	
 

@@ -836,6 +836,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				if (executionStatus != null && executionStatus.name().startsWith("DONE_")) {
 					completion++;
 					logger.debug("Step:" + step.stepCorrelator + " is complete with " + executionStatus);
+					if (executionStatus == Status.DONE_FAULT)
+						anyFault = true;
 				} else {
 					anyFault = true;
 					if (result != null) { // check this logic when cool...
