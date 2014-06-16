@@ -77,9 +77,9 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			
 		}
-		//exchange.getOut().setBody(subscriberInfo);
-		logger.info("SK tag in create");
-		DummyProcessor.response(exchange);
+		logger.info("SK tag in create 1");
+		exchange.getOut().setBody(subscriberInfo);
+		//DummyProcessor.response(exchange);
 		
 
 	}
