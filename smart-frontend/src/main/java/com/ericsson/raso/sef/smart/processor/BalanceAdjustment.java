@@ -36,6 +36,7 @@ import com.hazelcast.core.ISemaphore;
 public class BalanceAdjustment implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(BalanceAdjustment.class);
 	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER_INFO";
+	private Long FixedAmountOfUnits;
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		
@@ -44,12 +45,14 @@ public class BalanceAdjustment implements Processor {
 		     BalanceAdjustmentRequest request = (BalanceAdjustmentRequest) exchange.getIn().getBody();
 		     String requestId = RequestContextLocalStore.get().getRequestId();
 		     List<Meta> metas = new ArrayList<Meta>();
+		     FixedAmountOfUnits = request.getAmountOfUnits();
+		     FixedAmountOfUnits = FixedAmountOfUnits * -1; 
 		     ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		     logger.info("Collecting SOAP parameters");
 		     metas.add(new Meta("customerId", request.getCustomerId()));
 		     metas.add(new Meta("accessKey", request.getAccessKey()));
 		     metas.add(new Meta("balanceId",  request.getBalanceId()));
-		     metas.add(new Meta("amountOfUnits", String.valueOf(request.getAmountOfUnits())));
+		     metas.add(new Meta("amountOfUnits", String.valueOf(FixedAmountOfUnits)));
 		     metas.add(new Meta("chargeCode",String.valueOf(request.getChargeCode())));
 		     metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
 		     metas.add(new Meta("messageId",String.valueOf(request.getMessageId())));
@@ -59,7 +62,8 @@ public class BalanceAdjustment implements Processor {
 		     workflowMetas.add(new Meta("eventName", String.valueOf(request.getChargeCode())));
 		     workflowMetas.add(new Meta("balanceId", String.valueOf(request.getBalanceId())));
 		     workflowMetas.add(new Meta("eventInfo",request.getEventInfo()));
-		     workflowMetas.add(new Meta("amountOfUnits", String.valueOf(request.getAmountOfUnits())));
+		     
+		     workflowMetas.add(new Meta("amountOfUnits", String.valueOf(FixedAmountOfUnits)));
 		     List<Meta> metaSubscriber=new ArrayList<Meta>();
 		     metaSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
 		     metaSubscriber.add(new Meta("READ_SUBSCRIBER","PARTIAL_READ_SUBSCRIBER"));
@@ -159,7 +163,8 @@ public class BalanceAdjustment implements Processor {
 						}
 						DummyProcessor.response(exchange);
 			}
-				
+	
+	
 		     
 	private SubscriberInfo readSubscriber(String requestId, String customerId,
 			List<Meta> metas) {
