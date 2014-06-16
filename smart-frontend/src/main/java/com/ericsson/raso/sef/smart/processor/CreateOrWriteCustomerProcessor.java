@@ -78,6 +78,7 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 			
 		}
 		//exchange.getOut().setBody(subscriberInfo);
+		logger.info("SK tag in create");
 		DummyProcessor.response(exchange);
 		
 
