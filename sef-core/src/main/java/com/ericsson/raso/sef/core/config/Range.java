@@ -46,6 +46,12 @@ public class Range implements Comparable<Range> {
 	public int compareTo(Range o) {
 		return (int) ((this.start - o.start) & Integer.MAX_VALUE);
 	}
+
+	public boolean contains(long searched) {
+		if (searched >= this.start && searched <= this.end)
+			return true;
+		return false;
+	}
 	
 	
 
