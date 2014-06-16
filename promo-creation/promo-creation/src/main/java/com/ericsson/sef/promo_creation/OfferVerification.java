@@ -21,9 +21,9 @@ public class OfferVerification {
 			SecureSerializationHelper helper = new SecureSerializationHelper();
 			Base64 encoder = new Base64();
 			
-			OfferContainer offerStore = (OfferContainer) helper.fetchFromFile("/Users/esatnar/Documents/offerStore.ccm");
-			Map<String, Resource> serviceRegistry = (Map<String, Resource>) helper.fetchFromFile("/Users/esatnar/Documents/serviceRegistry.ccm");
-			Map<String, FulfillmentProfile<?>> profileRegistry = (Map<String, FulfillmentProfile<?>>) helper.fetchFromFile("/Users/esatnar/Documents/profileRegistry.ccm");
+			OfferContainer offerStore = (OfferContainer) helper.fetchFromFile("C:\\Temp\\offerStore.ccm");
+			Map<String, Resource> serviceRegistry = (Map<String, Resource>) helper.fetchFromFile("C:\\Temp\\serviceRegistry.ccm");
+			Map<String, FulfillmentProfile<?>> profileRegistry = (Map<String, FulfillmentProfile<?>>) helper.fetchFromFile("C:\\Temp\\profileRegistry.ccm");
 			
 			System.out.println("Encrypted form: " + new String (encoder.encode(helper.encrypt("639777180104"))));
 			
