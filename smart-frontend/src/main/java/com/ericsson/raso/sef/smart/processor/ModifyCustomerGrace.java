@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
@@ -28,6 +29,7 @@ import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 
 public class ModifyCustomerGrace implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(ModifyCustomerGrace.class);
@@ -124,6 +126,32 @@ public class ModifyCustomerGrace implements Processor {
 				     PurchaseResponse response = new PurchaseResponse();
 					logger.debug("Got past event class....");
 						RequestCorrelationStore.put(resultId, response);
+						PurchaseResponse response = new PurchaseResponse();
+						logger.debug("Got past event class....");
+						logger.debug("Got past event class in subscription for grace and active....");
+						RequestCorrelationStore.put(resultId, response);
+						ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+						
+						try {
+						semaphore.init(0);
+						semaphore.acquire();
+						} catch(InterruptedException e) {
+							e.printStackTrace();
+							logger.debug("Exception while sleep     :"+e.getMessage());
+						}
+
+						
+						logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
+						
+						//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+						PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+						//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+						logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+						if(purchaseResponse == null) {
+							logger.debug("No response arrived???");
+							throw new SmException(ErrorCode.internalServerError);
+						}
+						
 						String date=subscriberObj.getSubscriber().getMetas().get("GraceEndDate");
 						if(date != null){
 							String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
