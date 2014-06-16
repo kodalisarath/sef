@@ -33,7 +33,7 @@ public class EntireReadSubscriber implements Processor {
 
 		if (entireRead == null) {
 			logger.error("Unknon User.. Error Not Found");
-			throw ExceptionUtil.toSmException(new ResponseCode(13423, "EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: 639777300602 does not exist"));
+			throw ExceptionUtil.toSmException(new ResponseCode(13423, "EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + request.getCustomerId() + " does not exist"));
 		}
 
 		logger.debug("Manila: EntireRead Response is " + entireRead);
