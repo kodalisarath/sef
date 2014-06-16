@@ -71,7 +71,8 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 			logger.debug("Offer (" + offerId + ") not defined in the offerStore!!");
 			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(999, "Invalid Event Name")));
 			this.sendResponse();
-		}
+			return true; // to ensure stablity and eliminate any abnormal flows
+		} 
 		logger.debug("Offer retrieved from catalog: " + prodcatOffer.getName());
 		
 		try {
