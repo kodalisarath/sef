@@ -60,13 +60,11 @@ public class HandleLifeCycle extends AbstractTransaction{
 				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504, "Subscriber not found")));
 				this.sendResponse();
 			}
-//			this.updateChanges(subscriberEntity, 
-//					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
-//					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
-//								((HandleLifeCycleRequest)this.getRequest()).getMetas());
-			
-			
-			//tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.UPDATE, subscriberEntity, subscriberEntity.getMsisdn()));
+			this.updateChanges(subscriberEntity, 
+					((HandleLifeCycleRequest)this.getRequest()).getSubscriberId(), 
+					((HandleLifeCycleRequest)this.getRequest()).getLifeCycleState(), 
+								((HandleLifeCycleRequest)this.getRequest()).getMetas());
+			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.UPDATE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
 			// Find workflow...
 			String workflowId = ((HandleLifeCycleRequest)this.getRequest()).getMetas().get(Constants.HANDLE_LIFE_CYCLE.name());
@@ -120,15 +118,17 @@ public class HandleLifeCycle extends AbstractTransaction{
 				subscriberEntity.setContractState(ContractState.valueOf(lifeCycleState));
 		
 		
-		Collection<Meta> existingMetas = subscriberEntity.getMetas();
-		List<Meta> toUpdate = TransactionServiceHelper.getSefCoreList(map);
+		Map<String, String> existingMetas = TransactionServiceHelper.getMap(subscriberEntity.getMetas());
+		//List<Meta> toUpdate = TransactionServiceHelper.getSefCoreList(map);
 		
-		for (Meta newMeta: existingMetas) {
-			if (map.containsKey(newMeta.getKey())) {
-				existingMetas.remove(newMeta);
-			}
-		}
-		existingMetas.addAll(toUpdate);
+//		for (String newMeta: existingMetas.keySet()) {
+//			if (map.containsKey(newMeta)) {
+//				existingMetas.remove(newMeta);
+//			}
+//		}
+		existingMetas.putAll(map);
+		
+		subscriberEntity.setMetas(TransactionServiceHelper.getSefCoreList(existingMetas));
 		
 		return subscriberEntity;
 	}

@@ -459,6 +459,14 @@ public abstract class TransactionServiceHelper {
 		return map;
 	}
 	
+	public static Map<String, String> getMap(Collection<Meta> metas) {
+		Map<String, String> map = new HashMap<String, String>();
+		for(Meta meta: metas) {
+			map.put(meta.getKey(), meta.getValue());
+		}
+		return map;
+	}
+	
 	public static List<Meta> getSefCoreList(Map<String,String> metas) {
 		logger.debug("getSefCoreList : called"+metas.size());
 		List<Meta> metaList=new ArrayList<Meta>();
