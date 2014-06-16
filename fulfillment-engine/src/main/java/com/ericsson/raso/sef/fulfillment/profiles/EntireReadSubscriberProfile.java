@@ -40,12 +40,14 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final String READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG = "READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG";
 	private static final String READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG = "READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG";
 	private static final String READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG = "READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER_ID = "READ_SUBSCRIBER_OFFER_ID";
+	/*private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER_ID = "READ_SUBSCRIBER_OFFER_ID";
 	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE = "READ_SUBSCRIBER_START_DATE";
 	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE = "READ_SUBSCRIBER_EXPIRY_DATE";
 	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME = "READ_SUBSCRIBER_START_DATE_TIME";
 	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME = "READ_SUBSCRIBER_EXPIRY_DATE_TIME";
-
+*/
+	private static final String	READ_SUBSCRIBER_OFFER_INFO	= "READ_SUBSCRIBER_OFFER_INFO";
+	private static final String	READ_SUBSCRIBER_SERVICE_OFFERING	= "READ_SUBSCRIBER_SERVICE_OFFERING";	
 	//Get Balance & Dates...
 	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_ID	= "READ_BALANCES_DEDICATED_ACCOUNT_ID";
 	private static final String	READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1	= "READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1";
@@ -75,14 +77,11 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final String READ_BALANCES_OFFER_INFO_EXPIRY_DATE = "READ_BALANCES_EXPIRY_DATE";
 	private static final String READ_BALANCES_OFFER_INFO_START_DATE_TIME = "READ_BALANCES_START_DATE_TIME";
 	private static final String READ_BALANCES_OFFER_INFO_EXPIRY_DATE_TIME = "READ_BALANCES_EXPIRY_DATE_TIME";
-
+	
 
 	public EntireReadSubscriberProfile(String name) {
 		super(name);
 	}
-
-
-
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
 		List<Product> returned = new ArrayList<Product>();
@@ -164,6 +163,9 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	private void processAccountDetailsResponse(HashMap<String, String> accountDetails, GetAccountDetailsResponse response) {
 		// direct attributes...
+		LOGGER.debug("processAccountDetailsResponse ."+response);
+	
+		
 		if (response.getActivationDate() != null)
 			accountDetails.put(READ_SUBSCRIBER_ACTIVATION_DATE, "" + response.getActivationDate().getTime());
 
@@ -175,13 +177,24 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 		LOGGER.debug("Packed all date attributes...");
 
-		// service offerings
+		/*// service offerings
 		int index = 0;
 		for (com.ericsson.raso.sef.client.air.response.ServiceOffering serviceOffering: response.getServiceOfferings()) {
 			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING_ID + "." + ++index, "" + serviceOffering.getServiceOfferingID());
 			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG + "." + index, "" + serviceOffering.isServiceOfferingActiveFlag());
 		}
 		LOGGER.debug("Packed all service offerings...");
+		*/
+		
+		// service offerings
+		int index = 0;
+		for (com.ericsson.raso.sef.client.air.response.ServiceOffering serviceOffering: response.getServiceOfferings()) {
+			LOGGER.debug("extracting service offering: " + serviceOffering.getServiceOfferingID());
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING + "." + ++index, "" + serviceOffering.getServiceOfferingID() + "," + serviceOffering.isServiceOfferingActiveFlag());
+		}
+		LOGGER.debug("Packed all service offerings...");
+
+		
 
 		// account flags
 		AccountFlags accountFlags = response.getAccountFlags();
@@ -215,6 +228,28 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 		LOGGER.debug("Packed all account flags...");
 
+/*		// offer info...
+		index = 0;
+		for (OfferInformation offerInformation: response.getOfferInformationList()) {
+			
+			if(offerInformation != null) {
+				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID + "." + ++index, "" + offerInformation.getOfferID());
+
+				if(offerInformation.getStartDate() != null)
+					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE + "." + index, "" + offerInformation.getStartDate().getTime());
+
+				if(offerInformation.getStartDateTime() != null)
+					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME + "." + index, "" + offerInformation.getStartDateTime().getTime());
+
+				if(offerInformation.getExpiryDate() != null)
+					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
+
+				if(offerInformation.getExpiryDateTime() != null)
+					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
+			}
+		}
+		
+		
 		// offer info...
 		index = 0;
 		for (OfferInformation offerInformation: response.getOfferInformationList()) {
@@ -233,9 +268,33 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 				if(offerInformation.getExpiryDateTime() != null)
 					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
 			}
+		}*/
+		
+		
+		// offer info...
+		index = 0;
+		if (response.getOfferInformationList() != null) {
+		
+			LOGGER.debug("OfferInformationList is not null....Yay!!!!!!!!.." );
+			
+			for (OfferInformation offerInformation: response.getOfferInformationList()) {
+				accountDetails.put((READ_SUBSCRIBER_OFFER_INFO) + "." + (++index), (offerInformation.getOfferID() + 
+						"," + ((offerInformation.getStartDate()==null)?"null":offerInformation.getStartDate().getTime()) + 
+						"," + ((offerInformation.getStartDateTime()==null)?"null":offerInformation.getStartDateTime().getTime()) + 
+						"," + ((offerInformation.getExpiryDate()==null)?"null":offerInformation.getExpiryDate().getTime()) + 
+						"," + ((offerInformation.getExpiryDateTime()==null)?"null":offerInformation.getExpiryDateTime().getTime())));
+			
+			
+			}
 		}
-		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
+		else
+		{
+			LOGGER.debug("OfferInformationList is null." );
+		}
 
+		
+	
+		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
 	}
 
 
@@ -264,7 +323,6 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_DATE + "." + index, "" + daInformation.getClosestAccessibleDate());
 			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_1 + "." + index, "" + daInformation.getClosestExpiryValue1());
 			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_CLOSEST_ACCESSIBLE_VALUE_2 + "." + index, "" + daInformation.getClosestExpiryValue2());
-
 			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_1 + "." + index, "" + daInformation.getDedicatedAccountActiveValue1());
 			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_ACTIVE_VALUE_2 + "." + index, "" + daInformation.getDedicatedAccountActiveValue2());
 			balanceAndDateInfo.put(READ_BALANCES_DEDICATED_ACCOUNT_UNIT_TYPE + "." + index, "" + daInformation.getDedicatedAccountUnitType());
@@ -290,7 +348,6 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 			}
 		}
 		LOGGER.debug("Packed all dedicated accounts...");
-
 		// offer info...
 		index = 0;
 		for (OfferInformation offerInformation: response.getOfferInformationList()) {
@@ -310,11 +367,14 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 					balanceAndDateInfo.put(READ_BALANCES_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
 			}
 		}
+		
+		
+
+
+		
+		
 		LOGGER.debug("Packed all offer info...");
-
-	}
-
-
+}
 
 	@Override
 	public String toString() {

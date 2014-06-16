@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ import com.ericsson.raso.sef.smart.commons.read.RppBucketRead;
 import com.ericsson.raso.sef.smart.commons.read.RppRead;
 import com.ericsson.raso.sef.smart.commons.read.RppVersionRead;
 import com.ericsson.raso.sef.smart.commons.read.Tag;
+import com.ericsson.raso.sef.smart.commons.read.WelcomePack;
 import com.ericsson.raso.sef.smart.commons.read.WelcomePackBucketRead;
 import com.ericsson.raso.sef.smart.commons.read.WelcomePackRead;
 import com.ericsson.raso.sef.smart.commons.read.WelcomePackVersionRead;
@@ -917,7 +919,7 @@ public class EntireReadUtil {
 
 	private static CustomerRead createCustomerRead(Subscriber subcriber) {
 		CustomerRead customerRead = new CustomerRead();
-		customerRead.setCustomerId(subcriber.getCustomerId());
+		customerRead.setCustomerId(subcriber.getMsisdn());
 		customerRead.setBillCycleId(0);
 		customerRead.setBillCycleIdAfterSwitch(-1);
 		customerRead.setBillCycleSwitch(SmartConstants.MAX_DATETIME);
@@ -929,24 +931,23 @@ public class EntireReadUtil {
 	private static CustomerVersionRead createCustomerVersionRead(
 			Subscriber subcriber, Date currentTime) {
 		CustomerVersionRead versionRead = new CustomerVersionRead();
-		versionRead.setCustomerId(subcriber.getCustomerId());
+		versionRead.setCustomerId(subcriber.getMsisdn());
 		versionRead.setCategory("ONLINE");
 		versionRead.setvInvalidFrom(SmartConstants.MAX_DATETIME);
-		IConfig config = SefCoreServiceResolver.getConfigService();
-		versionRead.setvValidFrom(DateUtil.convertDateToString(currentTime,
-				config.getValue("GLOBAL", SmartConstants.DATE_FORMAT)));
+		// IConfig config = SefCoreServiceResolver.getConfigService();
+		versionRead.setvValidFrom(DateUtil.convertDateToString(currentTime));
 		return versionRead;
 	}
 
 	private static CustomerBucketRead createCustomerBucketRead(
 			Subscriber subscriber, Date currentTime) {
 		CustomerBucketRead bucketRead = new CustomerBucketRead();
-		bucketRead.setCustomerId(subscriber.getCustomerId());
+		bucketRead.setCustomerId(subscriber.getMsisdn());
 		bucketRead.setbCategory("ONLINE");
 		bucketRead.setbSeriesId(0);
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		bucketRead.setbValidFrom(DateUtil.convertDateToString(currentTime,
-				config.getValue("GLOBAL", SmartConstants.DATE_FORMAT)));
+		bucketRead.setbValidFrom(DateUtil.convertDateToString(currentTime));
+		logger.debug("bucketRead. bValidFrom : " + bucketRead.getbValidFrom());
 		bucketRead.setbInvalidFrom(SmartConstants.MAX_DATETIME);
 		return bucketRead;
 	}
@@ -961,15 +962,30 @@ public class EntireReadUtil {
 
 	private static RopRead createRopRead(Subscriber subscriber) {
 		RopRead ropRead = new RopRead();
-		ropRead.setCustomerId(subscriber.getCustomerId());
+		ropRead.setCustomerId(subscriber.getMsisdn());
 		ropRead.setKey(1);
 		ropRead.setCategory("ONLINE");
 		ropRead.setPrefetchFilter(-1);
 		if (subscriber.getMetas() != null) {
+
 			if (subscriber.getMetas().containsKey(
 					Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE)) {
-				ropRead.setActiveEndDate(subscriber.getMetas().get(
-						Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE));
+
+				logger.debug("Active End Date is "
+						+ subscriber
+								.getMetas()
+								.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE));
+
+				if (subscriber.getMetas().get(
+						Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE) != null) {
+					ropRead.setActiveEndDate(DateUtil.convertDateToString(new Date(
+							Long.parseLong(subscriber
+									.getMetas()
+									.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE)))));
+				}
+				logger.debug("Active End Date after formating is "
+						+ ropRead.getActiveEndDate());
+
 			}
 		}
 
@@ -985,12 +1001,12 @@ public class EntireReadUtil {
 			ropRead.setcTaggingStatus(tag.getSmartId());
 		}
 
-		ropRead.setCustomerId(subscriber.getCustomerId());
+		ropRead.setCustomerId(subscriber.getMsisdn());
 
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		ropRead.setFirstCallDate(DateUtil.convertDateToString(new Date(
-				subscriber.getActiveDate()), config.getValue("GLOBAL",
-				SmartConstants.DATE_FORMAT)));
+		if (subscriber.getActiveDate() != null)
+			ropRead.setFirstCallDate(DateUtil.convertDateToString(new Date(
+					subscriber.getActiveDate())));
 
 		// if (accountDetailsResponse != null
 		// && accountDetailsResponse.getActivationDate() != null) {
@@ -1004,12 +1020,17 @@ public class EntireReadUtil {
 		 * ropRead.setGraceEndDate(graceOffer.getExpiryDate().toString()); }
 		 */
 
-		ropRead.setGraceEndDate(getGraceEndDate(subscriber));
+		String graceEndDate = getGraceEndDate(subscriber);
+		logger.debug("  graceEndDate  is "+graceEndDate);
+		if(graceEndDate !=null)
+		ropRead.setGraceEndDate(DateUtil.convertDateToString(new Date(Long.parseLong(graceEndDate))));
 		ropRead.setIsBalanceClearanceOnOutpayment(true);
 
 		String isCFMOC = subscriber.getMetas().get("IsCFMOC");
+
 		if (isCFMOC != null) {
-			ropRead.setIsCFMOC(Integer.valueOf(isCFMOC));
+			int val = Boolean.parseBoolean(isCFMOC) ? 1 : 0;
+			ropRead.setIsCFMOC(val);
 		}
 
 		String IsCollectCallAllowed = subscriber.getMetas().get(
@@ -1058,16 +1079,26 @@ public class EntireReadUtil {
 			ropRead.setIsSmsAllowed(Boolean.valueOf(IsSmsAllowed));
 		}
 
-		String PreActiveEndDate = subscriber.getMetas().get("preActiveEndDate");
-		if (PreActiveEndDate != null) {
-			SimpleDateFormat dateFormat = new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss.SSS");
+		String preActiveEndDate = subscriber.getMetas().get("PreactiveEndDate");
+		logger.debug(" preActiveEndDate Before formatting is "
+				+ preActiveEndDate);
+		if (preActiveEndDate != null) {
+
+			Date d = null;
 			try {
-				ropRead.setPreActiveEndDate(dateFormat.parse(PreActiveEndDate)
-						.toString());
+				d = DateUtil.convertStringToDate(preActiveEndDate,
+						"yyyyMMddHHmmss");
+
 			} catch (ParseException e) {
+
+				logger.error("Date ParseException ", e);
 			}
+
+			ropRead.setPreActiveEndDate(DateUtil.convertDateToString(d));
+
 		}
+		logger.debug(" preActiveEndDate After formatting is "
+				+ ropRead.getPreActiveEndDate());
 
 		ropRead.setLastKnownPeriod(subscriber.getContractState());
 
@@ -1083,7 +1114,7 @@ public class EntireReadUtil {
 
 	private static RopBucketRead createRopBucketRead(Subscriber subscriber) {
 		RopBucketRead read = new RopBucketRead();
-		read.setCustomerId(subscriber.getCustomerId());
+		read.setCustomerId(subscriber.getMsisdn());
 		read.setbCategory("ONLINE");
 		read.setbInvalidFrom(SmartConstants.MAX_DATETIME);
 		/*
@@ -1093,18 +1124,21 @@ public class EntireReadUtil {
 		 * .toString()); }
 		 */
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		read.setbValidFrom(DateUtil.convertDateToString(
-				new Date(subscriber.getActiveDate()),
-				config.getValue("GLOBAL", SmartConstants.DATE_FORMAT)));
-
+		logger.debug("read.subscriber.bValidFro : "
+				+ subscriber.getActiveDate());
+		if (subscriber.getActiveDate() != null)
+			read.setbValidFrom(DateUtil.convertDateToString(new Date(subscriber
+					.getActiveDate())));
+		logger.debug("read.bValidFrom. bValidFrom : " + read.getbValidFrom());
 		/*
 		 * DedicatedAccountInformation da =
 		 * daMap.get(SmConstants.AIRTIME_DA_ID); if (da != null) {
 		 * read.setOnPeakFuBalance(Long.valueOf(da
 		 * .getDedicatedAccountActiveValue1())); }
 		 */
-		read.setOnPeakFuBalance(Long.parseLong(getDedicatedAccount(subscriber,
-				"1")));
+		String peakFullBalance = getDedicatedAccount(subscriber, "1");
+		if (peakFullBalance != null)
+			read.setOnPeakFuBalance(Long.parseLong(peakFullBalance));
 		read.setbSeriesId(0);
 		return read;
 	}
@@ -1112,24 +1146,35 @@ public class EntireReadUtil {
 	private static RopVersionRead createRopVersionRead(Subscriber subscriber,
 			Date currentTime) {
 		RopVersionRead read = new RopVersionRead();
-		read.setCustomerId(subscriber.getCustomerId());
+		read.setCustomerId(subscriber.getMsisdn());
 		read.setCategory("ONLINE");
 		read.setKey(1);
-
 		/*
 		 * OfferInformation offer = offerMap.get(SmConstants.AIRTIME_OFFER_ID);
 		 * if (offer != null) {
 		 * read.setOnPeakAccountExpiryDate(offer.getExpiryDateTime()
 		 * .toString()); }
 		 */
-
-		read.setOnPeakAccountExpiryDate(getOfferExpiryDateTime(subscriber));
+		String offerExpiryDateTime = getOfferExpiryDateTime(subscriber);
+		logger.debug("createRopVersionRead getOfferExpiryDateTime "
+				+ offerExpiryDateTime);
+		if (offerExpiryDateTime != null)
+			read.setOnPeakAccountExpiryDate(DateUtil
+					.convertDateToString(new Date(Long
+							.parseLong(offerExpiryDateTime))));
+		logger.debug("createRopVersionRead getOnPeakAccountExpiryDate "
+				+ read.getOnPeakAccountExpiryDate());
 
 		read.setsOfferId("TnT");
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		read.setvValidFrom(DateUtil.convertDateToString(
-				new Date(subscriber.getActiveDate()),
-				config.getValue("GLOBAL", SmartConstants.DATE_FORMAT)));
+		logger.debug("createRopVersionRead.subscriber.getActiveDate() : "
+				+ subscriber.getActiveDate());
+		if (subscriber.getActiveDate() != null)
+			read.setvValidFrom(DateUtil.convertDateToString(new Date(subscriber
+					.getActiveDate())));
+
+		logger.debug("createRopVersionRead.setvValidFrom. bValidFrom : "
+				+ read.getvValidFrom());
 		read.setvInvalidFrom(SmartConstants.MAX_DATETIME);
 
 		return read;
@@ -1150,7 +1195,7 @@ public class EntireReadUtil {
 						.length()) {
 					temp = key.substring(
 							Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-									.length() + 1, key.length());
+									.length(), key.length());
 				}
 				if (metaMap
 						.containsKey(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG
@@ -1177,35 +1222,55 @@ public class EntireReadUtil {
 		Set<String> keySet = metaMap.keySet();
 		String key = null;
 
+		logger.debug("Manila Inside getGraceEndDate");
 		for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
 			key = i.next();
 			String value = null;
 
-			if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
+			logger.debug("Manila getGraceEndDate Key is " + key);
 
+			if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO)) {
 				value = metaMap.get(key);
 
-				if ("1".equals(value)) {
-					String temp = "";
-					if (key.length() > Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-							.length()) {
-						temp = key.substring(
-								Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-										.length() + 1, key.length());
-					}
+				logger.debug("Manila getGraceEndDate Key Matched is " + key
+						+ " Value is " + value);
+				StringTokenizer str = new StringTokenizer(value, ",");
+				String offerId = str.nextToken();
+				String startDate = str.nextToken();
+				String startDateTime = str.nextToken();
+				String expiryDate = str.nextToken();
+				String expiryDateTime = str.nextToken();
 
-					if (metaMap
-							.containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE
-									+ temp)) {
-						value = metaMap
-								.get(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE
-										+ temp);
-
-						return value;
-					}
+				if ("1001".equals(offerId)) {
+					return expiryDateTime;
 				}
+
 			}
 		}
+
+		/*
+		 * Map<String, String> metaMap = subscriber.getMetas(); Set<String>
+		 * keySet = metaMap.keySet(); String key = null;
+		 * 
+		 * for (Iterator<String> i = keySet.iterator(); i.hasNext();) { key =
+		 * i.next(); String value = null;
+		 * 
+		 * if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
+		 * 
+		 * value = metaMap.get(key);
+		 * 
+		 * if ("1".equals(value)) { String temp = ""; if (key.length() >
+		 * Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID .length()) { temp =
+		 * key.substring( Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
+		 * .length(), key.length()); }
+		 * 
+		 * if (metaMap
+		 * .containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE +
+		 * temp)) { value = metaMap
+		 * .get(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + temp);
+		 * 
+		 * return value; } } } }
+		 */
 		return null;
 	}
 
@@ -1218,14 +1283,19 @@ public class EntireReadUtil {
 			key = i.next();
 			String value = null;
 			if (key.startsWith(Constants.READ_BALANCES_DEDICATED_ACCOUNT_ID)) {
+
 				value = metaMap.get(key);
+				logger.debug("Manila getDedicatedAccount Key is " + key
+						+ " Value is " + value);
 				if (dedicatedAccountId.equals(value)) {
 					String temp = "";
 					if (key.length() > Constants.READ_BALANCES_DEDICATED_ACCOUNT_ID
 							.length()) {
 						temp = key.substring(
 								Constants.READ_BALANCES_DEDICATED_ACCOUNT_ID
-										.length() + 1, key.length());
+										.length(), key.length());
+
+						logger.debug(" Temp Value identified as  " + temp);
 					}
 					if (metaMap
 							.containsKey(Constants.READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1
@@ -1234,6 +1304,10 @@ public class EntireReadUtil {
 								.get(Constants.READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1
 										+ temp);
 						return value;
+					} else {
+						logger.debug("Manila getDedicatedAccount Key not found "
+								+ Constants.READ_BALANCES_DEDICATED_ACCOUNT_VALUE_1
+								+ temp);
 					}
 				}
 			}
@@ -1245,87 +1319,165 @@ public class EntireReadUtil {
 		Map<String, String> metaMap = subscriber.getMetas();
 		Set<String> keySet = metaMap.keySet();
 		String key = null;
+
+		logger.debug("Manila Inside offerExpiryDate");
 		for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
 			key = i.next();
 			String value = null;
-			if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
+
+			logger.debug("Manila getOfferExpiryDateTime Key is " + key);
+
+			if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO)) {
 				value = metaMap.get(key);
-				if ("1001".equals(value)) {
-					String temp = "";
-					if (key.length() > Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-							.length()) {
-						temp = key.substring(
-								Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-										.length() + 1, key.length());
-					}
-					if (metaMap
-							.containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME
-									+ temp)) {
-						value = metaMap
-								.get(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME
-										+ temp);
-						return value;
-					}
+
+				logger.debug("Manila getOfferExpiryDateTime Key Matched is "
+						+ key + " Value is " + value);
+				StringTokenizer str = new StringTokenizer(value, ",");
+				String offerId = str.nextToken();
+				String startDate = str.nextToken();
+				String startDateTime = str.nextToken();
+				String expiryDate = str.nextToken();
+				String expiryDateTime = str.nextToken();
+
+				if ("1001".equals(offerId)) {
+					if(expiryDateTime !=null)
+					return expiryDateTime;
+					else return expiryDate;
 				}
+
 			}
 		}
+
+		/*
+		 * if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID)) {
+		 * value = metaMap.get(key);
+		 * 
+		 * logger.debug("Manila getOfferExpiryDateTime Key Matched is " + key +
+		 * " Value is " + value); if ("1001".equals(value)) { String temp = "";
+		 * if (key.length() > Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID
+		 * .length()) { temp = key.substring(
+		 * Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID .length(),
+		 * key.length()); logger.debug("Manila getOfferExpiryDateTime temp is "
+		 * + temp); } if (metaMap
+		 * .containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME +
+		 * temp)) { value = metaMap
+		 * .get(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + temp);
+		 * 
+		 * return value; } else { logger.debug(
+		 * "Manila READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME is not found"); }
+		 * } }
+		 */
 		return null;
 	}
 
 	private static String getOfferExpiryDateTime(Subscriber subscriber,
-			String key) {
+			String offerId) {
 		Map<String, String> metaMap = subscriber.getMetas();
 		String value = null;
-		if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
-			value = metaMap.get(key);
-			String temp = "";
-			if (key.length() > Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-					.length()) {
-				temp = key
-						.substring(
-								Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-										.length() + 1, key.length());
-			}
-			if (metaMap
-					.containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME
-							+ temp)) {
-				value = metaMap
-						.get(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME
-								+ temp);
-				return value;
+		String key = null;
+		logger.debug(" Manila getOfferExpiryDateTime offerId is " + offerId);
+		Set<String> keySet = metaMap.keySet();
+		for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
+			key = i.next();
+
+			if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO)) {
+				value = metaMap.get(key);
+
+				logger.debug("Manila getOfferExpiryDateTime Key Matched is "
+						+ key + " Value is " + value);
+				StringTokenizer str = new StringTokenizer(value, ",");
+				String offerIdTemp = str.nextToken();
+				String startDate = str.nextToken();
+				String startDateTime = str.nextToken();
+				String expiryDate = str.nextToken();
+				String expiryDateTime = str.nextToken();
+
+				if (offerId.equals(offerIdTemp)) {
+					if(expiryDateTime !=null)
+					return expiryDateTime;
+					else
+						return expiryDate;
+				}
+
 			}
 		}
+
+		/*
+		 * if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID)) {
+		 * value = metaMap.get(key);
+		 * 
+		 * logger.debug("Manila getOfferExpiryDateTime Key Matched is " + key +
+		 * " Value is " + value);
+		 * 
+		 * String temp = ""; if (key.length() >
+		 * Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID .length()) { temp =
+		 * key.substring(
+		 * Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID.length(),
+		 * key.length()); } if (metaMap
+		 * .containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME +
+		 * temp)) { value = metaMap
+		 * .get(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + temp);
+		 * return value; } }
+		 */
 		return null;
 	}
 
 	private static String getOfferStartDateTime(Subscriber subscriber,
-			String key) {
+			String offerId) {
+
 		Map<String, String> metaMap = subscriber.getMetas();
-		String value = null;
-		if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
-			value = metaMap.get(key);
-			String temp = "";
-			if (key.length() > Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-					.length()) {
-				temp = key
-						.substring(
-								Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-										.length() + 1, key.length());
-			}
-			if (metaMap
-					.containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME
-							+ temp)) {
-				value = metaMap
-						.get(Constants.READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME
-								+ temp);
-				return value;
+		Set<String> keySet = metaMap.keySet();
+		String key = null;
+
+		logger.debug("Manila Inside getOfferStartDateTime");
+		for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
+			key = i.next();
+			String value = null;
+
+			logger.debug("Manila getOfferStartDateTime Key is " + key);
+
+			if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO)) {
+				value = metaMap.get(key);
+
+				logger.debug("Manila getOfferStartDateTime Key Matched is "
+						+ key + " Value is " + value);
+				StringTokenizer str = new StringTokenizer(value, ",");
+				String offerIdTemp = str.nextToken();
+				String startDate = str.nextToken();
+				String startDateTime = str.nextToken();
+				String expiryDate = str.nextToken();
+				String expiryDateTime = str.nextToken();
+
+				if (offerId.equals(offerIdTemp)) {
+					if(startDate !=null)
+					return startDate;
+						else
+					return startDateTime;
+				}
+
 			}
 		}
+
+		/*
+		 * Map<String, String> metaMap = subscriber.getMetas(); String value =
+		 * null; if
+		 * (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
+		 * value = metaMap.get(key);
+		 * logger.debug("Manila getOfferStartDateTime Key is " + key +
+		 * " Value is " + value); String temp = ""; if (key.length() >
+		 * Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID .length()) { temp =
+		 * key.substring(
+		 * Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID.length(),
+		 * key.length()); } if (metaMap
+		 * .containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME +
+		 * temp)) { value = metaMap
+		 * .get(Constants.READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME + temp);
+		 * return value; } }
+		 */
 		return null;
 	}
 
-	public static Collection<Rpp> getRpp(Subscriber subscriber,
-			Date currentTime) {
+	public static Collection<Rpp> getRpp(Subscriber subscriber, Date currentTime) {
 		List<Rpp> rpps = new ArrayList<Rpp>();
 		// Collection<Integer> offerIds = offerMap.keySet();
 		int index = 1;
@@ -1335,10 +1487,24 @@ public class EntireReadUtil {
 		for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
 			key = i.next();
 			String value = null;
-			if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
+			logger.debug("getRpp key value is " + key);
+
+			if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO)) {
 				value = metaMap.get(key);
-				if (!"1".equals(value)) {
-					Rpp rpp = createRpp(subscriber, key, index++, currentTime);
+
+				logger.debug("Manila getOfferStartDateTime Key Matched is "
+						+ key + " Value is " + value);
+				StringTokenizer str = new StringTokenizer(value, ",");
+				String offerIdTemp = str.nextToken();
+				/*
+				 * String startDate = str.nextToken(); String startDateTime =
+				 * str.nextToken(); String expiryDate = str.nextToken(); String
+				 * expiryDateTime = str.nextToken();
+				 */
+				value = metaMap.get(key);
+				if (!"1".equals(offerIdTemp)) {
+					Rpp rpp = createRpp(subscriber, key, index++, currentTime,
+							offerIdTemp);
 					if (rpp != null) {
 						rpps.add(rpp);
 					}
@@ -1349,14 +1515,15 @@ public class EntireReadUtil {
 	}
 
 	private static Rpp createRpp(Subscriber subscriber, String key, int index,
-			Date currentTime) {
+			Date currentTime, String offerId) {
 		// String wallet =
 		// offerWalletMapping.getProperty(String.valueOf(offerInformation.getOfferID()));
 
-		String offerId = subscriber.getMetas().get(key);
+		// String offerId = subscriber.getMetas().get(key);
+		logger.debug("offerId  is " + offerId);
 		String walletName = SefCoreServiceResolver.getConfigService().getValue(
 				"GLOBAL_walletMapping", offerId.trim());
-
+		logger.debug("walletName  is " + walletName);
 		if (walletName != null) {
 			Rpp rpp = new Rpp();
 
@@ -1387,7 +1554,7 @@ public class EntireReadUtil {
 				"GLOBAL_walletMapping", offerId.trim());
 
 		RppRead read = new RppRead();
-		read.setCustomerId(subscriber.getCustomerId());
+		read.setCustomerId(subscriber.getMsisdn());
 		read.setCategory("ONLINE");
 		read.setcUnliResetRechargeValidity(0);
 		read.setOfferProfileKey(1);
@@ -1400,8 +1567,9 @@ public class EntireReadUtil {
 
 		IConfig config = SefCoreServiceResolver.getConfigService();
 
-		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, key);
-		read.setsActivationEndTime(offerExpiryDateString);
+		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
+		logger.debug("createRppRead offerExpiryDateString  is "+ offerExpiryDateString);
+		
 
 		/*
 		 * if (offerInformation.getStartDateTime() == null ||
@@ -1410,26 +1578,29 @@ public class EntireReadUtil {
 		 * read.setsActivationStartTime(offerInformation.getStartDateTime()
 		 * .toString()); }
 		 */
-		read.setsActivationStartTime(getOfferStartDateTime(subscriber, key));
-
+		
+		String offerStartTime = getOfferStartDateTime(subscriber, offerId);
+		logger.debug("createRppRead offerStartTime  is "+ offerStartTime);
+		if(offerStartTime !=null)
+		read.setsActivationStartTime(offerStartTime);
 		read.setsCanBeSharedByMultipleRops(false);
 		read.setsCRMTitle("-");
 		read.setsInsertedViaBatch(false);
 		read.setsPackageId(walletName);
 		Date offerExpiryDate = null;
-		try {
-			offerExpiryDate = DateUtil.convertStringToDate(
-					offerExpiryDateString,
-					config.getValue("GLOBAL", SmartConstants.DATE_FORMAT));
-		} catch (ParseException e) {
-			logger.error("ParseException  is ", e);
-		}
 
-		if (walletName.equalsIgnoreCase("1030AutoFbc")
-				&& offerExpiryDate != null) {
-			read.setC_TokenBasedExpiredDate(offerExpiryDate.getTime());
-		}
+		if (offerExpiryDateString != null) {
+		
+			offerExpiryDate = new Date(Long.parseLong(offerExpiryDateString));
+			read.setsActivationEndTime(DateUtil.convertDateToString(offerExpiryDate));
+			
+			
 
+			if (walletName.equalsIgnoreCase("1030AutoFbc")
+					&& offerExpiryDate != null) {
+				read.setC_TokenBasedExpiredDate(offerExpiryDate.getTime());
+			}
+		}
 		read.setsPeriodStartPoint(-1);
 		if (ContractState.PREACTIVE.name().equals(
 				ContractState.apiValue(subscriber.getContractState()))) {
@@ -1447,7 +1618,7 @@ public class EntireReadUtil {
 		// Need to uncomment the below once the schema is corrected for the
 		// property files.
 
-		WalletUsage usage = WalletUsageUtil.getWalletUsage(walletName);
+		//WalletUsage usage = WalletUsageUtil.getWalletUsage(walletName);
 
 		// if (usage != null) {
 		// UsageCounterUsageThresholdInformation uc = ucUtMap.get(Integer
@@ -1481,7 +1652,7 @@ public class EntireReadUtil {
 				"GLOBAL_walletMapping", offerId.trim());
 
 		RppBucketRead read = new RppBucketRead();
-		read.setCustomerId(subscriber.getCustomerId());
+		read.setCustomerId(subscriber.getMsisdn());
 		read.setOfferProfileKey(1);
 
 		/*
@@ -1491,28 +1662,24 @@ public class EntireReadUtil {
 		 * read.setbValidFrom(offer.getStartDateTime().toString()); }
 		 */
 
-		read.setbValidFrom(getOfferStartDateTime(subscriber, key));
-
-		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, key);
-
+		String offerStarteDateTime = getOfferStartDateTime(subscriber, offerId);
+		logger.debug("createRppBucketRead.offerStarteDateTime : " + offerStarteDateTime);
+		read.setbValidFrom(offerStarteDateTime);
+		logger.debug("read.bValidFro : " + read.getbValidFrom());
+		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
 		IConfig config = SefCoreServiceResolver.getConfigService();
-
 		Date offerExpiryDate = null;
-		try {
-			offerExpiryDate = DateUtil.convertStringToDate(
-					offerExpiryDateString,
-					config.getValue("GLOBAL", SmartConstants.DATE_FORMAT));
-		} catch (ParseException e) {
-
-			logger.error("ParseException  is ", e);
-
-		}
+		logger.debug("createRppBucketRead.offerExpiryDateString : " + offerExpiryDateString);
 		if (offerExpiryDateString != null) {
-			read.setbInvalidFrom(offerExpiryDateString);
+			
+			offerExpiryDate = new Date(Long.parseLong(offerExpiryDateString));
+			
+			logger.debug("createRppBucketRead.offerExpiryDate After formatting: "
+					+ offerExpiryDate);
+			read.setbInvalidFrom(DateUtil.convertDateToString(offerExpiryDate));
 			read.setsNextPeriodAct(offerExpiryDate);
-			read.setsExpireDate(offerExpiryDateString);
+			read.setsExpireDate(DateUtil.convertDateToString(offerExpiryDate));
 		}
-
 		read.setbSeriesId(0);
 		read.setbCategory("ONLINE");
 
@@ -1607,7 +1774,7 @@ public class EntireReadUtil {
 			String key, String offerId, Date currentTime) {
 		RppVersionRead read = new RppVersionRead();
 		read.setCategory("ONLINE");
-		read.setCustomerId(subscriber.getCustomerId());
+		read.setCustomerId(subscriber.getMsisdn());
 		read.setOfferProfileKey(1);
 		read.setsPeriodicBonusCreditLimit(0L);
 
@@ -1616,12 +1783,17 @@ public class EntireReadUtil {
 		// read.setvValidFrom(new Date(0).toString()); } else {
 		// read.setvValidFrom(offer.getStartDateTime().toString()); }
 		//
-		String offerStartDateString = getOfferStartDateTime(subscriber, key);
-
-		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, key);
+		String offerStartDateString = getOfferStartDateTime(subscriber, offerId);
+		logger.debug("createRppVersionRead offerStartDateString is "+offerStartDateString);
+		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
+		logger.debug("createRppVersionRead offerExpiryDateString is "+offerExpiryDateString);
+		Date offerExpiryDate=null;
 		if (offerExpiryDateString != null) {
-			read.setsPeriodicBonusExpiryDate(offerExpiryDateString);
-			read.setvInvalidFrom(offerExpiryDateString);
+			
+			offerExpiryDate = new Date(Long.parseLong(offerExpiryDateString));
+			read.setsPeriodicBonusExpiryDate(DateUtil.convertDateToString(offerExpiryDate));
+			read.setvInvalidFrom(DateUtil.convertDateToString(offerExpiryDate));
+
 		} else {
 			read.setvInvalidFrom(SmartConstants.MAX_DATETIME);
 		}
@@ -1630,9 +1802,76 @@ public class EntireReadUtil {
 		if (offerStartDateString != null) {
 			read.setvValidFrom(offerStartDateString);
 		} else {
-			read.setvValidFrom(DateUtil.convertDateToString(currentTime,
-					config.getValue("GLOBAL", SmartConstants.DATE_FORMAT)));
+			read.setvValidFrom(DateUtil.convertDateToString(currentTime));
 		}
+		return read;
+	}
+
+	public static WelcomePack getWelcomePack(Subscriber subscriber) {
+		WelcomePack pack = new WelcomePack();
+		pack.setRead(createRead(subscriber));
+		pack.setBucketRead(createBucketRead(subscriber));
+		pack.setVersionRead(createVersionRead(subscriber));
+		return pack;
+	}
+
+	private static WelcomePackRead createRead(Subscriber subscriber) {
+		WelcomePackRead read = new WelcomePackRead();
+		read.setCategory("ONLINE");
+		read.setCustomerId(subscriber.getCustomerId());
+		read.setPrefetchFilter(-1);
+		read.setsCrmTitle("-");
+		read.setsCanBeSharedByMultipleRops(false);
+		read.setsInsertedViaBatch(false);
+		read.setOfferProfileKey(1);
+		if (subscriber.getMetas() != null
+				&& subscriber.getMetas().containsKey("package")) {
+			String welcomePack = subscriber.getMetas().get("package");
+
+			read.setsPackageId(welcomePack);
+		}
+		read.setsPreActive(ContractState.apiValue(
+				ContractState.PREACTIVE.name()).equals(
+				subscriber.getContractState()));
+		if (subscriber.getActiveDate() != null)
+			read.setsActivationStartTime(subscriber.getActiveDate());
+		read.setsPeriodStartPoint(-1);
+		return read;
+	}
+
+	private static WelcomePackVersionRead createVersionRead(
+			Subscriber subscriber) {
+		WelcomePackVersionRead read = new WelcomePackVersionRead();
+		read.setCategory("ONLINE");
+		read.setCustomerId(subscriber.getCustomerId());
+		read.setOfferProfileKey(1);
+		IConfig config = SefCoreServiceResolver.getConfigService();
+
+		if (subscriber.getActiveDate() != null)
+			read.setvValidFrom(DateUtil.convertDateToString(new Date(subscriber
+					.getActiveDate())));
+		read.setvInvalidFrom(SmartConstants.MAX_DATETIME);
+		return read;
+	}
+
+	private static WelcomePackBucketRead createBucketRead(Subscriber subscriber) {
+		WelcomePackBucketRead read = new WelcomePackBucketRead();
+		read.setbCategory("ONLINE");
+		read.setbSeriesId(0);
+		read.setOfferProfileKey(1);
+		read.setsActive(true);
+		read.setsError((byte) 0);
+		read.setsInfo(0);
+		read.setsValid(true);
+		read.setCustomerId(subscriber.getCustomerId());
+		IConfig config = SefCoreServiceResolver.getConfigService();
+		logger.debug("subscriber.getActiveDate() is ......."
+				+ subscriber.getActiveDate());
+		if (subscriber.getActiveDate() != null)
+			read.setbValidFrom(DateUtil.convertDateToString(new Date(subscriber
+					.getActiveDate())));
+		read.setbInvalidFrom(SmartConstants.MAX_DATETIME);
+
 		return read;
 	}
 

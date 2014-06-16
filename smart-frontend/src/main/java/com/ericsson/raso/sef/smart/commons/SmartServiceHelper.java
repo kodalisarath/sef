@@ -67,7 +67,7 @@ public abstract class SmartServiceHelper {
 		List<Meta> metas = new ArrayList<Meta>();
 		Meta meta = new Meta();
 		meta.setKey("READ_SUBSCRIBER");
-		meta.setValue("READ_SUBSCRIBER");
+		meta.setValue("ENTIRE_READ_SUBSCRIBER");
 		metas.add(meta);
 		logger.debug("Entering SmartServiceResolver.....");
 
@@ -119,7 +119,7 @@ public abstract class SmartServiceHelper {
 		List<Meta> metas = new ArrayList<Meta>();
 		Meta meta = new Meta();
 		meta.setKey("READ_SUBSCRIBER");
-		meta.setValue("READ_SUBSCRIBER");
+		meta.setValue("ENTIRE_READ_SUBSCRIBER");
 		metas.add(meta);
 		logger.debug("Entering SmartServiceResolver.....");
 
@@ -219,69 +219,6 @@ public abstract class SmartServiceHelper {
 	 * (OfferInformation offerInformation : offerList) {
 	 * offerMap.put(offerInformation.getOfferID(), offerInformation); } }
 	 */
-	public static WelcomePack getWelcomePack(Subscriber subscriber) {
-		WelcomePack pack = new WelcomePack();
-		pack.setRead(createRead(subscriber));
-		pack.setBucketRead(createBucketRead(subscriber));
-		pack.setVersionRead(createVersionRead(subscriber));
-		return pack;
-	}
-
-	private static WelcomePackRead createRead(Subscriber subscriber) {
-		WelcomePackRead read = new WelcomePackRead();
-		read.setCategory("ONLINE");
-		read.setCustomerId(subscriber.getCustomerId());
-		read.setPrefetchFilter(-1);
-		read.setsCrmTitle("-");
-		read.setsCanBeSharedByMultipleRops(false);
-		read.setsInsertedViaBatch(false);
-		read.setOfferProfileKey(1);
-		if (subscriber.getMetas() != null
-				&& subscriber.getMetas().containsKey("package")) {
-			String welcomePack = subscriber.getMetas().get("package");
-
-			read.setsPackageId(welcomePack);
-		}
-		read.setsPreActive(ContractState.apiValue(
-				ContractState.PREACTIVE.name()).equals(
-				subscriber.getContractState()));
-		read.setsActivationStartTime(subscriber.getActiveDate());
-		read.setsPeriodStartPoint(-1);
-		return read;
-	}
-
-	private static WelcomePackVersionRead createVersionRead(
-			Subscriber subscriber) {
-		WelcomePackVersionRead read = new WelcomePackVersionRead();
-		read.setCategory("ONLINE");
-		read.setCustomerId(subscriber.getCustomerId());
-		read.setOfferProfileKey(1);
-		IConfig config = SefCoreServiceResolver.getConfigService();
-		read.setvValidFrom(DateUtil.convertDateToString(
-				new Date(subscriber.getActiveDate()),
-				config.getValue("GLOBAL", SmartConstants.DATE_FORMAT)));
-		read.setvInvalidFrom(SmartConstants.MAX_DATETIME);
-		return read;
-	}
-
-	private static WelcomePackBucketRead createBucketRead(Subscriber subscriber) {
-		WelcomePackBucketRead read = new WelcomePackBucketRead();
-		read.setbCategory("ONLINE");
-		read.setbSeriesId(0);
-		read.setOfferProfileKey(1);
-		read.setsActive(true);
-		read.setsError((byte) 0);
-		read.setsInfo(0);
-		read.setsValid(true);
-		read.setCustomerId(subscriber.getCustomerId());
-		IConfig config = SefCoreServiceResolver.getConfigService();
-		read.setbValidFrom(DateUtil.convertDateToString(
-				new Date(subscriber.getActiveDate()),
-				config.getValue("GLOBAL", SmartConstants.DATE_FORMAT)));
-		read.setbInvalidFrom(SmartConstants.MAX_DATETIME);
-
-		return read;
-	}
 
 	public static EntireRead entireReadSubscriber(String msisdn)
 			throws SmException {
@@ -303,7 +240,7 @@ public abstract class SmartServiceHelper {
 			
 		}
 
-		entireRead.setWelcomePack(getWelcomePack(subscriber));
+		entireRead.setWelcomePack(EntireReadUtil.getWelcomePack(subscriber));
 		entireRead.setCustomer(EntireReadUtil.getCustomer(subscriber, currentTime));
 		entireRead.setRop(EntireReadUtil.getRop(subscriber, currentTime));
 		entireRead.setRpps(EntireReadUtil.getRpp(subscriber, currentTime));
