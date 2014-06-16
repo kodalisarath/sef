@@ -12,9 +12,8 @@ public class SubscriberInfo extends AbstractSubscriberResponse implements Serial
 	
 	@Override
 	public String toString() {
-		return "SubscriberInfo [msisdn=" + msisdn + ", remoteState="
-				+ remoteState + ", localState=" + localState + ", isLocked="
-				+ isLocked + ", metas=" + metas + ", status=" + status + "]";
+		return "SubscriberInfo [msisdn=" + msisdn + ", remoteState=" + remoteState + ", localState=" + localState + ", isLocked="
+				+ isLocked + ", metas=" + metas + ", status=" + status + ", subscriber=" + subscriber + "]";
 	}
 	private static final long serialVersionUID = -339541771917173674L;
 
@@ -69,4 +68,6 @@ public class SubscriberInfo extends AbstractSubscriberResponse implements Serial
 	public void setSubscriber(Subscriber subscriber) {
 		this.subscriber = subscriber;
 	}
+	
+	
 }

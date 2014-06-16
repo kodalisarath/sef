@@ -40,4 +40,11 @@ public class PurchaseResponse extends AbstractSubscriptionResponse {
 	public void setBillingMetas(List<Meta> billingMetas) {
 		this.billingMetas = billingMetas;
 	}
+	@Override
+	public String toString() {
+		return "PurchaseResponse [fault=" + fault + ", subscriptionId=" + subscriptionId + ", products=" + products + ", billingMetas="
+				+ billingMetas + "]";
+	}
+	
+	
 }
