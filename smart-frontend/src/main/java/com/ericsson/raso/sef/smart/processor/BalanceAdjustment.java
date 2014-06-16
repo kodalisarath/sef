@@ -132,7 +132,7 @@ public class BalanceAdjustment implements Processor {
 					
 				}
 			  }
-					String resultId=iSubscriptionRequest.purchase(requestId, request.getBalanceId(), request.getCustomerId(), true, metaSubscriber);
+					String resultId=iSubscriptionRequest.purchase(requestId, request.getBalanceId(), request.getCustomerId(), true, workflowMetas);
 				     PurchaseResponse response = new PurchaseResponse();
 						logger.debug("Got past event class....");
 						RequestCorrelationStore.put(resultId, response);
