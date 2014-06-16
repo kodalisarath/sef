@@ -166,7 +166,7 @@ public class UnsubscribePackageItem implements Processor {
 				}
 			}
 			if (IsGrace==false && NotRecycle==false) {
-				    String resultId=iSubscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, metaSubscriber);
+				    String resultId=iSubscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 			        PurchaseResponse response = new PurchaseResponse();
 					logger.debug("Got past event class in subscription for grace and active....");
 					RequestCorrelationStore.put(resultId, response);
