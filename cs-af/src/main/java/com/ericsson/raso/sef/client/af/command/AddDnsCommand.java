@@ -48,10 +48,12 @@ public class AddDnsCommand implements Command<Void> {
 			
 			String primaryAfAddress = SefCoreServiceResolver.getConfigService().getValue("af1", "address");
 			Resolver primary = new SimpleResolver(primaryAfAddress);
+			primary.setTCP(dns.isUseTcp());
 			
 			String secondaryAfAddress = SefCoreServiceResolver.getConfigService().getValue("af2", "address");
 			Resolver secondary = new SimpleResolver(secondaryAfAddress);
-
+			secondary.setTCP(dns.isUseTcp());
+			
 			try {		
 				log.info("DNS Command to execute: "  + update.toString());
 				primary.send(update);
