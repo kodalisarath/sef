@@ -102,7 +102,7 @@ public class ModifyCustomerGrace implements Processor {
 //						String offers = "";
 						OfferInfo oInfo = null;
 						Map<String, OfferInfo> subscriberOffers = new HashMap<String, ModifyCustomerGrace.OfferInfo>(); 
-						boolean IsGrace = false;
+						boolean IsGrace = false; long graceExpiry = 0;
 						for (String key: subscriberMetas.keySet()) {
 							logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
 							if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
@@ -125,31 +125,32 @@ public class ModifyCustomerGrace implements Processor {
 								if (oInfo.offerID.equals("2")) {
 									logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 									IsGrace=true;
+									graceExpiry = oInfo.offerExpiry;
 								}
 							}
 						}
 						if (IsGrace==true) {
 							logger.debug("Am in Grace S");
-							String date=subscriberObj.getSubscriber().getMetas().get("GraceEndDate");
-							if(date != null){
-								logger.debug("There is a grace end date entered and adding days to it now"+date);
+//							String date=subscriberObj.getSubscriber().getMetas().get("GraceEndDate");
+//							if(date != null){
+								logger.debug("There is a grace end date entered and adding days to it now");
 								//String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
 								
 								// handle the date extension
-								SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+								//SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 								SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-								Date currentExpiryDate = metaStoreFormat.parse(date);
-								Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000));
+								//Date currentExpiryDate = metaStoreFormat.parse(date);
+								Date newExpiryDate = new Date( graceExpiry + (request.getDaysOfExtension() * 86400000));
 								String newExpiry = smartDateFormat.format(newExpiryDate);
 								
 								
 								
 								metas.add(new Meta("GraceEndDate",newExpiry));
 								logger.debug("There is a new GraceEndDate entered and adding days to it now"+ newExpiry);
-							}
-							else{
-								logger.debug("date is not found");
-							}
+//							}
+//							else{
+//								logger.debug("date is not found");
+//							}
 							String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
 							  SubscriberInfo response = new SubscriberInfo();
 						      logger.debug("Got past event class....SK");
@@ -178,7 +179,7 @@ public class ModifyCustomerGrace implements Processor {
 									throw new SmException(ErrorCode.internalServerError);
 								}
 								else{
-									 CommandResponseData cr = this.createResponse(true,date);
+									 CommandResponseData cr = this.createResponse(true, newExpiry);
 								      exchange.getOut().setBody(cr);
 								}
 								
