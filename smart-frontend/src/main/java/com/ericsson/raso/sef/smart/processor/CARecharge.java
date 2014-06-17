@@ -604,18 +604,18 @@ public class CARecharge implements Processor {
 
 		// Calculate...
 
-		for (OfferInfo oInfo : afterOfferEntries.values()) {
-			logger.debug("Offer: " + oInfo);
-			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID)
+		for (OfferInfo afterOffer : afterOfferEntries.values()) {
+			logger.debug("Offer: " + afterOffer);
+			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", afterOffer.offerID)
 					+ ":s_PeriodicBonus";
-			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", afterOffer.offerID);
 
 			logger.debug("Mapped Wallet: " + balanceId + ", DA: " + daId);
 			if (balanceId == null || daId == null) {
-				logger.error("Please check config.xml for mapping entries for OfferID:" + oInfo.offerID
+				logger.error("Please check config.xml for mapping entries for OfferID:" + afterOffer.offerID
 						+ " under sections 'GLOBAL_walletMapping' & 'Global_offerMapping' ");
 				// throw ExceptionUtil.toSmException(ErrorCode.missingMandatoryParameterError);
-				logger.debug("Doesnt seem to be an offer that will go in SMART response... Offer: " + oInfo);
+				logger.debug("Doesnt seem to be an offer that will go in SMART response... Offer: " + afterOffer);
 				continue;
 			}
 
@@ -638,34 +638,49 @@ public class CARecharge implements Processor {
 			 * with correlation.
 			 * * For Unli Offers, we ignore DA in the response
 			 * * For other offers, we check for DA and handle...
+			 * 
+			 * by 12:17am, another change...
+			 * - check for offer in after which not in before, then select for handling
+			 * - check for offer in after and before but changes in expiry, then select for handling
+			 * - check for offer which have no DA and ignore them...
+			 * 
 			 */
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); String responseEntry;
-			OfferInfo afterOffer = afterOfferEntries.get(oInfo.offerID);
- 
 			
-			if (Integer.parseInt(oInfo.offerID) >= 2000) {
+			
+			if (Integer.parseInt(afterOffer.offerID) >= 2000) {
 				//UnliSmsOnCtl:s_PeriodicBonus;1;1;2014-08-07 18:41:59
 				responseEntry = balanceId + ";" + 1 + ";" + 1 + ";"
 						+ format.format(new Date(afterOffer.offerExpiry));
 			} else {
-				String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+				
+				OfferInfo beforeOffer = beforeOfferEntries.get(afterOffer.offerID);
+				
+				String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", afterOffer.offerID);
 				if (requiredDA == null) {
-					logger.debug("Seems like OfferID: " + oInfo.offerID + " can be ignored, since there is no DA associated...");
+					logger.debug("Seems like OfferID: " + afterOffer.offerID + " can be ignored, since there is no DA associated...");
 					continue;
 				}
 				
 				int daBalanceDiff = 0;
 				if (beforeDA == null && afterDA == null) {
-					logger.debug("Strange Situation. DA:" + daId + " is configured to map with Offer:" + oInfo.offerID + ", but CS has not returned either Before or After Value!!");
+					logger.debug("Strange Situation. DA:" + daId + " is configured to map with Offer:" + afterOffer.offerID + ", but CS has not returned either Before or After Value!!");
 					continue;
 				}
 				if (beforeDA == null && afterDA != null)
 					daBalanceDiff = afterDA.daValue;
-				else if (beforeDA != null && afterDA == null)
+				else if (beforeDA != null && afterDA == null) {
+					if (beforeOffer.offerExpiry == afterOffer.offerExpiry) {
+						logger.debug("According to Navneet, this case must not be sent back to SMART. Offer(after):" + afterOffer.offerID + ", Offer(before):" + beforeOffer);
+						continue;
+					}
 					daBalanceDiff = beforeDA.daValue;
-				else
+					
+				} else {
 					daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+					
+				}
 
 				responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue + ";"
 						+ format.format(new Date(afterOffer.offerExpiry));
