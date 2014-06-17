@@ -121,7 +121,7 @@ public class ModifyCustomerGrace implements Processor {
 							}
 						}
 						if (IsGrace==true) {
-
+							logger.debug("Am in Grace S");
 							String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
 							  SubscriberInfo response = new SubscriberInfo();
 						      logger.debug("Got past event class....SK");
