@@ -944,7 +944,7 @@ public class BusinessConfigurationTool {
 		resource.setEnforcedMaxQuota(-1L);
 		resource.setEnforcedMinQuota(-1L);
 		
-		UpdateServiceClassProfile fulfillmentProfile = new UpdateServiceClassProfile(name);
+		SubscribePackageItemProfile fulfillmentProfile = new SubscribePackageItemProfile(name);
 		fulfillmentProfile.setServiceClassAction("SetOriginal");
 		
 		profileRegistry.createProfile(fulfillmentProfile);
