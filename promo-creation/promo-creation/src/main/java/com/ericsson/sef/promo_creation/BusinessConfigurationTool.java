@@ -38,6 +38,7 @@ import com.ericsson.raso.sef.fulfillment.profiles.UpdateSubscriberSegmentationPr
 import com.ericsson.raso.sef.fulfillment.profiles.smart.CreateSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.DedicatedAccountReversal;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.DeleteSubscriberProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.smart.FlexiRechargeProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.ModifyCustomerGraceProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.ReversalProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.SubscribePackageItemProfile;
@@ -567,7 +568,17 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("Reversal Economy (30)", "Reversal Economy (30)", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
+	
 			
+			//===========>>>> Flexi Refilll... 
+			resource = this.createSmartFlexiRefillProfile("FlexiRefill");
+			handles = new ArrayList<String>();
+			handles.add("FlexiRefill");
+			
+			bizConfig = this.getSimpleBcWorkflow("FlexiRefill", "Flexi Refill", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+	
 			//=====================================
 			System.out.println("Offer, Balance Adjustment...");
 			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
@@ -893,6 +904,25 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setDedicatedAccountID(dedicatedAccountID);
 		fulfillmentProfile.setDedicatedAccountUnitType(dedicatedAccountUnitType);
 		fulfillmentProfile.setTransactionCurrency("PHP");
+		
+
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		profileRegistry.createProfile(fulfillmentProfile);
+
+		return resource;
+	}
+
+	
+	public Resource createSmartFlexiRefillProfile(String name) throws CatalogException {
+
+		Resource resource = new Service(name);
+		resource.setDescription("Balance Adjustment Profile");
+		resource.setConsumable(true);
+		resource.setDiscoverable(true);
+		resource.setExternallyConsumed(true);
+		resource.setConsumptionUnitName("PHP");
+
+		FlexiRechargeProfile fulfillmentProfile = new FlexiRechargeProfile(name);
 		
 
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
