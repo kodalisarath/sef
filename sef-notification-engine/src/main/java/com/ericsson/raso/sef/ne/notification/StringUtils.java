@@ -3,10 +3,15 @@ package com.ericsson.raso.sef.ne.notification;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.core.Meta;
 
-public class StringUtils {
-	
+public class StringUtils 
+{
+
+	private static Logger log = LoggerFactory.getLogger(StringUtils.class);
 	public static String prepareMessage(String message, List<Meta> metas) {
 		String msg = message;
 		for (Meta meta : metas) {
@@ -20,6 +25,6 @@ public class StringUtils {
 		List<Meta> metas = new ArrayList<Meta>();
 		metas.add(new Meta("offerId", "Yahoo"));
 		
-		System.out.println(prepareMessage(template, metas));
+		log.debug(prepareMessage(template, metas));
  	}
 }

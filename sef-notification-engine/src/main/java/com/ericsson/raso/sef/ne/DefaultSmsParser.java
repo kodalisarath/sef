@@ -6,8 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.ne.core.smpp.SmppMessage;
 import com.ericsson.raso.sef.core.Meta;
+import com.ericsson.raso.sef.ne.core.smpp.SmppMessage;
 import com.ericsson.raso.sef.ne.notification.NotificationEvent;
 
 public class DefaultSmsParser implements SmsParser {

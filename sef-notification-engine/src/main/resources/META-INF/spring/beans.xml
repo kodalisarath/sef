@@ -12,49 +12,64 @@
           http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<import resource="classpath:META-INF/sm-core/beans.xml"/>
+	<import resource="classpath:META-INF/sef-core/beans.xml"/>
 	<import resource="classpath:META-INF/product-catalog/beans.xml"/>
-	<import resource="classpath:META-INF/ca-client/beans.xml"/>
+	<!-- <import resource="classpath:META-INF/ca-client/beans.xml"/> -->
 	
-	<bean id="neContext" class="com.ericsson.sm.ne.NotificationEngineContext"/>
+<!-- 	<bean id="smppClientFactory" class="com.ericsson.raso.sef.ne.core.smpp.internal.DefaultSmppClientFactory" /> -->
+	
+	<!-- <bean id="neContext" class="com.ericsson.sm.ne.NotificationEngineContext"/>
 
 	<bean id="neProperties" class="com.ericsson.sm.core.config.ComponentPropertiesBean">
 		<constructor-arg name="config" ref="cfg" />
 		<constructor-arg name="component" value="notification-engine" />
 	</bean>
-	<context:property-placeholder properties-ref="neProperties" />
+	<context:property-placeholder properties-ref="neProperties" /> -->
 	
 	<bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemq">
-        <property name="brokerURL" value="#{cfg.jmsEndpoint('sm-jms-broker').uri}"/>
-        <property name="userName" value="#{cfg.jmsEndpoint('sm-jms-broker').username}"/>
-        <property name="password" value="#{cfg.jmsEndpoint('sm-jms-broker').password}"/>
+        <property name="brokerURL" value="tcp://localhost:61616"/>
+        <property name="userName" value="admin"/>
+        <property name="password" value="admin"/>
     </bean>
+    
+   <!--     <broker id="broker" brokerName="myBroker" useShutdownHook="false" useJmx="true"
+                   persistent="true" dataDirectory="activemq-data"
+                   xmlns="http://activemq.apache.org/schema/core">
+ 
+        <transportConnectors>
+            vm transport for intra-jvm communication
+            <transportConnector name="vm" uri="vm://myBroker"/>
+            tcp for external communication
+            <transportConnector name="tcp" uri="tcp://0.0.0.0:61616"/>
+        </transportConnectors>
+ 
+    </broker> -->
 	
 	<camelContext id="notificationEngineCamelContext" xmlns="http://camel.apache.org/schema/spring">
-		<propertyPlaceholder id="properties" location="ref:neProperties"/>
-		<route>
-	 		<from uri="file:{{autoTransfer.directory}}?delay={{autoTransfer.interval}}"/>
+	<!-- 	<propertyPlaceholder id="properties" location="ref:neProperties"/> -->
+		<!-- <route>
+	 		<from uri="file:/home/Desktop?delay=100"/>
 			<camel:unmarshal>
 				<camel:csv skipFirstLine="true"/>
 			</camel:unmarshal>
 			<camel:setHeader headerName="csvHeader">
-				<camel:simple>{{autoTransfer.csvHeader}}</camel:simple>
+				<camel:simple>csv</camel:simple>
 			</camel:setHeader>
-			<camel:bean beanType="com.ericsson.sm.ne.AutoTransferProcessor"/>
-		</route>
+			<camel:bean beanType="com.ericsson.raso.sef.ne.AutoTransferProcessor"/>
+		</route> -->
 	</camelContext>
 	
-	<bean id="notificationRoutes" class="com.ericsson.sm.ne.NotificationRoutes" init-method="start">
-		<constructor-arg ref="notificationEngineCamelContext"/>
-		<constructor-arg ref="cfg"/>
+	<bean id="notificationRoutes" class="com.ericsson.raso.sef.ne.NotificationRoutes" init-method="start">
+	 	<constructor-arg ref="notificationEngineCamelContext"/>
+		<!-- <constructor-arg ref="cfg"/> -->
 	</bean>
 	
-	<bean id="activateSubscriberClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
+	<!-- <bean id="activateSubscriberClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
 		<property name="serviceClass" value="com.ericsson.sm.api.notification.NotificationWorkflowService"/>
 		<property name="address" value="#{cfg.soapEndpoint('activateSubscriberWs-client').address}"/>
-	</bean>
+	</bean> -->
 	
-	<bean id="activateSubscriberWorkflow" 
+	<!-- <bean id="activateSubscriberWorkflow" 
 		class="com.ericsson.sm.api.notification.NotificationWorkflowService" 
 		factory-bean="activateSubscriberClientFactory"
 		factory-method="create"/>
@@ -78,5 +93,5 @@
 		class="com.ericsson.sm.api.notification.NotificationWorkflowService" 
 		factory-bean="callingCircleClientFactory"
 		factory-method="create"/>
-	
+ -->	
 </beans>

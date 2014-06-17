@@ -10,8 +10,8 @@ import org.opensaml.ws.WSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.ne.core.smpp.SmppMessage;
 import com.ericsson.raso.sef.core.Meta;
+import com.ericsson.raso.sef.ne.core.smpp.SmppMessage;
 import com.ericsson.raso.sef.ne.notification.ExternalNotifcationEvent;
 import com.ericsson.raso.sef.ne.notification.ExternalNotificationTemplateCatalog;
 import com.ericsson.raso.sef.ne.notification.NotificationAction;
@@ -26,18 +26,29 @@ public class NotificationMessageProcessor implements Processor {
 	
 	public void process(final Exchange exchange) throws Exception {
 		
-		ExternalNotificationTemplateCatalog catalog = NotificationEngineServiceResolver.getBean(ExternalNotificationTemplateCatalog.class);
 		
 		//ExternalNotificationTemplateCatalog catalog = null;
 		Object body = exchange.getIn().getBody();
+		
+		log.debug("Mesage Received..." + body.toString());
+		
+	//	ExternalNotificationTemplateCatalog catalog = NotificationEngineServiceResolver.getBean(ExternalNotificationTemplateCatalog.class);
+		List<String> list = new ArrayList<String>();
+		list.add(body.toString());
+		sendMessage("+639369557186",list, "+639088821737",  exchange);
+		
 		if (body instanceof SmppMessage) {
+			
+			
 			SmsParser parser = new DefaultSmsParser((SmppMessage) body);
 
+		
+			
 			ExternalNotifcationEvent event = null;
 			NotificationAction action = NotificationAction.ASIS;
 			String senderAddr = null;
 			if (parser.isValidSm()) {
-				event = catalog.getEventById(parser.getEventId());
+				/*event = catalog.getEventById(parser.getEventId());
 				if (event == null) {
 					log.error("Event with eventID: " + parser.getEventId()
 							+ " is not configured in the IL.");
@@ -45,7 +56,7 @@ public class NotificationMessageProcessor implements Processor {
 				}
 				action = event.getAction();
 				senderAddr = event.getSenderAddr();
-
+*/
 				switch (action) {
 				case ASIS:
 					sendMessage(parser.getMsisdn(), parser.getMessages(), senderAddr, exchange);
@@ -67,7 +78,7 @@ public class NotificationMessageProcessor implements Processor {
 				}
 				
 			} else {
-				log.error("Invalid request:" + body.toString());
+				log.debug("Invalid request:" + body.toString());
 			}
 		}
 	}
