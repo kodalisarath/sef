@@ -89,9 +89,9 @@ public class CARecharge implements Processor {
 
 			requestContextCache.set(metas);
 			
-			Subscriber susbcriber = readSubscriber(requestId, msisdn);
-			if (susbcriber == null)
-				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+//			Subscriber susbcriber = readSubscriber(requestId, msisdn);
+//			if (susbcriber == null)
+//				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 
 			logger.debug("Getting event class....");
 			String eventClass = rechargeRequest.getEventClass();
