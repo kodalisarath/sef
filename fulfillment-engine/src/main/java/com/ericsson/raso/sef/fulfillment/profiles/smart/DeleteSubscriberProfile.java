@@ -86,6 +86,7 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 		//request.setDeleteReasonCode(2);
 		logger.info("THIS IS IT");
 		request.setDeleteReasonCode(2);
+		request.setOriginOperatorID("originOperatorID");
 		logger.debug("THE DELETED REASON CODE IS " + request.getDeleteReasonCode());
 		DeleteSubscriberCommand deleteCommand = new DeleteSubscriberCommand(request);
 		logger.debug("Packed the request for execution..." + map.get("SUBSCRIBER_ID"));
