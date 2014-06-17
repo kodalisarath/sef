@@ -82,14 +82,16 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 			request.setOriginOperatorId(deleteSubscriberProfile.getOriginOperatorId());
 	
 		request.setSubscriberNumber(map.get("SUBSCRIBER_ID"));
+		request.setSubscriberNumberNAI(1);
+		request.setDeleteReasonCode(2);
 		DeleteSubscriberCommand deleteCommand = new DeleteSubscriberCommand(request);
 		logger.debug("Packed the request for execution..." + map.get("SUBSCRIBER_ID"));
 		
 		try {
 			deleteCommand.execute();
-			logger.debug("Subscriber deleted in CS-AIR");
+			logger.debug("Subscriber installed in CS-AIR");
 		} catch (SmException e1) {
-			logger.error("Deleting new subscriber failed!!", e1);
+			logger.error("Installing new subscriber failed!!", e1);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
 		
@@ -112,7 +114,7 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 			new DeleteDnsCommand(dnsRequest).execute();
 			logger.debug("Deleted SUbscriber in CS-AF DNS");
 		} catch (SmException e1) {
-			logger.error("Failed DeleteDnsCommand execute" + e1.getMessage(), e);
+			logger.error("Failed AddDnsCommand execute" + e1.getMessage(), e);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode()
 					.getMessage()));
 		}
