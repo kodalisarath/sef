@@ -167,7 +167,7 @@ public class SubscribePackageItem implements Processor {
 					}
 				}
 			}
-			if (IsGrace==true || NotRecycle==false) {
+			if (NotRecycle==false)  {
 				    String resultId=iSubscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 			        PurchaseResponse response = new PurchaseResponse();
 					logger.debug("Got past event class in subscription for grace and active....");
