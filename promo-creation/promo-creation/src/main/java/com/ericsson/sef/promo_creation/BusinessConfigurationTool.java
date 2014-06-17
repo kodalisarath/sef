@@ -999,7 +999,10 @@ public class BusinessConfigurationTool {
 		for (int i=0; i<8; i++ ) {
 			ServiceOffering soInfo = new ServiceOffering();
 			soInfo.setServiceOfferingId(soId);
-			soInfo.setServiceOfferingActiveFlag((soId==i));
+			if (soId == 0)
+				soInfo.setServiceOfferingActiveFlag(false);
+			else
+				soInfo.setServiceOfferingActiveFlag((soId==i));
 			serviceOfferings.add(soInfo);
 		}
 
