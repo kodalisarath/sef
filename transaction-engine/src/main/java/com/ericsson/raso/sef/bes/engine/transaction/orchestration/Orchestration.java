@@ -289,6 +289,12 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
+					if (executionStatus == Status.DONE_FAULT)
+						anyFault = true;
+					
+					if (result != null)
+						step.setFault(result.getResultantFault());
+					
 					logger.debug("Confirming the state of completed step: " 
 								+ step.stepCorrelator + " = " + this.sbExecutionStatus.get(step.stepCorrelator) 
 								+ "Fault: " + result.getResultantFault());
@@ -338,7 +344,13 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
 						if (executionStatus == Status.DONE_FAULT)
 							anyFault = true;
-						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " + this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED));
+						
+						if (result != null)
+							step.setFault(result.getResultantFault());
+						
+						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " 
+									+ this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED)
+									+ "Fault: " + result.getResultantFault());
 					}
 					
 					

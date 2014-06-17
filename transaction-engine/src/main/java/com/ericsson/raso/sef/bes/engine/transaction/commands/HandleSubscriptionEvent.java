@@ -155,7 +155,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 
 				if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
 					logger.debug("Checking in Fulfillment Step Result...");
-					if(((FulfillmentStepResult)result.getResult()).getResultantFault() != null){
+					if(result.getFault() != null){
 						logger.debug("Yes there is a fault in Fulfillment...");
 						txnStatus=new TransactionStatus();
 						txnStatus.setCode(result.getFault().getStatusCode().getCode());
