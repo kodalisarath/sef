@@ -998,13 +998,8 @@ public class BusinessConfigurationTool {
 		List<ServiceOffering> serviceOfferings = new ArrayList<ServiceOffering>();
 		for (int i=0; i<8; i++ ) {
 			ServiceOffering soInfo = new ServiceOffering();
-			if (soId == i) {
-				soInfo.setServiceOfferingId(soId);
-				soInfo.setServiceOfferingActiveFlag(false);
-			} else {
-				soInfo.setServiceOfferingId(soId);
-				soInfo.setServiceOfferingActiveFlag((soId==i));
-			}
+			soInfo.setServiceOfferingId(soId);
+			soInfo.setServiceOfferingActiveFlag((soId==i));
 			serviceOfferings.add(soInfo);
 		}
 
