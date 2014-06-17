@@ -167,30 +167,6 @@ public class CARecharge implements Processor {
 
 	}
 	
-	private Subscriber readSubscriber(String requestId, String msisdn) throws SmException {
-		logger.info("Invoking update subscriber on tx-engine subscriber interface");
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		SubscriberInfo subInfo = new SubscriberInfo();
-		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.readSubscriber(requestId, msisdn, new ArrayList<Meta>());
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-		try {
-			semaphore.init(0);
-			semaphore.acquire();
-		} catch (InterruptedException e) {
-
-		}
-		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		
-		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
-			logger.debug("Inside the if condition for status check");
-			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-		}
-		
-		return subscriberInfo.getSubscriber();
-	}
-
 	private Map<String, String> prepareRecharge(RechargeRequest rechargeRequest) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
@@ -346,7 +322,7 @@ public class CARecharge implements Processor {
 
 	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER";
 
-	private void checkGraceAndLongestExpiryDate() {
+	private void checkGraceAndLongestExpiryDate() throws SmException {
 		Map<String, String> requestContext = requestContextCache.get();
 
 		Subscriber subscriber = subscriberCache.get();
@@ -354,12 +330,13 @@ public class CARecharge implements Processor {
 
 		OfferInfo oInfo = null;
 		long longestExpiry = 0;
-		OfferInfo endurantOffer = null;
+		OfferInfo endurantOffer = null; boolean anyOfferFound = false;
 		Map<String, OfferInfo> subscriberOffers = new HashMap<String, CARecharge.OfferInfo>();
 		for (String key : subscriberMetas.keySet()) {
 			logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
 
 			if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
+				anyOfferFound = true;
 				logger.debug("FLEXI:: OFFER_ID...." + subscriberMetas.get(key));
 				String offerForm = subscriberMetas.get(key);
 
@@ -392,6 +369,11 @@ public class CARecharge implements Processor {
 				}
 			}
 
+		}
+		
+		if (!anyOfferFound) {
+			logger.debug("Seems like subscriber is in PREACTIVE state. Not Allowed");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
 
 		requestContext.put("longestExpiry", "" + longestExpiry);
