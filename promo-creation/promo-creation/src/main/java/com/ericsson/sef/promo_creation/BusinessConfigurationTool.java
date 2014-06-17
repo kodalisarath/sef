@@ -998,14 +998,15 @@ public class BusinessConfigurationTool {
 		List<ServiceOffering> serviceOfferings = new ArrayList<ServiceOffering>();
 		for (int i=0; i<8; i++ ) {
 			ServiceOffering soInfo = new ServiceOffering();
-			soInfo.setServiceOfferingId(soId);
+			soInfo.setServiceOfferingId(i);
 			if (soId == 0)
 				soInfo.setServiceOfferingActiveFlag(false);
 			else
 				soInfo.setServiceOfferingActiveFlag((soId==i));
 			serviceOfferings.add(soInfo);
 		}
-
+		System.out.println("Service Offerings prepared: " + serviceOfferings);
+		
 		fulfillmentProfile.setServiceOfferings(serviceOfferings);
 
 
