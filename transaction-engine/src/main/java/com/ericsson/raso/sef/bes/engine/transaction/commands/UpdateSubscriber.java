@@ -130,6 +130,12 @@ public class UpdateSubscriber extends AbstractTransaction {
 						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 						
 					}
+					if(meta.getKey().equalsIgnoreCase("GraceEndDate")){
+						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
+						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+						
+					}
+					
 				}
 				break;
 			case Constants.SubscribePackageItem:
