@@ -122,6 +122,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 				
 			case Constants.ModifyCustomerPreActive:	
 			case Constants.ModifyCustomerGrace:
+				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 				LOGGER.debug("Invoked ModifyCustomer Case");
 				for(Meta meta:listMetas){
                   LOGGER.debug("In the for loop ");
@@ -139,6 +140,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 				}
 				break;
 			case Constants.SubscribePackageItem:
+				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 				LOGGER.debug("Invoked SubscribePackageItem ");
 				for(Meta meta:listMetas){
 					subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
@@ -147,6 +149,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 				break;
 
 			case Constants.UnSubscribePackageItem:
+				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 				LOGGER.debug("Invoked SubscribePackageItem ");
 				for(Meta meta:listMetas){
 					subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
@@ -154,6 +157,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 				break;
 
 			case Constants.ModifyTagging:
+				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 				LOGGER.debug("Invoked ModifyTagging Case");
 				// This entity must contains the subscriber and his meta from the DB for modify tagging
 				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
