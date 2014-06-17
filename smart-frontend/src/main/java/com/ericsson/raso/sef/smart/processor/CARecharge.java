@@ -339,8 +339,12 @@ public class CARecharge implements Processor {
 				anyOfferFound = true;
 				logger.debug("FLEXI:: OFFER_ID...." + subscriberMetas.get(key));
 				String offerForm = subscriberMetas.get(key);
-
+				logger.debug("Check before split - offerForm: " + offerForm);
 				String offerParts[] = offerForm.split(",");
+				logger.debug("Offer Parts: " + offerParts.length);
+				int i= 0; for (String part: offerParts) {
+					logger.debug("OfferPart[" + i++ + "] :=" + part);
+				}
 				String offerId = offerParts[0];
 				String start = offerParts[1];
 				if (start.equals("null"))
