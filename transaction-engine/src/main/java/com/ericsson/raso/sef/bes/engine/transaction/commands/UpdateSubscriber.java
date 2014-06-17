@@ -157,7 +157,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 				break;
 
 			case Constants.ModifyTagging:
-				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+				//subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 				LOGGER.debug("Invoked ModifyTagging Case");
 				// This entity must contains the subscriber and his meta from the DB for modify tagging
 				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
