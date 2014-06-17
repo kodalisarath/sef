@@ -193,7 +193,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - InitialSC - WelcomePackServiceClass...");
-			resource = this.createUpdateServiceClassProfile("InitialSC-WelcomePackServiceClass", "Tag Subsriber Reset");
+			resource = this.createSmartWelcomePackProfile("InitialSC-WelcomePackServiceClass", "Tag Subsriber Reset");
 			handles = new ArrayList<String>();
 			handles.add("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass");
 			bizConfig = this.getSimpleBcWorkflow("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass", "WelcomePack - ServiceClass", handles, resource);
@@ -201,7 +201,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 			
 			System.out.println("Offer, Resource & Profile - Subscribe WelcomePackServiceClass...");
-			resource = this.createUpdateServiceClassProfile("SubscribePackageItem", "Welcome Pack Service Class");
+			resource = this.createSmartWelcomePackProfile("SubscribePackageItem", "Welcome Pack Service Class");
 			handles = new ArrayList<String>();
 			handles.add("SUBSCRIBE_PACKAGE_ITEM");
 			bizConfig = this.getSimpleBcWorkflow("SubscribePackageItem", "WelcomePack - ServiceClass", handles, resource);
@@ -953,7 +953,7 @@ public class BusinessConfigurationTool {
 		return resource;
 	}
 
-	public Resource createSmartWelcomePackProfile(String name, String description) throws Exception
+	public Resource createSmartWelcomePackProfile(String name, String description) throws CatalogException
 	{
 		Resource resource = new Service(name);
 		resource.setDescription(description);
