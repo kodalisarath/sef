@@ -77,7 +77,8 @@ public class CARecharge implements Processor {
 			logger.debug("Prepare params for transaction....");
 			String msisdn = rechargeRequest.getCustomerId();
 			String offerid = null;
-			String requestId = null;
+			String requestId = RequestContextLocalStore.get().getRequestId();
+			
 			Map<String, String> metas = new HashMap<String, String>();
 
 			logger.debug("Finished preparing params....");
@@ -99,7 +100,7 @@ public class CARecharge implements Processor {
 				offerid = rechargeRequest.getEventName();
 			} else if (eventClass.equals("flexible")) {
 				metas = prepareFlexibleRecharge(rechargeRequest);
-				offerid = rechargeRequest.getRatingInput1();
+				offerid = "FlexiRefill";
 			} else if (eventClass.equals("pasaload")) {
 				rechargeRequest.setRatingInput0("pasaload");
 
@@ -115,7 +116,6 @@ public class CARecharge implements Processor {
 			eventClassCache.set(eventClass);
 
 			logger.debug("Got event class....");
-			requestId = RequestContextLocalStore.get().getRequestId();
 			ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 			PurchaseResponse response = new PurchaseResponse();
 
@@ -285,8 +285,7 @@ public class CARecharge implements Processor {
 
 				if (!found) {
 					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
-					WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(
-							rechargeRequest.getRatingInput1());
+					WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(rechargeRequest.getRatingInput1());
 					String requiredOfferID = offerMapping.getOfferID();
 					String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
 
@@ -822,15 +821,32 @@ public class CARecharge implements Processor {
 		Map<String, String> requestContext = requestContextCache.get();
 
 		Map<String, String> airResponse = this.convertToMap(response.getBillingMetas());
-
+		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String responseEntry = requestContext.get("walletName") + ";" + requestContext.get("amountOfUnits") + ";"
-				+ airResponse.get("DA_VALUE_1.1") + ";" + format.format(new Date(Long.parseLong(requestContext.get("longestExpiry"))));
+		
+		for (String key: airResponse.keySet()) {
+			if (key.startsWith("DA")) {
+				logger.debug("Processing key:=" + key + ", value:=" + airResponse.get(key));
+				String walletName = airResponse.get("walletName");
+				WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping("walletName");
+				String requiredOfferID = offerMapping.getOfferID();
+				String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
 
-		StringElement stringElement = new StringElement();
-		stringElement.setValue(responseEntry);
-		listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
-		logger.debug("Adding response item to CARecharge: " + responseEntry);
+				String daInfo = airResponse.get(key);
+				String daParts[] = daInfo.split(",");
+
+				if (requiredDA.equals(daParts[0])) {
+					logger.debug("Checking requiredDA:" + requiredDA + ", fromAirResponse:" + daParts[0]);
+					String responseEntry = requestContext.get("walletName") + ";" + requestContext.get("amountOfUnits") + ";"
+							+ airResponse.get("DA") + ";" + format.format(new Date(Long.parseLong(requestContext.get("longestExpiry"))));
+
+					StringElement stringElement = new StringElement();
+					stringElement.setValue(responseEntry);
+					listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+					logger.debug("Adding response item to CARecharge: " + responseEntry);
+				}
+			}
+		}
 		logger.debug("Done with the processing of Refill reponse...");
 
 	}
