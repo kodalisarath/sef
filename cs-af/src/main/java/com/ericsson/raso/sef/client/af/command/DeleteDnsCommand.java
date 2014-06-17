@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.client.af.command;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xbill.DNS.Name;
@@ -11,6 +13,7 @@ import com.ericsson.raso.sef.client.af.DnsServiceResolver;
 import com.ericsson.raso.sef.client.af.internal.DnsAddress;
 import com.ericsson.raso.sef.client.af.request.DeleteDnsRequest;
 import com.ericsson.raso.sef.core.Command;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 
 
@@ -36,13 +39,21 @@ public class DeleteDnsCommand implements Command<Void> {
 			Name zone = Name.fromString(lastDigit + request.getZname());
 			Update update = new Update(zone);
 			update.delete(Name.fromString(updateMsisdn + request.getZname()), request.getDtype());
-			// Resolver res = new SimpleResolver(dns.getIp());
-			Resolver res = new SimpleResolver("10.245.139.132");
-			res.setTCP(dns.isUseTcp());
+
+			String primaryAfAddress = SefCoreServiceResolver.getConfigService().getValue("af1", "address");
+			Resolver primary = new SimpleResolver(primaryAfAddress);
 			
-			log.info("DNS Delete entry: "  + update.toString());
-			res.send(update);
-			log.info("dns update for msisdn: " + msisdn);
+			String secondaryAfAddress = SefCoreServiceResolver.getConfigService().getValue("af2", "address");
+			Resolver secondary = new SimpleResolver(secondaryAfAddress);
+
+			try {		
+				log.info("DNS Command to execute: "  + update.toString());
+				primary.send(update);
+			} catch (IOException e) {
+				log.error("Primary AF DNS(" + primaryAfAddress + ") failed... will try secondary");
+				secondary.send(update);
+			}
+			log.info("dns delete for msisdn: " + msisdn);
 		} catch (Exception e) {
 			log.error("Error while firing DNS command.", e);
 			throw new SmException("cs-af", e);
