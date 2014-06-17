@@ -106,6 +106,8 @@ public class UseCaseProcessor implements Processor {
 
 		TransactionStatus status = new TransactionStatus();
 		List<Product> products = new ArrayList<Product>();
+		List<Meta> metas = new ArrayList<Meta>();
+		
 		try {
 			for (FulfillmentProfile profile : profiles) {
 				logger.debug("profile.fulfill(): " + profile);
@@ -118,6 +120,27 @@ public class UseCaseProcessor implements Processor {
 					}
 				}
 			}
+			
+			
+			for (String key : map.keySet()) {
+				Meta meta = new Meta(key, map.get(key));
+				metas.add(meta);
+			}
+
+			logger.info("Sending fulfillment Response now");
+
+			for (Product prod : products) {
+				if (prod != null) {
+					if (prod.getName() != null)
+						logger.debug("Product:" + prod.getName());
+					if (prod.getResourceName() != null)
+						logger.debug("Resource:" + prod.getResourceName());
+					logger.debug("Quota consumed:" + prod.getQuotaConsumed());
+					logger.debug("Quote defined: " + prod.getQuotaDefined());
+					logger.debug("Validity: " + prod.getValidity());
+				}
+
+			}
 		} catch (FulfillmentException e) {
 			logger.error("Exception while fulfilment " + e.getStackTrace() + "" + e.getMessage() + "Exception: " + e);
 			status.setComponent(e.getComponent());
@@ -125,28 +148,13 @@ public class UseCaseProcessor implements Processor {
 			status.setDescription(e.getStatusCode().getMessage());
 		}
 
-		List<Meta> metas = new ArrayList<Meta>();
-		for (String key : map.keySet()) {
-			Meta meta = new Meta(key, map.get(key));
-			metas.add(meta);
-		}
+		
 
-		logger.info("Sending fulfillment Response now");
-
-		for (Product prod : products) {
-			if (prod != null) {
-				if (prod.getName() != null)
-					logger.debug("Product:" + prod.getName());
-				if (prod.getResourceName() != null)
-					logger.debug("Resource:" + prod.getResourceName());
-				logger.debug("Quota consumed:" + prod.getQuotaConsumed());
-				logger.debug("Quote defined: " + prod.getQuotaDefined());
-				logger.debug("Validity: " + prod.getValidity());
-			}
-
-		}
-
-		logger.debug("Confirm response params: " + correlationId + ", msisdn:" + msisdn + ", fault: " + status + ", products: " + products + ", metas: " + metas);
+		logger.debug("Confirm response params: " + correlationId + 
+				", msisdn:" + msisdn + 
+				", fault: " + status + 
+				", products: " + products + 
+				", metas: " + metas);
 		sendFulfillResponse(correlationId, msisdn, status, products, metas);
 	}
 

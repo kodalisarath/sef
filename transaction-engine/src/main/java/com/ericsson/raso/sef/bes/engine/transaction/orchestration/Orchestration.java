@@ -164,8 +164,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //						this.promote2Schedule();
 						//TODO: remove this when uncomment the above two tasks
 						this.promote2Persist();
-						logger.debug("Stifled the persistence to stop executing in preventing the thread model to break...");
-						this.status = Status.DONE_SUCCESS; //TODO: uncomment this when Vinay has fixed the bug in DB TIER....
+						this.status = Status.DONE_SUCCESS; 
 
 					} else {
 						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
@@ -829,22 +828,23 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			if (next instanceof Step) {
 				step = (Step) next;
 				
-				logger.debug("Checking " + step.getStepCorrelator() + "Step: " + step.toString());
-
 				AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 				Status executionStatus = this.sbExecutionStatus.get(step.stepCorrelator);
+				logger.debug("Checking " + step.getStepCorrelator() + "Step: " + step.toString() + 
+							", Result: " + result + 
+							", ExecutionStatus: " + executionStatus);
+
 				if (executionStatus != null && executionStatus.name().startsWith("DONE_")) {
 					completion++;
 					logger.debug("Step:" + step.stepCorrelator + " is complete with " + executionStatus);
 					if (executionStatus == Status.DONE_FAULT)
 						anyFault = true;
-				} else {
-					anyFault = true;
-					step.setFault(result.getResultantFault());
-					completion++;
-					logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
-
-				}
+				} //else {
+				//	anyFault = true;
+				//	step.setFault(result.getResultantFault());
+				//	completion++;
+				//	logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
+				//}
 			}
 		}
 		

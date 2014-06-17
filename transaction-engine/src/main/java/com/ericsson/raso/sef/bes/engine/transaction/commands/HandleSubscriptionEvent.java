@@ -153,7 +153,9 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 				}
 
 				if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
+					logger.debug("Checking in Fulfillment Step Result...");
 					if(result.getFault() != null){
+						logger.debug("Yes there is a fault in Fulfillment...");
 						txnStatus=new TransactionStatus();
 						txnStatus.setCode(result.getFault().getStatusCode().getCode());
 						txnStatus.setComponent(result.getFault().getComponent());
@@ -161,7 +163,9 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 						logger.debug("Fulfillment failure found. TxStatus: " + txnStatus);
 						break;
 					}else{
+						logger.debug("No Fault in Fulfillment Step...");
 						if((((FulfillmentStep) result).getResult()) != null) {
+							logger.debug("Handling functional results from backend...");
 							products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
 						}
 					}
