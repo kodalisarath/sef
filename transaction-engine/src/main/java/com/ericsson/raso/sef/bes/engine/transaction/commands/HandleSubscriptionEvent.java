@@ -15,6 +15,7 @@ import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleSubscriptionEventRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.HandleSubscriptionEventResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStep;
+import com.ericsson.raso.sef.bes.engine.transaction.orchestration.FulfillmentStepResult;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.Orchestration;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.OrchestrationManager;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.PersistenceStep;
@@ -154,7 +155,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 
 				if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
 					logger.debug("Checking in Fulfillment Step Result...");
-					if(result.getFault() != null){
+					if(((FulfillmentStepResult)result.getResult()).getResultantFault() != null){
 						logger.debug("Yes there is a fault in Fulfillment...");
 						txnStatus=new TransactionStatus();
 						txnStatus.setCode(result.getFault().getStatusCode().getCode());
