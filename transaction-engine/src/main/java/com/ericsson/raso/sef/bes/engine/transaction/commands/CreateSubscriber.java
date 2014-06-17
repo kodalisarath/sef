@@ -140,6 +140,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		LOGGER.debug("About to send request...");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
 		if (subscriberClient != null) {
+			LOGGER.debug("see what is null here? - requestId: " + this.getRequestId() + ", txnStatus: " + txnStatus + ", result: " + result);
 			subscriberClient.createSubscriber(this.getRequestId(), 
 					txnStatus, 
 					result);

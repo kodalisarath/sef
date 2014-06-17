@@ -1,6 +1,8 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,8 @@ public class ModifyCustomerGrace implements Processor {
 			metas.add(new Meta("EventInfo" , String.valueOf(request.getEventInfo())));
 			metas.add(new Meta("MessageId" , String.valueOf(request.getMessageId())));
 			metas.add(new Meta("AccessKey",request.getAccessKey()));
+			metas.add(new Meta("daysOfExtension", String.valueOf(request.getDaysOfExtension())));
+			
 			List<Meta> metasReadSubscriber = new ArrayList<Meta>();
 			metas.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
 			metasReadSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
@@ -118,46 +122,67 @@ public class ModifyCustomerGrace implements Processor {
 							}
 						}
 						if (IsGrace==true) {
+							logger.debug("Am in Grace S");
+							String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
+							  SubscriberInfo response = new SubscriberInfo();
+						      logger.debug("Got past event class....SK");
+							  SubscriberResponseStore.put(resultId, response);
+							  logger.debug("Got past event class....YEAH");
+								ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+								
+								try {
+								semaphore.init(0);
+								semaphore.acquire();
+								} catch(InterruptedException e) {
+									e.printStackTrace();
+									logger.debug("Exception while sleep     :"+e.getMessage());
+								}
+
+								
+								logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
+								
+								//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+								//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+								//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+								SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+								logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+								if(purchaseResponse == null) {
+									logger.debug("No response arrived???");
+									throw new SmException(ErrorCode.internalServerError);
+								}
+								
+								String date=subscriberObj.getSubscriber().getMetas().get("GraceEndDate");
+								if(date != null){
+									logger.debug("There is a grace end date entered and adding days to it now"+date);
+									//String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
+									
+									// handle the date extension
+									SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+									SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+									Date currentExpiryDate = metaStoreFormat.parse(date);
+									Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000));
+									String newExpiry = smartDateFormat.format(newExpiryDate);
+									
+									
+									
+									metas.add(new Meta("GraceEndDate",newExpiry));
+									logger.debug("There is a new GraceEndDate entered and adding days to it now"+ newExpiry);
+								}
+								else{
+									logger.debug("date is not found");
+								}
+								
+								SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerGrace);
+								if(subscriberInfo.getStatus() != null){
+									throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
+								}
+								exchange.getOut().setBody(subscriberInfo);
+						}
+						else {
 							throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
-							
 						}
 			}						
-					String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
-				     PurchaseResponse response = new PurchaseResponse();
-					logger.debug("Got past event class....");
-						RequestCorrelationStore.put(resultId, response);
-						ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-						
-						try {
-						semaphore.init(0);
-						semaphore.acquire();
-						} catch(InterruptedException e) {
-							e.printStackTrace();
-							logger.debug("Exception while sleep     :"+e.getMessage());
-						}
-
-						
-						logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
-						
-						//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-						PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
-						//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
-						logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-						if(purchaseResponse == null) {
-							logger.debug("No response arrived???");
-							throw new SmException(ErrorCode.internalServerError);
-						}
-						
-						String date=subscriberObj.getSubscriber().getMetas().get("GraceEndDate");
-						if(date != null){
-							String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
-							metas.add(new Meta("GraceEndDate",String.valueOf(newDate)));
-						}
-						SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerGrace);
-						if(subscriberInfo.getStatus() != null){
-							throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
-						}
-						exchange.getOut().setBody(subscriberInfo);
+					
 					}
 					
 			

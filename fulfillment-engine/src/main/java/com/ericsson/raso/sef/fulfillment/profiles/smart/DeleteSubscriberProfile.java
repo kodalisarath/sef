@@ -73,6 +73,7 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 		
 		
 		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
+		
 		logger.debug("Configred defaultServiceClass: " + defaultServiceClass);
 		
 		DeleteSubscriberRequest request = new DeleteSubscriberRequest();
@@ -82,6 +83,12 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 			request.setOriginOperatorId(deleteSubscriberProfile.getOriginOperatorId());
 	
 		request.setSubscriberNumber(map.get("SUBSCRIBER_ID"));
+		request.setSubscriberNumberNAI(1);
+		//request.setDeleteReasonCode(2);
+		logger.info("THIS IS IT");
+		request.setDeleteReasonCode(2);
+		request.setOriginOperatorID("originOperatorID");
+		logger.debug("THE DELETED REASON CODE IS " + request.getDeleteReasonCode());
 		DeleteSubscriberCommand deleteCommand = new DeleteSubscriberCommand(request);
 		logger.debug("Packed the request for execution..." + map.get("SUBSCRIBER_ID"));
 		
@@ -102,7 +109,8 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 		dnsRequest.setDtype(this.getDtype());
 		dnsRequest.setTtl(this.getTtl());
 		dnsRequest.setZname(this.getZname());
-		dnsRequest.setSiteId(null);
+		//dnsRequest.setSiteId(SefCoreServiceResolver.getConfigService().getValue("af1","site"));
+		logger.debug("AF1 SITE ID IS SK " +SefCoreServiceResolver.getConfigService().getValue("af1","site") );
 
 		logger.debug("Fetching the sdpId from Router");
 		String sdpId = (String) RequestContextLocalStore.get().getInProcess().get("sdpId");

@@ -125,11 +125,17 @@ public class UpdateSubscriber extends AbstractTransaction {
 				LOGGER.debug("Invoked ModifyCustomer Case");
 				for(Meta meta:listMetas){
                   LOGGER.debug("In the for loop ");
-					if(meta.getKey().equalsIgnoreCase("daysOfExtension")){
+					if(meta.getKey().equalsIgnoreCase("PreActiveEndDate")){
 						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
 						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 						
 					}
+					if(meta.getKey().equalsIgnoreCase("GraceEndDate")){
+						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
+						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+						
+					}
+					
 				}
 				break;
 			case Constants.SubscribePackageItem:

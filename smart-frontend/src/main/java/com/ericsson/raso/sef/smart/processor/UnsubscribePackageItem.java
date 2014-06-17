@@ -89,9 +89,11 @@ public class UnsubscribePackageItem implements Processor {
 				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBER_PACKAGE_ITEM_WelcomePackServiceClass"));
 				  metas.add(new Meta("ServiceClass",config.getValue("GLOBAL_welcomePackMapping", request.getPackaze())));
 				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
-				  PurchaseResponse response = new PurchaseResponse();
-			      logger.debug("Got past event class....");
-				  RequestCorrelationStore.put(resultId, response);
+				  SubscriberInfo response = new SubscriberInfo();
+			      logger.debug("Got past event class...SK.");
+				  //RequestCorrelationStore.put(resultId, response);
+			      SubscriberResponseStore.put(resultId, response);
+			      logger.debug("Got past event class....YEAH");
 				  ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 					
 					try {
@@ -106,8 +108,9 @@ public class UnsubscribePackageItem implements Processor {
 					logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 					
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-					PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+					SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 					if(purchaseResponse == null) {
 						logger.debug("No response arrived???");
@@ -122,7 +125,7 @@ public class UnsubscribePackageItem implements Processor {
 				  throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
 			  }
 			}
-		  
+		  else {
 		  Subscriber subscriber = subscriberObj.getSubscriber();
 			if (subscriber == null) {
 				logger.error("Unable to fetch the subscriber entity out");
@@ -199,6 +202,7 @@ public class UnsubscribePackageItem implements Processor {
 			else {
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 			}
+		  }
 
 	}
 

@@ -55,6 +55,7 @@ public class SubscribePackageItem implements Processor {
 		metas.add(new Meta("AccessKey",request.getAccessKey()));
 		metas.add(new Meta("Package",request.getPackaze()));
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
+		metas.add(new Meta("msisdn",request.getCustomerId()));
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		workflowMetas.add(new Meta("packaze", String.valueOf(request.getPackaze())));
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
@@ -89,9 +90,10 @@ public class SubscribePackageItem implements Processor {
 				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
 				  metas.add(new Meta("ServiceClass",config.getValue("GLOBAL_welcomePackMapping", request.getPackaze())));
 				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
-				  PurchaseResponse response = new PurchaseResponse();
-			      logger.debug("Got past event class....");
-				  RequestCorrelationStore.put(resultId, response);
+				  SubscriberInfo response = new SubscriberInfo();
+			      logger.debug("Got past event class....SK");
+				  SubscriberResponseStore.put(resultId, response);
+				  logger.debug("Got past event class....YEAH");
 				  ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 					
 					try {
@@ -106,7 +108,7 @@ public class SubscribePackageItem implements Processor {
 					logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 					
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-					PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+					SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 					if(purchaseResponse == null) {
@@ -121,14 +123,16 @@ public class SubscribePackageItem implements Processor {
 			  else {
 				  throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
 			  }
-			}
+			
 		  
-		  Subscriber subscriber = subscriberObj.getSubscriber();
+		  
+		  }
+			else {
+			Subscriber subscriber = subscriberObj.getSubscriber();
 			if (subscriber == null) {
 				logger.error("Unable to fetch the subscriber entity out");
 				throw ExceptionUtil.toSmException(ErrorCode.technicalError);
 			}
-			
 			logger.info("SK GET METAS BALANCE " + subscriber.getMetas());
 		  
 		    logger.info("check grace and recycle metas as subscriber is not pre-active");
@@ -166,7 +170,7 @@ public class SubscribePackageItem implements Processor {
 					}
 				}
 			}
-			if (IsGrace==true || NotRecycle==false) {
+			if (NotRecycle==false)  {
 				    String resultId=iSubscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 			        PurchaseResponse response = new PurchaseResponse();
 					logger.debug("Got past event class in subscription for grace and active....");
@@ -184,13 +188,18 @@ public class SubscribePackageItem implements Processor {
 					
 					logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 					
-					PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-					
+					// PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+					PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 					if(purchaseResponse == null) {
 						logger.debug("No response arrived???");
 						throw new SmException(ErrorCode.internalServerError);
+					}
+					else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 )
+					{
+							logger.debug("");
+							throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
 					}
 					else{
 						 CommandResponseData cr = this.createResponse(true);
@@ -199,6 +208,7 @@ public class SubscribePackageItem implements Processor {
 			}
 			else {
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+			}
 			}
 			     
 	}

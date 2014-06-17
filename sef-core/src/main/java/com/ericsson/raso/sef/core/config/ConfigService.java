@@ -106,9 +106,10 @@ public class ConfigService implements IConfig {
 		        		return property.getValue();
 					}
 				}
-			}
-		}
-		logger.debug("section (" + sectionId + ") not found");
+			} else
+			logger.debug("section (" + sectionId + ") has no entries");
+		} else
+			logger.debug("section (" + sectionId + ") not found");
 		return null;
 	}
 	

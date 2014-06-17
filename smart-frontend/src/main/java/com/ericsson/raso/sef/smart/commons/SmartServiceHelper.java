@@ -20,6 +20,7 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.read.Customer;
@@ -53,11 +54,9 @@ import com.hazelcast.core.ISemaphore;
 
 public abstract class SmartServiceHelper {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(SmartServiceHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(SmartServiceHelper.class);
 
-	public static SubscriberInfo getAndRefreshSubscriber(String msisdn)
-			throws SmException {
+	public static SubscriberInfo getAndRefreshSubscriber(String msisdn) throws SmException {
 
 		logger.debug("Entering getAndRefreshSubscriber.....");
 		String requestId = RequestContextLocalStore.get().getRequestId();
@@ -71,14 +70,11 @@ public abstract class SmartServiceHelper {
 		metas.add(meta);
 		logger.debug("Entering SmartServiceResolver.....");
 
-		ISubscriberRequest subscriberRequest = SmartServiceResolver
-				.getSubscriberRequest();
-		String correlationId = subscriberRequest.readSubscriber(requestId,
-				msisdn, metas);
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
 		SubscriberResponseStore.put(correlationId, subscriberInfo);
 
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
@@ -87,16 +83,12 @@ public abstract class SmartServiceHelper {
 			logger.debug("Exception while sleep     :" + e.getMessage());
 		}
 
-		logger.debug("Awake from sleep.. going to check subscriber response in store with id: "
-				+ correlationId);
+		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
 
-		subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.get(correlationId);
+		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
 
-		if (subscriberInfo != null && subscriberInfo.getStatus() != null
-				&& subscriberInfo.getStatus().getCode() == 504)
-			throw ExceptionUtil.toSmException(new ResponseCode(504,
-					"Unknown Subscriber"));
+		if (subscriberInfo != null && subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() == 504)
+			throw ExceptionUtil.toSmException(new ResponseCode(504, "Unknown Subscriber"));
 
 		updateSubscriberState(subscriberInfo);
 
@@ -109,8 +101,7 @@ public abstract class SmartServiceHelper {
 
 	}
 
-	public static SmartModel readSubscriberAccounts(String msisdn)
-			throws SmException {
+	public static SmartModel readSubscriberAccounts(String msisdn) throws SmException {
 		logger.debug("Entering getAndRefreshSubscriber.....");
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		logger.debug("Entering Request ID..... " + requestId);
@@ -123,14 +114,11 @@ public abstract class SmartServiceHelper {
 		metas.add(meta);
 		logger.debug("Entering SmartServiceResolver.....");
 
-		ISubscriberRequest subscriberRequest = SmartServiceResolver
-				.getSubscriberRequest();
-		String correlationId = subscriberRequest.readSubscriber(requestId,
-				msisdn, metas);
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, metas);
 		SubscriberResponseStore.put(correlationId, subscriberInfo);
 
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
@@ -139,11 +127,9 @@ public abstract class SmartServiceHelper {
 			logger.debug("Exception while sleep     :" + e.getMessage());
 		}
 
-		logger.debug("Awake from sleep.. going to check subscriber response in store with id: "
-				+ correlationId);
+		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
 
-		subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.get(correlationId);
+		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
 
 		Map<String, String> metaList = subscriberInfo.getMetas();
 
@@ -151,23 +137,19 @@ public abstract class SmartServiceHelper {
 
 	}
 
-	private static SubscriberInfo readEntireSubscriberInfo(String requestId,
-			String subscriberId, List<Meta> metas) {
-		ISubscriberRequest iSubscriberRequest = SmartServiceResolver
-				.getSubscriberRequest();
+	private static SubscriberInfo readEntireSubscriberInfo(String requestId, String subscriberId, List<Meta> metas) {
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
 		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
 		} catch (InterruptedException e) {
 		}
 		logger.info("Check if response received for read subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.remove(requestId);
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 
 	}
@@ -175,69 +157,50 @@ public abstract class SmartServiceHelper {
 	/*
 	 * private static void populateAccountDetails(Subscriber subscriberInfo) {
 	 * 
-	 * if (subscriberInfo != null && subscriberInfo.getAccountDetailsResponse()
-	 * != null) { accountDetailsResponse =
-	 * subscriberInfo.getAccountDetailsResponse(); } else {
-	 * GetAccountDetailsRequest accountDetailsRequest = new
-	 * GetAccountDetailsRequest();
-	 * accountDetailsRequest.setSubscriberNumber(customerId);
-	 * accountDetailsResponse = new GetAccountDetailsCommand(
+	 * if (subscriberInfo != null && subscriberInfo.getAccountDetailsResponse() != null) { accountDetailsResponse =
+	 * subscriberInfo.getAccountDetailsResponse(); } else { GetAccountDetailsRequest accountDetailsRequest = new GetAccountDetailsRequest();
+	 * accountDetailsRequest.setSubscriberNumber(customerId); accountDetailsResponse = new GetAccountDetailsCommand(
 	 * accountDetailsRequest).execute(); }
 	 * 
 	 * }
 	 * 
-	 * private static void populateUsAndUt() {
-	 * GetUsageThresholdsAndCountersRequest countersRequest = new
-	 * GetUsageThresholdsAndCountersRequest();
-	 * countersRequest.setSubscriberNumber(customerId);
-	 * GetUsageThresholdsAndCountersResponse usageRes = new
-	 * GetUsageThresholdsAndCountersCmd( countersRequest).execute();
+	 * private static void populateUsAndUt() { GetUsageThresholdsAndCountersRequest countersRequest = new
+	 * GetUsageThresholdsAndCountersRequest(); countersRequest.setSubscriberNumber(customerId); GetUsageThresholdsAndCountersResponse
+	 * usageRes = new GetUsageThresholdsAndCountersCmd( countersRequest).execute();
 	 * 
-	 * List<UsageCounterUsageThresholdInformation> ucUtList = usageRes
-	 * .getUsageCounterUsageThresholdInformation(); ucUtMap = new
-	 * HashMap<Integer, UsageCounterUsageThresholdInformation>(); for
-	 * (UsageCounterUsageThresholdInformation
-	 * usageCounterUsageThresholdInformation : ucUtList) { ucUtMap.put(
-	 * usageCounterUsageThresholdInformation.getUsageCounterID(),
+	 * List<UsageCounterUsageThresholdInformation> ucUtList = usageRes .getUsageCounterUsageThresholdInformation(); ucUtMap = new
+	 * HashMap<Integer, UsageCounterUsageThresholdInformation>(); for (UsageCounterUsageThresholdInformation
+	 * usageCounterUsageThresholdInformation : ucUtList) { ucUtMap.put( usageCounterUsageThresholdInformation.getUsageCounterID(),
 	 * usageCounterUsageThresholdInformation); }
 	 * 
 	 * }
 	 * 
-	 * private static void populateDaAndOffers() { GetBalanceAndDateRequest
-	 * gbdReq = new GetBalanceAndDateRequest();
-	 * gbdReq.setSubscriberNumber(customerId); GetBalanceAndDateResponse gbdRes
-	 * = new GetBalanceAndDateCommand(gbdReq) .execute();
-	 * List<DedicatedAccountInformation> daList = gbdRes
-	 * .getDedicatedAccountInformation();
+	 * private static void populateDaAndOffers() { GetBalanceAndDateRequest gbdReq = new GetBalanceAndDateRequest();
+	 * gbdReq.setSubscriberNumber(customerId); GetBalanceAndDateResponse gbdRes = new GetBalanceAndDateCommand(gbdReq) .execute();
+	 * List<DedicatedAccountInformation> daList = gbdRes .getDedicatedAccountInformation();
 	 * 
-	 * daMap = new HashMap<Integer, DedicatedAccountInformation>(); for
-	 * (DedicatedAccountInformation da : daList) {
+	 * daMap = new HashMap<Integer, DedicatedAccountInformation>(); for (DedicatedAccountInformation da : daList) {
 	 * daMap.put(da.getDedicatedAccountID(), da); }
 	 * 
-	 * List<OfferInformation> offerList = gbdRes.getOfferInformationList();
-	 * offerMap = new HashMap<Integer, OfferInformation>(); for
-	 * (OfferInformation offerInformation : offerList) {
-	 * offerMap.put(offerInformation.getOfferID(), offerInformation); } }
+	 * List<OfferInformation> offerList = gbdRes.getOfferInformationList(); offerMap = new HashMap<Integer, OfferInformation>(); for
+	 * (OfferInformation offerInformation : offerList) { offerMap.put(offerInformation.getOfferID(), offerInformation); } }
 	 */
 
-	public static EntireRead entireReadSubscriber(String msisdn)
-			throws SmException {
+	public static EntireRead entireReadSubscriber(String msisdn) throws SmException {
 		Date currentTime = new Date();
 		EntireRead entireRead = new EntireRead();
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		List<Meta> metaList = new ArrayList<Meta>();
 		metaList.add(new Meta("READ_SUBSCRIBER", "ENTIRE_READ_SUBSCRIBER"));
-		SubscriberInfo subscriberInfo = readEntireSubscriberInfo(requestId,
-				msisdn, metaList);
+		SubscriberInfo subscriberInfo = readEntireSubscriberInfo(requestId, msisdn, metaList);
 
-		logger.debug("Manila: subscriberInfo returned is " +subscriberInfo);
+		logger.debug("subscriberInfo returned is " + subscriberInfo);
 		Subscriber subscriber = subscriberInfo.getSubscriber();
-		logger.debug("Manila: subscriber object returned is " +subscriber);
-		if (subscriber == null)
-		{
-			logger.error("Manila: Subscriber Information is empty -- Returning Null.");
-			return null;
-			
+		logger.debug("subscriber object returned is " + subscriber);
+		if (subscriber == null) {
+			logger.error("Subscriber Information is empty -- Will treat as unknown subscriber.");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+
 		}
 
 		entireRead.setWelcomePack(EntireReadUtil.getWelcomePack(subscriber));
@@ -249,5 +212,4 @@ public abstract class SmartServiceHelper {
 
 	}
 
-	
 }

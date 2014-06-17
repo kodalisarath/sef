@@ -1,6 +1,8 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -53,8 +55,19 @@ public class ModifyCustomerPreActive implements Processor {
 			String date=subscriberObj.getSubscriber().getMetas().get("PreActiveEndDate");
 			if(date != null){
 				logger.debug("There is a preActive end date entered and adding days to it now"+date);
-				String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
-				metas.add(new Meta("PreActiveEndDate",String.valueOf(newDate)));
+				//String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
+				
+				// handle the date extension
+				SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+				Date currentExpiryDate = metaStoreFormat.parse(date);
+				Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000));
+				String newExpiry = smartDateFormat.format(newExpiryDate);
+				
+				
+				
+				metas.add(new Meta("PreActiveEndDate",newExpiry));
+				logger.debug("There is a new preActive end date entered and adding days to it now"+ newExpiry);
 			}
 			else{
 				logger.debug("date is not found");

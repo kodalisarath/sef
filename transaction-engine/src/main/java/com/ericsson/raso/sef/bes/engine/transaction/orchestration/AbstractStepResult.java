@@ -25,6 +25,12 @@ public abstract class AbstractStepResult implements Serializable {
 
 
 	public abstract boolean validateResult();
+
+
+	@Override
+	public String toString() {
+		return "AbstractStepResult [resultantFault=" + resultantFault + "]";
+	}
 	
 	
 }

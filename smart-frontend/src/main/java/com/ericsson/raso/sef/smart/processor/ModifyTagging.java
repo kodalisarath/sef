@@ -56,6 +56,7 @@ public class ModifyTagging implements Processor {
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		metas.add(new Meta("CustomerId", String.valueOf(request.getCustomerId())));
+		metas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
 		metas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
 		metas.add(new Meta("Tagging", String.valueOf(request.getTagging())));
 		metas.add(new Meta("EventInfo", String.valueOf(request.getEventInfo())));
@@ -152,10 +153,10 @@ public class ModifyTagging implements Processor {
 		}
 		
 		String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
-	    PurchaseResponse response = new PurchaseResponse();
-		logger.debug("Got past event class....");
-		logger.debug("Got past event class in subscription for grace and active....");
-		RequestCorrelationStore.put(resultId, response);
+		SubscriberInfo response = new SubscriberInfo();
+	      logger.debug("Got past event class....SK");
+		  SubscriberResponseStore.put(resultId, response);
+		  logger.debug("Got past event class....YEAH");
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		
 		try {
@@ -169,9 +170,8 @@ public class ModifyTagging implements Processor {
 		
 		logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 		
-		//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-		PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
-		//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+		
+		SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 		if(purchaseResponse == null) {
 			logger.debug("No response arrived???");

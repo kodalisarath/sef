@@ -44,16 +44,16 @@ public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
 		
 		String msisdn = map.get("msisdn");
 		String packag = map.get("package");
-		String pack = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_welcomePackMapping", packag);
+		//String pack = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_welcomePackMapping", packag);
 		
 		List<Product> products = new ArrayList<Product>();
 		logger.debug("Invoking CS to update service class");
 		UpdateServiceClassRequest request = new UpdateServiceClassRequest();
 		request.setSubscriberNumber(msisdn);
 		request.setServiceClassAction(this.serviceClassAction);
-		request.setServiceClassNew(Integer.parseInt(pack));
-		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
-		request.setServiceClassCurrent(Integer.valueOf(defaultServiceClass));		
+		request.setServiceClassNew(Integer.parseInt(map.get("ServiceClass")));
+		//String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
+		//request.setServiceClassCurrent(Integer.valueOf(defaultServiceClass));		
 		Command<?> cmd = new UpdateServiceClassCommand(request);
 		try {
 			cmd.execute();

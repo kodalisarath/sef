@@ -42,7 +42,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 					case REMOVE:
 						LOGGER.debug("Deleting Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
 						subscriberService.fulldeleteSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity));
-						LOGGER.debug("Subscriber deleted.");
+						LOGGER.debug("Subscriber in dunning state.");
 						
 						if (this.getResult() == null) {
 							this.setResult(new PersistenceStepResult(null, true));

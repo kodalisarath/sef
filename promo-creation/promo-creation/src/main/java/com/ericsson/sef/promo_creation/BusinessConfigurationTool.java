@@ -38,6 +38,7 @@ import com.ericsson.raso.sef.fulfillment.profiles.UpdateSubscriberSegmentationPr
 import com.ericsson.raso.sef.fulfillment.profiles.smart.CreateSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.DedicatedAccountReversal;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.DeleteSubscriberProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.smart.FlexiRechargeProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.ModifyCustomerGraceProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.ReversalProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.SubscribePackageItemProfile;
@@ -192,7 +193,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - InitialSC - WelcomePackServiceClass...");
-			resource = this.createUpdateServiceClassProfile("InitialSC-WelcomePackServiceClass", "Tag Subsriber Reset");
+			resource = this.createSmartWelcomePackProfile("InitialSC-WelcomePackServiceClass", "Tag Subsriber Reset");
 			handles = new ArrayList<String>();
 			handles.add("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass");
 			bizConfig = this.getSimpleBcWorkflow("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass", "WelcomePack - ServiceClass", handles, resource);
@@ -200,7 +201,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 			
 			System.out.println("Offer, Resource & Profile - Subscribe WelcomePackServiceClass...");
-			resource = this.createUpdateServiceClassProfile("SubscribePackageItem", "Welcome Pack Service Class");
+			resource = this.createSmartWelcomePackProfile("SubscribePackageItem", "Welcome Pack Service Class");
 			handles = new ArrayList<String>();
 			handles.add("SUBSCRIBE_PACKAGE_ITEM");
 			bizConfig = this.getSimpleBcWorkflow("SubscribePackageItem", "WelcomePack - ServiceClass", handles, resource);
@@ -567,7 +568,17 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("Reversal Economy (30)", "Reversal Economy (30)", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
+	
 			
+			//===========>>>> Flexi Refilll... 
+			resource = this.createSmartFlexiRefillProfile("FlexiRefill");
+			handles = new ArrayList<String>();
+			handles.add("FlexiRefill");
+			
+			bizConfig = this.getSimpleBcWorkflow("FlexiRefill", "Flexi Refill", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+	
 			//=====================================
 			System.out.println("Offer, Balance Adjustment...");
 			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
@@ -902,6 +913,25 @@ public class BusinessConfigurationTool {
 	}
 
 	
+	public Resource createSmartFlexiRefillProfile(String name) throws CatalogException {
+
+		Resource resource = new Service(name);
+		resource.setDescription("Balance Adjustment Profile");
+		resource.setConsumable(true);
+		resource.setDiscoverable(true);
+		resource.setExternallyConsumed(true);
+		resource.setConsumptionUnitName("PHP");
+
+		FlexiRechargeProfile fulfillmentProfile = new FlexiRechargeProfile(name);
+		
+
+		resource.addFulfillmentProfile(fulfillmentProfile.getName());
+		profileRegistry.createProfile(fulfillmentProfile);
+
+		return resource;
+	}
+
+	
 
 	public Resource createSmartInitialSCWelcomePackProfile(String name, String description) throws Exception
 	{
@@ -914,7 +944,7 @@ public class BusinessConfigurationTool {
 		resource.setEnforcedMaxQuota(-1L);
 		resource.setEnforcedMinQuota(-1L);
 		
-		UpdateServiceClassProfile fulfillmentProfile = new UpdateServiceClassProfile(name);
+		SubscribePackageItemProfile fulfillmentProfile = new SubscribePackageItemProfile(name);
 		fulfillmentProfile.setServiceClassAction("SetOriginal");
 		
 		profileRegistry.createProfile(fulfillmentProfile);
@@ -923,7 +953,7 @@ public class BusinessConfigurationTool {
 		return resource;
 	}
 
-	public Resource createSmartWelcomePackProfile(String name, String description) throws Exception
+	public Resource createSmartWelcomePackProfile(String name, String description) throws CatalogException
 	{
 		Resource resource = new Service(name);
 		resource.setDescription(description);
@@ -968,16 +998,15 @@ public class BusinessConfigurationTool {
 		List<ServiceOffering> serviceOfferings = new ArrayList<ServiceOffering>();
 		for (int i=0; i<8; i++ ) {
 			ServiceOffering soInfo = new ServiceOffering();
-			if (soId == i) {
-				soInfo.setServiceOfferingId(soId);
+			soInfo.setServiceOfferingId(i);
+			if (soId == 0)
 				soInfo.setServiceOfferingActiveFlag(false);
-			} else {
-				soInfo.setServiceOfferingId(soId);
+			else
 				soInfo.setServiceOfferingActiveFlag((soId==i));
-			}
 			serviceOfferings.add(soInfo);
 		}
-
+		System.out.println("Service Offerings prepared: " + serviceOfferings);
+		
 		fulfillmentProfile.setServiceOfferings(serviceOfferings);
 
 

@@ -29,14 +29,13 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 	private static final long	serialVersionUID	= -4882916995875270437L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlexiRechargeProfile.class);
 
-	protected FlexiRechargeProfile(String name) {
+	public FlexiRechargeProfile(String name) {
 		super(name);
 	}
 
 	@Override
 	public List<Product> fulfill(Product product, Map<String, String> map) throws FulfillmentException {
 		List<Product> fulfilled = new ArrayList<Product>();
-		Map<String, String> responseMetas = new HashMap<String, String>();
 		
 		LOGGER.debug("Flexi Recharge Inputs to Fulfillment: " + map);
 		String amountOfUnits = map.get("amountOfUnits");
@@ -148,7 +147,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		this.handleResponse(map, updateGraceOfferResponse);
 		
 		
-		product.setMetas(responseMetas);
+		product.setMetas(map);
 		fulfilled.add(product);
 		return fulfilled;
 	}
@@ -160,9 +159,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 	private void handleResponse(Map<String, String> map, UpdateBalanceAndDateResponse balanceAndDateResponse) {
 		int index = 0;
 		for (DedicatedAccountChangeInformation daInfo: balanceAndDateResponse.getDedicatedAccountInformation()) {
-			map.put("DA_ID" + "." + ++index, "" + daInfo.getDedicatedAccountID());
-			map.put("DA_VALUE_1" + "." + index, "" + daInfo.getDedicatedAccountValue1());
-			map.put("DA_UNIT_TYPE" + "." + index, "" + daInfo.getDedicatedAccountUnitType());			
+			map.put("DA."+ ++index, daInfo.getDedicatedAccountID() + "," + daInfo.getDedicatedAccountValue1() + "," + daInfo.getDedicatedAccountUnitType());
 		}
 	}
 	
@@ -216,8 +213,8 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "FlexiRechargeProfile []";
 	}
 
+	
 }

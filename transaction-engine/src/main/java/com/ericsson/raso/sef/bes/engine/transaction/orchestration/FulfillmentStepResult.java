@@ -53,7 +53,7 @@ public class FulfillmentStepResult extends AbstractStepResult {
 
 	@Override
 	public String toString() {
-		return "FulfillmentStepResult [fulfillmentResult=" + fulfillmentResult + ", metas=" + metas + "]";
+		return "FulfillmentStepResult [" + super.toString() + "fulfillmentResult=" + fulfillmentResult + ", metas=" + metas + "]";
 	}
 
 	

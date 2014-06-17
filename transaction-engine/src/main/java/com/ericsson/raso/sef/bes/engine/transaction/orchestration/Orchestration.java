@@ -164,8 +164,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 //						this.promote2Schedule();
 						//TODO: remove this when uncomment the above two tasks
 						this.promote2Persist();
-						logger.debug("Stifled the persistence to stop executing in preventing the thread model to break...");
-						this.status = Status.DONE_SUCCESS; //TODO: uncomment this when Vinay has fixed the bug in DB TIER....
+						this.status = Status.DONE_SUCCESS; 
 
 					} else {
 						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
@@ -290,7 +289,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
-					logger.debug("Confirming the state of completed step: " + step.stepCorrelator + " = " + this.sbExecutionStatus.get(step.stepCorrelator));
+					if (executionStatus == Status.DONE_FAULT)
+						anyFault = true;
+					
+					if (result != null)
+						step.setFault(result.getResultantFault());
+					
+					logger.debug("Confirming the state of completed step: " 
+								+ step.stepCorrelator + " = " + this.sbExecutionStatus.get(step.stepCorrelator) 
+								+ "Fault: " + result.getResultantFault());
 
 				}
 				
@@ -335,8 +342,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					} else if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
 						logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
+						if (executionStatus == Status.DONE_FAULT)
+							anyFault = true;
 						
-						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " + this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED));
+						if (result != null)
+							step.setFault(result.getResultantFault());
+						
+						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " 
+									+ this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED)
+									+ "Fault: " + result.getResultantFault());
 					}
 					
 					
@@ -348,7 +362,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		logger.debug("isAllStepsCompleted?" + isAllStepsCompleted);
 		
 		if (isAllStepsCompleted) {
-			this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_SUCCESS);
+			if (!anyFault)
+				this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_SUCCESS);
+			else 
+				this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_FAULT);
+				
 			//this.phasingProgress.put(Phase.TX_PHASE_SCHEDULE, Status.PROCESSING);          //TODO: revert back to scheduler
 			this.phasingProgress.put(Phase.TX_PHASE_PERSISTENCE, Status.PROCESSING);  
 			logger.debug("Orchestration Phase promoted to : " + this.phasingProgress);
@@ -573,6 +591,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private ParallelExecution packPreparation(Queue<Fulfillment> toProcess) {
 		ParallelExecution prepFulfill = new ParallelExecution();
 		
+		logger.debug("Packing Preparation is commented out....");
 		//2do: uncomment this when rollback is ready!!!
 //		for (TransactionTask task: toProcess) {
 //			if (task instanceof Fulfillment && ((Fulfillment)task).getMode() == FulfillmentMode.FULFILL) {
@@ -829,22 +848,23 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			if (next instanceof Step) {
 				step = (Step) next;
 				
-				logger.debug("Checking " + step.getStepCorrelator() + "Step: " + step.toString());
-
 				AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 				Status executionStatus = this.sbExecutionStatus.get(step.stepCorrelator);
+				logger.debug("Checking " + step.getStepCorrelator() + "Step: " + step.toString() + 
+							", Result: " + result + 
+							", ExecutionStatus: " + executionStatus);
+
 				if (executionStatus != null && executionStatus.name().startsWith("DONE_")) {
 					completion++;
 					logger.debug("Step:" + step.stepCorrelator + " is complete with " + executionStatus);
 					if (executionStatus == Status.DONE_FAULT)
 						anyFault = true;
-				} else {
-					anyFault = true;
-					step.setFault(result.getResultantFault());
-					completion++;
-					logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
-
-				}
+				} //else {
+				//	anyFault = true;
+				//	step.setFault(result.getResultantFault());
+				//	completion++;
+				//	logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
+				//}
 			}
 		}
 		
