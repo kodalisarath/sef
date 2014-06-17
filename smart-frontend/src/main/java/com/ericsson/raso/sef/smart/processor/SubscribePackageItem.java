@@ -123,14 +123,16 @@ public class SubscribePackageItem implements Processor {
 			  else {
 				  throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
 			  }
-			}
+			
 		  
-		  Subscriber subscriber = subscriberObj.getSubscriber();
+		  
+		  }
+			else {
+			Subscriber subscriber = subscriberObj.getSubscriber();
 			if (subscriber == null) {
 				logger.error("Unable to fetch the subscriber entity out");
 				throw ExceptionUtil.toSmException(ErrorCode.technicalError);
 			}
-			
 			logger.info("SK GET METAS BALANCE " + subscriber.getMetas());
 		  
 		    logger.info("check grace and recycle metas as subscriber is not pre-active");
@@ -206,6 +208,7 @@ public class SubscribePackageItem implements Processor {
 			}
 			else {
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+			}
 			}
 			     
 	}

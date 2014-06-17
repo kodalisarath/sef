@@ -125,7 +125,7 @@ public class UnsubscribePackageItem implements Processor {
 				  throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
 			  }
 			}
-		  
+		  else {
 		  Subscriber subscriber = subscriberObj.getSubscriber();
 			if (subscriber == null) {
 				logger.error("Unable to fetch the subscriber entity out");
@@ -202,6 +202,7 @@ public class UnsubscribePackageItem implements Processor {
 			else {
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 			}
+		  }
 
 	}
 
