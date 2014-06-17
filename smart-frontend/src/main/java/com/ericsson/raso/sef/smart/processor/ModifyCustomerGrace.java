@@ -51,6 +51,7 @@ public class ModifyCustomerGrace implements Processor {
 			metas.add(new Meta("EventInfo" , String.valueOf(request.getEventInfo())));
 			metas.add(new Meta("MessageId" , String.valueOf(request.getMessageId())));
 			metas.add(new Meta("AccessKey",request.getAccessKey()));
+			metas.add(new Meta("daysOfExtension", String.valueOf(request.getDaysOfExtension())));
 			List<Meta> metasReadSubscriber = new ArrayList<Meta>();
 			metas.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
 			metasReadSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
