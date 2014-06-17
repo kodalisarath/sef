@@ -12,7 +12,7 @@ public class DeleteSubscriberRequest extends AbstractAirRequest {
 		return this.deleteReasonCode;
 	}
 	
-	public void setDeleteReasonCode(Integer subscriberNumberNAI) {
+	public void setDeleteReasonCode(Integer deleteReasonCode) {
 		this.deleteReasonCode = deleteReasonCode;
 		addParam("deleteReasonCode", this.deleteReasonCode);
 	}
