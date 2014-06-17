@@ -633,44 +633,40 @@ public class CARecharge implements Processor {
 			 */
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); String responseEntry;
-			
-			
-			if (Integer.parseInt(afterOffer.offerID) >= 2000) {
-				//UnliSmsOnCtl:s_PeriodicBonus;1;1;2014-08-07 18:41:59
-				responseEntry = balanceId + ";" + 1 + ";" + 1 + ";"
-						+ format.format(new Date(afterOffer.offerExpiry));
-			} else {
-				
-				OfferInfo beforeOffer = beforeOfferEntries.get(afterOffer.offerID);
-				
-				String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", afterOffer.offerID);
-				if (requiredDA == null) {
-					logger.debug("Seems like OfferID: " + afterOffer.offerID + " can be ignored, since there is no DA associated...");
-					continue;
-				}
-				
-				int daBalanceDiff = 0;
-				if (beforeDA == null && afterDA == null) {
-					logger.debug("Strange Situation. DA:" + daId + " is configured to map with Offer:" + afterOffer.offerID + ", but CS has not returned either Before or After Value!!");
-					continue;
-				}
-				if (beforeDA == null && afterDA != null)
-					daBalanceDiff = afterDA.daValue;
-				else if (beforeDA != null && afterDA == null) {
-					if (beforeOffer.offerExpiry == afterOffer.offerExpiry) {
-						logger.debug("According to Navneet, this case must not be sent back to SMART. Offer(after):" + afterOffer.offerID + ", Offer(before):" + beforeOffer);
-						continue;
-					}
-					daBalanceDiff = beforeDA.daValue;
-					
-				} else {
-					daBalanceDiff = afterDA.daValue - beforeDA.daValue;
-					
-				}
 
-				responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue + ";"
-						+ format.format(new Date(afterOffer.offerExpiry));
+
+			OfferInfo beforeOffer = beforeOfferEntries.get(afterOffer.offerID);
+
+			String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", afterOffer.offerID);
+			if (requiredDA == null) {
+				logger.debug("Seems like OfferID: " + afterOffer.offerID + " can be ignored, since there is no DA associated...");
+				continue;
 			}
+
+			int daBalanceDiff = 0;
+			if (beforeDA == null && afterDA == null) {
+				logger.debug("Strange Situation. DA:" + daId + " is configured to map with Offer:" + afterOffer.offerID + ", but CS has not returned either Before or After Value!!");
+				continue;
+			}
+			if (beforeDA == null && afterDA != null)
+				daBalanceDiff = afterDA.daValue;
+			else if (beforeDA != null && afterDA == null) {
+				logger.debug("Navneet CASE1: BeforeDA is present & AfterDA is NOT present... Before DA:" + beforeDA + ", After DA:" +afterDA );
+				if (beforeOffer.offerExpiry == afterOffer.offerExpiry) {
+					logger.debug("According to Navneet, this case must not be sent back to SMART. Offer(after):" + afterOffer.offerID + ", Offer(before):" + beforeOffer);
+					continue;
+				}
+				daBalanceDiff = beforeDA.daValue;
+
+			} else {
+				daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+
+			}
+
+			if (Integer.parseInt(afterOffer.offerID) >= 2000)
+				responseEntry = balanceId + ";" + 1 + ";" + 1 + ";"	+ format.format(new Date(afterOffer.offerExpiry));
+			else
+				responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
 			
 			StringElement stringElement = new StringElement();
 			stringElement.setValue(responseEntry);
