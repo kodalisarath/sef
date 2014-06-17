@@ -38,10 +38,10 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 
 		// Metas...
 		Map<String,String> metas = new HashMap<String,String>();
-		metas.put("category", request.getCategory());
+		metas.put("Category", request.getCategory());
 		metas.put("billCycleId", String.valueOf(request.getBillCycleId()));
 		metas.put("MessageId",  String.valueOf(request.getMessageId()));
-		metas.put("package",  "initialSC");
+		metas.put("Package",  "initialSC");
 		
 		IConfig config = SefCoreServiceResolver.getConfigService();
 

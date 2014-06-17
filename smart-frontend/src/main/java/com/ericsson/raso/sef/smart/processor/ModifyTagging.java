@@ -56,6 +56,7 @@ public class ModifyTagging implements Processor {
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		metas.add(new Meta("CustomerId", String.valueOf(request.getCustomerId())));
+		metas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
 		metas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
 		metas.add(new Meta("Tagging", String.valueOf(request.getTagging())));
 		metas.add(new Meta("EventInfo", String.valueOf(request.getEventInfo())));
