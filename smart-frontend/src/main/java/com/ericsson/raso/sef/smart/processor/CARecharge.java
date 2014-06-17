@@ -87,6 +87,10 @@ public class CARecharge implements Processor {
 			}
 
 			requestContextCache.set(metas);
+			
+			Subscriber susbcriber = readSubscriber(requestId, msisdn);
+			if (susbcriber == null)
+				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 
 			logger.debug("Getting event class....");
 			String eventClass = rechargeRequest.getEventClass();
@@ -161,6 +165,30 @@ public class CARecharge implements Processor {
 
 		}
 
+	}
+	
+	private Subscriber readSubscriber(String requestId, String msisdn) throws SmException {
+		logger.info("Invoking update subscriber on tx-engine subscriber interface");
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		iSubscriberRequest.readSubscriber(requestId, msisdn, new ArrayList<Meta>());
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+
+		}
+		logger.info("Check if response received for update subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
+			logger.debug("Inside the if condition for status check");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		}
+		
+		return subscriberInfo.getSubscriber();
 	}
 
 	private Map<String, String> prepareRecharge(RechargeRequest rechargeRequest) {
@@ -595,23 +623,43 @@ public class CARecharge implements Processor {
 			DaInfo beforeDA = beforeDaEntries.get(daId);
 			DaInfo afterDA = afterDaEntries.get(daId);
 
-			if (afterDA == null) {
-				logger.warn("Seems like DA: " + daId + " can be ignored...");
-				continue;
-			}
-
-			int daBalanceDiff = 0;
-			if (beforeDA == null)
-				daBalanceDiff = afterDA.daValue;
-			else
-				daBalanceDiff = afterDA.daValue - beforeDA.daValue;
-
+			
+			/*
+			 * After many dily-dallying, which is evident of ericsson being smart'iszed.... the latest understanding is that
+			 * we no longer have before and after correlation....
+			 * - if before is not available, then use after's balance
+			 * - if after is not available, then use before's balance
+			 * - if both are available only, then we actually calculate any balance....
+			 * 
+			 * 
+			 * even before I finish this comment... the requirement has changed to....
+			 * if offerId > 2000, then hardcode the responses...
+			 */
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); String responseEntry;
 			OfferInfo afterOffer = afterOfferEntries.get(oInfo.offerID);
+ 
+			if (Integer.parseInt(oInfo.offerID) >= 2000) {
+				//UnliSmsOnCtl:s_PeriodicBonus;1;1;2014-08-07 18:41:59
+				responseEntry = balanceId + ";" + 1 + ";" + 1 + ";"
+						+ format.format(new Date(afterOffer.offerExpiry));
+			} else {
 
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue + ";"
-					+ format.format(new Date(afterOffer.offerExpiry));
+				if (afterDA == null) {
+					logger.warn("Seems like DA: " + daId + " can be ignored...");
+					continue;
+				}
 
+				int daBalanceDiff = 0;
+				if (beforeDA == null)
+					daBalanceDiff = afterDA.daValue;
+				else
+					daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+
+				responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue + ";"
+						+ format.format(new Date(afterOffer.offerExpiry));
+			}
+			
 			StringElement stringElement = new StringElement();
 			stringElement.setValue(responseEntry);
 			listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);

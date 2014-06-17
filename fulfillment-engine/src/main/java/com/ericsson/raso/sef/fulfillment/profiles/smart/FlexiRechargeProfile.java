@@ -29,7 +29,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 	private static final long	serialVersionUID	= -4882916995875270437L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlexiRechargeProfile.class);
 
-	protected FlexiRechargeProfile(String name) {
+	public FlexiRechargeProfile(String name) {
 		super(name);
 	}
 
