@@ -193,6 +193,11 @@ public class SubscribePackageItem implements Processor {
 						logger.debug("No response arrived???");
 						throw new SmException(ErrorCode.internalServerError);
 					}
+					else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 )
+					{
+							logger.debug("");
+							throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
+					}
 					else{
 						 CommandResponseData cr = this.createResponse(true);
 					      exchange.getOut().setBody(cr);
