@@ -105,10 +105,11 @@ public class EntireDeleteSubscriber implements Processor{
 			logger.debug("No response arrived???");
 			throw new SmException(ErrorCode.internalServerError);
 		}
+		else{
+			logger.info("Check if response received for update subscriber");
+			return purchaseResponse;
+		}	
 		
-		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		return subscriberInfo;
 		
 	}
 
