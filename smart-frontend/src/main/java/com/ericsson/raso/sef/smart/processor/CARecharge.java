@@ -353,8 +353,8 @@ public class CARecharge implements Processor {
 				if (expiry.equals("null"))
 					expiry = offerParts[4];
 
-				String daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
-				String walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
+				String daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", offerId);
+				String walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offerId);
 
 				oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), daID, walletName);
 				subscriberOffers.put(offerId, oInfo);
