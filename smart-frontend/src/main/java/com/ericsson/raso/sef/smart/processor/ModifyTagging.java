@@ -152,10 +152,10 @@ public class ModifyTagging implements Processor {
 		}
 		
 		String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
-	    PurchaseResponse response = new PurchaseResponse();
-		logger.debug("Got past event class....");
-		logger.debug("Got past event class in subscription for grace and active....");
-		RequestCorrelationStore.put(resultId, response);
+		SubscriberInfo response = new SubscriberInfo();
+	      logger.debug("Got past event class....SK");
+		  SubscriberResponseStore.put(resultId, response);
+		  logger.debug("Got past event class....YEAH");
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		
 		try {

@@ -89,9 +89,11 @@ public class UnsubscribePackageItem implements Processor {
 				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBER_PACKAGE_ITEM_WelcomePackServiceClass"));
 				  metas.add(new Meta("ServiceClass",config.getValue("GLOBAL_welcomePackMapping", request.getPackaze())));
 				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
-				  PurchaseResponse response = new PurchaseResponse();
-			      logger.debug("Got past event class....");
-				  RequestCorrelationStore.put(resultId, response);
+				  SubscriberInfo response = new SubscriberInfo();
+			      logger.debug("Got past event class...SK.");
+				  //RequestCorrelationStore.put(resultId, response);
+			      SubscriberResponseStore.put(resultId, response);
+			      logger.debug("Got past event class....YEAH");
 				  ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 					
 					try {
