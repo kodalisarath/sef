@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ericsson.sef</groupId>
+	<artifactId>sef-smpp-gateway</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>com.ericsson.sef</groupId>
+			<artifactId>sef-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ericsson.sef</groupId>
+			<artifactId>sef-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.jsmpp</groupId>
+			<artifactId>jsmpp</artifactId>
+			<version>2.1.0-RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-camel</artifactId>
+			<version>5.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ericsson.sef</groupId>
+			<artifactId>sef-product-catalog</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+			<version>2.2.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.cloudhopper</groupId>
+			<artifactId>ch-smpp</artifactId>
+			<version>5.0.1</version>
+		</dependency>
+	</dependencies>
+	<properties>
+		<osgi-import-package>
+			<!-- ${smcore-packages}, -->
+			<!--META-INF.subscriber-frontend-client, com.ericsson.sm.api.subscriber, 
+				com.ericsson.sm.api.notification, -->
+			org.jsmpp,
+			org.jsmpp.session,
+			org.jsmpp.bean,
+			org.jsmpp.extra,
+			org.jsmpp.util,
+			com.cloudhopper.commons.charset,
+			com.cloudhopper.smpp,
+			com.cloudhopper.smpp.pdu,
+			!com.cloudhopper.smpp.ssl,
+			META-INF.cxf,
+			META-INF.product-catalog,
+			META-INF.sef-core,
+			javax.crypto,
+			com.ericsson.raso.sef.core,
+			com.ericsson.raso.sef.core.model,
+			com.ericsson.raso.sef.core.camelprocessors,
+			com.ericsson.raso.sef.auth.*,
+			com.ericsson.raso.sef.core.config,
+			com.ericsson.raso.sef.logging,
+			com.ericsson.raso.sef.core.jaxws.*,
+			org.apache.cxf.binding.soap,
+			com.ericsson.raso.sef.core.db.model,
+			com.ericsson.raso.sef.bes.prodcat,
+			com.ericsson.raso.sef.bes.prodcat.service,
+			com.ericsson.raso.sef.bes.prodcat.entities,
+			com.ericsson.sef.bes.api.subscription,
+			com.ericsson.sef.bes.api.subscriber,
+			org.apache.activemq.camel.component,
+			org.apache.cxf.jaxws,
+			org.apache.camel.builder,
+			org.apache.camel,
+			org.apache.camel.model,
+			org.springframework.context,
+			org.slf4j,
+			com.cloudhopper.smpp.impl,
+			org.opensaml.ws,
+			com.cloudhopper.smpp.type,
+			org.springframework.beans,
+			<!-- com.ericsson.sm.catalog, com.ericsson.sm.catalog.model, com.ericsson.sm.catalog.model.resource, 
+				com.ericsson.sm.catalog.model.policy, ${charging-adapter-package}, META-INF.ca-client, 
+				* -->
+		</osgi-import-package>
+	</properties>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>2.4.0</version>
+				<configuration>
+					<instructions>
+						<Import-Package>${osgi-import-package}</Import-Package>
+						<DynamicImport-Package>${osgi-dynamicimport-package}</DynamicImport-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
