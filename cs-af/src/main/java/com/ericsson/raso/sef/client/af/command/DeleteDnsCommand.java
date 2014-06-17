@@ -36,7 +36,8 @@ public class DeleteDnsCommand implements Command<Void> {
 			Name zone = Name.fromString(lastDigit + request.getZname());
 			Update update = new Update(zone);
 			update.delete(Name.fromString(updateMsisdn + request.getZname()), request.getDtype());
-			Resolver res = new SimpleResolver(dns.getIp());
+			// Resolver res = new SimpleResolver(dns.getIp());
+			Resolver res = new SimpleResolver("10.245.139.132");
 			res.setTCP(dns.isUseTcp());
 			
 			log.info("DNS Delete entry: "  + update.toString());

@@ -73,6 +73,7 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 		
 		
 		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
+		
 		logger.debug("Configred defaultServiceClass: " + defaultServiceClass);
 		
 		DeleteSubscriberRequest request = new DeleteSubscriberRequest();
@@ -108,7 +109,7 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 		dnsRequest.setDtype(this.getDtype());
 		dnsRequest.setTtl(this.getTtl());
 		dnsRequest.setZname(this.getZname());
-		dnsRequest.setSiteId(null);
+		dnsRequest.setSiteId(SefCoreServiceResolver.getConfigService().getValue("af1","site"));
 
 		logger.debug("Fetching the sdpId from Router");
 		String sdpId = (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
