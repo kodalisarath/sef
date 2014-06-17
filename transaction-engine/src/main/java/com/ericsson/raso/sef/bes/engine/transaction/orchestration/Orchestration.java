@@ -591,6 +591,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	private ParallelExecution packPreparation(Queue<Fulfillment> toProcess) {
 		ParallelExecution prepFulfill = new ParallelExecution();
 		
+		logger.debug("Packing Preparation is commented out....");
 		//2do: uncomment this when rollback is ready!!!
 //		for (TransactionTask task: toProcess) {
 //			if (task instanceof Fulfillment && ((Fulfillment)task).getMode() == FulfillmentMode.FULFILL) {
