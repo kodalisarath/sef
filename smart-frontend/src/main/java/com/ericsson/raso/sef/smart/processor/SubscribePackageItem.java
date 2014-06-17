@@ -55,6 +55,7 @@ public class SubscribePackageItem implements Processor {
 		metas.add(new Meta("AccessKey",request.getAccessKey()));
 		metas.add(new Meta("Package",request.getPackaze()));
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
+		metas.add(new Meta("msisdn",request.getCustomerId()));
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		workflowMetas.add(new Meta("packaze", String.valueOf(request.getPackaze())));
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
