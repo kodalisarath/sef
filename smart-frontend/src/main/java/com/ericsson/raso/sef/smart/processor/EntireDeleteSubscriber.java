@@ -85,9 +85,10 @@ public class EntireDeleteSubscriber implements Processor{
 		
 		String resultId=iSubscriberRequest.deleteSubscriber(requestId, customerId);	
 		
-		PurchaseResponse response = new PurchaseResponse();
-		logger.debug("Got past event class....");
-			RequestCorrelationStore.put(resultId, response);
+		SubscriberInfo response = new SubscriberInfo();
+	      logger.debug("Got past event class....SK");
+		  SubscriberResponseStore.put(resultId, response);
+		  logger.debug("Got past event class....YEAH");
 			
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
@@ -98,9 +99,7 @@ public class EntireDeleteSubscriber implements Processor{
 		}
 		logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 		
-		//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-		PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
-		//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+		SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 		if(purchaseResponse == null) {
 			logger.debug("No response arrived???");
