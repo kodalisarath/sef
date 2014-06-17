@@ -55,6 +55,7 @@ public class ModifyCustomerPreActive implements Processor {
 				logger.debug("There is a preActive end date entered and adding days to it now"+date);
 				String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
 				metas.add(new Meta("PreActiveEndDate",String.valueOf(newDate)));
+				logger.debug("There is a new preActive end date entered and adding days to it now"+newDate);
 			}
 			else{
 				logger.debug("date is not found");
