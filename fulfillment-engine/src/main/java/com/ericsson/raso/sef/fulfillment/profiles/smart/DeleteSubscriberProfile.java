@@ -110,7 +110,7 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 		dnsRequest.setTtl(this.getTtl());
 		dnsRequest.setZname(this.getZname());
 		//dnsRequest.setSiteId(SefCoreServiceResolver.getConfigService().getValue("af1","site"));
-		logger.debug("AF1 SITE ID IS SK" +SefCoreServiceResolver.getConfigService().getValue("af1","site") );
+		logger.debug("AF1 SITE ID IS SK " +SefCoreServiceResolver.getConfigService().getValue("af1","site") );
 
 		logger.debug("Fetching the sdpId from Router");
 		String sdpId = (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
