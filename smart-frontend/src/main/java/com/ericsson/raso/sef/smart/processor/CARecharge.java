@@ -631,27 +631,39 @@ public class CARecharge implements Processor {
 			 * - if both are available only, then we actually calculate any balance....
 			 * 
 			 * 
-			 * even before I finish this comment... the requirement has changed to....
+			 * even before I finish this comment(9pm)... the requirement has changed to....
 			 * if offerId > 2000, then hardcode the responses...
+			 * 
+			 * and another change by 11pm is that... though OfferID & DA are linekd in CS, they may not be returned
+			 * with correlation.
+			 * * For Unli Offers, we ignore DA in the response
+			 * * For other offers, we check for DA and handle...
 			 */
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); String responseEntry;
 			OfferInfo afterOffer = afterOfferEntries.get(oInfo.offerID);
  
+			
 			if (Integer.parseInt(oInfo.offerID) >= 2000) {
 				//UnliSmsOnCtl:s_PeriodicBonus;1;1;2014-08-07 18:41:59
 				responseEntry = balanceId + ";" + 1 + ";" + 1 + ";"
 						+ format.format(new Date(afterOffer.offerExpiry));
 			} else {
-
-				if (afterDA == null) {
-					logger.warn("Seems like DA: " + daId + " can be ignored...");
+				String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+				if (requiredDA == null) {
+					logger.debug("Seems like OfferID: " + oInfo.offerID + " can be ignored, since there is no DA associated...");
 					continue;
 				}
-
+				
 				int daBalanceDiff = 0;
-				if (beforeDA == null)
+				if (beforeDA == null && afterDA == null) {
+					logger.debug("Strange Situation. DA:" + daId + " is configured to map with Offer:" + oInfo.offerID + ", but CS has not returned either Before or After Value!!");
+					continue;
+				}
+				if (beforeDA == null && afterDA != null)
 					daBalanceDiff = afterDA.daValue;
+				else if (beforeDA != null && afterDA == null)
+					daBalanceDiff = beforeDA.daValue;
 				else
 					daBalanceDiff = afterDA.daValue - beforeDA.daValue;
 
