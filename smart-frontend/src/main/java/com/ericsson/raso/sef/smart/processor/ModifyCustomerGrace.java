@@ -32,6 +32,13 @@ import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.DateTimeParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class ModifyCustomerGrace implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(ModifyCustomerGrace.class);
@@ -83,7 +90,7 @@ public class ModifyCustomerGrace implements Processor {
 			else {
 			
 				logger.info("check grace metas only");
-				
+				//Date newExpiryDate = new Date();
 				Subscriber subscriber = subscriberObj.getSubscriber();
 				if (subscriber == null) {
 					logger.error("Unable to fetch the subscriber entity out");
@@ -123,6 +130,26 @@ public class ModifyCustomerGrace implements Processor {
 						}
 						if (IsGrace==true) {
 							logger.debug("Am in Grace S");
+							String date=subscriberObj.getSubscriber().getMetas().get("GraceEndDate");
+							if(date != null){
+								logger.debug("There is a grace end date entered and adding days to it now"+date);
+								//String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
+								
+								// handle the date extension
+								SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+								SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+								Date currentExpiryDate = metaStoreFormat.parse(date);
+								Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000));
+								String newExpiry = smartDateFormat.format(newExpiryDate);
+								
+								
+								
+								metas.add(new Meta("GraceEndDate",newExpiry));
+								logger.debug("There is a new GraceEndDate entered and adding days to it now"+ newExpiry);
+							}
+							else{
+								logger.debug("date is not found");
+							}
 							String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
 							  SubscriberInfo response = new SubscriberInfo();
 						      logger.debug("Got past event class....SK");
@@ -150,42 +177,59 @@ public class ModifyCustomerGrace implements Processor {
 									logger.debug("No response arrived???");
 									throw new SmException(ErrorCode.internalServerError);
 								}
-								
-								String date=subscriberObj.getSubscriber().getMetas().get("GraceEndDate");
-								if(date != null){
-									logger.debug("There is a grace end date entered and adding days to it now"+date);
-									//String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
-									
-									// handle the date extension
-									SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-									SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-									Date currentExpiryDate = metaStoreFormat.parse(date);
-									Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000));
-									String newExpiry = smartDateFormat.format(newExpiryDate);
-									
-									
-									
-									metas.add(new Meta("GraceEndDate",newExpiry));
-									logger.debug("There is a new GraceEndDate entered and adding days to it now"+ newExpiry);
-								}
 								else{
-									logger.debug("date is not found");
+									 CommandResponseData cr = this.createResponse(true,date);
+								      exchange.getOut().setBody(cr);
 								}
 								
-								SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerGrace);
-								if(subscriberInfo.getStatus() != null){
-									throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
-								}
-								exchange.getOut().setBody(subscriberInfo);
+								
+								
+								//SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerGrace);
+								
+//								if(subscriberInfo.getStatus() != null){
+//									throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
+//								}
+//								exchange.getOut().setBody(subscriberInfo);
 						}
-						else {
-							throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
-						}
+//						else {
+//							throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+//						}
 			}						
 					
 					}
 					
-			
+	private CommandResponseData createResponse(boolean isTransactional, String newDate ) {
+		CommandResponseData responseData = new CommandResponseData();
+		CommandResult result = new CommandResult();
+		responseData.setCommandResult(result);
+
+		OperationResult operationResult = new OperationResult();
+
+		if (isTransactional) {
+			TransactionResult transactionResult = new TransactionResult();
+			result.setTransactionResult(transactionResult);
+			transactionResult.getOperationResult().add(operationResult);
+		} else {
+			result.setOperationResult(operationResult);
+		}
+
+		Operation operation = new Operation();
+		operation.setModifier("CustomerGrace");
+		operation.setName("Modify");
+		operationResult.getOperation().add(operation);
+
+		ParameterList parameterList = new ParameterList();
+		List<Object> dataSetList = parameterList.getParameterOrBooleanParameterOrByteParameter();
+
+		DateTimeParameter dParameter = new DateTimeParameter();
+		dParameter.setName("GraceEndDate");
+		dParameter.setModifier(newDate);
+		dataSetList.add(dParameter);
+
+		operation.setParameterList(parameterList);
+
+		return responseData;
+	}	
 			
 
 	private SubscriberInfo updateSubscriber(String requestId,String customer_id, List<Meta> metas,String useCase) {
