@@ -289,7 +289,9 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
 					
-					logger.debug("Confirming the state of completed step: " + step.stepCorrelator + " = " + this.sbExecutionStatus.get(step.stepCorrelator));
+					logger.debug("Confirming the state of completed step: " 
+								+ step.stepCorrelator + " = " + this.sbExecutionStatus.get(step.stepCorrelator) 
+								+ "Fault: " + result.getResultantFault());
 
 				}
 				
@@ -334,7 +336,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					} else if (executionStatus == status.DONE_FAULT || executionStatus == status.DONE_SUCCESS) {
 						logger.debug("promote2Fulfill(): found the fulfilment step pending result in requestStep mapper store");
 						AbstractStepResult result = this.sbRequestResultMapper.get(fulfillmentStep.getStepCorrelator());
-						
+						if (executionStatus == Status.DONE_FAULT)
+							anyFault = true;
 						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " + this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED));
 					}
 					
@@ -347,7 +350,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		logger.debug("isAllStepsCompleted?" + isAllStepsCompleted);
 		
 		if (isAllStepsCompleted) {
-			this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_SUCCESS);
+			if (!anyFault)
+				this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_SUCCESS);
+			else 
+				this.phasingProgress.put(Phase.TX_PHASE_FULFILLMENT, Status.DONE_FAULT);
+				
 			//this.phasingProgress.put(Phase.TX_PHASE_SCHEDULE, Status.PROCESSING);          //TODO: revert back to scheduler
 			this.phasingProgress.put(Phase.TX_PHASE_PERSISTENCE, Status.PROCESSING);  
 			logger.debug("Orchestration Phase promoted to : " + this.phasingProgress);
