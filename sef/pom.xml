@@ -156,5 +156,6 @@
 		<module>../transaction-engine</module>
 		<module>../transformation-engine</module>
 		<module>../fulfillment-engine</module>
+		<module>../smart-il-features</module>
 	</modules>
 </project>
