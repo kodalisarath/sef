@@ -46,6 +46,8 @@ public class UpdateSubscriberSegmentationProfile extends BlockingFulfillment<Pro
 			logger.error("Refill execution failed!!", e1);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		} 
+		e.setMetas(map);
+		products.add(e);
 		return products;
 	}
 

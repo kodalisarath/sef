@@ -83,7 +83,8 @@ public class SubscribePackageItemProfile extends BlockingFulfillment<Product>{
 		}
 		
 		
-		
+		e.setMetas(map);
+		returned.add(e);
 		
 		return returned;
 	}

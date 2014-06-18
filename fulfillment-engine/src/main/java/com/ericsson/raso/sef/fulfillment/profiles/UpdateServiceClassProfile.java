@@ -61,6 +61,8 @@ public class UpdateServiceClassProfile extends BlockingFulfillment<Product> {
 			logger.debug("Exception in execution of ucip request. Code: " + e1.getStatusCode().getCode() + e1.getStatusCode().getMessage());
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getMessage()));	
 		}
+		e.setMetas(map);
+		products.add(e);
 		return products;
 	}
 

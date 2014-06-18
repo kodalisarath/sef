@@ -120,9 +120,8 @@ public class ModifyCustomerGraceProfile extends BlockingFulfillment<Product> {
 			LOGGER.error("Failed Refill for:" + subscriberId);
 			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage()));
 		}
-		
-		
-		
+		p.setMetas(map);
+		returned.add(p);
 		return returned;
 	}
 

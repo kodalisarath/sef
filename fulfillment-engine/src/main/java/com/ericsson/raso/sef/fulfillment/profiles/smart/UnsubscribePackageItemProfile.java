@@ -114,6 +114,8 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage()));
 		} 
 		
+		p.setMetas(map);
+		products.add(p);
 		return products;
 	}
 
