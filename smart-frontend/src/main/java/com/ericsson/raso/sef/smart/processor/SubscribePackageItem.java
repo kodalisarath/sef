@@ -57,7 +57,8 @@ public class SubscribePackageItem implements Processor {
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 		metas.add(new Meta("msisdn",request.getCustomerId()));
 		List<Meta> workflowMetas= new ArrayList<Meta>();
-		workflowMetas.add(new Meta("packaze", String.valueOf(request.getPackaze())));
+		workflowMetas.add(new Meta("Package", String.valueOf(request.getPackaze())));
+		workflowMetas.add(new Meta("msisdn",request.getCustomerId()));
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
@@ -171,11 +172,12 @@ public class SubscribePackageItem implements Processor {
 				}
 			}
 			if (NotRecycle==false)  {
-				    String resultId=iSubscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
+				ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
+				String correlationId = subscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 			        PurchaseResponse response = new PurchaseResponse();
 					logger.debug("Got past event class in subscription for grace and active....");
-					RequestCorrelationStore.put(resultId, response);
-					ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+					RequestCorrelationStore.put(correlationId, response);
+					ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(correlationId);
 					
 					try {
 					semaphore.init(0);
@@ -186,10 +188,10 @@ public class SubscribePackageItem implements Processor {
 					}
 
 					
-					logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
+					logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
 					
 					// PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-					PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+					PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 					if(purchaseResponse == null) {
