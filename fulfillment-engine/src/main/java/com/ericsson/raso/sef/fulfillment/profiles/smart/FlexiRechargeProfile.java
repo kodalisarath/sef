@@ -109,6 +109,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		updateOfferRequest.setSubscriberNumberNAI(1);
 		updateOfferRequest.setOfferID(Integer.parseInt(newOfferID));
 		updateOfferRequest.setExpiryDateTime(new Date(Long.parseLong(longestExpiry)));
+		updateOfferRequest.setOfferType(2);
 		
 		UpdateOfferCommand updateOfferCommand = new UpdateOfferCommand(updateOfferRequest);
 		UpdateOfferResponse updateOfferResponse = null;
