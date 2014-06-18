@@ -92,7 +92,7 @@ public class ModifyCustomerGraceProfile extends BlockingFulfillment<Product> {
 			refillRequest.setRefType(this.refillType);
 			refillRequest.setTransacAmount(this.transactionAmount);
 			refillRequest.setTransacCurrency(this.transactionCurrency.name());
-			refillRequest.setExternalData2(map.get("daysOfExtension"));
+			refillRequest.setExternalData2(map.get("DaysOfExtension"));
 			
 			String extData1 = map.get(Constants.EX_DATA1);
 			if(extData1 != null) {
