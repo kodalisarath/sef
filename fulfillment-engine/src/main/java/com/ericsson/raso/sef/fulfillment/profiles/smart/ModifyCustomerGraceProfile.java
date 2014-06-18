@@ -99,10 +99,10 @@ public class ModifyCustomerGraceProfile extends BlockingFulfillment<Product> {
 				refillRequest.setExternalData1(extData1);
 			}
 			
-//			String extData2 = map.get(Constants.EX_DATA2);
-//			if(extData2 != null) {
-//				refillRequest.setExternalData2(extData2);
-//			}
+			String extData2 = map.get(Constants.EX_DATA2);
+			if(extData2 != null) {
+				refillRequest.setExternalData2(extData2);
+			}
 			
 			String extData3 = map.get(Constants.EX_DATA3);
 			if(extData3 != null) {
