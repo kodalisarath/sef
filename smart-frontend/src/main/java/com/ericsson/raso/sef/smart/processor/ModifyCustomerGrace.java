@@ -60,7 +60,7 @@ public class ModifyCustomerGrace implements Processor {
 			metas.add(new Meta("EventInfo" , String.valueOf(request.getEventInfo())));
 			metas.add(new Meta("MessageId" , String.valueOf(request.getMessageId())));
 			metas.add(new Meta("AccessKey",request.getAccessKey()));
-			metas.add(new Meta("daysOfExtension", String.valueOf(request.getDaysOfExtension())));
+			metas.add(new Meta("DaysOfExtension", String.valueOf(request.getDaysOfExtension())));
 			
 			List<Meta> metasReadSubscriber = new ArrayList<Meta>();
 			metas.add(new Meta("HANDLE_LIFE_CYCLE", "ModifyCustomerGrace"));
@@ -123,7 +123,7 @@ public class ModifyCustomerGrace implements Processor {
 								logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
 
 								if (oInfo.offerID.equals("1")){
-									logger.debug("EXTRACTING DATE");
+									logger.debug("EXTRACTING EXISTING DATE IS" + oInfo.offerExpiry);
 									graceExpiry = oInfo.offerExpiry;
 								}
 									
@@ -150,7 +150,7 @@ public class ModifyCustomerGrace implements Processor {
 								
 								
 								metas.add(new Meta("GraceEndDate",newExpiry));
-								logger.debug("There is a new GraceEndDate entered and adding days to it now"+ newExpiry);
+								logger.debug("There is a new GraceEndDate entered and adding days to it now "+ newExpiry);
 //							}
 //							else{
 //								logger.debug("date is not found");
