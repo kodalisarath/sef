@@ -60,6 +60,8 @@ public class UnsubscribePackageItem implements Processor {
 
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		workflowMetas.add(new Meta("Package", String.valueOf(request.getPackaze())));
+		workflowMetas.add(new Meta("msisdn",request.getCustomerId()));
+		workflowMetas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
