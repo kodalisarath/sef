@@ -367,7 +367,7 @@ public class CARecharge implements Processor {
 				 * As per Tanzeem the following offers must be ignored from considering life-cycle date impacts
 				 */
 				int offerID = Integer.parseInt(offerId);
-				if (offerID == 1 || offerID == 2 || offerID == 4 || offerID == 1241 || (offerID >= 7000 || offerID <= 9999)) {
+				if (offerID == 1 || offerID == 2 || offerID == 4 || offerID == 1241 || (offerID >= 7000 && offerID <= 9999)) {
 					logger.debug("FLEXI:: Offer listed in omission case. Ignoring...");
 					continue;
 				}
