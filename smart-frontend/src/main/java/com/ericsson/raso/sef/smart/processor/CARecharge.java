@@ -103,7 +103,6 @@ public class CARecharge implements Processor {
 				offerid = "FlexiRefill";
 			} else if (eventClass.equals("pasaload")) {
 				rechargeRequest.setRatingInput0("pasaload");
-
 				metas = prepareRecharge(rechargeRequest);
 				offerid = rechargeRequest.getEventName();
 			} else if (eventClass.equals("reversal")) {
@@ -121,6 +120,7 @@ public class CARecharge implements Processor {
 
 			metas.put("msisdn", msisdn);
 			metas.put("SUBSCRIBER_ID", msisdn);
+			metas.put("pasaload", rechargeRequest.getEventName());
 			List<Meta> listMeta = convertToList(metas);
 			String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
 			logger.debug("Got past event class....");
@@ -405,9 +405,10 @@ public class CARecharge implements Processor {
 		}
 
 		requestContext.put("longestExpiry", "" + longestExpiry);
-		requestContext.put("endurantOfferID", endurantOffer.offerID);
-		requestContext.put("endurantDA", "" + endurantOffer.daID);
-
+		if (endurantOffer != null) {
+			requestContext.put("endurantOfferID", endurantOffer.offerID);
+			requestContext.put("endurantDA", "" + endurantOffer.daID);
+		}
 		subscriberOffersCache.set(subscriberOffers);
 	}
 
@@ -822,9 +823,8 @@ public class CARecharge implements Processor {
 	}
 
 	private void handlePasaloadRefillResponse(ListParameter listParameter, PurchaseResponse response) throws SmException {
-		Map<String, String> requestContext = requestContextCache.get();
-		Map<String, String> useCaseResponse = this.convertToMap(response.getBillingMetas());
-
+		Map<String, String> reqestContext = requestContextCache.get();
+		
 		logger.debug("PASA:: Processing Refill Metas: " + response.getBillingMetas());
 
 		Map<String, OfferInfo> beforeOfferEntries = new HashMap<String, CARecharge.OfferInfo>();
@@ -849,11 +849,6 @@ public class CARecharge implements Processor {
 				String offerPart[] = meta.getValue().split(",");
 				oInfo.offerID = offerPart[0];
 				oInfo.offerExpiry = Long.parseLong(offerPart[1]);
-
-				String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID);
-				if (balanceId != null)
-					oInfo.walletName = balanceId;
-
 				afterOfferEntries.put(oInfo.offerID, oInfo);
 				logger.debug("Adding After Offer " + oInfo);
 			}
@@ -878,48 +873,174 @@ public class CARecharge implements Processor {
 
 		}
 
-		logger.debug("PASA::Before Offer Entries Size: " + beforeOfferEntries.size() + ", After Entries Size: " + afterOfferEntries.size());
+		logger.debug("PASA::Before Offer Entries Size: " + beforeOfferEntries.size() + ", After Entries Size: "
+				+ afterOfferEntries.size());
 		logger.debug("PASA::Before DA Entries Size: " + beforeDaEntries.size() + ", After DA Size: " + afterDaEntries.size());
 
 		// Calculate...
 
-		for (OfferInfo oInfo : afterOfferEntries.values()) {
-			logger.debug("Offer: " + oInfo);
-			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", oInfo.offerID)
-					+ ":s_PeriodicBonus";
-			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", oInfo.offerID);
+		for (OfferInfo afterOffer : afterOfferEntries.values()) {
+			logger.debug("Offer: " + afterOffer);
+			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", afterOffer.offerID);
+			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", afterOffer.offerID);
 
 			logger.debug("Mapped Wallet: " + balanceId + ", DA: " + daId);
 			if (balanceId == null || daId == null) {
-				logger.error("Please check config.xml for mapping entries for OfferID:" + oInfo.offerID
+				logger.error("Please check config.xml for mapping entries for OfferID:" + afterOffer.offerID
 						+ " under sections 'GLOBAL_walletMapping' & 'Global_offerMapping' ");
-				throw ExceptionUtil.toSmException(ErrorCode.missingMandatoryParameterError);
-			} else {
+				// throw ExceptionUtil.toSmException(ErrorCode.missingMandatoryParameterError);
+				logger.debug("Doesnt seem to be an offer that will go in SMART response... Offer: " + afterOffer);
+				continue;
+			}
 
-				DaInfo beforeDA = beforeDaEntries.get(daId);
-				DaInfo afterDA = afterDaEntries.get(daId);
+			DaInfo beforeDA = beforeDaEntries.get(daId);
+			DaInfo afterDA = afterDaEntries.get(daId);
 
-				if (afterDA == null) {
-					logger.warn("Seems like DA: " + daId + " can be ignored...");
+			
+			/*
+			 * After many dily-dallying, which is evident of ericsson being smart'iszed.... the latest understanding is that
+			 * we no longer have before and after correlation....
+			 * - if before is not available, then use after's balance
+			 * - if after is not available, then use before's balance
+			 * - if both are available only, then we actually calculate any balance....
+			 * 
+			 * 
+			 * even before I finish this comment(9pm)... the requirement has changed to....
+			 * if offerId > 2000, then hardcode the responses...
+			 * 
+			 * and another change by 11pm is that... though OfferID & DA are linekd in CS, they may not be returned
+			 * with correlation.
+			 * * For Unli Offers, we ignore DA in the response
+			 * * For other offers, we check for DA and handle...
+			 * 
+			 * by 12:17am, another change...
+			 * - check for offer in after which not in before, then select for handling
+			 * - check for offer in after and before but changes in expiry, then select for handling
+			 * - check for offer which have no DA and ignore them...
+			 * 
+			 */
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); String responseEntry;
+
+
+			OfferInfo beforeOffer = beforeOfferEntries.get(afterOffer.offerID);
+
+			String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", afterOffer.offerID);
+			if (requiredDA == null) {
+				logger.debug("Seems like OfferID: " + afterOffer.offerID + " can be ignored, since there is no DA associated...");
+				continue;
+			}
+			
+			
+			//================ Case Ladder for Predefined & Unli - START
+			int daBalanceDiff = 0; long expiryDiff = 0;
+			
+			if (beforeDA != null && afterDA != null && beforeOffer != null && afterOffer != null) {
+				logger.debug("CASE 1: All DA and Offer is available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+				expiryDiff = afterOffer.offerExpiry - beforeOffer.offerExpiry;
+				
+				if (daBalanceDiff == 0 && expiryDiff == 0) {
+					logger.debug("There seems to be no impact with this DA & Offer. Ignoring...");
 					continue;
 				}
-
-				int daBalanceDiff = afterDA.daValue - beforeDA.daValue;
-				OfferInfo afterOffer = afterOfferEntries.get(oInfo.offerID);
-
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue + ";"
-						+ format.format(new Date(afterOffer.offerExpiry));
-
-				PasaServiceManager pasaService = PasaServiceManager.getInstance();
-				pasaService.setPasaReceived(requestContext.get("msisdn"), requestContext.get("walletName"), daBalanceDiff);
-
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";"	+ format.format(new Date(afterOffer.offerExpiry));
+				else
+					responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
 				StringElement stringElement = new StringElement();
 				stringElement.setValue(responseEntry);
 				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
 				logger.debug("PASA::Adding response item to CARecharge: " + responseEntry);
-			}
+				PasaServiceManager.getInstance().setPasaReceived(reqestContext.get("msisdn"), reqestContext.get("pasaload"), daBalanceDiff);
+
+
+			} else if (beforeDA == null && afterDA != null && beforeOffer != null && afterOffer != null) {
+				logger.debug("CASE 2: Before DA is not available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				daBalanceDiff = afterDA.daValue;
+				expiryDiff = afterOffer.offerExpiry - beforeOffer.offerExpiry;
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";"	+ format.format(new Date(afterOffer.offerExpiry));
+				else
+					responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PASA::Adding response item to CARecharge: " + responseEntry);
+				PasaServiceManager.getInstance().setPasaReceived(reqestContext.get("msisdn"), reqestContext.get("pasaload"), daBalanceDiff);
+
+
+			} else if (beforeDA == null && afterDA == null && beforeOffer != null && afterOffer != null) {
+				logger.debug("CASE 3: No DA and All Offer is available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				expiryDiff = afterOffer.offerExpiry - beforeOffer.offerExpiry;
+				
+				if (expiryDiff == 0) {
+					logger.debug("No DA available and Offer expiry has not changed. Ignoring...");
+					continue;
+				}
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";" + format.format(new Date(afterOffer.offerExpiry));
+				else {
+					logger.error("No DA for Offer is not valid in SMART as per Rev G compliant delivery. If this logic is negated, check with Imrul/ Tanzeem/ Navneet and ask for a CR...");
+					continue;
+					//responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				}
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PASA::Adding response item to CARecharge: " + responseEntry);
+				PasaServiceManager.getInstance().setPasaReceived(reqestContext.get("msisdn"), reqestContext.get("pasaload"), daBalanceDiff);
+
+				
+			} else if (beforeDA != null && afterDA != null && beforeOffer == null && afterOffer != null) {
+				logger.debug("CASE 4: After DA & Before Offer is not available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";" + format.format(new Date(afterOffer.offerExpiry));
+				else
+					responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PASA::Adding response item to CARecharge: " + responseEntry);
+				PasaServiceManager.getInstance().setPasaReceived(reqestContext.get("msisdn"), reqestContext.get("pasaload"), daBalanceDiff);
+
+				
+			} else if (beforeDA == null && afterDA != null && beforeOffer == null && afterOffer != null) {
+				logger.debug("CASE 5: Before DA & Before Offer is not available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				daBalanceDiff = afterDA.daValue;
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";" + format.format(new Date(afterOffer.offerExpiry));
+				else
+					responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PASA::Adding response item to CARecharge: " + responseEntry);
+				PasaServiceManager.getInstance().setPasaReceived(reqestContext.get("msisdn"), reqestContext.get("pasaload"), daBalanceDiff);
+				
+			} 
+			
+			
+			//================= Case Ladder for Predefined & Unli - END
+				
 		}
+		
 		logger.debug("PASA:: Done with the processing of Refill reponse...");
 		return;
 	}
