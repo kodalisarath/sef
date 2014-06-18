@@ -123,7 +123,8 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 				throw new FulfillmentException("ffe", new ResponseCode(999, "Technical Error"));
 			}
 			
-			if (impactedOffer.getExpiryDate().getTime() == toLongestDate) {
+			long impactedExpiry = ((impactedOffer.getExpiryDate() != null)?impactedOffer.getExpiryDate().getTime():impactedOffer.getExpiryDateTime().getTime());
+			if (impactedExpiry == toLongestDate) {
 				long newExpiryDate = impactedOffer.getExpiryDate().getTime() - toReversal.getHoursToReverse();
 				// calculating new activeEndDate here....
 				if (newExpiryDate > toSecondLongestDate) {
@@ -136,8 +137,8 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 				// now do the reversal of all other impacted offers...
 				impactedOffer.setExpiryDate(new Date(newExpiryDate));
 				impactedOffer.setExpiryDateTime(new Date(newExpiryDate));
-				impactedOffer.setStartDate(new Date(impactedOffer.getStartDate().getTime() - toReversal.hoursToReverse));
-				impactedOffer.setStartDate(new Date(impactedOffer.getStartDateTime().getTime() - toReversal.hoursToReverse));
+				//impactedOffer.setStartDate(new Date(impactedOffer.getStartDate().getTime() - toReversal.hoursToReverse));
+				impactedOffer.setStartDate(new Date(impactedExpiry - toReversal.hoursToReverse));
 				impactedOffer.setStartDateTime(new Date());
 				
 				offersToUpdate.add(impactedOffer);
