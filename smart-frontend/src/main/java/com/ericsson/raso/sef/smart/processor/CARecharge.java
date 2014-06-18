@@ -230,6 +230,10 @@ public class CARecharge implements Processor {
 		 * value sent here is dateitme in Unixtime (EPOCH) - Else ignore
 		 */
 
+		WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(rechargeRequest.getRatingInput1());
+		String requiredOfferID = offerMapping.getOfferID();
+		String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
+
 		long currentExpiryDate = Long.parseLong(requestContext.get("longestExpiry"));
 		switch (rechargeRequest.getRatingInput2()) {
 			case "0": // ABSOLUTE DATE SCENARIO
@@ -240,6 +244,7 @@ public class CARecharge implements Processor {
 					requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
 					requestContext.put("longestExpiry", "" + requestedExpiryDate);
 				}
+				requestContext.put("offerExpiry", "" + requestedExpiryDate);
 				logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate);
 				break;
 			case "1": // relative to current expiry date
@@ -253,30 +258,30 @@ public class CARecharge implements Processor {
 							requestContext.put("supervisionExpiryPeriod", "" + newExpiryDate);
 							requestContext.put("serviceFeeExpiryPeriod", "" + newExpiryDate);
 							requestContext.put("longestExpiry", "" + newExpiryDate);
+							requestContext.put("offerExpiry", "" + newExpiryDate);
 							found = true;
 							logger.debug("Found the right offer: " + oInfo.offerID + ", wallet: " + oInfo.walletName);
 						}
 					}
 				}
-
+				
+				long startTime = new Date().getTime();
+				long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
 				if (!found) {
 					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
-					WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(rechargeRequest.getRatingInput1());
-					String requiredOfferID = offerMapping.getOfferID();
-					String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
-
-					long startTime = new Date().getTime();
-					long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
 					if (endTime > currentExpiryDate) {
 						requestContext.put("supervisionExpiryPeriod", "" + endTime);
 						requestContext.put("serviceFeeExpiryPeriod", "" + endTime);
 						requestContext.put("longestExpiry", "" + endTime);
 					}
+					requestContext.put("offerExpiry", "" + endTime);
 					requestContext.put("newDaID", requiredDA);
 					requestContext.put("newOfferID", requiredOfferID);
 					requestContext.put("daStartTime", "" + startTime);
 					requestContext.put("daEndTime", "" + endTime);
 				}
+				requestContext.put("offerExpiry", "" + endTime);
+				logger.debug("Relative to current expiry Date scenario handled. New Expiry: " + endTime);
 				break;
 			case "3": // relative to current date
 				logger.debug("Handling RELATIVE TO CURRENT DATE SCENARIO...");
@@ -295,25 +300,27 @@ public class CARecharge implements Processor {
 					}
 				}
 
+				startTime = new Date().getTime();
+				endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
 				if (!found) {
 					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
-					WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(
-							rechargeRequest.getRatingInput1());
-					String requiredOfferID = offerMapping.getOfferID();
-					String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
-
-					long startTime = new Date().getTime();
-					long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
 					if (endTime > currentExpiryDate) {
 						requestContext.put("supervisionExpiryPeriod", "" + endTime);
 						requestContext.put("serviceFeeExpiryPeriod", "" + endTime);
 						requestContext.put("longestExpiry", "" + endTime);
 					}
+					
+					if (!requestContext.get("endurantOfferID").equals(requiredOfferID)) {
+						requestContext.remove("enduranteOfferID");
+					}
+					
+					requestContext.put("offerExpiry", "" + endTime);
 					requestContext.put("newDaID", requiredDA);
 					requestContext.put("newOfferID", requiredOfferID);
 					requestContext.put("daStartTime", "" + startTime);
 					requestContext.put("daEndTime", "" + endTime);
 				}
+				logger.debug("Relative to current Date scenario handled. New Expiry: " + endTime);
 				break;
 		}
 		logger.debug("Quick Check on Request Context: " + requestContext);
@@ -356,11 +363,30 @@ public class CARecharge implements Processor {
 				String daID = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", offerId);
 				String walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offerId);
 
+				/*
+				 * As per Tanzeem the following offers must be ignored from considering life-cycle date impacts
+				 */
+				int offerID = Integer.parseInt(offerId);
+				if (offerID == 1 || offerID == 2 || offerID == 4 || offerID == 1241 || (offerID >= 7000 || offerID <= 9999)) {
+					logger.debug("FLEXI:: Offer listed in omission case. Ignoring...");
+					continue;
+				}
+				
+				if (offerID == 4) {
+					logger.debug("FLEXI:: CUSTOMER IN RECYCLE. REJECTING...");
+					throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+				}
+				
+				if (daID == null) {
+					logger.debug("OfferID: " + offerId + " is not configure with a DA. Ignoring...");
+					continue;
+				}
+				
 				oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), daID, walletName);
 				subscriberOffers.put(offerId, oInfo);
 				logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
 
-				if (oInfo.offerID.equals("2")) {
+				if (offerID == 2) {
 					requestContext.put("inGrace", "true");
 					logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 				}
@@ -369,10 +395,8 @@ public class CARecharge implements Processor {
 					logger.debug("FLEXI:: Is this the longest Expiry? " + longestExpiry + " <==> " + oInfo);
 					longestExpiry = oInfo.offerExpiry;
 					endurantOffer = oInfo;
-
 				}
 			}
-
 		}
 		
 		if (!anyOfferFound) {
@@ -402,11 +426,12 @@ public class CARecharge implements Processor {
 			semaphore.init(0);
 			semaphore.acquire();
 		} catch (InterruptedException e) {
-
+			logger.error("Abnormal execution with semaphore being released!!!");
 		}
+		
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		if (subscriberInfo.getStatus() != null)
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0)
 			throw new SmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 
 		subscriberCache.set(subscriberInfo.getSubscriber());

@@ -71,16 +71,13 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		if (endurantDA == null) {
 			daInfo.setDedicatedAccountID(Integer.parseInt(newDaID));
 			daInfo.setStartDate(this.getDaDate(daStartTime));
-			daInfo.setExpiryDate(this.getDaDate(daEndTime));
-			daInfo.setDedicatedAccountValueNew(amountOfUnits);
-			daInfo.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", newDaID)));
-			
+			daInfo.setExpiryDate(this.getDaDate(daEndTime));			
 		} else {
 			daInfo.setDedicatedAccountID(Integer.parseInt(endurantDA));
 			daInfo.setExpiryDate(this.getDaDate(longestExpiry));
-			daInfo.setAdjustmentAmountRelative(amountOfUnits);
-			daInfo.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", endurantDA)));
 		}
+		daInfo.setAdjustmentAmountRelative(amountOfUnits);
+		daInfo.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", endurantDA)));
 		daToUpdateList.add(daInfo);
 		balanceAndDateRequest.setDedicatedAccountUpdateInformation(daToUpdateList);
 		
@@ -105,10 +102,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		
 		// update the offer pertinent to flexi....
 		UpdateOfferRequest updateOfferRequest = new UpdateOfferRequest();
-		if (endurantOfferID == null)
-			updateOfferRequest.setOfferID(Integer.parseInt(newOfferID));
-		else
-			updateOfferRequest.setOfferID(Integer.parseInt(endurantOfferID));
+		updateOfferRequest.setOfferID(Integer.parseInt(newOfferID));
 		updateOfferRequest.setExpiryDateTime(new Date(Long.parseLong(longestExpiry)));
 		
 		UpdateOfferCommand updateOfferCommand = new UpdateOfferCommand(updateOfferRequest);
@@ -166,7 +160,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 	
 
 	private Date getDaDate(String daDate) {
-		SimpleDateFormat daDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		//SimpleDateFormat daDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
 		long millis = Long.parseLong(daDate);
 		Calendar calendar = Calendar.getInstance();
