@@ -157,7 +157,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						this.status = Status.DONE_FAULT;
 						this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
 					}
-				} else  if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
+				} 
+				if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
 //						this.processNotification();
