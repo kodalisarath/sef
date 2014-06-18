@@ -31,6 +31,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.RequestContext;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 
@@ -572,9 +573,16 @@ public class Offer implements Serializable {
 		/*
 		 * 1. Evaluate Price and create Charging Task
 		 */
+		context.putAll(metas);
+		
 		if (this.isCommercial && !isTrialAllowed) {
 			MonetaryUnit rate = this.price.getSimpleAdviceOfCharge();
-			tasks.add(new Charging(ChargingMode.CHARGE, rate, subscriberId));
+			if (rate.getAmount() != 0) {
+				LOGGER.debug("Rated AMount: " + rate.getAmount() + rate.getIso4217CurrencyCode());
+				tasks.add(new Charging(ChargingMode.CHARGE, rate, subscriberId));
+			} else {
+				LOGGER.debug("Rated amount was zero... not sending charging request...");
+			}
 			
 			LOGGER.debug("Adding purchase history for charging...");
 			purchase.addPurchaseHistory(SubscriptionLifeCycleEvent.PURCHASE, PURCHASE_TIMESTAMP, rate);
