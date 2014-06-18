@@ -56,6 +56,7 @@ public class UnsubscribePackageItem implements Processor {
 		metas.add(new Meta("AccessKey",request.getAccessKey()));
 		metas.add(new Meta("Package",request.getPackaze()));
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
+		metas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
 
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		workflowMetas.add(new Meta("Package", String.valueOf(request.getPackaze())));
