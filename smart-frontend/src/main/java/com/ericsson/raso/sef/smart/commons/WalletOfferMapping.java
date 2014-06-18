@@ -26,5 +26,12 @@ public final class WalletOfferMapping {
 	public void setWalletName(String walletName) {
 		this.walletName = walletName;
 	}
+
+	@Override
+	public String toString() {
+		return "WalletOfferMapping [offerID=" + offerID + ", walletName=" + walletName + "]";
+	}
+	
+	
 	
 }

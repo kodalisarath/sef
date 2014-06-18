@@ -231,6 +231,10 @@ public class CARecharge implements Processor {
 		 */
 
 		WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(rechargeRequest.getRatingInput1());
+		if (offerMapping == null) {
+			logger.debug("No DA or Offer confgured for this wallet... Request will fail!!");
+			throw ExceptionUtil.toSmException(ErrorCode.entityWasNotFound);
+		}
 		String requiredOfferID = offerMapping.getOfferID();
 		String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
 
