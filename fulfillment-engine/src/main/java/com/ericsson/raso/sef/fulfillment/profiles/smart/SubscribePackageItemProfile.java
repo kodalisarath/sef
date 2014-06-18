@@ -77,7 +77,7 @@ public class SubscribePackageItemProfile extends BlockingFulfillment<Product>{
 		LOGGER.debug("PAM Data...");
 		AddPeriodicAccountManagementDataReq pamRequest = new AddPeriodicAccountManagementDataReq();
 		pamRequest.setPamInformationList(this.pamInformationList);
-		
+		pamRequest.setSubscriberNumber(msisdn);
 		AddPeriodicAccountManagementDataCmd pamCommand = new AddPeriodicAccountManagementDataCmd(pamRequest);
 		try {
 			AddPeriodicAccountManagementDataRes pamResponse = pamCommand.execute();
