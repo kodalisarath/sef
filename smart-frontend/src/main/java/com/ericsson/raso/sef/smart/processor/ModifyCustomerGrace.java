@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ContractState;
@@ -178,14 +179,17 @@ public class ModifyCustomerGrace implements Processor {
 								//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 								SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 								logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-								if(purchaseResponse == null) {
-									logger.debug("No response arrived???");
-									throw new SmException(ErrorCode.internalServerError);
+								
+								
+								if (purchaseResponse.getStatus() != null || purchaseResponse.getStatus().getCode() >0) {
+									logger.debug("Backend Error: " + purchaseResponse.getStatus().getCode());
+									throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getStatus().getCode(), purchaseResponse.getStatus().getDescription()));
 								}
-								else{
-									 CommandResponseData cr = this.createResponse(true, newExpiry);
-								      exchange.getOut().setBody(cr);
-								}
+
+								logger.debug("Response purchase received.. now creating front end response");
+
+								CommandResponseData responseData = createResponse(true, newExpiry);
+								exchange.getOut().setBody(responseData);
 								
 								
 								
