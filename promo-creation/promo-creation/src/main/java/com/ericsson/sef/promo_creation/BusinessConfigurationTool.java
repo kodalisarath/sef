@@ -115,7 +115,7 @@ public class BusinessConfigurationTool {
 			System.out.println("Offer, Resource & Profile - CREATE_SUSBCRIBER...");
 			resource = this.createCreateSubscriberProfile("CREATE_SUSBCRIBER", "Create a new Subscriber", 0, 0, 0, false, 0);
 			handles = new ArrayList<String>();
-			handles.add("CREATE_SUSBCRIBER");
+			handles.add("CREATE_SUBSCRIBER");
 			bizConfig = this.getSimpleBcWorkflow("CREATE_SUBSCRIBER", "Create SmartTnt Subsriber", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
