@@ -171,7 +171,7 @@ public class BusinessConfigurationTool {
 			System.out.println("Offer, Resource & Profile - SetSpecialFraudBit...");
 			resource = this.createSmartTaggingProfile("SetSpecialFraudBit", "Tag Subsriber SpecialFraud", 6, true);
 			handles = new ArrayList<String>();
-			handles.add("MODIFY_SUBSCRIBER_TAGGING_SetBarIRMBit");
+			handles.add("MODIFY_SUBSCRIBER_TAGGING_SetSpecialFraudBit");
 			bizConfig = this.getSimpleBcWorkflow("MODIFY_SUBSCRIBER_TAGGING_SetSpecialFraudBit", "SetSpecialFraudBit", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
@@ -204,7 +204,7 @@ public class BusinessConfigurationTool {
 			resource = this.createSmartWelcomePackProfile("SubscribePackageItem", "Welcome Pack Service Class");
 			handles = new ArrayList<String>();
 			handles.add("SUBSCRIBE_PACKAGE_ITEM");
-			bizConfig = this.getSimpleBcWorkflow("SubscribePackageItem", "WelcomePack - ServiceClass", handles, resource);
+			bizConfig = this.getSimpleBcWorkflow("SUBSCRIBE_PACKAGE_ITEM", "WelcomePack - ServiceClass", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
