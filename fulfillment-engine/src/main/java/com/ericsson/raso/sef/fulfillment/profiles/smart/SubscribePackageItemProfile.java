@@ -46,7 +46,7 @@ public class SubscribePackageItemProfile extends BlockingFulfillment<Product>{
 			throw new FulfillmentException("ffe", new ResponseCode(1001, "runtime parameters 'metas' missing in request!!"));
 		
 		String msisdn = map.get("msisdn");
-		String packag = map.get("package");
+		String packag = map.get("Package");
 		String pack = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_welcomePackMapping", packag);
 	
 		
@@ -55,10 +55,15 @@ public class SubscribePackageItemProfile extends BlockingFulfillment<Product>{
 		
 		UpdateServiceClassRequest request = new UpdateServiceClassRequest();
 		request.setSubscriberNumber(msisdn);
+		LOGGER.debug("msisdn is " + msisdn);
 		request.setServiceClassAction(this.serviceClassAction);
+		LOGGER.debug("service class action is " + this.serviceClassAction);
 		request.setServiceClassNew(Integer.parseInt(pack));
+		LOGGER.debug("Pack is " + Integer.parseInt(pack));
 		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
+		LOGGER.debug("Default SC is " + defaultServiceClass);
 		request.setServiceClassCurrent(Integer.valueOf(defaultServiceClass));		
+		LOGGER.debug("Current SC is " + Integer.valueOf(defaultServiceClass));
 		UpdateServiceClassCommand cmd = new UpdateServiceClassCommand(request);
 		try {
 			cmd.execute();
