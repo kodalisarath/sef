@@ -95,7 +95,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			String offerId = "" + offerInformation.getOfferID();
 			String relatedDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", offerId);
 			if (relatedDA != null) {
-				long expiryDate = offerInformation.getExpiryDate().getTime();
+				long expiryDate = ((offerInformation.getExpiryDate() != null)?offerInformation.getExpiryDate().getTime():offerInformation.getExpiryDateTime().getTime());
 				if (expiryDate > toSecondLongestDate) {
 					toLongestDate = toSecondLongestDate;
 					toSecondLongestDate = expiryDate;
