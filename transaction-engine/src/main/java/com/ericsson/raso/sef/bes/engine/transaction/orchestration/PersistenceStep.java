@@ -3,11 +3,13 @@ package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
 import com.ericsson.raso.sef.bes.prodcat.entities.Subscription;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
+import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 
 public class PersistenceStep extends Step<PersistenceStepResult> {
@@ -21,6 +23,8 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 	@Override
 	public PersistenceStepResult execute() {
 		Object returned = null;
+		StepExecutionException fault = null;
+		
 		Object persistentEntity = ((Persistence) this.getExecutionInputs()).getToSave();
 
 
@@ -30,50 +34,68 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 				switch (((Persistence) this.getExecutionInputs()).getMode()) {
 					case QUERY:
 						LOGGER.debug("About to query Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						returned = subscriberService.getSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity).getMsisdn());
+						try {
+							returned = subscriberService.getSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity).getMsisdn());
+						} catch (PersistenceError e) {
+							fault = new StepExecutionException("txe", new ResponseCode(7554, "Internal error: A database access exception occurred"), e);
+						}
 						LOGGER.debug("Fetched Entity for query.");
 						
 						if (this.getResult() == null) {
-							this.setResult(new PersistenceStepResult(null, returned));
-						} else
+							this.setResult(new PersistenceStepResult(fault, returned));
+						} else {
 							this.getResult().setPersistenceResult(returned);
+							this.getResult().setResultantFault(fault);
+						}
 						
 						break;
 					case REMOVE:
 						LOGGER.debug("Deleting Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						subscriberService.fulldeleteSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity));
+						try {
+							returned = subscriberService.fulldeleteSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity));
+						} catch (PersistenceError e) {
+							fault = new StepExecutionException("txe", new ResponseCode(7554, "Internal error: A database access exception occurred"), e);
+						}
 						LOGGER.debug("Subscriber in dunning state.");
 						
 						if (this.getResult() == null) {
-							this.setResult(new PersistenceStepResult(null, true));
-						} else
+							this.setResult(new PersistenceStepResult(fault, returned));
+						} else {
 							this.getResult().setPersistenceResult(true);
+							this.getResult().setResultantFault(fault);
+						}
 						
 						break;
 					case UPDATE:
 						LOGGER.debug("Updating Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						subscriberService.updateSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity));
+						try {
+							returned  = subscriberService.updateSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity));
+						} catch (PersistenceError e) {
+							fault = new StepExecutionException("txe", new ResponseCode(7554, "Internal error: A database access exception occurred"), e);
+						}
 						LOGGER.debug("Subscriber updated.");
 						
 						if (this.getResult() == null) {
-							this.setResult(new PersistenceStepResult(null, true));
-						} else
+							this.setResult(new PersistenceStepResult(fault, returned));
+						} else {
 							this.getResult().setPersistenceResult(true);
+							this.getResult().setResultantFault(fault);
+						}
 						
 						break;
 					case SAVE:
 						LOGGER.debug("Saving Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
-						subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); 
-						/*if (subscriberService.isSubscriberExist(((Subscriber) persistentEntity).getMsisdn())) 
-							throw 
-							subscriberService.updateSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); 
-						else*/
+						try {
+							returned = subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); 
+						} catch (PersistenceError e) {
+							fault = new StepExecutionException("txe", new ResponseCode(7554, "Internal error: A database access exception occurred"), e);
+						}
 						LOGGER.debug("Subscriber saved.");
 						
 						if (this.getResult() == null) {
-							this.setResult(new PersistenceStepResult(null, true));
+							this.setResult(new PersistenceStepResult(fault, returned));
 						} else
-							this.getResult().setPersistenceResult(true);
+							this.getResult().setPersistenceResult(fault);
 						
 						break;
 					default:
