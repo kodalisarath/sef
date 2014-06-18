@@ -29,8 +29,11 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 
 
 		try {
+			LOGGER.debug("Quick Type of Persistence Entity: " + persistentEntity.getClass().getCanonicalName());
 			if (persistentEntity instanceof Subscriber) {
+				LOGGER.debug("Entity is indeed a Subscriber...");
 				SubscriberService subscriberService = SefCoreServiceResolver.getSusbcriberStore();
+				LOGGER.debug("Do I have the bean ready? " + subscriberService);
 				switch (((Persistence) this.getExecutionInputs()).getMode()) {
 					case QUERY:
 						LOGGER.debug("About to query Subscriber: " + ((Subscriber) persistentEntity).getMsisdn());
@@ -99,15 +102,16 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						
 						break;
 					default:
-
+						LOGGER.debug("Why is my mode in default? " + ((Persistence) this.getExecutionInputs()).getMode());
 				}
 			}
 			
 			if (persistentEntity instanceof Subscription) {
+				LOGGER.debug("Indeed a subscription entity...");
 				//SubscriberService subscriberService = SefCoreServiceResolver.getSusbcriberStore();
 				switch (((Persistence) this.getExecutionInputs()).getMode()) {
 					case QUERY:
-						LOGGER.debug("About to query Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
+						LOGGER.debug("About to query Subscription: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = (Subscription) persistentEntity; 											//TODO: implement...
 						LOGGER.debug("Fetched Entity for query.");
 						
@@ -118,7 +122,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						
 						break;
 					case REMOVE:
-						LOGGER.debug("Deleting Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
+						LOGGER.debug("Deleting Subscription: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = true;																		//TODO: implement...
 						LOGGER.debug("Subscriber deleted.");
 						
@@ -129,7 +133,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						
 						break;
 					case SAVE:
-						LOGGER.debug("Saving Subscriber: " + ((Subscription) persistentEntity).getSubscriberId());
+						LOGGER.debug("Saving Subscription: " + ((Subscription) persistentEntity).getSubscriberId());
 						returned = true;																		//TODO: implement...
 						LOGGER.debug("Subscriber saved.");
 						
@@ -141,7 +145,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 
 						break;
 					default:
-
+						LOGGER.debug("Why is my mode here? " + ((Persistence) this.getExecutionInputs()).getMode());
 				}
 			}
 			return this.getResult();

@@ -379,6 +379,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		logger.debug("Already in persistence...");
 		
 		boolean isAllPersistenceComplete = true;
+		logger.debug("Number of persistence: " + this.persistence.size());
 		for (PersistenceStep persistence: this.persistence) {
 			PersistenceStepResult result = null;
 			
