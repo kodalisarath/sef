@@ -248,12 +248,18 @@ public class CARecharge implements Processor {
 					requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
 					requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
 					requestContext.put("longestExpiry", "" + requestedExpiryDate);
+					requestContext.put("offerExpiry", "" + requestedExpiryDate);
+					requestContext.put("newDaID", requiredDA);
+					requestContext.put("endurantOfferID", requiredDA);
+					requestContext.put("newOfferID", requiredOfferID);
+					requestContext.put("daEndTime", "" + requestedExpiryDate);
+				} else {
+					requestContext.put("offerExpiry", "" + requestedExpiryDate);
+					requestContext.put("newDaID", requiredDA);
+					requestContext.put("newOfferID", requiredOfferID);
+					requestContext.put("daStartTime", "" + new Date().getTime());
+					requestContext.put("daEndTime", "" + requestedExpiryDate);
 				}
-				requestContext.put("offerExpiry", "" + requestedExpiryDate);
-				requestContext.put("newDaID", requiredDA);
-				requestContext.put("newOfferID", requiredOfferID);
-				requestContext.put("daStartTime", "" + new Date().getTime());
-				requestContext.put("daEndTime", "" + requestedExpiryDate);
 				logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate);
 				break;
 			case "1": // relative to current expiry date

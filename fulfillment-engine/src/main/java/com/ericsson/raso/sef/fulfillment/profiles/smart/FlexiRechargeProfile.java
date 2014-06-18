@@ -47,6 +47,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		String daysOfExtension = map.get("daysOfExtension");
 		String absoluteDate = map.get("absoluteDate");
 		String longestExpiry = map.get("longestExpiry");
+		String offerExpiry = map.get("offerExpiry");
 		String endurantOfferID = map.get("endurantOfferID");
 		String endurantDA = map.get("endurantDA");
 		String supervisionExpiryPeriod = map.get("supervisionExpiryPeriod");
@@ -108,7 +109,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		updateOfferRequest.setSubscriberNumber(msisdn);
 		updateOfferRequest.setSubscriberNumberNAI(1);
 		updateOfferRequest.setOfferID(Integer.parseInt(newOfferID));
-		updateOfferRequest.setExpiryDateTime(new Date(Long.parseLong(longestExpiry)));
+		updateOfferRequest.setExpiryDateTime(new Date(Long.parseLong(offerExpiry)));
 		updateOfferRequest.setOfferType(2);
 		
 		UpdateOfferCommand updateOfferCommand = new UpdateOfferCommand(updateOfferRequest);
