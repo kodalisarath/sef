@@ -592,8 +592,7 @@ public class CARecharge implements Processor {
 
 		for (OfferInfo afterOffer : afterOfferEntries.values()) {
 			logger.debug("Offer: " + afterOffer);
-			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", afterOffer.offerID)
-					+ ":s_PeriodicBonus";
+			String balanceId = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", afterOffer.offerID);
 			String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", afterOffer.offerID);
 
 			logger.debug("Mapped Wallet: " + balanceId + ", DA: " + daId);
@@ -642,36 +641,110 @@ public class CARecharge implements Processor {
 				logger.debug("Seems like OfferID: " + afterOffer.offerID + " can be ignored, since there is no DA associated...");
 				continue;
 			}
-
-			int daBalanceDiff = 0;
-			if (beforeDA == null && afterDA == null) {
-				logger.debug("Strange Situation. DA:" + daId + " is configured to map with Offer:" + afterOffer.offerID + ", but CS has not returned either Before or After Value!!");
-				continue;
-			}
-			if (beforeDA == null && afterDA != null)
-				daBalanceDiff = afterDA.daValue;
-			else if (beforeDA != null && afterDA == null) {
-				logger.debug("Navneet CASE1: BeforeDA is present & AfterDA is NOT present... Before DA:" + beforeDA + ", After DA:" +afterDA );
-				if (beforeOffer.offerExpiry == afterOffer.offerExpiry) {
-					logger.debug("According to Navneet, this case must not be sent back to SMART. Offer(after):" + afterOffer.offerID + ", Offer(before):" + beforeOffer);
+			
+			
+			//================ Case Ladder for Predefined & Unli - START
+			int daBalanceDiff = 0; long expiryDiff = 0;
+			
+			if (beforeDA != null && afterDA != null && beforeOffer != null && afterOffer != null) {
+				logger.debug("CASE 1: All DA and Offer is available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+				expiryDiff = afterOffer.offerExpiry - beforeOffer.offerExpiry;
+				
+				if (daBalanceDiff == 0 && expiryDiff == 0) {
+					logger.debug("There seems to be no impact with this DA & Offer. Ignoring...");
 					continue;
 				}
-				daBalanceDiff = beforeDA.daValue;
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";"	+ format.format(new Date(afterOffer.offerExpiry));
+				else
+					responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
 
-			} else {
+
+			} else if (beforeDA == null && afterDA != null && beforeOffer != null && afterOffer != null) {
+				logger.debug("CASE 2: Before DA is not available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				daBalanceDiff = afterDA.daValue;
+				expiryDiff = afterOffer.offerExpiry - beforeOffer.offerExpiry;
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";"	+ format.format(new Date(afterOffer.offerExpiry));
+				else
+					responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
+
+
+			} else if (beforeDA == null && afterDA == null && beforeOffer != null && afterOffer != null) {
+				logger.debug("CASE 3: No DA and All Offer is available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				expiryDiff = afterOffer.offerExpiry - beforeOffer.offerExpiry;
+				
+				if (expiryDiff == 0) {
+					logger.debug("No DA available and Offer expiry has not changed. Ignoring...");
+					continue;
+				}
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";" + format.format(new Date(afterOffer.offerExpiry));
+				else {
+					logger.error("No DA for Offer is not valid in SMART as per Rev G compliant delivery. If this logic is negated, check with Imrul/ Tanzeem/ Navneet and ask for a CR...");
+					continue;
+					//responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				}
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
+
+				
+			} else if (beforeDA != null && afterDA != null && beforeOffer == null && afterOffer != null) {
+				logger.debug("CASE 4: After DA & Before Offer is not available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
 				daBalanceDiff = afterDA.daValue - beforeDA.daValue;
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";" + format.format(new Date(afterOffer.offerExpiry));
+				else
+					responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
 
-			}
-
-			if (Integer.parseInt(afterOffer.offerID) >= 2000)
-				responseEntry = balanceId + ";" + 1 + ";" + 1 + ";"	+ format.format(new Date(afterOffer.offerExpiry));
-			else
-				responseEntry = balanceId + ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
+			} else if (beforeDA == null && afterDA != null && beforeOffer == null && afterOffer != null) {
+				logger.debug("CASE 5: Before DA & Before Offer is not available.. BeforeDA: " + beforeDA + ", afterDA: " + afterDA + ", beforeOffer: " + beforeOffer + ", afterOffer: " + afterOffer);
+				
+				daBalanceDiff = afterDA.daValue;
+				
+				if (Integer.parseInt(afterOffer.offerID) >= 2000)
+					responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";" + format.format(new Date(afterOffer.offerExpiry));
+				else
+					responseEntry = balanceId + ":s_PeriodicBonus"+ ";" + daBalanceDiff + ";" + afterDA.daValue + ";" + format.format(new Date(afterOffer.offerExpiry));
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
+				
+			} 
 			
-			StringElement stringElement = new StringElement();
-			stringElement.setValue(responseEntry);
-			listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
-			logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
+			
+			//================= Case Ladder for Predefined & Unli - END
+				
 		}
 		logger.debug("PREDEFINED:: Done with the processing of Refill reponse...");
 
