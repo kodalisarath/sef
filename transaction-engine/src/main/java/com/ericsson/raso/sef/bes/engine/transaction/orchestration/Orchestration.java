@@ -861,12 +861,12 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					logger.debug("Step:" + step.stepCorrelator + " is complete with " + executionStatus);
 					if (executionStatus == Status.DONE_FAULT)
 						anyFault = true;
-				} //else {
-				//	anyFault = true;
-				//	step.setFault(result.getResultantFault());
-				//	completion++;
-				//	logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
-				//}
+				} else {
+					anyFault = true;
+					step.setFault(result.getResultantFault());
+					completion++;
+					logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
+				}
 			}
 		}
 		
