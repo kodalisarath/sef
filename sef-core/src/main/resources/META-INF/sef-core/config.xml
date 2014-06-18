@@ -67,6 +67,25 @@
 		<property key="Ask4LoadP5" value="-1"/>
 	</section>
 
+	<section id="SMART_customerInfoChannel" description="Channels for Charging Customer Info Charge">
+		<property key="BerrySE" value="0" />
+		<property key="CSP" value="0" />
+		<property key="DpaRci" value="0" />
+		<property key="EIRA" value="0" />
+		<property key="IVRS" value="0" />
+		<property key="MPS" value="0" />
+		<property key="NGINVAS" value="0" />
+		<property key="SIMCon" value="0" />
+		<property key="TITO" value="0" />
+		<property key="ULP" value="0" />
+		<property key="UREG-SMS" value="0" />
+		<property key="URM" value="0" />
+		<property key="USSD" value="0" />
+		<property key="VITO" value="1" />
+		<property key="WAPCon" value="0" />
+		<property key="WAP" value="1" />
+		<property key="WebCon" value="0" />
+	</section>
 	
 	<section id="GLOBAL_walletMapping" description="smart wallet mapping">
 		<property key="1001" value="OnPeakAccountID" />
