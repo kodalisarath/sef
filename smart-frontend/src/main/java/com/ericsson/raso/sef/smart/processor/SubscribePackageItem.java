@@ -57,6 +57,7 @@ public class SubscribePackageItem implements Processor {
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 		metas.add(new Meta("msisdn",request.getCustomerId()));
 		metas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
+		logger.info("Printing metas" + metas);
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		workflowMetas.add(new Meta("Package", String.valueOf(request.getPackaze())));
 		workflowMetas.add(new Meta("msisdn",request.getCustomerId()));
