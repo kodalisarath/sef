@@ -393,6 +393,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				StepExecutionException fault = new StepExecutionException("Persistence Step Failed", e);
 				result = new PersistenceStepResult(fault, null);
 				result.setResultantFault(fault);
+				persistence.setFault(fault);
 				this.sbRequestResultMapper.put(persistence.getStepCorrelator(), result);
 				isAllPersistenceComplete = false;
 				this.phasingProgress.put(Phase.TX_PHASE_PERSISTENCE, Status.DONE_FAULT);
