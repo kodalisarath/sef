@@ -134,7 +134,7 @@ public class RechargeRequest extends SmartRequest {
 				} else if(parameter.getName().equalsIgnoreCase(ACCESS_KEY)) {
 					this.setCustomerId(parameter.getValue().trim());
 				} else if(parameter.getName().equalsIgnoreCase(EVENT_NAME)) {
-					this.setEventName(parameter.getValue().trim().replaceFirst("Rev", ""));
+					this.setEventName(parameter.getValue().trim());
 				} else if(parameter.getName().equalsIgnoreCase(EVENT_CLASS)) {
 					this.setEventClass(parameter.getValue().trim());
 				} else if(parameter.getName().equalsIgnoreCase(EVENT_INFO)) {
