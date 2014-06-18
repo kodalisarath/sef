@@ -56,7 +56,13 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 	@Override
 	public List<Product> fulfill(Product p, Map<String, String> map) throws FulfillmentException {
 		List<Product> products = new ArrayList<Product>();	
+		
+		LOGGER.debug("Confirm metas: " + map);
 		String msisdn = map.get("msisdn");
+		if (msisdn == null) {
+			LOGGER.debug("'msisdn' key was null... trying 'SUBSCRIBER_ID'");
+			msisdn = map.get("SUBSCRIBER_ID");
+		}
 		String externalData1 = map.get("eventName");
 		String externalData2 = map.get("eventInfo");
 		String channel = map.get("channel");

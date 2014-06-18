@@ -66,6 +66,8 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		// update da peritinent to flexi....
 		List<DedicatedAccountUpdateInformation> daToUpdateList = new ArrayList<DedicatedAccountUpdateInformation>();
 		UpdateBalanceAndDateRequest balanceAndDateRequest = new UpdateBalanceAndDateRequest();
+		balanceAndDateRequest.setSubscriberNumberNAI(1);
+		balanceAndDateRequest.setSubscriberNumber(msisdn);
 		
 		DedicatedAccountUpdateInformation daInfo = new DedicatedAccountUpdateInformation();
 		if (endurantDA == null) {
@@ -102,6 +104,8 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		
 		// update the offer pertinent to flexi....
 		UpdateOfferRequest updateOfferRequest = new UpdateOfferRequest();
+		updateOfferRequest.setSubscriberNumber(msisdn);
+		updateOfferRequest.setSubscriberNumberNAI(1);
 		updateOfferRequest.setOfferID(Integer.parseInt(newOfferID));
 		updateOfferRequest.setExpiryDateTime(new Date(Long.parseLong(longestExpiry)));
 		
