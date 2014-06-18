@@ -125,6 +125,7 @@ public class DeleteSubscriberProfile extends BlockingFulfillment<Product> {
 					.getMessage()));
 		}
 		
+		e.setMetas(map);
 		returned.add(e);
 		
 		return returned;	

@@ -131,7 +131,7 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
 		
-		e.setMetas(new HashMap<String, String>());
+		e.setMetas(map);
 		returned.add(e);
 		return returned;	
 	}
