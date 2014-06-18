@@ -157,9 +157,8 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 	}
 
 	private void handleResponse(Map<String, String> map, UpdateBalanceAndDateResponse balanceAndDateResponse) {
-		int index = 0;
 		for (DedicatedAccountChangeInformation daInfo: balanceAndDateResponse.getDedicatedAccountInformation()) {
-			map.put("DA."+ ++index, daInfo.getDedicatedAccountID() + "," + daInfo.getDedicatedAccountValue1() + "," + daInfo.getDedicatedAccountUnitType());
+			map.put("DA", daInfo.getDedicatedAccountID() + "," + daInfo.getDedicatedAccountValue1() + "," + daInfo.getDedicatedAccountUnitType());
 		}
 	}
 	

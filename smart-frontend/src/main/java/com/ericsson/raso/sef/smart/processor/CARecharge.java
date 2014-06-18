@@ -1065,17 +1065,16 @@ public class CARecharge implements Processor {
 			if (key.startsWith("DA")) {
 				logger.debug("Processing key:=" + key + ", value:=" + airResponse.get(key));
 				String walletName = airResponse.get("walletName");
-				WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping("walletName");
-				String requiredOfferID = offerMapping.getOfferID();
-				String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
+				//String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
+				String requiredDA = requestContext.get("newDaID");
 
 				String daInfo = airResponse.get(key);
 				String daParts[] = daInfo.split(",");
 
 				if (requiredDA.equals(daParts[0])) {
 					logger.debug("Checking requiredDA:" + requiredDA + ", fromAirResponse:" + daParts[0]);
-					String responseEntry = requestContext.get("walletName") + ";" + requestContext.get("amountOfUnits") + ";"
-							+ airResponse.get("DA") + ";" + format.format(new Date(Long.parseLong(requestContext.get("longestExpiry"))));
+					String responseEntry = requestContext.get("walletName") + ":s_PeriodicBonus;" + requestContext.get("amountOfUnits") + ";"
+							+ daParts[1] + ";" + format.format(new Date(Long.parseLong(requestContext.get("longestExpiry"))));
 
 					StringElement stringElement = new StringElement();
 					stringElement.setValue(responseEntry);
