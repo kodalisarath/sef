@@ -122,10 +122,14 @@ public class ModifyCustomerGrace implements Processor {
 								subscriberOffers.put(offerId, oInfo);
 								logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
 
+								if (oInfo.offerID.equals("1")){
+									logger.debug("EXTRACTING DATE");
+									graceExpiry = oInfo.offerExpiry;
+								}
+									
 								if (oInfo.offerID.equals("2")) {
 									logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 									IsGrace=true;
-									graceExpiry = oInfo.offerExpiry;
 								}
 							}
 						}

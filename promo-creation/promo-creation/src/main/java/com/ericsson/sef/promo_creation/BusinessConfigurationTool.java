@@ -1013,7 +1013,7 @@ public class BusinessConfigurationTool {
 		UpdateSubscriberSegmentationProfile fulfillmentProfile = new UpdateSubscriberSegmentationProfile(name);
 
 		List<ServiceOffering> serviceOfferings = new ArrayList<ServiceOffering>();
-		for (int i=0; i<8; i++ ) {
+		for (int i=1; i<8; i++ ) {
 			ServiceOffering soInfo = new ServiceOffering();
 			soInfo.setServiceOfferingId(i);
 			if (soId == 0)
