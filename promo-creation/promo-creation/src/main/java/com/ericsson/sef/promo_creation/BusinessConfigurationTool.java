@@ -247,6 +247,23 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
+			System.out.println("Offer, Resource & Profile - Predefined Refill...");
+			resource = this.createRefill("GaanAllInOne55Voice", "1062", 1, "5500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("RB530");
+			bizConfig = this.getSimpleBcWorkflow("GaanAllInOne55Voice", "Token - Gaan All-In-One 55 - Voice", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Predefined, Unli Refill...");
+			resource = this.createRefill("UnlitextTrioCombo10", "1055", 1, "1000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("ZTN03");
+			handles.add("YTN40");
+			bizConfig = this.getSimpleBcWorkflow("UnlitextTrioCombo10", "Unlitext Trio Combo 10", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
 			System.out.println("Offer, Resource & Profile - Unli Refill...");
 			resource = this.createRefill("UnliText2All", "1001", 1, "1", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
