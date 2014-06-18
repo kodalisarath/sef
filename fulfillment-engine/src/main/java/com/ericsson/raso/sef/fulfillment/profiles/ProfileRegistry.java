@@ -36,9 +36,10 @@ public class ProfileRegistry implements IProfileRegistry {
 		if (ssh.fileExists(this.profileRegistryLocation)) {
 			try {
 				this.profiles = (Map<String, FulfillmentProfile<?>>) ssh.fetchFromFile(this.profileRegistryLocation);
+				logger.debug("Profiles Loaded Count: " + this.profiles.size());
+				logger.debug("All Profiles in this registry: " + this.profiles);
 			} catch (FrameworkException e) {
 				logger.debug("E/// Is there an error: " + e.getMessage(), e);
-				// TODO: LOgger on this error...
 			}
 		}
 	}
