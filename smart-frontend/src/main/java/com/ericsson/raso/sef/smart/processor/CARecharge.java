@@ -122,6 +122,7 @@ public class CARecharge implements Processor {
 			metas.put("SUBSCRIBER_ID", msisdn);
 			metas.put("pasaload", rechargeRequest.getEventName());
 			List<Meta> listMeta = convertToList(metas);
+			logger.debug("Confirm metas: " + listMeta);
 			String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
 			logger.debug("Got past event class....");
 			RequestCorrelationStore.put(correlationId, response);
