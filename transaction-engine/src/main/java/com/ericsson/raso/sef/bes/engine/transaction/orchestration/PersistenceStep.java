@@ -53,7 +53,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						
 						break;
 					case REMOVE:
-						LOGGER.debug("PERSISTENT ENTITY REMOVE");
+						LOGGER.debug("PERSISTENT ENTITY REMOVE: " + persistentEntity);
 						try {
 							returned = subscriberService.fulldeleteSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity));
 						} catch (PersistenceError e) {
@@ -70,7 +70,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						
 						break;
 					case UPDATE:
-						LOGGER.debug("PERSISTENT ENTITY UPDATE");
+						LOGGER.debug("PERSISTENT ENTITY UPDATE: " + persistentEntity);
 						try {
 							returned  = subscriberService.updateSubscriber(this.getStepCorrelator(), ((Subscriber) persistentEntity));
 						} catch (PersistenceError e) {
@@ -87,7 +87,7 @@ public class PersistenceStep extends Step<PersistenceStepResult> {
 						
 						break;
 					case SAVE:
-						LOGGER.debug("PERSISTENT ENTITY SAVE");
+						LOGGER.debug("PERSISTENT ENTITY SAVE: " + persistentEntity);
 						try {
 							returned = subscriberService.createSubscriber(this.getStepCorrelator(), (Subscriber) persistentEntity); 
 						} catch (PersistenceError e) {
