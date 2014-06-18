@@ -83,13 +83,14 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		daToUpdateList.add(daInfo);
 		balanceAndDateRequest.setDedicatedAccountUpdateInformation(daToUpdateList);
 		
+		
 		if (supervisionExpiryPeriod != null) 
 			balanceAndDateRequest.setSupervisionExpiryDate(new Date(Long.parseLong(supervisionExpiryPeriod)));
 		
 		if (serviceFeeExpiryPeriod != null) 
 			balanceAndDateRequest.setServiceFeeExpiryDate(new Date(Long.parseLong(serviceFeeExpiryPeriod)));
 		
-		
+		balanceAndDateRequest.setTransactionCurrency("PHP");
 		UpdateBalanceAndDateCommand balanceAndDateCommand = new UpdateBalanceAndDateCommand(balanceAndDateRequest);
 		UpdateBalanceAndDateResponse balanceAndDateResponse = null;
 		try {

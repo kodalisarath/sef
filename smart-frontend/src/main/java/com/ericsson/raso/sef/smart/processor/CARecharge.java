@@ -258,7 +258,7 @@ public class CARecharge implements Processor {
 				Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
 				for (OfferInfo oInfo : subscriberOffers.values()) {
 					if (oInfo.walletName.equals(rechargeRequest.getRatingInput1())) {
-						long newExpiryDate = oInfo.offerExpiry + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
+						long newExpiryDate = oInfo.offerExpiry + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
 						if (newExpiryDate > currentExpiryDate) {
 							requestContext.put("supervisionExpiryPeriod", "" + newExpiryDate);
 							requestContext.put("serviceFeeExpiryPeriod", "" + newExpiryDate);
@@ -271,7 +271,7 @@ public class CARecharge implements Processor {
 				}
 				
 				long startTime = new Date().getTime();
-				long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
+				long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
 				if (!found) {
 					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
 					if (endTime > currentExpiryDate) {
@@ -294,7 +294,7 @@ public class CARecharge implements Processor {
 				subscriberOffers = subscriberOffersCache.get();
 				for (OfferInfo oInfo : subscriberOffers.values()) {
 					if (oInfo.walletName.equals(rechargeRequest.getRatingInput1())) {
-						long newExpiryDate = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
+						long newExpiryDate = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
 						if (newExpiryDate > currentExpiryDate) {
 							requestContext.put("supervisionExpiryPeriod", "" + newExpiryDate);
 							requestContext.put("serviceFeeExpiryPeriod", "" + newExpiryDate);
@@ -306,7 +306,7 @@ public class CARecharge implements Processor {
 				}
 
 				startTime = new Date().getTime();
-				endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000);
+				endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
 				if (!found) {
 					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
 					if (endTime > currentExpiryDate) {
