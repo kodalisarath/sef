@@ -12,31 +12,35 @@
 		<property key="minDateTimeExtension" value="1" />
 		<property key="defaultServiceClass" value="200" />
 		<property key="defaultSite" value="MANILA" />
+		<property key="subscriberNumberNAI" value="1" />
 		<property key="readCustomerInfoChargeOffer" value="readCustomerCharge" />
 	</section>
 
-	<section id="SMART_services" description="SMART Specific proprietary services that are unique to customer, which cannot be achieved
+	<section id="SMART_services"
+		description="SMART Specific proprietary services that are unique to customer, which cannot be achieved
 	thru out of the box functionality and it does not make sense to develop a generic architecture, since they cannot be reused across
 	other customers.">
-		<property key="pasaloadRules" value="id=pasa15,name=Pasaload(15PHP),aPartyCountThreshold=5,aPartyAmountThreshold=65,bPartyCountThreshold=10,bPartyAmountThreshold=30;id=pasa45,name=Pasaload(45PHP),aPartyCountThreshold=2,aPartyAmountThreshold=90,bPartyCountThreshold=3,bPartyAmountThreshold=30;"/>
+		<property key="pasaloadRules"
+			value="id=pasa15,name=Pasaload(15PHP),aPartyCountThreshold=5,aPartyAmountThreshold=65,bPartyCountThreshold=10,bPartyAmountThreshold=30;id=pasa45,name=Pasaload(45PHP),aPartyCountThreshold=2,aPartyAmountThreshold=90,bPartyCountThreshold=3,bPartyAmountThreshold=30;" />
 	</section>
-	
-	<section id="SMART_router" description="smart proprietary service logic for routing the msisdn in administrative use-cases only">
-		<property key="sanity" value="compliance"/>
+
+	<section id="SMART_router"
+		description="smart proprietary service logic for routing the msisdn in administrative use-cases only">
+		<property key="sanity" value="compliance" />
 		<router>
 			<ranges>
-				<range start="639000000000" end="639999999999" value="route_1"/>
-				<range start="636000000000" end="636666666666" value="route_2"/>
+				<range start="639000000000" end="639999999999" value="route_1" />
+				<range start="636000000000" end="636666666666" value="route_2" />
 			</ranges>
 			<values>
-				<value id="route_1" siteId="MANILA" sdpId="PIDCSDP01"/>
-				<value id="route_2" siteId="CEBU" sdpId="PIDCSDP01"/>
-				
+				<value id="route_1" siteId="MANILA" sdpId="PIDCSDP01" />
+				<value id="route_2" siteId="CEBU" sdpId="PIDCSDP01" />
+
 			</values>
-		</router> 
+		</router>
 	</section>
-	
-	
+
+
 	<section id="SMART_pasaLoad" description="SMART Pasa Load, Ask 4 Load services">
 		<property key="PasaloadP2" value="-1" />
 		<property key="PasaloadP5" value="-1" />
@@ -64,7 +68,7 @@
 		<property key="HellowPasaloadP60" value="4" />
 		<property key="HellowPasaloadP100" value="-1" />
 		<property key="HellowPasaloadP200" value="-1" />
-		<property key="Ask4LoadP5" value="-1"/>
+		<property key="Ask4LoadP5" value="-1" />
 	</section>
 
 	<section id="SMART_customerInfoChannel" description="Channels for Charging Customer Info Charge">
@@ -86,7 +90,7 @@
 		<property key="WAP" value="1" />
 		<property key="WebCon" value="0" />
 	</section>
-	
+
 	<section id="GLOBAL_walletMapping" description="smart wallet mapping">
 		<property key="1001" value="OnPeakAccountID" />
 		<property key="1002" value="RwdMocTri" />
@@ -174,7 +178,94 @@
 		<property key="2325" value="UnliBrws1FbcCtl" />
 		<property key="2326" value="UnliSns2FbcCtl" />
 	</section>
-
+	<section id="GLOBAL_offerMapping"
+		description="CS offers association with DA together represents SMART Wallet">
+		<property key="1001" value="1" />
+		<property key="1002" value="2" />
+		<property key="1003" value="3" />
+		<property key="1004" value="4" />
+		<property key="1005" value="5" />
+		<property key="1006" value="6" />
+		<property key="1007" value="7" />
+		<property key="1008" value="8" />
+		<property key="1009" value="9" />
+		<property key="1010" value="10" />
+		<property key="1011" value="11" />
+		<property key="1012" value="12" />
+		<property key="1013" value="13" />
+		<property key="1014" value="14" />
+		<property key="1015" value="15" />
+		<property key="1051" value="51" />
+		<property key="1052" value="52" />
+		<property key="1053" value="53" />
+		<property key="1054" value="54" />
+		<property key="1055" value="55" />
+		<property key="1056" value="56" />
+		<property key="1057" value="57" />
+		<property key="1058" value="58" />
+		<property key="1059" value="59" />
+		<property key="1060" value="60" />
+		<property key="1061" value="61" />
+		<property key="1101" value="101" />
+		<property key="1102" value="102" />
+		<property key="1103" value="103" />
+		<property key="1104" value="104" />
+		<property key="1105" value="105" />
+		<property key="1141" value="141" />
+		<property key="1142" value="142" />
+		<property key="1143" value="143" />
+		<property key="1144" value="144" />
+		<property key="1145" value="145" />
+		<property key="1146" value="146" />
+		<property key="1147" value="147" />
+		<property key="1148" value="148" />
+		<property key="1149" value="149" />
+		<property key="1150" value="150" />
+		<property key="1151" value="151" />
+		<property key="1152" value="152" />
+		<property key="1153" value="153" />
+		<property key="1154" value="154" />
+		<property key="1155" value="155" />
+		<property key="1241" value="241" />
+		<property key="2001" value="242" />
+		<property key="2002" value="242" />
+		<property key="2003" value="242" />
+		<property key="2015" value="242" />
+		<property key="2016" value="242" />
+		<property key="2017" value="242" />
+		<property key="2018" value="242" />
+		<property key="2019" value="242" />
+		<property key="2101" value="242" />
+		<property key="2102" value="242" />
+		<property key="2103" value="242" />
+		<property key="2104" value="242" />
+		<property key="2301" value="242" />
+		<property key="2302" value="242" />
+		<property key="2303" value="242" />
+		<property key="2304" value="242" />
+		<property key="2305" value="242" />
+		<property key="2306" value="242" />
+		<property key="2307" value="242" />
+		<property key="2308" value="242" />
+		<property key="2309" value="242" />
+		<property key="2310" value="242" />
+		<property key="2311" value="242" />
+		<property key="2312" value="242" />
+		<property key="2313" value="242" />
+		<property key="2314" value="242" />
+		<property key="2315" value="242" />
+		<property key="2316" value="242" />
+		<property key="2317" value="242" />
+		<property key="2318" value="242" />
+		<property key="2319" value="242" />
+		<property key="2320" value="242" />
+		<property key="2321" value="242" />
+		<property key="2322" value="242" />
+		<property key="2323" value="242" />
+		<property key="2324" value="242" />
+		<property key="2325" value="242" />
+		<property key="2326" value="242" />
+	</section>
 	<section id="GLOBAL_welcomePackMapping" description="welcome pack mapping">
 		<property key="initialSC" value="200" />
 		<property key="wpStdP1" value="1001" />
@@ -207,7 +298,94 @@
 		<property key="P999" value="1014" />
 		<property key="wpTakaTak" value="1015" />
 	</section>
-
+	<section id="GLOBAL_walletConversionFactor"
+		description="Conversion factor to be applied for each SMART wallet before returning to availment">
+		<property key="1030AutoFbc" value="100" />
+		<property key="1030DataFbc" value="100" />
+		<property key="AllTxtBcktSmsGbl" value="100" />
+		<property key="AudioStreamFbc" value="1" />
+		<property key="AudioStreamFbcCtl" value="100" />
+		<property key="BBDataFbcCtl" value="100" />
+		<property key="BrwsThroFbc" value="100" />
+		<property key="BucketArawMoc" value="6000" />
+		<property key="BucketIM6VolFbc " value="1" />
+		<property key="BucketIntlCombo" value="100" />
+		<property key="BucketIntlS1Cbo" value="100" />
+		<property key="BucketIntlS2Cbo" value="100" />
+		<property key="BucketIntlS3Moc" value="6000" />
+		<property key="BucketIntlS4Sms" value="100" />
+		<property key="BucketKamusTxtSms" value="100" />
+		<property key="BucketMocGbl" value="6000" />
+		<property key="BucketMocGblInt" value="6000" />
+		<property key="BucketMocInt" value="6000" />
+		<property key="BucketMocOn" value="6000" />
+		<property key="BucketMocSun" value="6000" />
+		<property key="BucketMocTri" value="6000" />
+		<property key="BucketMocTriCc" value="6000" />
+		<property key="BucketRoamMoc" value="6000" />
+		<property key="BucketSmsGbl" value="100" />
+		<property key="BucketSmsInt" value="100" />
+		<property key="BucketSmsOn" value="100" />
+		<property key="BucketSmsRoam" value="100" />
+		<property key="BucketSmsTri" value="100" />
+		<property key="BucketTkTpdMoc" value="100" />
+		<property key="BucketTkTpdSms" value="100" />
+		<property key="BucketTokMoc" value="100" />
+		<property key="CallAllBucketMoc" value="6000" />
+		<property key="ComDataFbc" value="1" />
+		<property key="ComDataFbcCtl" value="100" />
+		<property key="ConsWalletAcc" value="100" />
+		<property key="DailyCapSms" value="100" />
+		<property key="DataArawFbc" value="1" />
+		<property key="DataMinFbc" value="1" />
+		<property key="DataVolFbc" value="1" />
+		<property key="EmailDataFbc" value="1" />
+		<property key="EmailDataFbcCtl" value="100" />
+		<property key="FlexiBckAcc" value="100" />
+		<property key="GamesDataFbc" value="1" />
+		<property key="GamesDataFbcCtl" value="100" />
+		<property key="IMData2FbcCtl" value="100" />
+		<property key="IMDataFbc" value="1" />
+		<property key="IMDataFbcCtl" value="100" />
+		<property key="Katok10" value="100" />
+		<property key="Katok15" value="100" />
+		<property key="KatokAtTex25" value="100" />
+		<property key="KatokAtTex35" value="100" />
+		<property key="KatokSubGrace" value="100" />
+		<property key="LTEUnliSurfFbc" value="100" />
+		<property key="OnPeakAccountID" value="1" />
+		<property key="RoamFbcCtl" value="100" />
+		<property key="RwdMocTri" value="6000" />
+		<property key="RwdSmsGbl" value="100" />
+		<property key="RwdVolDataFbc" value="1" />
+		<property key="SnsData2Fbc" value="1" />
+		<property key="SnsData2FbcCtl" value="100" />
+		<property key="SnsDataFbc" value="1" />
+		<property key="SnsDataFbcCtl" value="100" />
+		<property key="UnivWalletAcc" value="1" />
+		<property key="UnliAccessSmsCtl" value="100" />
+		<property key="UnliBoost1FbcCtl" value="100" />
+		<property key="UnliBrws1FbcCtl" value="100" />
+		<property key="UnliEmail1FbcCtl" value="100" />
+		<property key="UnliIM1FbcCtl" value="100" />
+		<property key="UnliIM2FbcCtl" value="100" />
+		<property key="UnliKonekFbcCtl" value="100" />
+		<property key="UnliMocGblCtl" value="100" />
+		<property key="UnliMocOnCtl" value="100" />
+		<property key="UnliMocTriCtl" value="100" />
+		<property key="UnliNxbFbcCtl" value="100" />
+		<property key="UnliPhoto1FbcCtl" value="100" />
+		<property key="UnliSmsGblCtl" value="100" />
+		<property key="UnliSmsOnCtl" value="100" />
+		<property key="UnliSmsTriCtl" value="100" />
+		<property key="UnliSns1FbcCtl" value="100" />
+		<property key="UnliSns2FbcCtl" value="100" />
+		<property key="UnliSurfFbcCtl" value="100" />
+		<property key="UnliSurfFbcCtlRen" value="100" />
+		<property key="UnliThroFbcCtl" value="100" />
+		<property key="VideoDataFbc" value="1" />
+		<property key="VideoDataFbcCtl" value="100" />
+	</section>
 	<section id="GLOBAL_callinguserCredantials" description="calling circle user credentials">
 		<property key="ecsd" value="ecsd@oc" />
 	</section>
@@ -225,23 +403,20 @@
 
 
 	<section id="af1"
-		description="Account finder Manila - XML RPC stack parameters. 
-	To add more AF nodes create another section with af suffixed with a number and configure the values">
+		description="Account finder Manila - XML RPC stack parameters.   To add more AF nodes create another section with af suffixed with a number and configure the values">
 		<property key="realm" value="smart.com.ph" />
 		<property key="address" value="10.245.139.132" />
 		<property key="hostId" value="af01.smart.com.ph" />
 		<property key="site" value="MANILA" />
 		<property key="defaultsite" value="true" />
 	</section>
-
 	<section id="af2" description="Account finder Cebu - XML RPC Stack parameters">
 		<property key="realm" value="smart.com.ph" />
 		<property key="address" value="10.245.139.133" />
 		<property key="hostId" value="af02.smart.com.ph" />
 		<property key="site" value="CEBU" />
 	</section>
-
-	<section id="cs-air1" description="">
+	<section id="cs-air1">
 		<property key="originNodeType" value="ADM" />
 		<property key="originHostName" value="IL" />
 		<property key="csair protocol" value="air" />
@@ -262,9 +437,8 @@
 		<property key="staticRoute realm" value="smart.com.ph" />
 		<property key="address" value="http://10.245.144.65:10010/Air" />
 		<property key="hostId" value="air-lb1.smart.com.ph" />
-		<property key="site" value="MANILA" />
+		<property key="siteId" value="MANILA" />
 	</section>
-
 	<section id="cs-air2">
 		<property key="originNodeType" value="ADM" />
 		<property key="originHostName" value="IL" />
@@ -286,12 +460,10 @@
 		<property key="staticRoute realm" value="smart.com.ph" />
 		<property key="address" value="http://10.245.144.20:10010/Air" />
 		<property key="hostId" value="air-lb2.smart.com.ph" />
-		<property key="site" value="CEBU" />
+		<property key="siteId" value="CEBU" />
 	</section>
-
 	<section id="smart-frontend-responsemap"
-		description="SMART Front Response mapping of backend error/status codes. 
-	Backend error code is configured as key and front-end mapped status code is configured as value">
+		description="SMART Front Response mapping of backend error/status codes.   Backend error code is configured as key and front-end mapped status code is configured as value">
 		<property key="99999" value="99999" />
 		<property key="504" value="504" />
 
@@ -376,6 +548,7 @@
 		<property key="260" value="500" />
 		<property key="999" value="13100" />
 		<property key="8001" value="999" />
+		<property key="999" value="999" />
 		<property key="8002" value="11610" />
 		<property key="8003" value="4002" />
 		<property key="8004" value="4020" />
@@ -580,7 +753,7 @@
 		<property key="155" value="6" />
 		<property key="241" value="1" />
 		<property key="242" value="1" />
-			
+
 	</section>
 
 
@@ -674,7 +847,7 @@
 	</section>
 
 
-<!-- Ported the UsageTimingWindow Properties --Started -->
+	<!-- Ported the UsageTimingWindow Properties --Started -->
 	<section id="Global_usageTimingsStartWindow" description="usageTimingsStartWindow">
 		<property key="usageTimingWindow1" value="19.01" />
 		<property key="usageTimingWindow2" value="17:00" />
@@ -714,10 +887,57 @@
 		<property key="UnliSmsGblCtl" value="12" />
 	</section>
 
-<!-- Ported the UsageTimingWindow Properties --ended -->
+	<!-- Ported the UsageTimingWindow Properties --ended -->
 
-<section id="Global_smscClients" description="smscClients">
-<property key="smsc-client" value="smsc-client"</property>
-</section>
+	<section id="Global_smscClients" description="smscClients">
+		<property key="smsc-client" value="smsc-client" />
+	</section>
 
+	<!--Web service client end points -->
+	<section description="Fulfilment engine request interface client"
+		id="fulfillment-request-client">
+		<property key="address"
+			value="http://172.20.0.43:8080/services/ws/fulfillment" />
+		<property key="connectionTimeout" value="60000" />
+		<property key="receiveTimeout" value="120000" />
+		<property key="connectionType" value="KEEP_ALIVE" />
+	</section>
+	<section description="Fulfilment engine response interface client"
+		id="fulfillment-response-client">
+		<property key="address"
+			value="http://172.20.0.43:8080/services/ws/fulfillmentresponse" />
+		<property key="connectionTimeout" value="60000" />
+		<property key="receiveTimeout" value="120000" />
+		<property key="connectionType" value="KEEP_ALIVE" />
+	</section>
+	<section description="Subscriber request interface client" id="subscriber-request-client">
+		<property key="address"
+			value="http://172.20.0.43:8080/services/ws/iSubscriber" />
+		<property key="connectionTimeout" value="60000" />
+		<property key="receiveTimeout" value="120000" />
+		<property key="connectionType" value="KEEP_ALIVE" />
+	</section>
+	<section description="Subscriber response interface client" id="subscriber-response-client">
+		<property key="address"
+			value="http://172.20.0.43:8080/services/ws/iSubscriberResponse" />
+		<property key="connectionTimeout" value="60000" />
+		<property key="receiveTimeout" value="120000" />
+		<property key="connectionType" value="KEEP_ALIVE" />
+	</section>
+	<section description="Subscription request interface client"
+		id="subscription-request-client">
+		<property key="address"
+			value="http://172.20.0.43:8080/services/ws/iSubscription" />
+		<property key="connectionTimeout" value="60000" />
+		<property key="receiveTimeout" value="120000" />
+		<property key="connectionType" value="KEEP_ALIVE" />
+	</section>
+	<section description="Subscription response interface client"
+		id="subscription-response-client">
+		<property key="address"
+			value="http://172.20.0.43:8080/services/ws/iSubscriptionResponse" />
+		<property key="connectionTimeout" value="60000" />
+		<property key="receiveTimeout" value="120000" />
+		<property key="connectionType" value="KEEP_ALIVE" />
+	</section>
 </config>

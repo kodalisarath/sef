@@ -27,12 +27,12 @@ public class OfferVerification {
 			
 			System.out.println("Encrypted form: " + new String (encoder.encode(helper.encrypt("639777180104"))));
 			
-System.out.println("\n1. Create Subscriber:\n" + offerStore.getOfferById("CREATE_SUBSCRIBER"));
-System.out.println("\n2. Read Subscriber:\n" + offerStore.getOfferById("READ_SUBSCRIBER"));
-System.out.println("\n3. Modify Tagging:\n" + offerStore.getOfferById("MODIFY_TAGGING"));
-System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
-System.out.println("\n5. Welcome Pack:\n" + offerStore.getOfferById("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
-System.out.println("\n6. Modify Tagging Reset bit:\n" + offerStore.getOfferById("MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
+			System.out.println("\n1. Create Subscriber:\n" + offerStore.getOfferById("CREATE_SUBSCRIBER"));
+			System.out.println("\n2. Read Subscriber:\n" + offerStore.getOfferById("READ_SUBSCRIBER"));
+			System.out.println("\n3. Modify Tagging:\n" + offerStore.getOfferById("MODIFY_TAGGING"));
+			System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
+			System.out.println("\n5. Welcome Pack:\n" + offerStore.getOfferById("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
+			System.out.println("\n6. Modify Tagging Reset bit:\n" + offerStore.getOfferById("MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
 
 		
 			
