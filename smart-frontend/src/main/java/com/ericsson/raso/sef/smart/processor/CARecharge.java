@@ -89,7 +89,6 @@ public class CARecharge implements Processor {
 				throw new SmException(new ResponseCode(8002, "CustomerId or AccesKey is not defined in input parameter"));
 			}
 
-			requestContextCache.set(metas);
 			
 //			Subscriber susbcriber = readSubscriber(requestId, msisdn);
 //			if (susbcriber == null)
@@ -123,6 +122,10 @@ public class CARecharge implements Processor {
 			metas.put("msisdn", msisdn);
 			metas.put("SUBSCRIBER_ID", msisdn);
 			metas.put("pasaload", rechargeRequest.getEventName());
+
+			
+			requestContextCache.set(metas);
+
 			List<Meta> listMeta = convertToList(metas);
 			logger.debug("Confirm metas: " + listMeta);
 			String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
@@ -201,6 +204,7 @@ public class CARecharge implements Processor {
 		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
 		map.put("eventName", rechargeRequest.getEventName());
 		map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
+		map.put("eventInfo", rechargeRequest.getEventName());
 		map.put(SmartConstants.USECASE, "reversal");
 
 		return map;
@@ -476,21 +480,21 @@ public class CARecharge implements Processor {
 		if (!anyOfferFound) {
 			logger.debug("Seems like subscriber is in GRACE state. Will create new Offer/DA/Wallet for this bum!!");
 			requestContext.put("graceCreatenew", "true");
+		} else {
+
+			logger.debug("Contents of subsriberOffers: " + subscriberOffers);
+			logger.debug("TreeSet Test::: size: " + sortedOffers.size() 
+					+ ", first: " + sortedOffers.first() 
+					+ ", last: " + sortedOffers.last() 
+					+ ", sorted: " + sortedOffers);
+
+			requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);
+			requestContext.put("endurantOfferID", "" + sortedOffers.last().offerID);
+			requestContext.put("endurantDA", "" + sortedOffers.last().daID);
+
+			subscriberOffersCache.set(subscriberOffers);
+			sortedOffersCache.set(sortedOffers);
 		}
-
-		logger.debug("Contents of subsriberOffers: " + subscriberOffers);
-		logger.debug("TreeSet Test::: size: " + sortedOffers.size() 
-				+ ", first: " + sortedOffers.first() 
-				+ ", last: " + sortedOffers.last() 
-				+ ", sorted: " + sortedOffers);
-
-		requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);
-		requestContext.put("endurantOfferID", "" + sortedOffers.last().offerID);
-		requestContext.put("endurantDA", "" + sortedOffers.last().daID);
-		
-		subscriberOffersCache.set(subscriberOffers);
-		sortedOffersCache.set(sortedOffers);
-		
 		
 		logger.debug("Cached SubscriberOffers & SortedOffers...");
 	}
