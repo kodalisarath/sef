@@ -13,6 +13,7 @@ import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
@@ -42,11 +43,13 @@ public class EntireDeleteSubscriber implements Processor{
 		//	metas.add(new Meta("federation-profile", "deleteSubscriber"));
 			SubscriberInfo subscriberinfo = deleteSubscriber(requestId, request.getCustomerId());
 		
-			if(subscriberinfo.getStatus() != null || subscriberinfo.getStatus().getCode() >0) {
-				throw new SmException(new ResponseCode(13423, "13423#EntireDelete Entity - Customer with primary key Keyname:PK,CustomerId: " + request.getCustomerId()
-								+ " does not exist"));
+			if(subscriberinfo.getStatus() != null && subscriberinfo.getStatus().getCode() >0) {
+				logger.debug("THIS IS TO PROVE BUILD IS NEW");
+				throw ExceptionUtil.toSmException(new ResponseCode(subscriberinfo.getStatus().getCode(), subscriberinfo.getStatus().getDescription()));
 			}
-			exchange.getOut().setBody(createResponse(request.getUsecase().getOperation(), request.getUsecase().getModifier(),request.isTransactional()));
+			logger.debug("Response received for delete.. now creating front end response");
+			//exchange.getOut().setBody(subscriberInfo);
+			DummyProcessor.response(exchange);
 		} catch (Exception e) {
 			logger.error("Error in the processor class:",e.getClass().getName(),e);
 		}
@@ -101,7 +104,7 @@ public class EntireDeleteSubscriber implements Processor{
 		
 		SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-		if(purchaseResponse == null) {
+		if(purchaseResponse.getStatus() != null && purchaseResponse.getStatus().getCode() >0) {
 			logger.debug("No response arrived???");
 			throw new SmException(ErrorCode.internalServerError);
 		}

@@ -84,7 +84,7 @@ OwningCustomerId
 			String requestId = RequestContextLocalStore.get().getRequestId();
 
 			SubscriberInfo subscriberInfo = updateSubscriber(requestId,request.getCustomerId(), metas,Constants.CreateOrWriteROP);
-		if (subscriberInfo.getStatus() != null) {
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
 			logger.error("Response about to send with SOAP ",subscriberInfo.getStatus().getDescription());
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			

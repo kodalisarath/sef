@@ -54,7 +54,7 @@ public class RetrieveDeleteProcessor implements Processor {
 			if(subscriberObj.getSubscriber() != null){
 				SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), new ArrayList<Meta>(), Constants.RetrieveDelete);
 				  exchange.getOut().setBody(subscriberInfo);
-					if (subscriberInfo.getStatus() != null) {
+					if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
 						logger.debug("Problem in persisting");
 						throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 					}

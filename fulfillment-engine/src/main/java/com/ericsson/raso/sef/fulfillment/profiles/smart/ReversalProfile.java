@@ -142,8 +142,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 				
 				offersToUpdate.add(impactedOffer);
 				
-				DedicatedAccountInformation impactedDA = 
-						this.getImpactedDA(toReversal.dedicatedAccountInformationID, balanceAndDateResponse.getDedicatedAccountInformation());
+				DedicatedAccountInformation impactedDA =  this.getImpactedDA(toReversal.dedicatedAccountInformationID, balanceAndDateResponse.getDedicatedAccountInformation());
 				DedicatedAccountReversal daReversal = this.getRelevantReveralDA(toReversal.dedicatedAccountInformationID);
 				DedicatedAccountUpdateInformation daToUpdate = new DedicatedAccountUpdateInformation();
 				daToUpdate.setDedicatedAccountID(impactedDA.getDedicatedAccountID());
@@ -172,9 +171,9 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		request.setExternalData2(externalData2);
 		request.setSubscriberNumber(msisdn);
 		request.setSubscriberNumberNAI(1);
-		request.setTransactionType(channel);
+		//request.setTransactionType(channel);
 		request.setTransactionCurrency("PHP");
-		request.setTransactionCode(externalData1);
+		//request.setTransactionCode(externalData1);
 		
 		UpdateBalanceAndDateCommand updateBalanceAndDateCommand = new UpdateBalanceAndDateCommand(request);
 		UpdateBalanceAndDateResponse updateBalanceAndDateResponse = null;
@@ -191,12 +190,14 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		for (OfferInformation updatedOffer: offersToUpdate) {
 
 			UpdateOfferRequest updateOfferRequest = new UpdateOfferRequest();
-			updateOfferRequest.setExpiryDate(updatedOffer.getExpiryDate());
+			//updateOfferRequest.setExpiryDate(updatedOffer.getExpiryDate());
 			updateOfferRequest.setExpiryDateTime(updatedOffer.getExpiryDateTime());
-			updateOfferRequest.setStartDateTime(updatedOffer.getStartDate());
+			//updateOfferRequest.setStartDateTime(updatedOffer.getStartDate());
 			updateOfferRequest.setStartDateTime(updatedOffer.getStartDateTime());
 			updateOfferRequest.setOfferID(updatedOffer.getOfferID());
 			updateOfferRequest.setOfferType(2);
+			updateOfferRequest.setSubscriberNumber(msisdn);
+			updateOfferRequest.setSubscriberNumberNAI(1);
 			
 			UpdateOfferCommand updateOfferCommand = new UpdateOfferCommand(updateOfferRequest);
 			UpdateOfferResponse updateOfferResponse = null;
@@ -213,9 +214,9 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			Integer associatedDaId = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", ""+updateOfferRequest.getOfferID()));
 			for (DedicatedAccountChangeInformation daResultInfo: updateBalanceAndDateResponse.getDedicatedAccountInformation()) {
 				if (daResultInfo.getDedicatedAccountID().compareTo(associatedDaId)==0) {
-					responseMetas.put(REVERSAL_DEDICATED_ACCOUNT_ID + "." + index, "" + associatedDaId);
-					responseMetas.put(REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE + "." + index, "" + daResultInfo.getDedicatedAccountValue1());
-					responseMetas.put(REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT + "." + index, "" + this.getReversalDA(associatedDaId).getAmountToReverse());
+					responseMetas.put("REVERSAL_DEDICATED_ACCOUNT" + "." + index, "" + associatedDaId 
+							+ "," + daResultInfo.getDedicatedAccountValue1() 
+							+ "," + this.getReversalDA(associatedDaId).getAmountToReverse());
 				}
 			}
 		}

@@ -80,7 +80,7 @@ public class DeleteSubscriber extends AbstractTransaction {
 	public void sendResponse() {
 		
 		LOGGER.debug("Invoking delete subscriber response");
-		TransactionStatus txnStatus=null;
+		TransactionStatus txnStatus= new TransactionStatus();
 		boolean result = true;
 		if (this.getResponse() != null) {
 			   if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {

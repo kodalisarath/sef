@@ -89,7 +89,6 @@ public class CARecharge implements Processor {
 				throw new SmException(new ResponseCode(8002, "CustomerId or AccesKey is not defined in input parameter"));
 			}
 
-			requestContextCache.set(metas);
 			
 //			Subscriber susbcriber = readSubscriber(requestId, msisdn);
 //			if (susbcriber == null)
@@ -123,6 +122,10 @@ public class CARecharge implements Processor {
 			metas.put("msisdn", msisdn);
 			metas.put("SUBSCRIBER_ID", msisdn);
 			metas.put("pasaload", rechargeRequest.getEventName());
+
+			
+			requestContextCache.set(metas);
+
 			List<Meta> listMeta = convertToList(metas);
 			logger.debug("Confirm metas: " + listMeta);
 			String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
@@ -201,6 +204,7 @@ public class CARecharge implements Processor {
 		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
 		map.put("eventName", rechargeRequest.getEventName());
 		map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
+		map.put("eventInfo", rechargeRequest.getEventName());
 		map.put(SmartConstants.USECASE, "reversal");
 
 		return map;
@@ -225,6 +229,7 @@ public class CARecharge implements Processor {
 
 		this.partialReadSubscriber(rechargeRequest.getCustomerId());
 		this.checkGraceAndLongestExpiryDate();
+		requestContext = requestContextCache.get();
 		Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
 		TreeSet<OfferInfo> sortedOffers = sortedOffersCache.get();
 		
@@ -247,8 +252,12 @@ public class CARecharge implements Processor {
 		String requiredOfferID = offerMapping.getOfferID();
 		String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
 
-		OfferInfo oInfo = null; long requestedExpiryDate = 0;
-		long longestExpiryDate = sortedOffers.last().offerExpiry;
+		OfferInfo oInfo = null; long requestedExpiryDate = 0; long longestExpiryDate = 0;
+		if (requestContext.get("graceCreateNew") == null || sortedOffers.size() > 0)			
+			longestExpiryDate = sortedOffers.last().offerExpiry;
+		else
+			longestExpiryDate = 0;
+		
 		//Safety & Insurance
 		requestContext.put("supervisionExpiryPeriod", "" + longestExpiryDate);
 		requestContext.put("serviceFeeExpiryPeriod", "" + longestExpiryDate);
@@ -313,7 +322,17 @@ public class CARecharge implements Processor {
 		}
 		
 		// Calculating all dates - offer, da & lifecycle
-		if (requestedExpiryDate > longestExpiryDate) { // here it is implied that requested offer is breaching & extending longest expiry
+		if (requestContext.get("graceCreateNew") != null && requestContext.get("graceCreateNew").equals("true")) {
+			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
+			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
+			requestContext.put("longestExpiry", "" + requestedExpiryDate);	
+			requestContext.put("offerExpiry", "" + requestedExpiryDate);
+			requestContext.put("newDaID", requiredDA);
+			requestContext.put("endurantOfferID", requiredOfferID); 
+			requestContext.put("newOfferID", requiredOfferID);
+			requestContext.put("daEndTime", "" + requestedExpiryDate);
+
+		} else if (requestedExpiryDate > longestExpiryDate) { // here it is implied that requested offer is breaching & extending longest expiry
 			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
 			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
 			requestContext.put("longestExpiry", "" + requestedExpiryDate);	
@@ -454,26 +473,33 @@ public class CARecharge implements Processor {
 					logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 				}
 			}
+			
+			if (key.startsWith("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG")) {
+				if (subscriberMetas.get(key).equals("false")) {
+					logger.debug("Seems like subscriber is in PREACTIVE state. Not Allowed");
+					throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+				}
+			}
 		}
 		
 		if (!anyOfferFound) {
-			logger.debug("Seems like subscriber is in PREACTIVE state. Not Allowed");
-			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+			logger.debug("Seems like subscriber is in GRACE state. Will create new Offer/DA/Wallet for this bum!!");
+			requestContext.put("graceCreatenew", "true");
+		} else {
+
+			logger.debug("Contents of subsriberOffers: " + subscriberOffers);
+			logger.debug("TreeSet Test::: size: " + sortedOffers.size() 
+					+ ", first: " + sortedOffers.first() 
+					+ ", last: " + sortedOffers.last() 
+					+ ", sorted: " + sortedOffers);
+
+			requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);
+			requestContext.put("endurantOfferID", "" + sortedOffers.last().offerID);
+			requestContext.put("endurantDA", "" + sortedOffers.last().daID);
+
+			subscriberOffersCache.set(subscriberOffers);
+			sortedOffersCache.set(sortedOffers);
 		}
-
-		logger.debug("Contents of subsriberOffers: " + subscriberOffers);
-		logger.debug("TreeSet Test::: size: " + sortedOffers.size() 
-				+ ", first: " + sortedOffers.first() 
-				+ ", last: " + sortedOffers.last() 
-				+ ", sorted: " + sortedOffers);
-
-		requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);
-		requestContext.put("endurantOfferID", "" + sortedOffers.last().offerID);
-		requestContext.put("endurantDA", "" + sortedOffers.last().daID);
-		
-		subscriberOffersCache.set(subscriberOffers);
-		sortedOffersCache.set(sortedOffers);
-		
 		
 		logger.debug("Cached SubscriberOffers & SortedOffers...");
 	}
