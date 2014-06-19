@@ -392,7 +392,7 @@ public class CARecharge implements Processor {
 				boolean soFlag = Boolean.parseBoolean(soParts[1]);
 				
 				ServiceOffering so = new ServiceOffering(soID, soFlag);
-				if ( (so.soID >= 1 && so.soID <= 7) && so.isFlag()) {
+				if ( (so.soID >= 2 && so.soID <= 7) && so.isFlag()) {
 					logger.debug("SO ID: " + soID + " is SET. User not allowed for this transaction");
 					throw ExceptionUtil.toSmException(ErrorCode.subscriberLocked);
 				}
