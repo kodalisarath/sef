@@ -2,6 +2,8 @@ package com.ericsson.raso.sef.smart.usecase;
 
 import java.util.List;
 
+import org.apache.logging.log4j.core.Logger;
+
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.EnumerationValueParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.LongParameter;
@@ -124,11 +126,14 @@ public class BucketCreateOrWriteRopRequest extends SmartRequest {
 				StructParameter parameter = (StructParameter) param;
 				if (parameter.getName().equalsIgnoreCase("OnPeakAccountID_FU")) {
 					List<Object> onPeakAccountIds = parameter.getParameterOrBooleanParameterOrByteParameter();
-					String onPeakAccountValue = "";
-					for (int i = 0; i < onPeakAccountIds.size(); i++) {
-						onPeakAccountValue += onPeakAccountIds.get(i).toString() + "; ";
+					for (Object structMember: parameter.getParameterOrBooleanParameterOrByteParameter()) {
+						if (structMember instanceof LongParameter ){
+							if (((LongParameter) structMember).getName().equals("Balance")){
+								this.setOnPeakAccountID_FU("" + ((LongParameter) structMember).getValue());  
+							}
+						}
+							
 					}
-					this.setOnPeakAccountID_FU(onPeakAccountValue.toString()); // TODO Still have to parse struct. Not able to do it. Vinay, its your turn 
 				}
 			}
 		}

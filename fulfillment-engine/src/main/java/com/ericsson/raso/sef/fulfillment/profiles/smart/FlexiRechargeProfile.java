@@ -76,7 +76,8 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		if (newSubscription) 
 			daInfo.setStartDate(this.getDaDate(daStartTime));
 		
-		daInfo.setExpiryDate(this.getDaDate(daEndTime));
+		if (expirationDatePolicy.equals("2")) 
+			daInfo.setExpiryDate(this.getDaDate(daEndTime));
 		daInfo.setAdjustmentAmountRelative(amountOfUnits);
 		daInfo.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", endurantDA)));
 		daToUpdateList.add(daInfo);
@@ -110,12 +111,15 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		updateOfferRequest.setExpiryDateTime(new Date(Long.parseLong(offerExpiry)));
 		updateOfferRequest.setOfferType(2);
 		
+		
 		UpdateOfferCommand updateOfferCommand = new UpdateOfferCommand(updateOfferRequest);
 		UpdateOfferResponse updateOfferResponse = null;
 		try {
-			LOGGER.debug("Sending Update Offer for flexi-case..");
-			updateOfferResponse = updateOfferCommand.execute();
-			LOGGER.debug("Flexi Offer updated in AIR...");
+			if (!expirationDatePolicy.equals("2")) { // in this policy, date must not be set
+				LOGGER.debug("Sending Update Offer for flexi-case..");
+				updateOfferResponse = updateOfferCommand.execute();
+				LOGGER.debug("Flexi Offer updated in AIR...");
+			}
 		} catch (SmException e) {
 			LOGGER.error("Update Offer for Flexi failed in AIR... Cause: " + e.getMessage(), e);
 			throw new FulfillmentException(e.getComponent(), e.getStatusCode());
