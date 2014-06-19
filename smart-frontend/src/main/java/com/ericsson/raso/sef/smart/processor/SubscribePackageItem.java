@@ -86,12 +86,31 @@ public class SubscribePackageItem implements Processor {
           logger.info("Recieved a SubscriberInfo Object and it is not null");
 			 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 
-		 logger.info("check pre_active");			
-		  if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
+			 IConfig config = SefCoreServiceResolver.getConfigService();
+			 String activeStatusCS = subscriberObj.getMetas().get("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG");
+		     String packagefromDB = subscriberObj.getMetas().get("Package");
+		     if (packagefromDB == null || packagefromDB.equalsIgnoreCase("")){
+		    	 packagefromDB = subscriberObj.getMetas().get("package");
+		     }
+		    
+		     String requestedWelcomePackSC = config.getValue("GLOBAL_welcomePackMapping", request.getPackaze());
+		     int usecase=0;
+		     logger.info("Failfast if pre-active and package subscribed to different from initial welcome pack");
+		     if (activeStatusCS.equalsIgnoreCase("false"))
+		     {
+		    	 if (packagefromDB.equalsIgnoreCase("initialSC")) {
+		    		 usecase=1;
+		    	 }
+		    	 else {
+		    		 throw new SmException(ErrorCode.invalidParameterValue);
+		    	 }
+		     }
+		     
+		 logger.info("check pre-active valid case");			
+		  if(usecase==1) {
 			  if(isWelcomePack(request.getPackaze())) {
-				  IConfig config = SefCoreServiceResolver.getConfigService();
 				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
-				  metas.add(new Meta("ServiceClass",config.getValue("GLOBAL_welcomePackMapping", request.getPackaze())));
+				  metas.add(new Meta("ServiceClass",requestedWelcomePackSC));
 				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
 				  SubscriberInfo response = new SubscriberInfo();
 			      logger.debug("Got past event class....SK");
@@ -137,7 +156,6 @@ public class SubscribePackageItem implements Processor {
 				throw ExceptionUtil.toSmException(ErrorCode.technicalError);
 			}
 			logger.info("SK GET METAS BALANCE " + subscriber.getMetas());
-		  
 		    logger.info("check grace and recycle metas as subscriber is not pre-active");
 			Map<String, String> subscriberMetas = subscriber.getMetas();
 			OfferInfo oInfo = null;
