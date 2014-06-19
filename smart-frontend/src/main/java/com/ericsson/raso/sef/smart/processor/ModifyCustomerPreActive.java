@@ -74,7 +74,7 @@ public class ModifyCustomerPreActive implements Processor {
 			}
 			subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
 			logger.info("Before read subscriber call");
-			if(subscriberInfo.getStatus() != null){
+			if(subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0){
 				throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			}
 		}else{
