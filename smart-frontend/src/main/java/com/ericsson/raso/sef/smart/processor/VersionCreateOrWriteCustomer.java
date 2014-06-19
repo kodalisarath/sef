@@ -52,7 +52,7 @@ public class VersionCreateOrWriteCustomer implements Processor {
 			
 			SubscriberInfo subscriberInfo = updateSubscriber(requestId,versionCreateOrWriteCustomerRequest.getCustomerId(), metas,Constants.VersionCreateOrWriteCustomer);
 			//exchange.getOut().setBody(subscriberInfo);
-		if (subscriberInfo.getStatus() != null) {
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
 			
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			

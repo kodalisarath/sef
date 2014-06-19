@@ -42,7 +42,7 @@ public class BucketCreateOrWriteRop implements Processor {
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		SubscriberInfo subscriberInfo=updateSubscriber(requestId, request.getCustomerId(), metas,Constants.BucketCreateOrWriteRop);
 		//exchange.getOut().setBody(subscriberInfo);
-		if (subscriberInfo.getStatus() != null) {
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
 			
 		throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			

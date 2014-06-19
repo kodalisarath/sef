@@ -135,7 +135,7 @@ public class UnsubscribePackageItem implements Processor {
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 					SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-					if(purchaseResponse == null) {
+					if(purchaseResponse.getStatus() != null && purchaseResponse.getStatus().getCode() >0) {
 						logger.debug("No response arrived???");
 						throw new SmException(ErrorCode.internalServerError);
 					}

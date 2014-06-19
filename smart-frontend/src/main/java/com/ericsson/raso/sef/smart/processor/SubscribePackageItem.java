@@ -139,7 +139,7 @@ public class SubscribePackageItem implements Processor {
 					SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-					if(purchaseResponse == null) {
+					if(purchaseResponse.getStatus() != null && purchaseResponse.getStatus().getCode() >0) {
 						logger.debug("No response arrived???");
 						throw new SmException(ErrorCode.internalServerError);
 					}

@@ -55,7 +55,7 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 
 		// Creating user first...
 		SubscriberInfo subscriberInfo=createSubscriber(requestId,subscriber);
-		if (subscriberInfo.getStatus() != null || subscriberInfo.getStatus().getCode() >0) {
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
 			logger.debug("Backend Error: " + subscriberInfo.getStatus().getCode());
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			

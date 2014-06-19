@@ -42,7 +42,7 @@ public class EntireDeleteSubscriber implements Processor{
 		//	metas.add(new Meta("federation-profile", "deleteSubscriber"));
 			SubscriberInfo subscriberinfo = deleteSubscriber(requestId, request.getCustomerId());
 		
-			if(subscriberinfo.getStatus() != null || subscriberinfo.getStatus().getCode() >0) {
+			if(subscriberinfo.getStatus() != null && subscriberinfo.getStatus().getCode() >0) {
 				throw new SmException(new ResponseCode(13423, "13423#EntireDelete Entity - Customer with primary key Keyname:PK,CustomerId: " + request.getCustomerId()
 								+ " does not exist"));
 			}
