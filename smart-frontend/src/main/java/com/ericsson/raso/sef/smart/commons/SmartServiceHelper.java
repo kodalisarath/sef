@@ -85,7 +85,7 @@ public abstract class SmartServiceHelper {
 
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
 
-		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
+		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(correlationId);
 
 		if (subscriberInfo != null && subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() == 504)
 			throw ExceptionUtil.toSmException(new ResponseCode(504, "Unknown Subscriber"));
@@ -129,7 +129,7 @@ public abstract class SmartServiceHelper {
 
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
 
-		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
+		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(correlationId);
 
 		Map<String, String> metaList = subscriberInfo.getMetas();
 

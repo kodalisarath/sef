@@ -128,6 +128,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		if(subInfo !=null)
 			subInfo.setStatus(fault);
+		
 		SubscriberResponseStore.put(requestCorrelator, subInfo);
 
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);

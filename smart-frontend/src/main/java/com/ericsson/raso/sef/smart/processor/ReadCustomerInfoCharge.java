@@ -74,14 +74,14 @@ public class ReadCustomerInfoCharge implements Processor {
 		 }
          logger.info("Recieved a SubscriberInfo Object and it is not null");
 		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
+		 logger.info("Billing Metas: " + subscriberObj.getMetas());
 	     
 		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional()));
 
 	}
 
 
-	private SubscriberInfo readSubscriber(String requestId, String customerId,
-			List<Meta> metas) {
+	private SubscriberInfo readSubscriber(String requestId, String customerId, List<Meta> metas) {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
