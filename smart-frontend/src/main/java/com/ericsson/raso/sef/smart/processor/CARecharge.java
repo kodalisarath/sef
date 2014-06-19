@@ -229,6 +229,7 @@ public class CARecharge implements Processor {
 
 		this.partialReadSubscriber(rechargeRequest.getCustomerId());
 		this.checkGraceAndLongestExpiryDate();
+		requestContext = requestContextCache.get();
 		Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
 		TreeSet<OfferInfo> sortedOffers = sortedOffersCache.get();
 		
@@ -251,8 +252,12 @@ public class CARecharge implements Processor {
 		String requiredOfferID = offerMapping.getOfferID();
 		String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
 
-		OfferInfo oInfo = null; long requestedExpiryDate = 0;
-		long longestExpiryDate = sortedOffers.last().offerExpiry;
+		OfferInfo oInfo = null; long requestedExpiryDate = 0; long longestExpiryDate = 0;
+		if (requestContext.get("graceCreateNew") == null || sortedOffers.size() > 0)			
+			longestExpiryDate = sortedOffers.last().offerExpiry;
+		else
+			longestExpiryDate = 0;
+		
 		//Safety & Insurance
 		requestContext.put("supervisionExpiryPeriod", "" + longestExpiryDate);
 		requestContext.put("serviceFeeExpiryPeriod", "" + longestExpiryDate);
