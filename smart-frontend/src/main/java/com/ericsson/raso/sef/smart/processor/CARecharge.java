@@ -313,7 +313,17 @@ public class CARecharge implements Processor {
 		}
 		
 		// Calculating all dates - offer, da & lifecycle
-		if (requestedExpiryDate > longestExpiryDate) { // here it is implied that requested offer is breaching & extending longest expiry
+		if (requestContext.get("graceCreateNew") != null && requestContext.get("graceCreateNew").equals("true")) {
+			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
+			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
+			requestContext.put("longestExpiry", "" + requestedExpiryDate);	
+			requestContext.put("offerExpiry", "" + requestedExpiryDate);
+			requestContext.put("newDaID", requiredDA);
+			requestContext.put("endurantOfferID", requiredOfferID); 
+			requestContext.put("newOfferID", requiredOfferID);
+			requestContext.put("daEndTime", "" + requestedExpiryDate);
+
+		} else if (requestedExpiryDate > longestExpiryDate) { // here it is implied that requested offer is breaching & extending longest expiry
 			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
 			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
 			requestContext.put("longestExpiry", "" + requestedExpiryDate);	
@@ -454,11 +464,18 @@ public class CARecharge implements Processor {
 					logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 				}
 			}
+			
+			if (key.startsWith("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG")) {
+				if (subscriberMetas.get(key).equals("false")) {
+					logger.debug("Seems like subscriber is in PREACTIVE state. Not Allowed");
+					throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+				}
+			}
 		}
 		
 		if (!anyOfferFound) {
-			logger.debug("Seems like subscriber is in PREACTIVE state. Not Allowed");
-			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+			logger.debug("Seems like subscriber is in GRACE state. Will create new Offer/DA/Wallet for this bum!!");
+			requestContext.put("graceCreatenew", "true");
 		}
 
 		logger.debug("Contents of subsriberOffers: " + subscriberOffers);
