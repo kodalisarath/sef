@@ -346,8 +346,8 @@ public class CARecharge implements Processor {
 					requestContext.put("daEndTime", "" + requestedExpiryDate);
 				}
 			} else { // update of this offer will not impact the life-cycle
-				requestContext.put("supervisionExpiryPeriod", "" + sortedOffers.last().offerExpiry);
-				requestContext.put("serviceFeeExpiryPeriod", "" + sortedOffers.last().offerExpiry);
+				requestContext.put("supervisionExpiryPeriod", null);
+				requestContext.put("serviceFeeExpiryPeriod", null);
 				requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);	
 
 				requestContext.put("offerExpiry", "" + requestedExpiryDate);
