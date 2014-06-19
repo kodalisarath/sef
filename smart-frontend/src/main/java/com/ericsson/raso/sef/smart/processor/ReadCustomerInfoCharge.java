@@ -13,15 +13,21 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
+import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.AccountInfo;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.commons.SmartModel;
 import com.ericsson.raso.sef.smart.commons.SmartServiceHelper;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
+import com.ericsson.raso.sef.smart.usecase.BalanceAdjustmentRequest;
 import com.ericsson.raso.sef.smart.usecase.ReadCustomerInfoChargeRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
@@ -34,63 +40,93 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class ReadCustomerInfoCharge implements Processor {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger logger = LoggerFactory.getLogger(BalanceAdjustment.class);
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		ReadCustomerInfoChargeRequest request = (ReadCustomerInfoChargeRequest) exchange.getIn().getBody();
-
-		IConfig config = SefCoreServiceResolver.getConfigService();
-		String chargeOffer = config.getValue("GLOBAL", "readCustomerInfoChargeOffer");
-		//String chargeOffer = SmartContext.getProperty("readCustomerInfoChargeOffer");
-		if(chargeOffer == null) {
-			log.warn("Customer charge offer is null. Create a offer with name readCustomerInfoChargeOffer to charge the customer.");
-		}
-
-		SubscriberValidationProcessor.process(request.getCustomerId());
-		//SubscriptionManagement subscriptionManagement = SmartContext.getSubscriptionManagement();
-		String requestId = RequestContextLocalStore.get().getRequestId();
-		List<Meta> metas = new ArrayList<Meta>();
-		metas.add(new Meta(SmartConstants.REQUEST_ID, requestId));
-		metas.add(new Meta(SmartConstants.SERVICE_IDENTIFIER, SmartConstants.FLEXIBLE_SERVICE_IDENTIFIER));
-		metas.add(new Meta(Constants.CHANNEL_NAME, request.getChannel()));
-		metas.add(new Meta(Constants.EX_DATA1, String.valueOf(request.getMessageId())));
-
-			//subscriptionManagement.purchaseProduct(request.getCustomerId(), chargeOffer, metas);
 		
-			purchase(requestId,chargeOffer,request.getCustomerId(),metas);
-			exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional()));
+		 logger.info("Customer Info Charge: process()");
+	     String requestId = RequestContextLocalStore.get().getRequestId();
+	     List<Meta> metas = new ArrayList<Meta>();
+	     logger.info("Collecting SOAP parameters");
+
+	     List<Meta> workflowMetas= new ArrayList<Meta>();
+	     workflowMetas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
+	     workflowMetas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
+	     workflowMetas.add(new Meta("Channel", String.valueOf(request.getChannel())));
+	     workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
+
+	     List<Meta> metaSubscriber=new ArrayList<Meta>();
+	     workflowMetas.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
+	     workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE"));
+	     
+	     logger.info("Collected SOAP parameters");
+	     logger.info("Going for Customer Info Charge Call");
+	     logger.info("Before read subscriber call");
 		
+	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metaSubscriber);
+	     
+	     logger.info("subscriber call done");
+		 if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
+			logger.debug("Inside the if condition for status check");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		 }
+         logger.info("Recieved a SubscriberInfo Object and it is not null");
+		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
+	     
+		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional()));
 
 	}
 
-	private PurchaseResponse purchase(String requestId,String packaze, String customerId,	List<Meta> metas )
-	{
-	
-		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver
-				.getSubscriptionRequest();
 
-		PurchaseResponse purchaseResponse = new PurchaseResponse();
-		RequestCorrelationStore.put(requestId, purchaseResponse);
-
-		iSubscriptionRequest.purchase(requestId, packaze, customerId, false,
-				metas);
-
-		log.info("Invoking purchasebe on tx-engine subscribtion interface");
-
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+	private SubscriberInfo readSubscriber(String requestId, String customerId,
+			List<Meta> metas) {
+		logger.info("Invoking update subscriber on tx-engine subscriber interface");
+		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+		SubscriberInfo subInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subInfo);
+		iSubscriberRequest.readSubscriber(requestId, customerId, metas);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
 		} catch (InterruptedException e) {
 
 		}
-		log.info("Check if response received for purchase response");
-		PurchaseResponse purRsp = (PurchaseResponse) RequestCorrelationStore
-				.remove(requestId);
-
-	return purRsp;
+		logger.info("Check if response received for update subscriber");
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		logger.debug("Hi HERE I AM::: Result " + subscriberInfo.getStatus() );
+		return subscriberInfo;
 	}
+	
+	class OfferInfo {
+		private String offerID;
+		private long offerExpiry;
+		private long offerStart;
+		private String daID;
+		private String walletName;
+		
+		public OfferInfo() {}
+		
+		public OfferInfo(String offerID, long offerExpiry, long offerStart, String daID, String walletName) {
+			super();
+			this.offerID = offerID;
+			this.offerExpiry = offerExpiry;
+			this.offerStart = offerStart;
+			this.daID = daID;
+			this.walletName = walletName;
+		}
+
+
+		@Override
+		public String toString() {
+			return "OfferInfo [offerID=" + offerID + ", offerExpiry=" + offerExpiry + ", daID=" + daID + ", walletName=" + walletName + "]";
+		}
+		
+		
+	}
+	
 	
 	private CommandResponseData readAccountInfo(String msisdn,boolean isTransactional) throws SmException {
 		CommandResponseData responseData = new CommandResponseData();
@@ -115,82 +151,17 @@ public class ReadCustomerInfoCharge implements Processor {
 		ParameterList parameterList = new ParameterList();
 		operation.setParameterList(parameterList);
 		
-		//SmartCommonService smartCommonService = SmartContext.getSmartCommonService();
-		//SmartModel smartModel = smartCommonService.readSubscriberAccounts(msisdn);
-		
-		SmartModel smartModel=SmartServiceHelper.readSubscriberAccounts(msisdn);
-		List<AccountInfo> subscriberAccInfos = smartModel.getAccountInfos();
-		
-		List<AccountInfo> accountInfos = new ArrayList<AccountInfo>();
-		List<AccountInfo> subscriptionsInfos = new ArrayList<AccountInfo>();
-		for (AccountInfo info : subscriberAccInfos) {
-			if(info.getDaId() == SmartConstants.UNLI_DA_ID || info.getOfferId() >= SmartConstants.UNLI_OFFER_START_ID) {
-				subscriptionsInfos.add(info);
-			} else {
-				accountInfos.add(info);
-			}
-		}
 		
 		StringParameter accounts = new StringParameter();
 		accounts.setName("Accounts");
 		parameterList.getParameterOrBooleanParameterOrByteParameter().add(accounts);
-		accounts.setValue(buildBalance(accountInfos));
+		
 		
 		StringParameter subscriptions = new StringParameter();
 		subscriptions.setName("Subscriptions");
 		parameterList.getParameterOrBooleanParameterOrByteParameter().add(subscriptions);
-		subscriptions.setValue(buildBalance(subscriptionsInfos));
 		
 		return responseData;
 	}
-
-	
-	private String buildBalance(List<AccountInfo> accountInfos) {
-		StringBuilder accountsBuilder = new StringBuilder();
-		for (int i = 0; i < accountInfos.size(); i++) {
-			AccountInfo accountInfo = accountInfos.get(i);
-
-			long balance = accountInfo.getBalance();
-			long confec= getConversionFector(""+accountInfo.getOfferId());
-			
-			balance = accountInfo.getBalance()/confec;
-			
-			if(accountInfo.getDaId() == SmartConstants.UNLI_DA_ID || accountInfo.getOfferId() >= SmartConstants.UNLI_OFFER_START_ID) {
-				accountsBuilder.append(accountInfo.getName() + ";" + accountInfo.getExpiryDate("yyyy-MM-dd HH:mm:ss"));
-			} else {
-				accountsBuilder.append(accountInfo.getName() + ";" + balance + ";" + accountInfo.getExpiryDate("yyyy-MM-dd HH:mm:ss"));
-			}
-			
-			if(i < accountInfos.size() -1) {
-				accountsBuilder.append("|");
-			}
-		}
-		return accountsBuilder.toString();
-	}
-
-	private long getConversionFector(String offerId){
-
-		long conFec =1;
-		//IConfig config = SmCoreContext.getConfig();
-		//Properties walletMapping = config.properties(IConfig.GLOBAL_COMPONENT, "walletMapping");
-		
-		String walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offerId.trim());
-		//String walletName = name;
-		String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
-		
-		if(conversionFactor!=null){
-			conFec= Long.parseLong(conversionFactor);
-		}
-	/*	
-		Properties offerConvMapping = config.properties(IConfig.GLOBAL_COMPONENT, SmConstants.OfferConversionFector);
-		//String walletName = walletMapping.getProperty(offerId.trim());
-		if(walletName!=null){
-			String conv = offerConvMapping.getProperty(walletName);
-			if(conv!=null){
-				conFec= Long.parseLong(conv);
-			}
-		}*/
-		return conFec;
-	}
-	
 }
+	
