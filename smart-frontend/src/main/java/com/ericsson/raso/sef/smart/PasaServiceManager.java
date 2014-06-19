@@ -2,8 +2,10 @@ package com.ericsson.raso.sef.smart;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,8 +55,10 @@ public class PasaServiceManager {
 			subscriberPasaFile += "/" + subscriberId.substring(subscriberId.length() - 2) + "/" + subscriberId + ".pasa";
 
 		SubscriberPasa subscriberPasa = this.fetchFromFile(subscriberPasaFile);
-		if (subscriberPasa == null) 
+		if (subscriberPasa == null) {
+			this.persistToFile(subscriberPasaFile, subscriberPasa);
 			return true;
+		}
 		
 		
 		DiscoveryResponse discoveryResponse = new DiscoveryResponse();
@@ -71,19 +75,24 @@ public class PasaServiceManager {
 		discoveryResponse = (DiscoveryResponse) RequestCorrelationStore.remove(requestCorrelator);
 		if (discoveryResponse != null && discoveryResponse.getFault() != null && discoveryResponse.getFault().getCode() > 0) {
 			LOGGER.error("Failed fetching PasaName from handle: " + pasaLoadID + ", " + discoveryResponse.getFault());
+			this.persistToFile(subscriberPasaFile, subscriberPasa);
 			return false;
 		}
 		
 		try {
 		int allowedCount = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_pasaLoad", discoveryResponse.getOffer().getName()));
 		int consumedCount = subscriberPasa.getPasaCount(pasaLoadID);
-		if (consumedCount >= allowedCount)
+		if (consumedCount >= allowedCount) {
+			this.persistToFile(subscriberPasaFile, subscriberPasa);
 			return false;
+		}
 		
+		this.persistToFile(subscriberPasaFile, subscriberPasa);
 		return true;
 			
 		} catch (Exception e) {
 			LOGGER.error("Bad Configuration for Pasa(" + pasaLoadID + "). Cannot afford revenue exposures!!!");
+			this.persistToFile(subscriberPasaFile, subscriberPasa);
 			return false;
 		}
 	}
@@ -127,6 +136,8 @@ public class PasaServiceManager {
 		int consumedAmount = subscriberPasa.getPasaAmount(pasaLoadID);
 		subscriberPasa.setPasaReceived(pasaLoadID, value);
 		
+		this.persistToFile(subscriberPasaFile, subscriberPasa);
+		
 		return true;
 			
 		} catch (Exception e) {
@@ -156,6 +167,26 @@ public class PasaServiceManager {
 		}
 		
 		return null;
+	}
+	
+	private boolean persistToFile(String subscriberPasaFile, SubscriberPasa pasa) {
+		try {
+			FileOutputStream fosPasa = new FileOutputStream(subscriberPasaFile);
+			ObjectOutputStream oosPasa = new ObjectOutputStream(fosPasa);
+			
+			oosPasa.writeObject(pasa);
+			
+			oosPasa.close();
+			fosPasa.close();
+			
+			return true;
+			
+		} catch (FileNotFoundException e) {
+			LOGGER.debug("Seems like subscriber has no pasa info... URI: " + subscriberPasaFile);
+		} catch (IOException e) {
+			LOGGER.debug("Error loading file: " + subscriberPasaFile, e);
+		}
+		return false;
 	}
 
 

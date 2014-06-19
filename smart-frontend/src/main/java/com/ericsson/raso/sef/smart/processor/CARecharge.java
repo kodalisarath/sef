@@ -502,7 +502,13 @@ public class CARecharge implements Processor {
 	private Map<String, String> preparePasaload(RechargeRequest rechargeRequest) throws SmException {
 		// evaluate truth table for eligibilities (2do: this will be later moved to implicit ootb features of prodcat when subscription db
 		// is available
-		PasaServiceManager pasaService = PasaServiceManager.getInstance();
+		PasaServiceManager pasaService = null;
+		try {
+			pasaService = PasaServiceManager.getInstance();
+		} catch (IllegalStateException e) {
+			logger.debug("Pasa service seems to be badly configured...");
+			throw ExceptionUtil.toSmException(ErrorCode.systemError);
+		}
 		if (!pasaService.isPasaReceiveAllowed(rechargeRequest.getCustomerId(), rechargeRequest.getEventName())) {
 			logger.debug("Pasaload is not allowed until tomorrow for this promo: " + rechargeRequest.getEventName());
 			throw ExceptionUtil.toSmException(ErrorCode.maxCreditViolation);
