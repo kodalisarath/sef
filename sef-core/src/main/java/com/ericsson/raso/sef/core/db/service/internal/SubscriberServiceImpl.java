@@ -188,8 +188,10 @@ public class SubscriberServiceImpl implements SubscriberService{
 		
 		String msisdn = subscriber.getMsisdn();
 		Subscriber subscriberDB=null;
+		Collection<SubscriberMeta> metas = null;
 		try {
 			subscriberDB=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
+			metas = subscriberMapper.getSubscriberMetas(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get Subscriber !!"), e);
@@ -200,17 +202,17 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		if(subscriberDB != null){
 			//List<Meta> metaList=convertToMetaList(subscriberDB.getMetas());
-			if(subscriberDB.getMetas() != null){
-				for(Meta meta:subscriber.getMetas()){
+			if(metas != null){
+				for(SubscriberMeta meta: metas) {
 					if(subscriberDB.getMetas().contains(meta)){
 						try {
-							updateMeta(nbCorrelator,msisdn,meta);
+							updateMeta(nbCorrelator,msisdn,new Meta(meta.getKey(), meta.getValue()));
 						} catch (PersistenceError e) {
 							logger.error("Error in the updatemeta at Service impl");
 						}
 					}else{
 						try {
-							createMeta(nbCorrelator, msisdn,meta);
+							createMeta(nbCorrelator, msisdn, new Meta(meta.getKey(), meta.getValue()));
 						} catch (PersistenceError e) {
 							logger.error("Error in the createmeta at Service Impl");
 						}
