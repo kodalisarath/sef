@@ -25,6 +25,7 @@ import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 
 public class CreateOrWriteCustomerProcessor implements Processor {
 
@@ -72,16 +73,14 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 
 		// Creating user first...
 		SubscriberInfo subscriberInfo=createSubscriber(requestId,subscriber);
-		if (subscriberInfo.getStatus() != null) {
-			
-			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+		if (subscriberInfo.getStatus() != null || subscriberInfo.getStatus().getCode() >0) {
+			logger.debug("Backend Error: " + subscriberInfo.getStatus().getCode());
+			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			
 		}
-		logger.info("SK tag in create 1");
-		exchange.getOut().setBody(subscriberInfo);
-		//DummyProcessor.response(exchange);
-		
-
+		logger.debug("Response purchase received.. now creating front end response");
+		//exchange.getOut().setBody(subscriberInfo);
+		DummyProcessor.response(exchange);		
 	}
 
 	private SubscriberInfo createSubscriber(String requestId, Subscriber subscriber) {
