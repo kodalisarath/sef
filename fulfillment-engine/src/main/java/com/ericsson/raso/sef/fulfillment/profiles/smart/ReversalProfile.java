@@ -87,7 +87,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		long daSecondLongestDate = 0;
 		for (DedicatedAccountInformation daInfo: balanceAndDateResponse.getDedicatedAccountInformation()) {
 			long expiryDate = daInfo.getExpiryDate().getTime();
-			if (expiryDate > daSecondLongestDate) {
+			if (expiryDate > daLongestDate) {
 				daLongestDate = daSecondLongestDate;
 				daSecondLongestDate = expiryDate;
 				if (daLongestDate == 0)
