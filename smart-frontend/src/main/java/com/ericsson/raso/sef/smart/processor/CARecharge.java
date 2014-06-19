@@ -455,15 +455,19 @@ public class CARecharge implements Processor {
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
 
+		logger.debug("Contents of subsriberOffers: " + subscriberOffers);
+		logger.debug("TreeSet Test::: size: " + sortedOffers.size() 
+				+ ", first: " + sortedOffers.first() 
+				+ ", last: " + sortedOffers.last() 
+				+ ", sorted: " + sortedOffers);
+
 		requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);
-		requestContext.put("endurantOfferID", sortedOffers.last().offerID);
+		requestContext.put("endurantOfferID", "" + sortedOffers.last().offerID);
 		requestContext.put("endurantDA", "" + sortedOffers.last().daID);
 		
 		subscriberOffersCache.set(subscriberOffers);
 		sortedOffersCache.set(sortedOffers);
 		
-		logger.debug("Contents of subsriberOffers: " + subscriberOffers);
-		logger.debug("TreeSet Test::: first: " + sortedOffers.first() + ", last: " + sortedOffers.last() + ", sorted: " + sortedOffers);
 		
 		logger.debug("Cached SubscriberOffers & SortedOffers...");
 	}
