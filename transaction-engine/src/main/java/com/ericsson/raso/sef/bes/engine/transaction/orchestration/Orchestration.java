@@ -147,17 +147,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				}
 				break;
 			case PROCESSING:
-				
-				if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
-					logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
-					if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) { 
-						this.promote2Fulfill();
-					}
-					else {
-						this.status = Status.DONE_FAULT;
-						this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
-					}
-				} 
+				// the logic below must be checked in reverse order, so the dependency ordering will enforce right sequence
 				if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
@@ -177,8 +167,21 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 							this.promote2Fulfill();
 						}
 					}
+					logger.debug("Seems to be out fulfillment...are we going to schedule?\n State: " + this.printPhasingProgress());
 				} 
-				logger.debug("Seems to be out fulfillment...are we going to schedule?\n State: " + this.printPhasingProgress());
+				
+				if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
+					logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
+					if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) { 
+						this.promote2Fulfill();
+					}
+					else {
+						this.status = Status.DONE_FAULT;
+						this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
+					}
+					logger.debug("Seems to have completed PREP_FULFILLMENT. State: " + this.printPhasingProgress());
+				} 
+				
 //				// proceed to scheduling...
 //				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
 //					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
