@@ -239,7 +239,7 @@ public class CARecharge implements Processor {
 		WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(rechargeRequest.getRatingInput1());
 		if (offerMapping == null) {
 			logger.debug("No DA or Offer confgured for this wallet... Request will fail!!");
-			throw ExceptionUtil.toSmException(ErrorCode.invalidValue);
+			throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
 		}
 		String requiredOfferID = offerMapping.getOfferID();
 		String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
@@ -251,35 +251,63 @@ public class CARecharge implements Processor {
 		requestContext.put("serviceFeeExpiryPeriod", "" + longestExpiryDate);
 		
 		
-		switch (rechargeRequest.getRatingInput2()) {
-			case "0": // ABSOLUTE DATE SCENARIO
+		switch (Integer.parseInt(rechargeRequest.getRatingInput2())) {
+			case 0: // ABSOLUTE DATE SCENARIO
 				logger.debug("Handling ABSOLUTE DATE SCENARIO...");
 				requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
+				
+				oInfo = subscriberOffers.get(requiredOfferID);
+				if (oInfo != null) { // requested offer already exists...
+					requestedExpiryDate =  Long.parseLong(rechargeRequest.getRatingInput4());
+				} else { // offer unsubscribed; hance assumed new offer susbcription
+					requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
+					requestContext.put("daStartTime", "" + new Date().getTime());
+					requestContext.put("newSubscription", "true");
+					logger.debug("ABSOLUTE DATE: new offer subcription. Offer: " + requiredOfferID);
+				}
+				
 				logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
 				break;
 						
-			case "1": // relative to current expiry date
+			case 1: // relative to current expiry date
 				logger.debug("Handling RELATIVE TO CURRENT EXPIRY SCENARIO...");
 				oInfo = subscriberOffers.get(requiredOfferID);
 				if (oInfo != null) { // requested offer already exists...
 					requestedExpiryDate =  oInfo.offerExpiry + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-				} else {
-					requestedExpiryDate = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-					requestContext.put("daStartTime", "" + new Date().getTime());
+				} else { // offer unsubscribed; hance assumed new offer susbcription
+					logger.info("User not subscribed to this offer. Cannot adjust expiry of Offer: " + oInfo );
+					throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
 				}
 				
 				logger.debug("Relative to current expiry Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
 				break;
-			case "3": // relative to current date
-				logger.debug("Handling RELATIVE TO CURRENT DATE SCENARIO...");
+			case 2:
+				logger.debug("Handling UPDATE BALANCE ONLY SCENARIO...");
 				oInfo = subscriberOffers.get(requiredOfferID);
-				requestedExpiryDate =  new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+				if (oInfo == null) { // requested offer NOT SUBSCRIBED...
+					logger.info("User has not subscribed ot this wallet: " + rechargeRequest.getRatingInput1());
+					throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
+				}
+				
+				
+			case 3: // relative to current date
+				logger.debug("Handling RELATIVE TO CURRENT DATE SCENARIO...");
+				
+				oInfo = subscriberOffers.get(requiredOfferID);
+				if (oInfo != null) { // requested offer already exists...
+					requestedExpiryDate =  new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+				} else { // offer unsubscribed; hance assumed new offer susbcription
+					requestedExpiryDate =  new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+					requestContext.put("daStartTime", "" + new Date().getTime());
+					requestContext.put("newSubscription", "true");
+					logger.debug("ABSOLUTE DATE: new offer subcription. Offer: " + requiredOfferID);
+				}
 				
 				logger.debug("Relative to current Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
 				break;
 		}
 		
-		
+		// Calculating all dates - offer, da & lifecycle
 		if (requestedExpiryDate > longestExpiryDate) { // here it is implied that requested offer is breaching & extending longest expiry
 			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
 			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
@@ -287,7 +315,7 @@ public class CARecharge implements Processor {
 
 			requestContext.put("offerExpiry", "" + requestedExpiryDate);
 			requestContext.put("newDaID", requiredDA);
-			requestContext.put("endurantOfferID", sortedOffers.headSet(sortedOffers.last()).last().offerID); // this addresses if requested offer & longest expiring offer is same or not
+			requestContext.put("endurantOfferID", requiredOfferID); // this addresses if requested offer & longest expiring offer is same or not
 			requestContext.put("newOfferID", requiredOfferID);
 			requestContext.put("daEndTime", "" + requestedExpiryDate);
 		} else { // request expiry is less than  longest expiry
@@ -318,9 +346,9 @@ public class CARecharge implements Processor {
 					requestContext.put("daEndTime", "" + requestedExpiryDate);
 				}
 			} else { // update of this offer will not impact the life-cycle
-				requestContext.put("supervisionExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
-				requestContext.put("serviceFeeExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
-				requestContext.put("longestExpiry", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);	
+				requestContext.put("supervisionExpiryPeriod", "" + sortedOffers.last().offerExpiry);
+				requestContext.put("serviceFeeExpiryPeriod", "" + sortedOffers.last().offerExpiry);
+				requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);	
 
 				requestContext.put("offerExpiry", "" + requestedExpiryDate);
 				requestContext.put("newDaID", requiredDA);
@@ -351,6 +379,25 @@ public class CARecharge implements Processor {
 		for (String key : subscriberMetas.keySet()) {
 			logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
 
+			if (key.startsWith("READ_SUBSCRIBER_SERVICE_OFFERING")) {
+				logger.debug("FLEXI:: SERVICE_OFFERING...." + subscriberMetas.get(key));
+				String soForm = subscriberMetas.get(key);
+				logger.debug("Check before split - offerForm: " + soForm);
+				String soParts[] = soForm.split(",");
+				logger.debug("Offer Parts: " + soParts.length);
+				int i= 0; for (String part: soParts) {
+					logger.debug("soParts[" + i++ + "] :=" + part);
+				}
+				int soID = Integer.parseInt(soParts[0]);
+				boolean soFlag = Boolean.parseBoolean(soParts[1]);
+				
+				ServiceOffering so = new ServiceOffering(soID, soFlag);
+				if ( (so.soID >= 1 && so.soID <= 7) && so.isFlag()) {
+					logger.debug("SO ID: " + soID + " is SET. User not allowed for this transaction");
+					throw ExceptionUtil.toSmException(ErrorCode.subscriberLocked);
+				}
+			}
+			
 			if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
 				anyOfferFound = true;
 				logger.debug("FLEXI:: OFFER_ID...." + subscriberMetas.get(key));
@@ -400,8 +447,6 @@ public class CARecharge implements Processor {
 					requestContext.put("inGrace", "true");
 					logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 				}
-
-
 			}
 		}
 		
@@ -1113,6 +1158,39 @@ public class CARecharge implements Processor {
 
 	}
 
+	class ServiceOffering {
+		private int soID;
+		private boolean flag;
+	
+		public ServiceOffering(int soID, boolean flag) {
+			this.soID = soID;
+			this.flag = flag;
+		}
+
+		public int getSoID() {
+			return soID;
+		}
+
+		public void setSoID(int soID) {
+			this.soID = soID;
+		}
+
+		public boolean isFlag() {
+			return flag;
+		}
+
+		public void setFlag(boolean flag) {
+			this.flag = flag;
+		}
+
+		@Override
+		public String toString() {
+			return "ServiceOffering [soID=" + soID + ", flag=" + flag + "]";
+		}
+		
+		
+	}
+	
 	class OfferInfo implements Comparable<OfferInfo>{
 		private String offerID;
 		private long offerExpiry;

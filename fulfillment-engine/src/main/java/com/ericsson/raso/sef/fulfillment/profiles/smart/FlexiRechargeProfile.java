@@ -56,7 +56,8 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		String newOfferID = map.get("newOfferID");
 		String daStartTime = map.get("daStartTime");
 		String daEndTime = map.get("daEndTime");
-		String inGrace = map.get("inGrace");
+		boolean inGrace = Boolean.parseBoolean(map.get("inGrace"));
+		boolean newSubscription = Boolean.parseBoolean(map.get("newSubscription"));
 		
 		
 		String msisdn = map.get("msisdn") ;
@@ -72,12 +73,10 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		
 		DedicatedAccountUpdateInformation daInfo = new DedicatedAccountUpdateInformation();
 		daInfo.setDedicatedAccountID(Integer.parseInt(newDaID));
-		if (!endurantOfferID.equals(newOfferID)) {
+		if (newSubscription) 
 			daInfo.setStartDate(this.getDaDate(daStartTime));
-			daInfo.setExpiryDate(this.getDaDate(daEndTime));			
-		} else {
-			daInfo.setExpiryDate(this.getDaDate(daEndTime));
-		}
+		
+		daInfo.setExpiryDate(this.getDaDate(daEndTime));
 		daInfo.setAdjustmentAmountRelative(amountOfUnits);
 		daInfo.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", endurantDA)));
 		daToUpdateList.add(daInfo);
@@ -126,7 +125,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		UpdateOfferRequest updateGraceOfferRequest = new UpdateOfferRequest();
 		UpdateOfferResponse updateGraceOfferResponse = null;
 		
-		if (inGrace != null && inGrace.equals("true"))  {
+		if (inGrace)  {
 			updateGraceOfferRequest.setOfferID(2);
 			updateGraceOfferRequest.setExpiryDateTime(new Date(System.currentTimeMillis() + 2000));
 			

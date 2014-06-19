@@ -17,6 +17,7 @@ import com.ericsson.raso.sef.client.air.response.DedicatedAccountInformation;
 import com.ericsson.raso.sef.client.air.response.GetAccountDetailsResponse;
 import com.ericsson.raso.sef.client.air.response.GetBalanceAndDateResponse;
 import com.ericsson.raso.sef.client.air.response.OfferInformation;
+import com.ericsson.raso.sef.client.air.response.ServiceOffering;
 import com.ericsson.raso.sef.client.air.response.SubDedicatedInfo;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SmException;
@@ -169,6 +170,16 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 		LOGGER.debug("Packed all account flags...");
 
+		if (response.getServiceOfferings() != null) {
+			LOGGER.debug("About to process ServiceOfferings. Size: " + response.getServiceOfferings().size());
+			index = 0;
+			for (ServiceOffering serviceOffering: response.getServiceOfferings()) {
+				accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING + "." + ++index, serviceOffering.getServiceOfferingID() + 
+						"," + serviceOffering.isServiceOfferingActiveFlag());
+			}
+		}
+		
+		
 		// offer info...
 		index = 0;
 		if (response.getOfferInformationList() != null) {
