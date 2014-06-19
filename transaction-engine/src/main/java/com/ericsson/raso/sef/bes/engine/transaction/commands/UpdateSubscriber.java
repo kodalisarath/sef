@@ -131,11 +131,32 @@ public class UpdateSubscriber extends AbstractTransaction {
 						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 						
 					}
-					if(meta.getKey().equalsIgnoreCase("GraceEndDate")){
+					else if(meta.getKey().equalsIgnoreCase("GraceEndDate")){
 						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
 						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 						
 					}
+					else if(meta.getKey().equalsIgnoreCase("MessageId")){
+						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
+						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+						
+					}
+					else if(meta.getKey().equalsIgnoreCase("EventInfo")){
+						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
+						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+						
+					}
+					else if(meta.getKey().equalsIgnoreCase("AccessKey")){
+						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
+						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+						
+					}
+					else
+					{
+						LOGGER.debug("META PREACTIVENDDATE IS" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
+						subscriberStore.createMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+					}
+					
 					
 				}
 				break;
