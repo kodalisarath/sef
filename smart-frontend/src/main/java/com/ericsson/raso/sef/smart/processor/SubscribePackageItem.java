@@ -88,12 +88,16 @@ public class SubscribePackageItem implements Processor {
 
 			 IConfig config = SefCoreServiceResolver.getConfigService();
 			 String activeStatusCS = subscriberObj.getMetas().get("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG");
+			 logger.debug("TRY 1 "+ activeStatusCS);
 		     String packagefromDB = subscriberObj.getMetas().get("Package");
+		     logger.debug("PACKAGE FROM DB "+ packagefromDB);
 		     if (packagefromDB == null || packagefromDB.equalsIgnoreCase("")){
 		    	 packagefromDB = subscriberObj.getMetas().get("package");
+			     logger.debug("PACKAGE FROM DB "+ packagefromDB);
 		     }
 		    
 		     String requestedWelcomePackSC = config.getValue("GLOBAL_welcomePackMapping", request.getPackaze());
+		     logger.debug("REQUESTED WELCOME PACK SC "+ requestedWelcomePackSC);
 		     int usecase=0;
 		     logger.info("Failfast if pre-active and package subscribed to different from initial welcome pack");
 		     if (activeStatusCS.equalsIgnoreCase("false"))

@@ -84,6 +84,9 @@ public class UnsubscribePackageItem implements Processor {
 			 }
           logger.info("Recieved a SubscriberInfo Object and it is not null");
 			 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
+			 
+			 
+	     
 
 		 logger.info("check pre_active");			
 		  if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
