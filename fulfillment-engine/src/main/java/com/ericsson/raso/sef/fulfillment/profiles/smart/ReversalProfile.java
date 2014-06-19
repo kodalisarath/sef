@@ -172,7 +172,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		request.setExternalData2(externalData2);
 		request.setSubscriberNumber(msisdn);
 		request.setSubscriberNumberNAI(1);
-		request.setTransactionType(channel);
+		//request.setTransactionType(channel);
 		request.setTransactionCurrency("PHP");
 		//request.setTransactionCode(externalData1);
 		
