@@ -204,7 +204,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			//List<Meta> metaList=convertToMetaList(subscriberDB.getMetas());
 			if(metas != null){
 				for(Meta meta: subscriber.getMetas()) {
-					if(metas.contains(meta)){
+					if(metas.contains(new SubscriberMeta(msisdn, meta.getKey(), meta.getValue()))){
 						try {
 							updateMeta(nbCorrelator, msisdn, meta);
 						} catch (PersistenceError e) {
