@@ -234,7 +234,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 
 	private long getTimeToReverse(Integer dedicatedAccountID) {
 		for (DedicatedAccountReversal daReversal: this.daReversals) {
-			if (daReversal.dedicatedAccountInformationID == dedicatedAccountID)
+			if (daReversal.dedicatedAccountInformationID.equals(dedicatedAccountID))
 				return daReversal.hoursToReverse;
 		}
 		return 0;
