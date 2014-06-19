@@ -185,6 +185,8 @@ public class SubscriberServiceImpl implements SubscriberService{
 
 		if (subscriber.getContractId() == null|| subscriber.getContractId().isEmpty())
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(FunctionalDataError,"The 'contractId' attribute is null!!"));
+		
+		String msisdn = subscriber.getMsisdn();
 		Subscriber subscriberDB=null;
 		try {
 			subscriberDB=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
@@ -202,13 +204,13 @@ public class SubscriberServiceImpl implements SubscriberService{
 				for(Meta meta:subscriber.getMetas()){
 					if(subscriberDB.getMetas().contains(meta)){
 						try {
-							updateMeta(nbCorrelator,subscriberDB.getMsisdn(),meta);
+							updateMeta(nbCorrelator,msisdn,meta);
 						} catch (PersistenceError e) {
 							logger.error("Error in the updatemeta at Service impl");
 						}
 					}else{
 						try {
-							createMeta(nbCorrelator, subscriberDB.getMsisdn(),meta);
+							createMeta(nbCorrelator, msisdn,meta);
 						} catch (PersistenceError e) {
 							logger.error("Error in the createmeta at Service Impl");
 						}
