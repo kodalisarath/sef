@@ -43,6 +43,7 @@ public class EntireDeleteSubscriber implements Processor{
 			SubscriberInfo subscriberinfo = deleteSubscriber(requestId, request.getCustomerId());
 		
 			if(subscriberinfo.getStatus() != null && subscriberinfo.getStatus().getCode() >0) {
+				logger.debug("THIS IS TO PROVE BUILD IS NEW");
 				throw new SmException(new ResponseCode(13423, "13423#EntireDelete Entity - Customer with primary key Keyname:PK,CustomerId: " + request.getCustomerId()
 								+ " does not exist"));
 			}
