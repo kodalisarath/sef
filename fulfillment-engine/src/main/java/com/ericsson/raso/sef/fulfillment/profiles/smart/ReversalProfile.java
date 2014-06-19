@@ -174,7 +174,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		request.setSubscriberNumberNAI(1);
 		request.setTransactionType(channel);
 		request.setTransactionCurrency("PHP");
-		request.setTransactionCode(externalData1);
+		//request.setTransactionCode(externalData1);
 		
 		UpdateBalanceAndDateCommand updateBalanceAndDateCommand = new UpdateBalanceAndDateCommand(request);
 		UpdateBalanceAndDateResponse updateBalanceAndDateResponse = null;

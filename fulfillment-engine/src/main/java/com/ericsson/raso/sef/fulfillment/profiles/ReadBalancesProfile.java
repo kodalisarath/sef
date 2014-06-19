@@ -107,10 +107,12 @@ public class ReadBalancesProfile extends BlockingFulfillment<Product> {
 					+ "," + daInformation.isDedicatedAccountRealMoneyFlag()
 					+ "," + ((daInformation.getClosestExpiryDate()==null)?"null":daInformation.getClosestExpiryDate().getTime())
 					+ "," + ((daInformation.getClosestExpiryValue1()==null)?"null":daInformation.getClosestExpiryValue1())
-					+ "," + ((daInformation.getClosestAccessibleDate()==null)?"null":daInformation.getClosestAccessibleDate())
-					+ "," + ((daInformation.getClosestExpiryValue1()==null)?"null":daInformation.getClosestExpiryValue1())
 					+ "," + ((daInformation.getClosestExpiryValue2()==null)?"null":daInformation.getClosestExpiryValue2())
+					+ "," + ((daInformation.getClosestAccessibleDate()==null)?"null":daInformation.getClosestAccessibleDate())
+					+ "," + ((daInformation.getClosestAccessibleValue1()==null)?"null":daInformation.getClosestAccessibleValue1())
+					+ "," + ((daInformation.getClosestAccessibleValue2()==null)?"null":daInformation.getClosestAccessibleValue2())
 					+ "," + ((daInformation.getDedicatedAccountActiveValue1()==null)?"null":daInformation.getDedicatedAccountActiveValue1())
+					+ "," + ((daInformation.getDedicatedAccountActiveValue2()==null)?"null":daInformation.getDedicatedAccountActiveValue2())
 					+ "," + ((daInformation.getDedicatedAccountUnitType()==null)?"null":daInformation.getDedicatedAccountUnitType())
 					+ "," + daInformation.isCompositeDedicatedAccountFlag()	+ ":+:";
 			
