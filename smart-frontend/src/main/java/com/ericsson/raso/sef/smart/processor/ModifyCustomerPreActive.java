@@ -61,7 +61,7 @@ public class ModifyCustomerPreActive implements Processor {
 				SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 				SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 				Date currentExpiryDate = metaStoreFormat.parse(date);
-				Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000));
+				Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000L));
 				String newExpiry = smartDateFormat.format(newExpiryDate);
 				
 				
