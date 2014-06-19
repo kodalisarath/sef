@@ -61,6 +61,8 @@ public class SubscribePackageItem implements Processor {
 		workflowMetas.add(new Meta("Package", String.valueOf(request.getPackaze())));
 		workflowMetas.add(new Meta("msisdn",request.getCustomerId()));
 		workflowMetas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
+		workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
+		workflowMetas.add(new Meta("AccessKey",request.getAccessKey()));
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();

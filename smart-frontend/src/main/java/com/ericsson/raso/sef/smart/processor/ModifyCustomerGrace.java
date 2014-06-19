@@ -200,9 +200,9 @@ public class ModifyCustomerGrace implements Processor {
 //								}
 //								exchange.getOut().setBody(subscriberInfo);
 						}
-//						else {
-//							throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
-//						}
+						else {
+								throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+							}
 			}						
 					
 					}
