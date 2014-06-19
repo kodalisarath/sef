@@ -561,45 +561,7 @@ public class CARecharge implements Processor {
 			this.handleReversalResponse(listParameter, response);
 		}
 
-		// List<Product> products = response.getProducts();
-		// if(products != null) {
-		// for (Product product: products) {
-		// StringElement stringElement = new StringElement();
-		// String offer = product.getResourceName();
-		// int offerId = Integer.parseInt(offer);
-		// String name = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offer);
-		// String walletName = name;
-		// logger.debug("OfferID: " + offerId + "WalletName: " + name);
-		//
-		// long delta = product.getQuotaConsumed() - product.getQuotaDefined();
-		// long curr = product.getQuotaConsumed();
-		// long validity = product.getValidity();
-		// logger.debug("Current bal: " + curr + "Delta: " + delta + "Validity: " + validity);
-		// if(offerId != SmartConstants.AIRTIME_OFFER_ID && offerId != SmartConstants.ALKANSYA_OFFER_ID) {
-		// name += ":s_PeriodicBonus";
-		// }
-		//
-		//
-		// if(offerId >= SmartConstants.UNLI_OFFER_START_ID) {
-		// delta = 1;
-		// curr = 1;
-		// } else {
-		// String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
-		// logger.debug("Conversion factor for this offer: " + conversionFactor);
-		// long confec= Long.parseLong(conversionFactor);
-		// delta = delta/confec;
-		// curr = curr/confec;
-		// }
-		//
-		// String val = name + ";" + delta + ";" + curr + ";" + getMillisToDate(validity);
-		//
-		// logger.debug("Balance String: " + val);
-		//
-		// stringElement.setValue(val);
-		// listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
-		// }
-		// }
-
+	
 		return responseData;
 	}
 
@@ -1121,7 +1083,7 @@ public class CARecharge implements Processor {
 				if (requiredDA.equals(daParts[0])) {
 					logger.debug("Checking requiredDA:" + requiredDA + ", fromAirResponse:" + daParts[0]);
 					String responseEntry = requestContext.get("walletName") + ":s_PeriodicBonus;" + requestContext.get("amountOfUnits") + ";"
-							+ daParts[1] + ";" + format.format(new Date(Long.parseLong(requestContext.get("longestExpiry"))));
+							+ daParts[1] + ";" + format.format(new Date(Long.parseLong(requestContext.get("offerExpiry"))));
 
 					StringElement stringElement = new StringElement();
 					stringElement.setValue(responseEntry);
