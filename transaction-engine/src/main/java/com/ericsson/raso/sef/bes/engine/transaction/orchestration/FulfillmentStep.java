@@ -101,11 +101,11 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		logger.debug("We have: " + metas.size() + " here");
 		if(metas != null) {
 			for (String metaskey: metas.keySet()) {
-				logger.debug("Converting metas: " + metaskey.toString() + "-" + metas.get(metaskey).toString());
+				logger.debug("Converting metas: " + metaskey + "-" + metas.get(metaskey));
 				Meta meta = new Meta();
 		
 				meta.setKey((String)metaskey);
-				meta.setValue(metas.get(metaskey).toString());
+				meta.setValue(((metas.get(metaskey)==null?null:""+metas.get(metaskey))));
 				metaList.add(meta);
 			}
 		}
