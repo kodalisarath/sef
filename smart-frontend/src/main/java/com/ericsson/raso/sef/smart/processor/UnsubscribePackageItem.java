@@ -210,7 +210,7 @@ public class UnsubscribePackageItem implements Processor {
 					PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
 					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-					if(purchaseResponse == null) {
+					if(purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0) {
 						logger.debug("No response arrived???");
 						throw new SmException(ErrorCode.internalServerError);
 					}
