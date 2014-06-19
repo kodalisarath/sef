@@ -2,6 +2,8 @@ package com.ericsson.raso.sef.core.db.model;
 
 import java.io.Serializable;
 
+import com.ericsson.raso.sef.core.Meta;
+
 public class SubscriberMeta implements Serializable {
 	private static final long serialVersionUID = -1234592856938357485L;
 
@@ -56,24 +58,35 @@ public class SubscriberMeta implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SubscriberMeta other = (SubscriberMeta) obj;
-		if (key == null) {
-			if (other.key != null)
+		
+		if (obj instanceof SubscriberMeta) {
+
+			if (getClass() != obj.getClass())
 				return false;
-		} else if (!key.equals(other.key))
-			return false;
-		if (subscriberId == null) {
-			if (other.subscriberId != null)
+			SubscriberMeta other = (SubscriberMeta) obj;
+			if (key == null) {
+				if (other.key != null)
+					return false;
+			} else if (!key.equals(other.key))
 				return false;
-		} else if (!subscriberId.equals(other.subscriberId))
-			return false;
-		if (value == null) {
-			if (other.value != null)
+			if (subscriberId == null) {
+				if (other.subscriberId != null)
+					return false;
+			} else if (!subscriberId.equals(other.subscriberId))
 				return false;
-		} else if (!value.equals(other.value))
-			return false;
+		}
+		
+		if (obj instanceof Meta) {
+			Meta other = (Meta) obj;
+			if (key == null) {
+				if (other.getKey() != null)
+					return false;
+			} else if (!key.equals(other.getKey()))
+				return false;
+		}
+		
+		
+		
 		return true;
 	}
 
