@@ -385,7 +385,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Araw Araw Refill...");
-			resource = this.createRefill("ArawArawText20", "1044", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("ArawArawText20", "1044", 1, "1", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
 			handles.add("RB281");
 			bizConfig = this.getSimpleBcWorkflow("ArawArawText20", "Araw Araw", handles, resource);
