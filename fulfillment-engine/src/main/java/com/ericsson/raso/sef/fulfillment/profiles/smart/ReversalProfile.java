@@ -65,7 +65,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		}
 		String externalData1 = map.get("eventName");
 		String externalData2 = map.get("eventInfo");
-		String channel = map.get("channel");
+		String channel = map.get("channelName");
 
 		
 		// Get Balance & Date...
@@ -119,7 +119,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		for (TimerOfferReversal toReversal: toReversals) {
 			OfferInformation impactedOffer = this.getImpactedOffer(toReversal.getOfferID(), balanceAndDateResponse.getOfferInformationList());
 			if (impactedOffer == null) {
-				LOGGER.error("Offer ID (" + toReversal.getOfferID() + ") in Revresal BizConfig was not found in Subscriber Profile");
+				LOGGER.error("Offer ID (" + toReversal.getOfferID() + ") in Reversal BizConfig was not found in Subscriber Profile");
 				throw new FulfillmentException("ffe", new ResponseCode(999, "Technical Error"));
 			}
 			
@@ -135,11 +135,10 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 					serviceFeeExpiryDate = toSecondLongestDate;
 				}
 				// now do the reversal of all other impacted offers...
-				impactedOffer.setExpiryDate(new Date(newExpiryDate));
+				///impactedOffer.setExpiryDate(new Date(newExpiryDate));
 				impactedOffer.setExpiryDateTime(new Date(newExpiryDate));
-				//impactedOffer.setStartDate(new Date(impactedOffer.getStartDate().getTime() - toReversal.hoursToReverse));
-				impactedOffer.setStartDate(new Date(impactedExpiry - toReversal.hoursToReverse));
-				impactedOffer.setStartDateTime(new Date());
+				///impactedOffer.setStartDate(new Date(impactedExpiry - toReversal.hoursToReverse));
+				impactedOffer.setStartDateTime(new Date(impactedExpiry - toReversal.hoursToReverse));
 				
 				offersToUpdate.add(impactedOffer);
 				
@@ -149,7 +148,8 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 				DedicatedAccountUpdateInformation daToUpdate = new DedicatedAccountUpdateInformation();
 				daToUpdate.setDedicatedAccountID(impactedDA.getDedicatedAccountID());
 				daToUpdate.setDedicatedAccountUnitType(impactedDA.getDedicatedAccountUnitType());
-				daToUpdate.setDedicatedAccountValueNew("-" + (Integer.parseInt(impactedDA.getDedicatedAccountValue1()) - daReversal.amountToReverse));
+				daToUpdate.setAdjustmentAmountRelative("-" + this.getAmountToReverse(impactedDA.getDedicatedAccountID()));
+				daToUpdate.setExpiryDate(new Date(daToUpdate.getExpiryDate().getTime() -  this.getTimeToReverse(impactedDA.getDedicatedAccountID())));
 				dasToUpdate.add(daToUpdate);
 			}
 		}
@@ -157,6 +157,13 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		
 		Map<String, String> responseMetas = new HashMap<String, String>();
 		// Now... send the reversal on DAs....
+		
+//		for (DedicatedAccountReversal daReversal: daReversals) {
+//			DedicatedAccountUpdateInformation daUpdate = new DedicatedAccountUpdateInformation();
+//			daUpdate.setDedicatedAccountID(daReversal.getDedicatedAccountInformationID());
+//			daUpdate.setAdjustmentAmountRelative("-" + daReversal.getAmountToReverse());
+//			daUpdate.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", "" + daReversal.getDedicatedAccountInformationID())));
+//		}
 		UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
 		request.setDedicatedAccountUpdateInformation(dasToUpdate);
 		request.setExternalData1(externalData1);
@@ -222,6 +229,22 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 	}
 	
 	
+
+	private long getTimeToReverse(Integer dedicatedAccountID) {
+		for (DedicatedAccountReversal daReversal: this.daReversals) {
+			if (daReversal.dedicatedAccountInformationID == dedicatedAccountID)
+				return daReversal.hoursToReverse;
+		}
+		return 0;
+	}
+
+	private long getAmountToReverse(Integer dedicatedAccountID) {
+		for (DedicatedAccountReversal daReversal: this.daReversals) {
+			if (daReversal.dedicatedAccountInformationID == dedicatedAccountID)
+				return daReversal.amountToReverse;
+		}
+		return 0;
+	}
 
 	private DedicatedAccountReversal getReversalDA(Integer associatedDaId) {
 		for (DedicatedAccountReversal reversal: this.daReversals) {

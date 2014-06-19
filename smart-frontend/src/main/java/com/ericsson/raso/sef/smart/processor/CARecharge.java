@@ -189,6 +189,8 @@ public class CARecharge implements Processor {
 
 	private Map<String, String> prepareReversalRecharge(RechargeRequest rechargeRequest) {
 		Map<String, String> map = new HashMap<String, String>();
+		
+		
 		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
 
 		if (rechargeRequest.getRatingInput0() != null) {
