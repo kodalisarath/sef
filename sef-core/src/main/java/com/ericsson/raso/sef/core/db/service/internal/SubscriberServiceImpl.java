@@ -54,9 +54,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		String msisdn = null;
 		try {
-			msisdn = new String(
-					org.apache.commons.codec.binary.Base64
-							.encodeBase64(encryptor.encrypt(subscriber)));
+			msisdn = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber)));
 		} catch (FrameworkException e) {
 			logger.error("null","Could not prepare entity for persistence. Cause: Encrypting Identities",e);
 			throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt Subscriber identities!!"), e);
@@ -202,26 +200,21 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		if(subscriberDB != null){
 			//List<Meta> metaList=convertToMetaList(subscriberDB.getMetas());
-			if(metas != null){
-				for(Meta meta: subscriber.getMetas()) {
-					if(metas.contains(new SubscriberMeta(msisdn, meta.getKey(), meta.getValue()))){
-						try {
-							updateMeta(nbCorrelator, msisdn, meta);
-						} catch (PersistenceError e) {
-							logger.error("Error in the updatemeta at Service impl");
-						}
-					}else{
-						try {
-							createMeta(nbCorrelator, msisdn, meta);
-						} catch (PersistenceError e) {
-							logger.error("Error in the createmeta at Service Impl");
-						}
+			for(Meta meta: subscriber.getMetas()) {
+				if(metas.contains(new SubscriberMeta(msisdn, meta.getKey(), meta.getValue()))){
+					try {
+						updateMeta(nbCorrelator, msisdn, meta);
+					} catch (PersistenceError e) {
+						logger.error("Error in the updatemeta at Service impl");
 					}
-					
+				}else{
+					try {
+						createMeta(nbCorrelator, msisdn, meta);
+					} catch (PersistenceError e) {
+						logger.error("Error in the createmeta at Service Impl");
+					}
 				}
 			}
-		
-			
 		}
 		return true;
 	}
