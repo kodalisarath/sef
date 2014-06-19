@@ -87,12 +87,12 @@ public class SubscribePackageItem implements Processor {
 			 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 
 			 IConfig config = SefCoreServiceResolver.getConfigService();
-			 String activeStatusCS = subscriberObj.getMetas().get("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG");
+			 String activeStatusCS = subscriberObj.getSubscriber().getMetas().get("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG");
 			 logger.debug("TRY 1 "+ activeStatusCS);
-		     String packagefromDB = subscriberObj.getMetas().get("Package");
+		     String packagefromDB = subscriberObj.getSubscriber().getMetas().get("Package");
 		     logger.debug("PACKAGE FROM DB "+ packagefromDB);
 		     if (packagefromDB == null || packagefromDB.equalsIgnoreCase("")){
-		    	 packagefromDB = subscriberObj.getMetas().get("package");
+		    	 packagefromDB = subscriberObj.getSubscriber().getMetas().get("package");
 			     logger.debug("PACKAGE FROM DB "+ packagefromDB);
 		     }
 		    
