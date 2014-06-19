@@ -199,9 +199,9 @@ public class SubscriberServiceImpl implements SubscriberService{
 			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
 		}
 		if(subscriberDB != null){
-			//List<Meta> metaList=convertToMetaList(subscriberDB.getMetas());
+			List<Meta> metasFromDB = convertToMetaList(metas);
 			for(Meta meta: subscriber.getMetas()) {
-				if(metas.contains(new SubscriberMeta(msisdn, meta.getKey(), meta.getValue()))){
+				if (metasFromDB.contains(meta)) {
 					try {
 						updateMeta(nbCorrelator, msisdn, meta);
 					} catch (PersistenceError e) {
@@ -370,8 +370,7 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 	}
 	private List<Meta> convertToMetaList(Collection<SubscriberMeta> subscriberMetas){
 		List<Meta> metaList=new ArrayList<Meta>();
-		List<SubscriberMeta> subscribermetaList=new ArrayList<SubscriberMeta>(subscriberMetas);
-		for(SubscriberMeta metaSubscriber:subscribermetaList){
+		for(SubscriberMeta metaSubscriber: subscriberMetas){
 			Meta meta=new Meta();
 			meta.setKey(metaSubscriber.getKey());
 			meta.setValue(metaSubscriber.getValue());

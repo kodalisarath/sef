@@ -41,14 +41,15 @@ public class SubscriberMeta implements Serializable {
 	}
 	
 	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		result = prime * result + ((subscriberId == null) ? 0 : subscriberId.hashCode());
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -56,35 +57,19 @@ public class SubscriberMeta implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		
-		if (obj instanceof SubscriberMeta) {
-
-			if (getClass() != obj.getClass())
+		if (getClass() != obj.getClass())
+			return false;
+		SubscriberMeta other = (SubscriberMeta) obj;
+		if (key == null) {
+			if (other.key != null)
 				return false;
-			SubscriberMeta other = (SubscriberMeta) obj;
-			if (key == null) {
-				if (other.key != null)
-					return false;
-			} else if (!key.equals(other.key))
+		} else if (!key.equals(other.key))
+			return false;
+		if (subscriberId == null) {
+			if (other.subscriberId != null)
 				return false;
-			if (subscriberId == null) {
-				if (other.subscriberId != null)
-					return false;
-			} else if (!subscriberId.equals(other.subscriberId))
-				return false;
-		}
-		
-		if (obj instanceof Meta) {
-			Meta other = (Meta) obj;
-			if (key == null) {
-				if (other.getKey() != null)
-					return false;
-			} else if (!key.equals(other.getKey()))
-				return false;
-		}
-		
-		
-		
+		} else if (!subscriberId.equals(other.subscriberId))
+			return false;
 		return true;
 	}
 

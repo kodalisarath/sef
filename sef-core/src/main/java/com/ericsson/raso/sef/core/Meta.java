@@ -58,28 +58,17 @@ public class Meta implements Serializable{
 			return true;
 		if (obj == null)
 			return false;
-
-		if (obj instanceof Meta) {
-			if (getClass() != obj.getClass())
+		if (getClass() != obj.getClass())
+			return false;
+		Meta other = (Meta) obj;
+		if (key == null) {
+			if (other.key != null)
 				return false;
-			Meta other = (Meta) obj;
-			if (key == null) {
-				if (other.key != null)
-					return false;
-			} else if (!key.equals(other.key))
-				return false;
-		}
-		
-		if (obj instanceof SubscriberMeta) {
-			SubscriberMeta meta = (SubscriberMeta) obj;
-			if (key == null) {
-				if (meta.getKey() != null)
-					return false;				
-			} else if (!key.equals(meta.getKey()))
-				return false;
-		}
+		} else if (!key.equals(other.key))
+			return false;
 		return true;
 	}
+
 	
 	
 }
