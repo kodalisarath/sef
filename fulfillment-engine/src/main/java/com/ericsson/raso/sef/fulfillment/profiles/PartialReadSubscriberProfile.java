@@ -194,6 +194,10 @@ public class PartialReadSubscriberProfile extends BlockingFulfillment<Product> {
 		} else {
 			LOGGER.error("DID NOT RECEIVE Offer Info List from UCIP Response!!");
 		}
+		
+		// service class
+		//TODO: IGroup UCIP stack does not have this impl...
+		
 		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
 
 	}

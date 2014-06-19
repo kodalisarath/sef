@@ -73,8 +73,8 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		
 		DedicatedAccountUpdateInformation daInfo = new DedicatedAccountUpdateInformation();
 		daInfo.setDedicatedAccountID(Integer.parseInt(newDaID));
-		if (newSubscription) 
-			daInfo.setStartDate(this.getDaDate(daStartTime));
+//		if (newSubscription) 
+//			daInfo.setStartDate(this.getDaDate(daStartTime));
 		
 		if (!expirationDatePolicy.equals("2")) 
 			daInfo.setExpiryDate(this.getDaDate(daEndTime));

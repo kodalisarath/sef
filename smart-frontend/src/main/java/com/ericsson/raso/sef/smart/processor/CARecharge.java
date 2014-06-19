@@ -288,6 +288,8 @@ public class CARecharge implements Processor {
 					logger.info("User has not subscribed ot this wallet: " + rechargeRequest.getRatingInput1());
 					throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
 				}
+				requestedExpiryDate = oInfo.offerExpiry;
+				requestContext.put("offerExpiry", "" + requestedExpiryDate);
 				logger.debug("No change to expiry Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
 				break;
 			case 3: // relative to current date
