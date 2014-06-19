@@ -81,4 +81,14 @@ public class DedicatedAccountUpdateInformation extends NativeAirRequest {
 		this.dedicatedAccountUnitType = dedicatedAccountUnitType;
 		addParam("dedicatedAccountUnitType", dedicatedAccountUnitType);
 	}
+
+	@Override
+	public String toString() {
+		return "DedicatedAccountUpdateInformation [dedicatedAccountID=" + dedicatedAccountID + ", dedicatedAccountValueNew="
+				+ dedicatedAccountValueNew + ", adjustmentAmountRelative=" + adjustmentAmountRelative + ", expiryDate=" + expiryDate
+				+ ", startDate=" + startDate + ", startDateCurrent=" + startDateCurrent + ", expiryDateCurrent=" + expiryDateCurrent
+				+ ", dedicatedAccountUnitType=" + dedicatedAccountUnitType + "]";
+	}
+	
+	
 }

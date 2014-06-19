@@ -151,6 +151,8 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 				daToUpdate.setAdjustmentAmountRelative("-" + this.getAmountToReverse(impactedDA.getDedicatedAccountID()));
 				daToUpdate.setExpiryDate(new Date(daToUpdate.getExpiryDate().getTime() -  this.getTimeToReverse(impactedDA.getDedicatedAccountID())));
 				dasToUpdate.add(daToUpdate);
+				LOGGER.debug("Adding DA to update in the AIR UCIP Request: " + daToUpdate);
+				
 			}
 		}
 		

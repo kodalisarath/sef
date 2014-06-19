@@ -199,6 +199,7 @@ public class CARecharge implements Processor {
 		}
 
 		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
+		map.put("eventName", rechargeRequest.getEventName());
 		map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
 		map.put(SmartConstants.USECASE, "reversal");
 
