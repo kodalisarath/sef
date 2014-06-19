@@ -27,9 +27,7 @@ public class ChargingStep extends Step<ChargingStepResult> {
 		try {
 		MonetaryUnit monetoryUnit = ((Charging)this.getExecutionInputs()).getCharging();
 		ChargingMode mode = ((Charging)this.getExecutionInputs()).getMode();
-		//EndUser Identifier
 		String subscriberId = ((Charging)this.getExecutionInputs()).getSubscriberId();
-		//ChargeAmount
 		String currencyCode = monetoryUnit.getIso4217CurrencyCode();
 		Long amount = monetoryUnit.getAmount();
 		ChargingInformation chargingInformation = new ChargingInformation();
