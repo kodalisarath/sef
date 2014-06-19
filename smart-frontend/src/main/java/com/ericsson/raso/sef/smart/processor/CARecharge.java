@@ -205,8 +205,6 @@ public class CARecharge implements Processor {
 
 	private Map<String, String> prepareFlexibleRecharge(RechargeRequest rechargeRequest) throws SmException {
 		Map<String, String> requestContext = requestContextCache.get();
-		Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
-		TreeSet<OfferInfo> sortedOffers = sortedOffersCache.get();
 		
 		requestContext.put("amountOfUnits", "" + rechargeRequest.getAmountOfUnits());
 		requestContext.put("externalData1", "" + rechargeRequest.getEventName());
@@ -224,7 +222,9 @@ public class CARecharge implements Processor {
 
 		this.partialReadSubscriber(rechargeRequest.getCustomerId());
 		this.checkGraceAndLongestExpiryDate();
-
+		Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
+		TreeSet<OfferInfo> sortedOffers = sortedOffersCache.get();
+		
 		/*
 		 * Step 2: Evaluate the Flexible request - Event Class should be "flexible" - Amount of Unit - Units to be recharged - Input 0 is
 		 * channel - Input 1 is "Wallet Name" - Input 2 (Expiration date policy): if 0 then set the expiry date as "absolute date" as,
@@ -461,6 +461,11 @@ public class CARecharge implements Processor {
 		
 		subscriberOffersCache.set(subscriberOffers);
 		sortedOffersCache.set(sortedOffers);
+		
+		logger.debug("Contents of subsriberOffers: " + subscriberOffers);
+		logger.debug("TreeSet Test::: first: " + sortedOffers.first() + ", last: " + sortedOffers.last() + ", sorted: " + sortedOffers);
+		
+		logger.debug("Cached SubscriberOffers & SortedOffers...");
 	}
 
 	private void partialReadSubscriber(String customerId) throws SmException {
