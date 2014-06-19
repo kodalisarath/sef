@@ -71,19 +71,19 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		balanceAndDateRequest.setSubscriberNumber(msisdn);
 		
 		DedicatedAccountUpdateInformation daInfo = new DedicatedAccountUpdateInformation();
-		if (endurantDA == null) {
-			daInfo.setDedicatedAccountID(Integer.parseInt(newDaID));
+		daInfo.setDedicatedAccountID(Integer.parseInt(newDaID));
+		if (!endurantOfferID.equals(newOfferID)) {
 			daInfo.setStartDate(this.getDaDate(daStartTime));
 			daInfo.setExpiryDate(this.getDaDate(daEndTime));			
 		} else {
-			daInfo.setDedicatedAccountID(Integer.parseInt(endurantDA));
-			daInfo.setExpiryDate(this.getDaDate(longestExpiry));
+			daInfo.setExpiryDate(this.getDaDate(daEndTime));
 		}
 		daInfo.setAdjustmentAmountRelative(amountOfUnits);
 		daInfo.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", endurantDA)));
 		daToUpdateList.add(daInfo);
-		balanceAndDateRequest.setDedicatedAccountUpdateInformation(daToUpdateList);
 		
+		balanceAndDateRequest.setDedicatedAccountUpdateInformation(daToUpdateList);
+		balanceAndDateRequest.setTransactionCurrency("PHP");
 		
 		if (supervisionExpiryPeriod != null) 
 			balanceAndDateRequest.setSupervisionExpiryDate(new Date(Long.parseLong(supervisionExpiryPeriod)));
@@ -91,7 +91,6 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		if (serviceFeeExpiryPeriod != null) 
 			balanceAndDateRequest.setServiceFeeExpiryDate(new Date(Long.parseLong(serviceFeeExpiryPeriod)));
 		
-		balanceAndDateRequest.setTransactionCurrency("PHP");
 		UpdateBalanceAndDateCommand balanceAndDateCommand = new UpdateBalanceAndDateCommand(balanceAndDateRequest);
 		UpdateBalanceAndDateResponse balanceAndDateResponse = null;
 		try {

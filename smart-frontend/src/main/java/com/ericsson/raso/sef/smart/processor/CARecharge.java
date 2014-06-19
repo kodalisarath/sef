@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -52,13 +53,14 @@ public class CARecharge implements Processor {
 	private static final ThreadLocal<Subscriber> subscriberCache = new ThreadLocal<Subscriber>();
 	private static final ThreadLocal<Map<String, String>> requestContextCache = new ThreadLocal<Map<String, String>>();
 	private static final ThreadLocal<Map<String, OfferInfo>> subscriberOffersCache = new ThreadLocal<Map<String, OfferInfo>>();
+	private static final ThreadLocal<TreeSet<OfferInfo>> sortedOffersCache = new ThreadLocal<TreeSet<OfferInfo>>();
 
 	private static final String REVERSAL_DEDICATED_ACCOUNT_ID = "REVERSAL_DEDICATED_ACCOUNT_ID";
 	private static final String REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE = "REVERSAL_BALANCES_DEDICATED_ACCOUNT_NEW_VALUE";
 	private static final String REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT = "REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT";
 	private static final String REVERSAL_OFFER_ID = "REVERSAL_OFFER_ID";
 	private static final String REVERSAL_OFFER_EXPIRY = "REVERSAL_OFFER_EXPIRY";
-
+	
 	@Override
 	public void process(Exchange arg0) throws SmException {
 		logger.debug("CA Recharge started");
@@ -203,6 +205,9 @@ public class CARecharge implements Processor {
 
 	private Map<String, String> prepareFlexibleRecharge(RechargeRequest rechargeRequest) throws SmException {
 		Map<String, String> requestContext = requestContextCache.get();
+		Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
+		TreeSet<OfferInfo> sortedOffers = sortedOffersCache.get();
+		
 		requestContext.put("amountOfUnits", "" + rechargeRequest.getAmountOfUnits());
 		requestContext.put("externalData1", "" + rechargeRequest.getEventName());
 		requestContext.put("externalData2", "" + rechargeRequest.getEventInfo());
@@ -234,110 +239,98 @@ public class CARecharge implements Processor {
 		WalletOfferMapping offerMapping = WalletOfferMappingHelper.getInstance().getOfferMapping(rechargeRequest.getRatingInput1());
 		if (offerMapping == null) {
 			logger.debug("No DA or Offer confgured for this wallet... Request will fail!!");
-			throw ExceptionUtil.toSmException(ErrorCode.entityWasNotFound);
+			throw ExceptionUtil.toSmException(ErrorCode.invalidValue);
 		}
 		String requiredOfferID = offerMapping.getOfferID();
 		String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
 
-		long currentExpiryDate = Long.parseLong(requestContext.get("longestExpiry"));
+		OfferInfo oInfo = null; long requestedExpiryDate = 0;
+		long longestExpiryDate = sortedOffers.last().offerExpiry;
+		//Safety & Insurance
+		requestContext.put("supervisionExpiryPeriod", "" + longestExpiryDate);
+		requestContext.put("serviceFeeExpiryPeriod", "" + longestExpiryDate);
+		
+		
 		switch (rechargeRequest.getRatingInput2()) {
 			case "0": // ABSOLUTE DATE SCENARIO
 				logger.debug("Handling ABSOLUTE DATE SCENARIO...");
-				long requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
-				if (requestedExpiryDate > currentExpiryDate) {
-					requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
-					requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
-					requestContext.put("longestExpiry", "" + requestedExpiryDate);
-					requestContext.put("offerExpiry", "" + requestedExpiryDate);
-					requestContext.put("newDaID", requiredDA);
-					requestContext.put("endurantOfferID", requiredDA);
-					requestContext.put("newOfferID", requiredOfferID);
-					requestContext.put("daEndTime", "" + requestedExpiryDate);
-				} else {
-					requestContext.put("offerExpiry", "" + requestedExpiryDate);
-					requestContext.put("newDaID", requiredDA);
-					requestContext.put("newOfferID", requiredOfferID);
-					requestContext.put("daStartTime", "" + new Date().getTime());
-					requestContext.put("daEndTime", "" + requestedExpiryDate);
-				}
-				logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate);
+				requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
+				logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
 				break;
+						
 			case "1": // relative to current expiry date
 				logger.debug("Handling RELATIVE TO CURRENT EXPIRY SCENARIO...");
-				boolean found = false;
-				Map<String, OfferInfo> subscriberOffers = subscriberOffersCache.get();
-				for (OfferInfo oInfo : subscriberOffers.values()) {
-					if (oInfo.walletName.equals(rechargeRequest.getRatingInput1())) {
-						long newExpiryDate = oInfo.offerExpiry + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-						if (newExpiryDate > currentExpiryDate) {
-							requestContext.put("supervisionExpiryPeriod", "" + newExpiryDate);
-							requestContext.put("serviceFeeExpiryPeriod", "" + newExpiryDate);
-							requestContext.put("longestExpiry", "" + newExpiryDate);
-							requestContext.put("offerExpiry", "" + newExpiryDate);
-							found = true;
-							logger.debug("Found the right offer: " + oInfo.offerID + ", wallet: " + oInfo.walletName);
-						}
-					}
+				oInfo = subscriberOffers.get(requiredOfferID);
+				if (oInfo != null) { // requested offer already exists...
+					requestedExpiryDate =  oInfo.offerExpiry + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+				} else {
+					requestedExpiryDate = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+					requestContext.put("daStartTime", "" + new Date().getTime());
 				}
 				
-				long startTime = new Date().getTime();
-				long endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-				if (!found) {
-					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
-					if (endTime > currentExpiryDate) {
-						requestContext.put("supervisionExpiryPeriod", "" + endTime);
-						requestContext.put("serviceFeeExpiryPeriod", "" + endTime);
-						requestContext.put("longestExpiry", "" + endTime);
-					}
-					requestContext.put("offerExpiry", "" + endTime);
-					requestContext.put("newDaID", requiredDA);
-					requestContext.put("newOfferID", requiredOfferID);
-					requestContext.put("daStartTime", "" + startTime);
-					requestContext.put("daEndTime", "" + endTime);
-				}
-				requestContext.put("offerExpiry", "" + endTime);
-				logger.debug("Relative to current expiry Date scenario handled. New Expiry: " + endTime);
+				logger.debug("Relative to current expiry Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
 				break;
 			case "3": // relative to current date
 				logger.debug("Handling RELATIVE TO CURRENT DATE SCENARIO...");
-				found = false;
-				subscriberOffers = subscriberOffersCache.get();
-				for (OfferInfo oInfo : subscriberOffers.values()) {
-					if (oInfo.walletName.equals(rechargeRequest.getRatingInput1())) {
-						long newExpiryDate = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-						if (newExpiryDate > currentExpiryDate) {
-							requestContext.put("supervisionExpiryPeriod", "" + newExpiryDate);
-							requestContext.put("serviceFeeExpiryPeriod", "" + newExpiryDate);
-							requestContext.put("longestExpiry", "" + newExpiryDate);
-							found = true;
-							logger.debug("Found the right offer: " + oInfo.offerID + ", wallet: " + oInfo.walletName);
-						}
-					}
-				}
-
-				startTime = new Date().getTime();
-				endTime = new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-				if (!found) {
-					logger.debug("User not subscribed to this wallet: " + rechargeRequest.getRatingInput1());
-					if (endTime > currentExpiryDate) {
-						requestContext.put("supervisionExpiryPeriod", "" + endTime);
-						requestContext.put("serviceFeeExpiryPeriod", "" + endTime);
-						requestContext.put("longestExpiry", "" + endTime);
-					}
-					
-					if (!requestContext.get("endurantOfferID").equals(requiredOfferID)) {
-						requestContext.remove("enduranteOfferID");
-					}
-					
-					requestContext.put("offerExpiry", "" + endTime);
-					requestContext.put("newDaID", requiredDA);
-					requestContext.put("newOfferID", requiredOfferID);
-					requestContext.put("daStartTime", "" + startTime);
-					requestContext.put("daEndTime", "" + endTime);
-				}
-				logger.debug("Relative to current Date scenario handled. New Expiry: " + endTime);
+				oInfo = subscriberOffers.get(requiredOfferID);
+				requestedExpiryDate =  new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+				
+				logger.debug("Relative to current Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
 				break;
 		}
+		
+		
+		if (requestedExpiryDate > longestExpiryDate) { // here it is implied that requested offer is breaching & extending longest expiry
+			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
+			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
+			requestContext.put("longestExpiry", "" + requestedExpiryDate);	
+
+			requestContext.put("offerExpiry", "" + requestedExpiryDate);
+			requestContext.put("newDaID", requiredDA);
+			requestContext.put("endurantOfferID", sortedOffers.headSet(sortedOffers.last()).last().offerID); // this addresses if requested offer & longest expiring offer is same or not
+			requestContext.put("newOfferID", requiredOfferID);
+			requestContext.put("daEndTime", "" + requestedExpiryDate);
+		} else { // request expiry is less than  longest expiry
+			if (requiredOfferID.equals(sortedOffers.last().offerID)) { // ...and the requested offer is the longest expiry currently
+				long longestExpiry = sortedOffers.last().offerExpiry;
+				long secondLongesExiry = sortedOffers.headSet(sortedOffers.last()).last().offerExpiry;
+
+				// if the requested offer impacts longest expiry negatively, then is the requested offer second longest?
+				if (requestedExpiryDate > secondLongesExiry) {
+					requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
+					requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
+					requestContext.put("longestExpiry", "" + requestedExpiryDate);	
+
+					requestContext.put("offerExpiry", "" + requestedExpiryDate);
+					requestContext.put("newDaID", requiredDA);
+					requestContext.put("endurantOfferID", requiredOfferID); // the requested offerID is still the longest expiry, even when negative impact
+					requestContext.put("newOfferID", requiredOfferID);
+					requestContext.put("daEndTime", "" + requestedExpiryDate);
+				} else { // the requested offer is set negative & now its no longer the longest nor second longest; so we set the life-cycle with second longest
+					requestContext.put("supervisionExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
+					requestContext.put("serviceFeeExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
+					requestContext.put("longestExpiry", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);	
+
+					requestContext.put("endurantOfferID", sortedOffers.headSet(sortedOffers.last()).last().offerID); // keep the offer id with second longest expiry; just in case...
+					requestContext.put("offerExpiry", "" + requestedExpiryDate);
+					requestContext.put("newDaID", requiredDA);
+					requestContext.put("newOfferID", requiredOfferID);
+					requestContext.put("daEndTime", "" + requestedExpiryDate);
+				}
+			} else { // update of this offer will not impact the life-cycle
+				requestContext.put("supervisionExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
+				requestContext.put("serviceFeeExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
+				requestContext.put("longestExpiry", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);	
+
+				requestContext.put("offerExpiry", "" + requestedExpiryDate);
+				requestContext.put("newDaID", requiredDA);
+				requestContext.put("endurantOfferID", sortedOffers.last().offerID); // the requested offerID is still the longest expiry, even when negative impact
+				requestContext.put("newOfferID", requiredOfferID);
+				requestContext.put("daEndTime", "" + requestedExpiryDate);
+
+			}
+		}
+		
 		logger.debug("Quick Check on Request Context: " + requestContext);
 		return requestContext;
 	}
@@ -351,9 +344,10 @@ public class CARecharge implements Processor {
 		Map<String, String> subscriberMetas = subscriber.getMetas();
 
 		OfferInfo oInfo = null;
-		long longestExpiry = 0;
+		long longestExpiry = 0; long secondLongestExpiry = 0;
 		OfferInfo endurantOffer = null; boolean anyOfferFound = false;
 		Map<String, OfferInfo> subscriberOffers = new HashMap<String, CARecharge.OfferInfo>();
+		TreeSet<OfferInfo> sortedOffers = new TreeSet<CARecharge.OfferInfo>();
 		for (String key : subscriberMetas.keySet()) {
 			logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
 
@@ -399,6 +393,7 @@ public class CARecharge implements Processor {
 				
 				oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), daID, walletName);
 				subscriberOffers.put(offerId, oInfo);
+				sortedOffers.add(oInfo);
 				logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
 
 				if (offerID == 2) {
@@ -406,11 +401,7 @@ public class CARecharge implements Processor {
 					logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 				}
 
-				if (longestExpiry < oInfo.offerExpiry) {
-					logger.debug("FLEXI:: Is this the longest Expiry? " + longestExpiry + " <==> " + oInfo);
-					longestExpiry = oInfo.offerExpiry;
-					endurantOffer = oInfo;
-				}
+
 			}
 		}
 		
@@ -419,12 +410,12 @@ public class CARecharge implements Processor {
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
 
-		requestContext.put("longestExpiry", "" + longestExpiry);
-		if (endurantOffer != null) {
-			requestContext.put("endurantOfferID", endurantOffer.offerID);
-			requestContext.put("endurantDA", "" + endurantOffer.daID);
-		}
+		requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);
+		requestContext.put("endurantOfferID", sortedOffers.last().offerID);
+		requestContext.put("endurantDA", "" + sortedOffers.last().daID);
+		
 		subscriberOffersCache.set(subscriberOffers);
+		sortedOffersCache.set(sortedOffers);
 	}
 
 	private void partialReadSubscriber(String customerId) throws SmException {
@@ -1122,7 +1113,7 @@ public class CARecharge implements Processor {
 
 	}
 
-	class OfferInfo {
+	class OfferInfo implements Comparable<OfferInfo>{
 		private String offerID;
 		private long offerExpiry;
 		private long offerStart;
@@ -1144,6 +1135,15 @@ public class CARecharge implements Processor {
 		@Override
 		public String toString() {
 			return "OfferInfo [offerID=" + offerID + ", offerExpiry=" + offerExpiry + ", daID=" + daID + ", walletName=" + walletName + "]";
+		}
+
+		@Override
+		public int compareTo(OfferInfo o) {
+			int expiry = (int) (this.offerExpiry - o.offerExpiry);
+			if (expiry == 0)
+				return this.offerID.compareTo(o.offerID);
+			else
+				return expiry;
 		}
 
 	}
