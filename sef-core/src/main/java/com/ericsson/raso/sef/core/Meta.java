@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="meta")
 public class Meta implements Serializable{
@@ -56,14 +58,26 @@ public class Meta implements Serializable{
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Meta other = (Meta) obj;
-		if (key == null) {
-			if (other.key != null)
+
+		if (obj instanceof Meta) {
+			if (getClass() != obj.getClass())
 				return false;
-		} else if (!key.equals(other.key))
-			return false;
+			Meta other = (Meta) obj;
+			if (key == null) {
+				if (other.key != null)
+					return false;
+			} else if (!key.equals(other.key))
+				return false;
+		}
+		
+		if (obj instanceof SubscriberMeta) {
+			SubscriberMeta meta = (SubscriberMeta) obj;
+			if (key == null) {
+				if (meta.getKey() != null)
+					return false;				
+			} else if (!key.equals(meta.getKey()))
+				return false;
+		}
 		return true;
 	}
 	
