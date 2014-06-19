@@ -181,7 +181,7 @@ public class ModifyCustomerGrace implements Processor {
 								logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 								
 								
-								if (purchaseResponse.getStatus() != null || purchaseResponse.getStatus().getCode() >0) {
+								if (purchaseResponse.getStatus() != null && purchaseResponse.getStatus().getCode() >0) {
 									logger.debug("Backend Error: " + purchaseResponse.getStatus().getCode());
 									throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getStatus().getCode(), purchaseResponse.getStatus().getDescription()));
 								}
