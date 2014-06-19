@@ -254,7 +254,7 @@ public class UseCaseProcessor implements Processor {
 		map.put("SUBSCRIBER_ID", msisdn.toString());
 		if (metas != null) {
 			for (Meta meta : metas) {
-				map.put(meta.getKey(), meta.getValue().toString());
+				map.put(meta.getKey(), meta.getValue());
 			}
 		}
 		return map;
