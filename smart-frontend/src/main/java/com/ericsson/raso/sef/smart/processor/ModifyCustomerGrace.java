@@ -142,7 +142,7 @@ public class ModifyCustomerGrace implements Processor {
 								//String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
 								
 								// handle the date extension
-								//SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+								SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 								SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 								//Date currentExpiryDate = metaStoreFormat.parse(date);
 								Date newExpiryDate = new Date( graceExpiry + (request.getDaysOfExtension() * 86400000L));
@@ -150,7 +150,7 @@ public class ModifyCustomerGrace implements Processor {
 								
 								
 								
-								metas.add(new Meta("GraceEndDate",newExpiry));
+								metas.add(new Meta("GraceEndDate", metaStoreFormat.format(newExpiryDate)));
 								logger.debug("There is a new GraceEndDate entered and adding days to it now "+ newExpiry);
 //							}
 //							else{

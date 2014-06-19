@@ -66,7 +66,7 @@ public class ModifyCustomerPreActive implements Processor {
 				
 				
 				
-				metas.add(new Meta("PreActiveEndDate",newExpiry));
+				metas.add(new Meta("PreActiveEndDate", metaStoreFormat.format(newExpiryDate)));
 				logger.debug("There is a new preActive end date entered and adding days to it now"+ newExpiry);
 			}
 			else{
