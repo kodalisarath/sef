@@ -1,14 +1,16 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
 
+import org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface.AmountCharging;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
-import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest;
+import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
+import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
 public class ServiceResolver implements ApplicationContextAware {
@@ -44,7 +46,17 @@ public class ServiceResolver implements ApplicationContextAware {
 		return context.getBean(FulfillmentRequest.class);
 	}
 	
+	public static AmountCharging getAmountChargingClient() {
+		return context.getBean(AmountCharging.class);
+	}
 	
+	public static ISubscriberRequest getISubscriberRequestClient() {
+		return context.getBean(ISubscriberRequest.class);
+	}
+	
+	public static ISubscriptionRequest getISubscriptionRequestClient() {
+		return context.getBean(ISubscriptionRequest.class);
+	}
 	//Method  to parse com.ericsson.sef.bes.api.entities.Subscriber object values to 
 		//com.ericsson.raso.sef.core.db.model.Subscriber
 		//called from the subscriber processor classes
