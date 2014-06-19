@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,25 +45,6 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		metas.put("MessageId",  String.valueOf(request.getMessageId()));
 		metas.put("Package",  "initialSC");
 		
-		IConfig config = SefCoreServiceResolver.getConfigService();
-
-
-		String preAtivePeriodStr = config.getValue("GLOBAL", SmartConstants.PREACTIVE_PERIOD);		
-		String milliSecMultiplier = config.getValue("GLOBAL", SmartConstants.MILLISEC_MULTIPLIER);	
-		long preActivePeriod = Long.valueOf(preAtivePeriodStr)*Long.valueOf(milliSecMultiplier);
-
-		Date preActiveEndDate = new Date(System.currentTimeMillis() + preActivePeriod);
-
-		List<Meta> useCaseMetas = new ArrayList<Meta>();
-		Meta meta = new Meta();
-		meta.setKey(SmartConstants.PREACTIVE_ENDDATE);
-		meta.setValue(DateUtil.convertDateToString(preActiveEndDate, config.getValue("GLOBAL",SmartConstants.DATE_FORMAT)));
-		useCaseMetas.add(meta);
-
-		meta.setKey("HANDLE_LIFE_CYCLE");
-		meta.setValue("UPDATE_CONTRACT_STATE");
-		useCaseMetas.add(meta);
-		logger.debug("Usecase Metas: " + useCaseMetas);
 
 		// Subscriber...RequestContextLocalStore
 		String requestId = RequestContextLocalStore.get().getRequestId();
