@@ -77,11 +77,12 @@ public class ModifyCustomerPreActive implements Processor {
 			if(subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0){
 				throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			}
-		}else{
+		}
+		else{
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
-		//DummyProcessor.response(exchange);
-		exchange.getOut().setBody(subscriberInfo);
+		DummyProcessor.response(exchange);
+		//exchange.getOut().setBody(subscriberInfo);
 		
 	}
 	
