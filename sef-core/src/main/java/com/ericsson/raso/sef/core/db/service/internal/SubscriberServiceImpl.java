@@ -203,16 +203,16 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if(subscriberDB != null){
 			//List<Meta> metaList=convertToMetaList(subscriberDB.getMetas());
 			if(metas != null){
-				for(SubscriberMeta meta: metas) {
+				for(Meta meta: subscriber.getMetas()) {
 					if(subscriberDB.getMetas().contains(meta)){
 						try {
-							updateMeta(nbCorrelator,msisdn,new Meta(meta.getKey(), meta.getValue()));
+							updateMeta(nbCorrelator, msisdn, meta);
 						} catch (PersistenceError e) {
 							logger.error("Error in the updatemeta at Service impl");
 						}
 					}else{
 						try {
-							createMeta(nbCorrelator, msisdn, new Meta(meta.getKey(), meta.getValue()));
+							createMeta(nbCorrelator, msisdn, meta);
 						} catch (PersistenceError e) {
 							logger.error("Error in the createmeta at Service Impl");
 						}
