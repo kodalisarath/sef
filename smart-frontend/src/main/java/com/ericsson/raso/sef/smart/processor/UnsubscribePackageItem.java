@@ -56,12 +56,15 @@ public class UnsubscribePackageItem implements Processor {
 		metas.add(new Meta("AccessKey",request.getAccessKey()));
 		metas.add(new Meta("Package",request.getPackaze()));
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
-		metas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
+		metas.add(new Meta("msisdn",request.getCustomerId()));
+		//metas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
 
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		workflowMetas.add(new Meta("Package", String.valueOf(request.getPackaze())));
 		workflowMetas.add(new Meta("msisdn",request.getCustomerId()));
 		workflowMetas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
+		workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
+		workflowMetas.add(new Meta("AccessKey",request.getAccessKey()));
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
@@ -82,18 +85,32 @@ public class UnsubscribePackageItem implements Processor {
 				logger.debug("Inside the if condition for status check");
 				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 			 }
-          logger.info("Recieved a SubscriberInfo Object and it is not null");
+             logger.info("Recieved a SubscriberInfo Object and it is not null");
 			 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 			 
-			 
-	     
+			 IConfig config = SefCoreServiceResolver.getConfigService();
+			 String activeStatusCS = subscriberObj.getSubscriber().getMetas().get("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG");
+			 logger.debug("TRY 1 "+ activeStatusCS);
+		     String packagefromDB = subscriberObj.getSubscriber().getMetas().get("Package");
+		     logger.debug("PACKAGE FROM DB "+ packagefromDB);
+		     if (packagefromDB == null || packagefromDB.equalsIgnoreCase("")){
+		    	 packagefromDB = subscriberObj.getSubscriber().getMetas().get("package");
+			     logger.debug("PACKAGE FROM DB "+ packagefromDB);
+		     }
+		    
+		     String originalWelcomePackSC = config.getValue("GLOBAL_welcomePackMapping", "initialSC");
+		     logger.debug("REQUESTED WELCOME PACK SC "+ originalWelcomePackSC);
+		     
+		     int usecase=0;
+		     logger.info("Failfast if pre-active and package subscribed to different from initial welcome pack");
+		     if (activeStatusCS.equalsIgnoreCase("false")) {
+		    	 usecase=1;
+		     }
 
 		 logger.info("check pre_active");			
-		  if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
-			  if(isWelcomePack(request.getPackaze())) {
-				  IConfig config = SefCoreServiceResolver.getConfigService();
+		  if(usecase==1) {
 				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBER_PACKAGE_ITEM_WelcomePackServiceClass"));
-				  metas.add(new Meta("ServiceClass",config.getValue("GLOBAL_welcomePackMapping", request.getPackaze())));
+				  metas.add(new Meta("ServiceClass",originalWelcomePackSC));
 				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
 				  SubscriberInfo response = new SubscriberInfo();
 			      logger.debug("Got past event class...SK.");
@@ -127,10 +144,6 @@ public class UnsubscribePackageItem implements Processor {
 					      exchange.getOut().setBody(cr);
 					}
 			  }
-			  else {
-				  throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
-			  }
-			}
 		  else {
 		  Subscriber subscriber = subscriberObj.getSubscriber();
 			if (subscriber == null) {
@@ -174,47 +187,47 @@ public class UnsubscribePackageItem implements Processor {
 					}
 				}
 			}
-			if (IsGrace==false && NotRecycle==false) {
-			ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
-			String correlationId = subscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
-	        PurchaseResponse response = new PurchaseResponse();
-			logger.debug("Got past event class in subscription for active....");
-			RequestCorrelationStore.put(correlationId, response);
-			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(correlationId);
-			
-			try {
-			semaphore.init(0);
-			semaphore.acquire();
-			} catch(InterruptedException e) {
-				e.printStackTrace();
-				logger.debug("Exception while sleep     :"+e.getMessage());
-			}
+			if (NotRecycle==false) {
+				ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
+				String correlationId = subscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
+			        PurchaseResponse response = new PurchaseResponse();
+					logger.debug("Got past event class in subscription for grace and active....");
+					RequestCorrelationStore.put(correlationId, response);
+					ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(correlationId);
+					
+					try {
+					semaphore.init(0);
+					semaphore.acquire();
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+						logger.debug("Exception while sleep     :"+e.getMessage());
+					}
 
-			
-			logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
-			
-			// PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-			PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
-			//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
-			logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-			if(purchaseResponse == null) {
-				logger.debug("No response arrived???");
-				throw new SmException(ErrorCode.internalServerError);
+					
+					logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
+					
+					// PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+					PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
+					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+					if(purchaseResponse == null) {
+						logger.debug("No response arrived???");
+						throw new SmException(ErrorCode.internalServerError);
+					}
+					else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 )
+					{
+							logger.debug("");
+							throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
+					}
+					else{
+						 CommandResponseData cr = this.createResponse(true);
+					      exchange.getOut().setBody(cr);
+					}	
 			}
-			else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 )
-			{
-					logger.debug("");
-					throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
-			}
-			else{
-				 CommandResponseData cr = this.createResponse(true);
-			      exchange.getOut().setBody(cr);
-			}	}
 			else {
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 			}
 		  }
-
 	}
 
 	private static boolean isWelcomePack(String packaze) {
