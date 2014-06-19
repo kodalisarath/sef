@@ -2,6 +2,7 @@ package com.ericsson.raso.sef.smart.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -76,7 +77,7 @@ public class ReadCustomerInfoCharge implements Processor {
 		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		 logger.info("Billing Metas: " + subscriberObj.getMetas());
 	     
-		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional()));
+		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional(), subscriberObj.getMetas()));
 
 	}
 
@@ -128,7 +129,7 @@ public class ReadCustomerInfoCharge implements Processor {
 	}
 	
 	
-	private CommandResponseData readAccountInfo(String msisdn,boolean isTransactional) throws SmException {
+	private CommandResponseData readAccountInfo(String msisdn,boolean isTransactional, Map<String, String> metas) throws SmException {
 		CommandResponseData responseData = new CommandResponseData();
 		CommandResult result = new CommandResult();
 		responseData.setCommandResult(result);
@@ -150,6 +151,46 @@ public class ReadCustomerInfoCharge implements Processor {
 		operationResult.getOperation().add(operation);
 		ParameterList parameterList = new ParameterList();
 		operation.setParameterList(parameterList);
+		
+	// Process Balances & Offers...
+		
+		
+		for (String key : metas.keySet()) {
+			
+			if (key.startsWith("DA")) {
+				logger.debug("CIC:: meta: " + key + " = " + metas.get(key));
+				String daForm = metas.get(key);
+				logger.debug("Check before split: " + daForm);
+				String daPart[] = daForm.split(":+:");
+				logger.debug("DA Parts: " + daPart.length);
+				int i=0; for (String part: daPart) {
+					logger.debug("daPart[" + i++ +"]" + part);
+				}
+				int daID = Integer.parseInt(daPart[0]);
+				String daVal1 = daPart[1];
+				String daVal2 = daPart[2];
+				Long startDate = Long.parseLong(((daPart[3].equals("null"))?null:daPart[3]));
+				Long expiryDate = Long.parseLong(((daPart[4].equals("null"))?null:daPart[4]));
+				Integer pamServiceID = Integer.parseInt(((daPart[5].equals("null"))?null:daPart[5]));
+				Integer offerID = Integer.parseInt(((daPart[6].equals("null"))?null:daPart[6]));
+				Integer productID = Integer.parseInt(((daPart[7].equals("null"))?null:daPart[7]));
+				Boolean isRealMoney = Boolean.parseBoolean(((daPart[8].equals("null"))?null:daPart[8]));
+				Long closestExpiryDate = Long.parseLong(((daPart[9].equals("null"))?null:daPart[9]));
+				Long closestExpiryValue1 = Long.parseLong(((daPart[10].equals("null"))?null:daPart[10]));
+				
+				
+			}
+		}
+			
+		
+		
+		
+		
+
+		
+		
+		
+	// End of Get Balances & Dates processing....
 		
 		
 		StringParameter accounts = new StringParameter();

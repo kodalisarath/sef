@@ -389,7 +389,7 @@ public class CARecharge implements Processor {
 				String soForm = subscriberMetas.get(key);
 				logger.debug("Check before split - offerForm: " + soForm);
 				String soParts[] = soForm.split(",");
-				logger.debug("Offer Parts: " + soParts.length);
+				logger.debug("SO Parts: " + soParts.length);
 				int i= 0; for (String part: soParts) {
 					logger.debug("soParts[" + i++ + "] :=" + part);
 				}
@@ -404,7 +404,6 @@ public class CARecharge implements Processor {
 			}
 			
 			if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
-				anyOfferFound = true;
 				logger.debug("FLEXI:: OFFER_ID...." + subscriberMetas.get(key));
 				String offerForm = subscriberMetas.get(key);
 				logger.debug("Check before split - offerForm: " + offerForm);
@@ -446,6 +445,8 @@ public class CARecharge implements Processor {
 				oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), daID, walletName);
 				subscriberOffers.put(offerId, oInfo);
 				sortedOffers.add(oInfo);
+				anyOfferFound = true;
+				
 				logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
 
 				if (offerID == 2) {
