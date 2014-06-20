@@ -122,6 +122,7 @@ public class PasaServiceManager {
 		
 		SubscriberPasa subscriberPasa = this.fetchFromFile(subscriberPasaFile);
 		if (subscriberPasa == null) {
+			LOGGER.debug("User has not previous pasa. Creating one noew...");
 			subscriberPasa = new SubscriberPasa();
 		}
 
@@ -150,7 +151,7 @@ public class PasaServiceManager {
 			subscriberPasa.setPasaReceived(pasaLoadID, (value + consumedAmount));
 
 			this.persistToFile(subscriberPasaFile, subscriberPasa);
-
+			LOGGER.debug("Pasa setup for the user...");
 			return true;
 
 		} catch (Exception e) {
