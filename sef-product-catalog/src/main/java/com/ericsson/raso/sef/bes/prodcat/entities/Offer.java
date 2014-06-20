@@ -579,7 +579,7 @@ public class Offer implements Serializable {
 			MonetaryUnit rate = this.price.getSimpleAdviceOfCharge();
 			if (rate.getAmount() != 0) {
 				LOGGER.debug("Rated AMount: " + rate.getAmount() + rate.getIso4217CurrencyCode());
-				tasks.add(new Charging(ChargingMode.CHARGE, rate, subscriberId));
+				tasks.add(new Charging(ChargingMode.CHARGE, rate, subscriberId, metas));
 			} else {
 				LOGGER.debug("Rated amount was zero... not sending charging request...");
 			}
