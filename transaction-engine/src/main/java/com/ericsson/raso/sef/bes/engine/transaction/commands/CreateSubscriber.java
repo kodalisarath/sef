@@ -62,7 +62,7 @@ public class CreateSubscriber extends AbstractTransaction {
 						tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, new HashMap<String, Object>()));
 					} catch (CatalogException e) {
 						LOGGER.debug("Catch block catalog exception ",e);
-						this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+						this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(999, "Unable to pack the workflow tasks"), e));
 					}
 					tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
 					

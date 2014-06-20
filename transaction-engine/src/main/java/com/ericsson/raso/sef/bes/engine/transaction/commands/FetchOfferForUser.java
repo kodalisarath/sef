@@ -8,6 +8,7 @@ import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.raso.sef.core.ResponseCode;
 
 
 public class FetchOfferForUser extends AbstractTransaction {
@@ -30,8 +31,7 @@ public class FetchOfferForUser extends AbstractTransaction {
 //			((FetchOfferForUserResponse)this.getResponse()).setResult(resultantOffer);
 			((FetchOfferForUserResponse)this.getResponse()).setSubscriberId(((FetchOfferForUserRequest)this.getRequest()).getSusbcriberId());
 		} catch (CatalogException e) {
-			((FetchOfferForUserResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Offer not available for user", e));
-				
+			((FetchOfferForUserResponse)this.getResponse()).setReturnFault(new TransactionException("txe", new ResponseCode(999, "Offer not available for user"), e));
 		}
 		
 		return true;

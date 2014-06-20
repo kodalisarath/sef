@@ -71,7 +71,6 @@ public abstract class AbstractTransaction implements Callable<Boolean>, Serializ
 			} else {
 				LOGGER.error("Gneric Exception Handler - " + e.getClass().getName() + ": " + e.getMessage());
 				this.response.setReturnFault(new TransactionException("txe", new ResponseCode(999, "System under stress..."), e));
-				this.response.setReturnFault(new TransactionException(this.requestId, "Transaction failed executing...", e));
 				this.sendResponse();
 				return false;
 			}
