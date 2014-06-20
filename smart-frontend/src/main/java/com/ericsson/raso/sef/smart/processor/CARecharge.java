@@ -253,7 +253,7 @@ public class CARecharge implements Processor {
 		String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
 
 		OfferInfo oInfo = null; long requestedExpiryDate = 0; long longestExpiryDate = 0;
-		if (requestContext.get("graceCreateNew") == null || sortedOffers.size() > 0)			
+		if ( (requestContext.get("graceCreateNew") == null && requestContext.get("graceCreateNew").equals("true")) || sortedOffers.size() > 0)			
 			longestExpiryDate = sortedOffers.last().offerExpiry;
 		else
 			longestExpiryDate = 0;
@@ -484,7 +484,7 @@ public class CARecharge implements Processor {
 		
 		if (!anyOfferFound) {
 			logger.debug("Seems like subscriber is in GRACE state. Will create new Offer/DA/Wallet for this bum!!");
-			requestContext.put("graceCreatenew", "true");
+			requestContext.put("graceCreateNew", "true");
 		} else {
 
 			logger.debug("Contents of subsriberOffers: " + subscriberOffers);
