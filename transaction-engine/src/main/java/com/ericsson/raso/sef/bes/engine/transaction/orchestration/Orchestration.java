@@ -35,6 +35,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Notification;
 import com.ericsson.raso.sef.bes.prodcat.tasks.NotificationMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
 
@@ -143,7 +144,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				} catch (Exception e) {
 					logger.error("Exception while preparation, Exception:" + e);
 					this.status = Status.DONE_FAULT;
-					this.executionFault = new TransactionException(northBoundCorrelator, "CHARGING FAIED", e);
+					this.executionFault = new TransactionException("txe", new ResponseCode(999, "Chargng Failed: " + e.getMessage()));
 				}
 				break;
 			case PROCESSING:

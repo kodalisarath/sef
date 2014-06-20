@@ -13,6 +13,7 @@ import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.entities.MonetaryUnit;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
 import com.ericsson.raso.sef.bes.prodcat.service.IOfferCatalog;
+import com.ericsson.raso.sef.core.ResponseCode;
 
 
 public class GetAdviceOfCharge extends AbstractTransaction {
@@ -37,10 +38,13 @@ public class GetAdviceOfCharge extends AbstractTransaction {
 			((GetAdviceOfChargeResponse)this.getResponse()).setIso4217Currency(aoc.getIso4217CurrencyCode());
 			
 		} catch (CatalogException e) {
-			((GetAdviceOfChargeResponse)this.getResponse()).setReturnFault(new TransactionException(this.getRequestId(), "Offer not available for user", e));
+			((GetAdviceOfChargeResponse)this.getResponse()).setReturnFault(
+					new TransactionException(this.getRequestId(), 
+							new ResponseCode(999, "Offer not available for user: " + e.getMessage())));
 				
 		}
 		
+		this.sendResponse();
 		return true;
 	}
 

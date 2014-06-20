@@ -80,36 +80,17 @@ public class HandleLifeCycle extends AbstractTransaction{
 					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, 
 							this.getProdCatMap(((HandleLifeCycleRequest)this.getRequest()).getMetas())));
 				} catch (CatalogException e) {
-					this.getResponse().setReturnFault( new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+					this.getResponse().setReturnFault(new TransactionException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage())));
 				}
 			}
 			
 			Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
 			
 			OrchestrationManager.getInstance().submit(this, execution);
-//			for (Meta meta : incomingMetas) {
-//				LOGGER.debug("Printing the metas in the loop "+meta.getKey()+" "+meta.getValue()+""+subscriberEntity.getMsisdn());
-//				if (subscriberEntity.getMetas().contains(meta)) {
-//					try {																																									
-//						subscriberStore.updateMeta(this.getRequestId(),
-//								subscriberEntity.getMsisdn(), meta);
-//					} catch (PersistenceError e) {
-//						LOGGER.error("Error in the updatemeta at HandleLifecycle",e);
-//					}
-//				} else {
-//					try {
-//						LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
-//						subscriberStore.createMeta(this.getRequestId(),
-//								subscriberEntity.getMsisdn(), meta);
-//					} catch (PersistenceError e) {
-//						LOGGER.error("Error in the createmeta at HandleLifecycle",e);
-//					}
-//				}
-//
-//			}
+
 			
 		} catch (FrameworkException e1) {
-			this.getResponse().setReturnFault( new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e1));
+			this.getResponse().setReturnFault( new TransactionException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage())));
 		}
 		
 		return true;	

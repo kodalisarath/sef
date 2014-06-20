@@ -60,7 +60,7 @@ public class DeleteSubscriber extends AbstractTransaction {
 				try {
 					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, new HashMap<String,Object>()));
 				} catch (CatalogException e) {
-					this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), "Unable to pack the workflow tasks for this use-case", e));
+					this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(999, "Unable to pack the workflow tasks"), e));
 				}
 				
 			}
