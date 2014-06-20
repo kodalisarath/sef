@@ -59,7 +59,7 @@ public class ReadCustomerInfoCharge implements Processor {
 	     workflowMetas.add(new Meta("Channel", String.valueOf(request.getChannel())));
 	     workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 
-	     List<Meta> metaSubscriber=new ArrayList<Meta>();
+	     //List<Meta> metaSubscriber=new ArrayList<Meta>();
 	     workflowMetas.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
 	     workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE"));
 	     
@@ -67,7 +67,7 @@ public class ReadCustomerInfoCharge implements Processor {
 	     logger.info("Going for Customer Info Charge Call");
 	     logger.info("Before read subscriber call");
 		
-	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metaSubscriber);
+	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), workflowMetas);
 	     
 	     logger.info("subscriber call done");
 		 if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
