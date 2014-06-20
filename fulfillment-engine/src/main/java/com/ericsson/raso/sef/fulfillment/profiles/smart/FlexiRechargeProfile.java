@@ -132,6 +132,7 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		UpdateOfferResponse updateGraceOfferResponse = null;
 		
 		if (inGrace)  {
+			LOGGER.debug("user is in grace and now getting unset...");
 			updateGraceOfferRequest.setOfferID(2);
 			updateGraceOfferRequest.setExpiryDateTime(new Date(System.currentTimeMillis() + 2000));
 			
