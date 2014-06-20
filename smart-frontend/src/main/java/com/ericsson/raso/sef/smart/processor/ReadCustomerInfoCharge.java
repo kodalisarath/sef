@@ -10,27 +10,17 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
-import com.ericsson.raso.sef.smart.commons.AccountInfo;
-import com.ericsson.raso.sef.smart.commons.SmartConstants;
-import com.ericsson.raso.sef.smart.commons.SmartModel;
-import com.ericsson.raso.sef.smart.commons.SmartServiceHelper;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
-import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
-import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
-import com.ericsson.raso.sef.smart.usecase.BalanceAdjustmentRequest;
 import com.ericsson.raso.sef.smart.usecase.ReadCustomerInfoChargeRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
-import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
@@ -55,7 +45,7 @@ public class ReadCustomerInfoCharge implements Processor {
 	     List<Meta> workflowMetas= new ArrayList<Meta>();
 	     workflowMetas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
 	     workflowMetas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
-	     workflowMetas.add(new Meta("Channel", String.valueOf(request.getChannel())));
+	     workflowMetas.add(new Meta("channelName", String.valueOf(request.getChannel())));
 	     workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 
 	     //List<Meta> metaSubscriber=new ArrayList<Meta>();
@@ -65,7 +55,6 @@ public class ReadCustomerInfoCharge implements Processor {
 	     logger.info("Collected SOAP parameters");
 	     logger.info("Going for Customer Info Charge Call");
 	     logger.info("Before read subscriber call");
-		
 	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), workflowMetas);
 	     
 	     logger.info("subscriber call done");
@@ -84,6 +73,7 @@ public class ReadCustomerInfoCharge implements Processor {
 
 	private SubscriberInfo readSubscriber(String requestId, String customerId, List<Meta> metas) {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
+		logger.info("workflowMetas size : "+metas.size());
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
