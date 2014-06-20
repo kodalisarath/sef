@@ -52,7 +52,6 @@ public class ReadCustomerInfoCharge implements Processor {
 	     String requestId = RequestContextLocalStore.get().getRequestId();
 	     List<Meta> metas = new ArrayList<Meta>();
 	     logger.info("Collecting SOAP parameters");
-
 	     List<Meta> workflowMetas= new ArrayList<Meta>();
 	     workflowMetas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
 	     workflowMetas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
