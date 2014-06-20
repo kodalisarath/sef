@@ -193,7 +193,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			//updateOfferRequest.setExpiryDate(updatedOffer.getExpiryDate());
 			updateOfferRequest.setExpiryDateTime(updatedOffer.getExpiryDateTime());
 			//updateOfferRequest.setStartDateTime(updatedOffer.getStartDate());
-			updateOfferRequest.setStartDateTime(updatedOffer.getStartDateTime());
+			//updateOfferRequest.setStartDateTime(updatedOffer.getStartDateTime());
 			updateOfferRequest.setOfferID(updatedOffer.getOfferID());
 			updateOfferRequest.setOfferType(2);
 			updateOfferRequest.setSubscriberNumber(msisdn);
