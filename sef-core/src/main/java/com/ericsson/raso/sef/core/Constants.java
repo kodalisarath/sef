@@ -119,4 +119,6 @@ public class Constants {
 
 	public static final String REQUEST_ID = "requestId";
 	public static final String IL_CHANNEL = "ILCHANNEL";
+	public static final String SUBSCRIPTION_LIFE_CYCLE_EVENT = "subscriptionLifeCycleEvent";
+	public static final String USECASE = "usecase";
 }
