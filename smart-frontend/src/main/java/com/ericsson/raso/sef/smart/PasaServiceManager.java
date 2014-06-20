@@ -43,24 +43,29 @@ public class PasaServiceManager {
 
 	public boolean isPasaReceiveAllowed(String subscriberId, String pasaLoadID) {
 		String subscriberPasaFile = this.pasaServiceStoreLocation;
+		
+		LOGGER.debug("Entering save pasa function...");
+
 		if (this.pasaServiceStoreLocation == null) {
 			LOGGER.debug("SMART_PASA_STORE_URI is not configured. Cannot process request");
 			throw new IllegalStateException("SMART_PASA_STORE_URI is not configured. Cannot process request");
 		}
+		LOGGER.debug("Seems like pasa is configured...");
 
 
 		if (subscriberPasaFile.endsWith("/"))
 			subscriberPasaFile += subscriberId.substring(subscriberId.length() - 2) + "/" + subscriberId + ".pasa";
 		else
 			subscriberPasaFile += "/" + subscriberId.substring(subscriberId.length() - 2) + "/" + subscriberId + ".pasa";
-
+		LOGGER.debug("Subscribe Pasa File: " + subscriberPasaFile);
+		
 		SubscriberPasa subscriberPasa = this.fetchFromFile(subscriberPasaFile);
 		if (subscriberPasa == null) {
-			this.persistToFile(subscriberPasaFile, subscriberPasa);
+			LOGGER.debug("seems like user has no pasa before... Allowing the transaction...");
 			return true;
 		}
 
-
+		LOGGER.debug("Fetching the internal offerId & all handles from prodcat...");
 		DiscoveryResponse discoveryResponse = new DiscoveryResponse();
 		String requestCorrelator = SmartServiceResolver.getSubscriptionRequest().discoverOfferByFederatedId(UniqueIdGenerator.generateId(), pasaLoadID, subscriberId);
 		RequestCorrelationStore.put(requestCorrelator, discoveryResponse);
@@ -75,7 +80,6 @@ public class PasaServiceManager {
 		discoveryResponse = (DiscoveryResponse) RequestCorrelationStore.remove(requestCorrelator);
 		if (discoveryResponse != null && discoveryResponse.getFault() != null && discoveryResponse.getFault().getCode() > 0) {
 			LOGGER.error("Failed fetching PasaName from handle: " + pasaLoadID + ", " + discoveryResponse.getFault());
-			this.persistToFile(subscriberPasaFile, subscriberPasa);
 			return false;
 		}
 
@@ -84,12 +88,12 @@ public class PasaServiceManager {
 			LOGGER.debug("Getting PASA: " + offerId);
 			int allowedCount = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_pasaLoad", offerId));
 			int consumedCount = subscriberPasa.getPasaCount(offerId);
-			if (consumedCount >= allowedCount) {
-				this.persistToFile(subscriberPasaFile, subscriberPasa);
+			if ((allowedCount != -1) && (consumedCount >= allowedCount)) {
+				LOGGER.debug("User already exhausted pasa receive restriction");
 				return false;
 			}
-
-			this.persistToFile(subscriberPasaFile, subscriberPasa);
+			
+			LOGGER.debug("User can avail the pasa. Proceed to refill...");
 			return true;
 
 		} catch (Exception e) {
@@ -102,7 +106,7 @@ public class PasaServiceManager {
 	public boolean setPasaReceived(String subscriberId, String pasaLoadID, Integer value) {
 		String subscriberPasaFile = this.pasaServiceStoreLocation;
 
-		LOGGER.debug("Entiner save pasa function...");
+		LOGGER.debug("Entering save pasa function...");
 
 		if (this.pasaServiceStoreLocation == null) {
 			LOGGER.debug("SMART_PASA_STORE_URI is not configured. Cannot process request");
@@ -114,7 +118,8 @@ public class PasaServiceManager {
 			subscriberPasaFile += subscriberId.substring(subscriberId.length() - 2) + "/" + subscriberId + ".pasa";
 		else
 			subscriberPasaFile += "/" + subscriberId.substring(subscriberId.length() - 2) + "/" + subscriberId + ".pasa";
-
+		LOGGER.debug("Subscribe Pasa File: " + subscriberPasaFile);
+		
 		SubscriberPasa subscriberPasa = this.fetchFromFile(subscriberPasaFile);
 		if (subscriberPasa == null) {
 			subscriberPasa = new SubscriberPasa();

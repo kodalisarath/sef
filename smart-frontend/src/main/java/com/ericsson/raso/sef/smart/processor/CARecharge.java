@@ -252,77 +252,13 @@ public class CARecharge implements Processor {
 		String requiredOfferID = offerMapping.getOfferID();
 		String requiredDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", requiredOfferID);
 
-		OfferInfo oInfo = null; long requestedExpiryDate = 0; long longestExpiryDate = 0;
-		if ( (requestContext.get("graceCreateNew") == null || !requestContext.get("graceCreateNew").equals("true")) && sortedOffers.size() > 0)			
-			longestExpiryDate = sortedOffers.last().offerExpiry;
-		else
-			longestExpiryDate = 0;
-		
-		//Safety & Insurance
-		requestContext.put("supervisionExpiryPeriod", "" + longestExpiryDate);
-		requestContext.put("serviceFeeExpiryPeriod", "" + longestExpiryDate);
 		
 		
-		switch (Integer.parseInt(rechargeRequest.getRatingInput2())) {
-			case 0: // ABSOLUTE DATE SCENARIO
-				logger.debug("Handling ABSOLUTE DATE SCENARIO...");
-				requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
-				
-				oInfo = subscriberOffers.get(requiredOfferID);
-				if (oInfo != null) { // requested offer already exists...
-					requestedExpiryDate =  Long.parseLong(rechargeRequest.getRatingInput4());
-				} else { // offer unsubscribed; hance assumed new offer susbcription
-					requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
-					requestContext.put("daStartTime", "" + new Date().getTime());
-					requestContext.put("newSubscription", "true");
-					logger.debug("ABSOLUTE DATE: new offer subcription. Offer: " + requiredOfferID);
-				}
-				
-				logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
-				break;
-						
-			case 1: // relative to current expiry date
-				logger.debug("Handling RELATIVE TO CURRENT EXPIRY SCENARIO...");
-				oInfo = subscriberOffers.get(requiredOfferID);
-				if (oInfo != null) { // requested offer already exists...
-					requestedExpiryDate =  oInfo.offerExpiry + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-				} else { // offer unsubscribed; hance assumed new offer susbcription
-					logger.info("User not subscribed to this offer. Cannot adjust expiry of Offer: " + oInfo );
-					throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
-				}
-				
-				logger.debug("Relative to current expiry Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
-				break;
-			case 2:
-				logger.debug("Handling UPDATE BALANCE ONLY SCENARIO...");
-				oInfo = subscriberOffers.get(requiredOfferID);
-				if (oInfo == null) { // requested offer NOT SUBSCRIBED...
-					logger.info("User has not subscribed ot this wallet: " + rechargeRequest.getRatingInput1());
-					throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
-				}
-				requestedExpiryDate = oInfo.offerExpiry;
-				requestContext.put("offerExpiry", "" + requestedExpiryDate);
-				logger.debug("No change to expiry Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
-				break;
-			case 3: // relative to current date
-				logger.debug("Handling RELATIVE TO CURRENT DATE SCENARIO...");
-				
-				oInfo = subscriberOffers.get(requiredOfferID);
-				if (oInfo != null) { // requested offer already exists...
-					requestedExpiryDate =  new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-				} else { // offer unsubscribed; hance assumed new offer susbcription
-					requestedExpiryDate =  new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
-					requestContext.put("daStartTime", "" + new Date().getTime());
-					requestContext.put("newSubscription", "true");
-					logger.debug("ABSOLUTE DATE: new offer subcription. Offer: " + requiredOfferID);
-				}
-				
-				logger.debug("Relative to current Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
-				break;
-		}
 		
+	
 		// Calculating all dates - offer, da & lifecycle  
-								
+		OfferInfo oInfo = null; long requestedExpiryDate = 0; long longestExpiryDate = 0;
+		
 		if (requestContext.get("graceCreateNew") != null && requestContext.get("graceCreateNew").equals("true")) {
 			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
 			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
@@ -333,56 +269,129 @@ public class CARecharge implements Processor {
 			requestContext.put("newOfferID", requiredOfferID);
 			requestContext.put("daEndTime", "" + requestedExpiryDate);
 
-		} else if (requestedExpiryDate > longestExpiryDate) { // here it is implied that requested offer is breaching & extending longest expiry
-			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
-			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
-			requestContext.put("longestExpiry", "" + requestedExpiryDate);	
+		} else {
+			
+			if (sortedOffers.size() > 0)
+				longestExpiryDate = sortedOffers.last().offerExpiry;
+			else
+				longestExpiryDate = 0;
+		
+			//Safety & Insurance
+			requestContext.put("supervisionExpiryPeriod", "" + longestExpiryDate);
+			requestContext.put("serviceFeeExpiryPeriod", "" + longestExpiryDate);
+			
+			switch (Integer.parseInt(rechargeRequest.getRatingInput2())) {
+				case 0: // ABSOLUTE DATE SCENARIO
+					logger.debug("Handling ABSOLUTE DATE SCENARIO...");
+					requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
 
-			requestContext.put("offerExpiry", "" + requestedExpiryDate);
-			requestContext.put("newDaID", requiredDA);
-			requestContext.put("endurantOfferID", requiredOfferID); // this addresses if requested offer & longest expiring offer is same or not
-			requestContext.put("newOfferID", requiredOfferID);
-			requestContext.put("daEndTime", "" + requestedExpiryDate);
-		} else { // request expiry is less than  longest expiry
-			if (requiredOfferID.equals(sortedOffers.last().offerID)) { // ...and the requested offer is the longest expiry currently
-				long longestExpiry = sortedOffers.last().offerExpiry;
-				long secondLongesExiry = sortedOffers.headSet(sortedOffers.last()).last().offerExpiry;
+					oInfo = subscriberOffers.get(requiredOfferID);
+					if (oInfo != null) { // requested offer already exists...
+						requestedExpiryDate =  Long.parseLong(rechargeRequest.getRatingInput4());
+					} else { // offer unsubscribed; hance assumed new offer susbcription
+						requestedExpiryDate = Long.parseLong(rechargeRequest.getRatingInput4());
+						requestContext.put("daStartTime", "" + new Date().getTime());
+						requestContext.put("newSubscription", "true");
+						logger.debug("ABSOLUTE DATE: new offer subcription. Offer: " + requiredOfferID);
+					}
 
-				// if the requested offer impacts longest expiry negatively, then is the requested offer second longest?
-				if (requestedExpiryDate > secondLongesExiry) {
-					requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
-					requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
-					requestContext.put("longestExpiry", "" + requestedExpiryDate);	
+					logger.debug("Absolute Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
+					break;
 
+				case 1: // relative to current expiry date
+					logger.debug("Handling RELATIVE TO CURRENT EXPIRY SCENARIO...");
+					oInfo = subscriberOffers.get(requiredOfferID);
+					if (oInfo != null) { // requested offer already exists...
+						requestedExpiryDate =  oInfo.offerExpiry + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+					} else { // offer unsubscribed; hance assumed new offer susbcription
+						logger.info("User not subscribed to this offer. Cannot adjust expiry of Offer: " + oInfo );
+						throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
+					}
+
+					logger.debug("Relative to current expiry Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
+					break;
+				case 2:
+					logger.debug("Handling UPDATE BALANCE ONLY SCENARIO...");
+					oInfo = subscriberOffers.get(requiredOfferID);
+					if (oInfo == null) { // requested offer NOT SUBSCRIBED...
+						logger.info("User has not subscribed ot this wallet: " + rechargeRequest.getRatingInput1());
+						throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
+					}
+					requestedExpiryDate = oInfo.offerExpiry;
 					requestContext.put("offerExpiry", "" + requestedExpiryDate);
-					requestContext.put("newDaID", requiredDA);
-					requestContext.put("endurantOfferID", requiredOfferID); // the requested offerID is still the longest expiry, even when negative impact
-					requestContext.put("newOfferID", requiredOfferID);
-					requestContext.put("daEndTime", "" + requestedExpiryDate);
-				} else { // the requested offer is set negative & now its no longer the longest nor second longest; so we set the life-cycle with second longest
-					requestContext.put("supervisionExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
-					requestContext.put("serviceFeeExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
-					requestContext.put("longestExpiry", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);	
+					logger.debug("No change to expiry Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
+					break;
+				case 3: // relative to current date
+					logger.debug("Handling RELATIVE TO CURRENT DATE SCENARIO...");
 
-					requestContext.put("endurantOfferID", sortedOffers.headSet(sortedOffers.last()).last().offerID); // keep the offer id with second longest expiry; just in case...
-					requestContext.put("offerExpiry", "" + requestedExpiryDate);
-					requestContext.put("newDaID", requiredDA);
-					requestContext.put("newOfferID", requiredOfferID);
-					requestContext.put("daEndTime", "" + requestedExpiryDate);
-				}
-			} else { // update of this offer will not impact the life-cycle
-				requestContext.put("supervisionExpiryPeriod", null);
-				requestContext.put("serviceFeeExpiryPeriod", null);
-				requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);	
+					oInfo = subscriberOffers.get(requiredOfferID);
+					if (oInfo != null) { // requested offer already exists...
+						requestedExpiryDate =  new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+					} else { // offer unsubscribed; hance assumed new offer susbcription
+						requestedExpiryDate =  new Date().getTime() + (Long.parseLong(rechargeRequest.getRatingInput3()) * 86400000L);
+						requestContext.put("daStartTime", "" + new Date().getTime());
+						requestContext.put("newSubscription", "true");
+						logger.debug("ABSOLUTE DATE: new offer subcription. Offer: " + requiredOfferID);
+					}
+
+					logger.debug("Relative to current Date scenario handled. New Expiry: " + requestedExpiryDate + ", Longest Expiry: " + longestExpiryDate);
+					break;
+			}
+
+			
+			
+			if (requestedExpiryDate > longestExpiryDate) { // here it is implied that requested offer is breaching & extending longest expiry
+				requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
+				requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
+				requestContext.put("longestExpiry", "" + requestedExpiryDate);	
 
 				requestContext.put("offerExpiry", "" + requestedExpiryDate);
 				requestContext.put("newDaID", requiredDA);
-				requestContext.put("endurantOfferID", sortedOffers.last().offerID); // the requested offerID is still the longest expiry, even when negative impact
+				requestContext.put("endurantOfferID", requiredOfferID); // this addresses if requested offer & longest expiring offer is same or not
 				requestContext.put("newOfferID", requiredOfferID);
 				requestContext.put("daEndTime", "" + requestedExpiryDate);
+			} else { // request expiry is less than  longest expiry
+				if (requiredOfferID.equals(sortedOffers.last().offerID)) { // ...and the requested offer is the longest expiry currently
+					long longestExpiry = sortedOffers.last().offerExpiry;
+					long secondLongesExiry = sortedOffers.headSet(sortedOffers.last()).last().offerExpiry;
 
+					// if the requested offer impacts longest expiry negatively, then is the requested offer second longest?
+					if (requestedExpiryDate > secondLongesExiry) {
+						requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
+						requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
+						requestContext.put("longestExpiry", "" + requestedExpiryDate);	
+
+						requestContext.put("offerExpiry", "" + requestedExpiryDate);
+						requestContext.put("newDaID", requiredDA);
+						requestContext.put("endurantOfferID", requiredOfferID); // the requested offerID is still the longest expiry, even when negative impact
+						requestContext.put("newOfferID", requiredOfferID);
+						requestContext.put("daEndTime", "" + requestedExpiryDate);
+					} else { // the requested offer is set negative & now its no longer the longest nor second longest; so we set the life-cycle with second longest
+						requestContext.put("supervisionExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
+						requestContext.put("serviceFeeExpiryPeriod", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);
+						requestContext.put("longestExpiry", "" + sortedOffers.headSet(sortedOffers.last()).last().offerExpiry);	
+
+						requestContext.put("endurantOfferID", sortedOffers.headSet(sortedOffers.last()).last().offerID); // keep the offer id with second longest expiry; just in case...
+						requestContext.put("offerExpiry", "" + requestedExpiryDate);
+						requestContext.put("newDaID", requiredDA);
+						requestContext.put("newOfferID", requiredOfferID);
+						requestContext.put("daEndTime", "" + requestedExpiryDate);
+					}
+				} else { // update of this offer will not impact the life-cycle
+					requestContext.put("supervisionExpiryPeriod", null);
+					requestContext.put("serviceFeeExpiryPeriod", null);
+					requestContext.put("longestExpiry", "" + sortedOffers.last().offerExpiry);	
+
+					requestContext.put("offerExpiry", "" + requestedExpiryDate);
+					requestContext.put("newDaID", requiredDA);
+					requestContext.put("endurantOfferID", sortedOffers.last().offerID); // the requested offerID is still the longest expiry, even when negative impact
+					requestContext.put("newOfferID", requiredOfferID);
+					requestContext.put("daEndTime", "" + requestedExpiryDate);
+
+				}
 			}
 		}
+
 		
 		logger.debug("Quick Check on Request Context: " + requestContext);
 		return requestContext;
