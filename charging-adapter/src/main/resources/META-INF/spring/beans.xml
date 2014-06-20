@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+		http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd">
+
+	<import resource="classpath:META-INF/sef-core/beans.xml" />
+	
+	<!-- <bean id="caProperties" class="com.ericsson.sm.core.config.ComponentPropertiesBean">
+		<constructor-arg name="config" ref="cfg" />
+		<constructor-arg name="component" value="charging-adapter" />
+	</bean> -->
+	<!-- <context:property-placeholder properties-ref="caProperties" /> -->
+
+	<cxf:cxfEndpoint id="amountCharging" serviceClass="org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface.AmountCharging"
+	bus="cxf">
+		<cxf:properties>
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/ChargeAmount" />
+			<entry key="dataFormat" value="POJO" />
+			<entry key="setDefaultBus" value="true" />
+		</cxf:properties>
+	</cxf:cxfEndpoint>
+ 
+	<httpj:engine-factory>
+		<httpj:engine port="9090">
+			<httpj:connector>
+				
+				<bean class="org.eclipse.jetty.server.nio.BlockingChannelConnector">
+					<property name="port" value="9090"/>
+				</bean>
+			</httpj:connector>
+		</httpj:engine>
+	</httpj:engine-factory>
+
+	<bean id="caContext" class="com.ericsson.sef.chargingadapter.CaContext" />
+	
+	<!-- <bean id="scapChargingClient" factory-bean="scapFactory" factory-method="create">
+		<constructor-arg type="java.lang.String" value="${scapClient}"/>
+	</bean> -->
+	
+	<!--  <alias name="requestContextService" alias="rcs" />-->
+	
+	<bean id="chargeAmountProcessor" class="com.ericsson.sef.chargingadapter.processor.ChargeAmountProcessor"/>
+	<bean id="smScapChargingApi" class="com.ericsson.sef.chargingadapter.util.SmScapChargingApi" init-method="start" destroy-method="stop"/>
+	<bean id="subscriberService" class="com.ericsson.raso.sef.core.db.service.internal.SubscriberServiceImpl"/>
+	<camel:camelContext>
+		<camel:route id="amountChargingRoute">
+			<camel:from uri="cxf:bean:amountCharging" />
+			<camel:pipeline>
+				<camel:doTry>
+					<camel:bean beanType="com.ericsson.sef.chargingadapter.processor.CxfExchangeHeaderProcessor"/>
+					<camel:bean beanType="com.ericsson.sef.chargingadapter.processor.RequestIdentityProcessor" />
+					<!--  <camel:bean ref="rcs" method="enter" />-->
+					<camel:bean beanType="com.ericsson.sef.chargingadapter.usecase.UsecaseProcessor" />
+					<camel:doCatch>
+						<camel:exception>java.lang.Exception</camel:exception>
+						<camel:bean beanType="com.ericsson.sef.chargingadapter.CaExceptionHandler" />
+					</camel:doCatch>
+				</camel:doTry>
+			</camel:pipeline>
+		</camel:route>
+	</camel:camelContext>
+	
+</beans>
