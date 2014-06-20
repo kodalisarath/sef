@@ -95,21 +95,21 @@ public class CARecharge implements Processor {
 //				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 
 			logger.debug("Getting event class....");
+			requestContextCache.set(metas);
 			String eventClass = rechargeRequest.getEventClass();
 			if (eventClass.equals("predefined") || eventClass.equals("unli")) {
-				metas = prepareRecharge(rechargeRequest);
 				offerid = rechargeRequest.getEventName();
+				metas = prepareRecharge(rechargeRequest);
 			} else if (eventClass.equals("flexible")) {
-				metas = prepareFlexibleRecharge(rechargeRequest);
 				offerid = "FlexiRefill";
+				metas = prepareFlexibleRecharge(rechargeRequest);
 			} else if (eventClass.equals("pasaload")) {
 				rechargeRequest.setRatingInput0("pasaload");
+				offerid = rechargeRequest.getEventName();
 				metas = prepareRecharge(rechargeRequest);
-				offerid = rechargeRequest.getEventName();
 			} else if (eventClass.equals("reversal")) {
-				metas = prepareReversalRecharge(rechargeRequest);
 				offerid = rechargeRequest.getEventName();
-				;
+				metas = prepareReversalRecharge(rechargeRequest);
 			} else {
 				throw new SmException(new ResponseCode(500, "Recharge Type is not defined"));
 			}
