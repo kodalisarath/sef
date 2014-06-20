@@ -209,7 +209,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			responseMetas.put(REVERSAL_OFFER_ID + "." + ++index, "" + updatedOffer.getOfferID());
-			responseMetas.put(REVERSAL_OFFER_EXPIRY + "." + index, format.format(updatedOffer.getExpiryDate()));
+			responseMetas.put(REVERSAL_OFFER_EXPIRY + "." + index, format.format(updatedOffer.getExpiryDateTime()));
 			Integer associatedDaId = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", ""+updateOfferRequest.getOfferID()));
 			for (DedicatedAccountChangeInformation daResultInfo: updateBalanceAndDateResponse.getDedicatedAccountInformation()) {
 				if (daResultInfo.getDedicatedAccountID().compareTo(associatedDaId)==0) {

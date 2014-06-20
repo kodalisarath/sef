@@ -79,7 +79,9 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		if (!expirationDatePolicy.equals("2")) 
 			daInfo.setExpiryDate(this.getDaDate(daEndTime));
 		daInfo.setAdjustmentAmountRelative(amountOfUnits);
-		daInfo.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", endurantDA)));
+		
+		String daUnitType = SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", newDaID);
+		daInfo.setDedicatedAccountUnitType(Integer.parseInt((daUnitType==null)?"1":daUnitType));
 		daToUpdateList.add(daInfo);
 		
 		balanceAndDateRequest.setDedicatedAccountUpdateInformation(daToUpdateList);
