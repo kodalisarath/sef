@@ -857,47 +857,34 @@ public class CARecharge implements Processor {
 	}
 
 	private void handleReversalResponse(ListParameter listParameter, PurchaseResponse response) {
-		Map<String, ReversalEntry> reversalEntries = new HashMap<String, CARecharge.ReversalEntry>();
+		Map<String, String> requestContext = requestContextCache.get();
 
 		logger.debug("Processing Reversal Metas: " + response.getBillingMetas());
 		String index = "1";
-		ReversalEntry entry = null;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		for (Meta meta : response.getBillingMetas()) {
-			if (meta.getKey().contains(".")) {
-				String[] keyPart = meta.getKey().split(".");
-				if (!reversalEntries.containsKey(keyPart[1])) {
-					entry = new ReversalEntry();
-					reversalEntries.put(keyPart[0], entry);
-				} else {
-					entry = reversalEntries.get(keyPart[1]);
-				}
-
-				// Process the entries....
-				if (keyPart[0].equals(REVERSAL_OFFER_ID)) {
-					String timerOffer;
-					timerOffer = meta.getValue();
-					entry.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", timerOffer);
-				}
-
-				if (keyPart[0].equals(REVERSAL_OFFER_EXPIRY)) {
-					entry.finalExpiryDate = meta.getValue();
-				}
-
-				if (keyPart[0].equals(REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE)) {
-					entry.finalBalance = meta.getValue();
-				}
-
-				if (keyPart[0].equals(REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT)) {
-					entry.reversedAmount = meta.getValue();
-				}
-
-				if (entry.isComplete()) {
-					StringElement stringElement = new StringElement();
-					stringElement.setValue(entry.toString());
-					listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
-					logger.debug("Adding response item to CARecharge: " + entry.toString());
-				}
+			logger.debug("Proessing meta: " + meta);
+			// Process the entries....
+			if (meta.getKey().equals(REVERSAL_OFFER_ID)) {
+				String rev[] = meta.getValue().split(",");
+				ReversalEntry entry = new ReversalEntry();
+				entry.offerID = rev[0];
+				entry.finalExpiryDate = rev[1];
+				entry.daID = rev[2];
+				entry.finalBalance = rev[3];
+				entry.reversedAmount = rev[4];
+				entry.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", entry.offerID);
+				
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(entry.walletName + ":s_PeriodicBonus;" 
+							+ entry.reversedAmount + ";"
+							+ entry.finalBalance + ";"
+							+ format.format(new Date(Long.parseLong(entry.finalExpiryDate))));
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("Adding response item to CARecharge: " + entry.toString());			
 			}
+
 		}
 		logger.debug("Finished processing of response for Reversal....");
 		return;
@@ -1267,21 +1254,19 @@ public class CARecharge implements Processor {
 	}
 
 	class ReversalEntry {
+		private String offerID;
 		private String walletName;
+		private String daID;
 		private String reversedAmount;
 		private String finalBalance;
 		private String finalExpiryDate;
-
+		
 		@Override
 		public String toString() {
-			return walletName + ";" + reversedAmount + ";" + finalBalance + ";" + finalExpiryDate;
+			return "ReversalEntry [offerID=" + offerID + ", walletName=" + walletName + ", daID=" + daID + ", reversedAmount="
+					+ reversedAmount + ", finalBalance=" + finalBalance + ", finalExpiryDate=" + finalExpiryDate + "]";
 		}
 
-		public boolean isComplete() {
-			if (walletName != null && reversedAmount != null && finalBalance != null && finalExpiryDate != null)
-				return true;
-			return false;
-		}
-
+		
 	}
 }

@@ -259,10 +259,7 @@ public class ReadCustomerInfoCharge implements Processor {
 				
 			}
 		}
-		
-
-		
-		
+			
 		
 	// End of Get Balances & Dates processing....
 		
