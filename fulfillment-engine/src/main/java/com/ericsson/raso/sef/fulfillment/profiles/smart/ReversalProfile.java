@@ -21,7 +21,6 @@ import com.ericsson.raso.sef.client.air.response.DedicatedAccountChangeInformati
 import com.ericsson.raso.sef.client.air.response.DedicatedAccountInformation;
 import com.ericsson.raso.sef.client.air.response.GetBalanceAndDateResponse;
 import com.ericsson.raso.sef.client.air.response.OfferInformation;
-import com.ericsson.raso.sef.client.air.response.SubDedicatedInfo;
 import com.ericsson.raso.sef.client.air.response.UpdateBalanceAndDateResponse;
 import com.ericsson.raso.sef.client.air.response.UpdateOfferResponse;
 import com.ericsson.raso.sef.core.ResponseCode;
