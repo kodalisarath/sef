@@ -854,38 +854,40 @@ public class CARecharge implements Processor {
 		String index = "1";
 		ReversalEntry entry = null;
 		for (Meta meta : response.getBillingMetas()) {
-			String[] keyPart = meta.getKey().split(".");
-			if (!reversalEntries.containsKey(keyPart[1])) {
-				entry = new ReversalEntry();
-				reversalEntries.put(keyPart[0], entry);
-			} else {
-				entry = reversalEntries.get(keyPart[1]);
-			}
+			if (meta.getKey().contains(".")) {
+				String[] keyPart = meta.getKey().split(".");
+				if (!reversalEntries.containsKey(keyPart[1])) {
+					entry = new ReversalEntry();
+					reversalEntries.put(keyPart[0], entry);
+				} else {
+					entry = reversalEntries.get(keyPart[1]);
+				}
 
-			// Process the entries....
-			if (keyPart[0].equals(REVERSAL_OFFER_ID)) {
-				String timerOffer;
-				timerOffer = meta.getValue();
-				entry.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", timerOffer);
-			}
+				// Process the entries....
+				if (keyPart[0].equals(REVERSAL_OFFER_ID)) {
+					String timerOffer;
+					timerOffer = meta.getValue();
+					entry.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", timerOffer);
+				}
 
-			if (keyPart[0].equals(REVERSAL_OFFER_EXPIRY)) {
-				entry.finalExpiryDate = meta.getValue();
-			}
+				if (keyPart[0].equals(REVERSAL_OFFER_EXPIRY)) {
+					entry.finalExpiryDate = meta.getValue();
+				}
 
-			if (keyPart[0].equals(REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE)) {
-				entry.finalBalance = meta.getValue();
-			}
+				if (keyPart[0].equals(REVERSAL_DEDICATED_ACCOUNT_NEW_VALUE)) {
+					entry.finalBalance = meta.getValue();
+				}
 
-			if (keyPart[0].equals(REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT)) {
-				entry.reversedAmount = meta.getValue();
-			}
+				if (keyPart[0].equals(REVERSAL_DEDICATED_ACCOUNT_REVERSED_AMOUNT)) {
+					entry.reversedAmount = meta.getValue();
+				}
 
-			if (entry.isComplete()) {
-				StringElement stringElement = new StringElement();
-				stringElement.setValue(entry.toString());
-				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
-				logger.debug("Adding response item to CARecharge: " + entry.toString());
+				if (entry.isComplete()) {
+					StringElement stringElement = new StringElement();
+					stringElement.setValue(entry.toString());
+					listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+					logger.debug("Adding response item to CARecharge: " + entry.toString());
+				}
 			}
 		}
 		logger.debug("Finished processing of response for Reversal....");

@@ -1,10 +1,6 @@
 package com.ericsson.raso.sef.smart.subscription.response;
 
-import java.util.List;
-
-import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Offer;
-import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 
 public class DiscoveryResponse extends AbstractSubscriptionResponse {
