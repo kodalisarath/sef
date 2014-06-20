@@ -66,7 +66,7 @@ public class ReadCustomerInfoCharge implements Processor {
 		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		 logger.info("Billing Metas: " + subscriberObj.getMetas());
 	     
-		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional(), subscriberObj.getMetas()));
+		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional(), subscriberObj.getSubscriber().getMetas()));
 
 	}
 
