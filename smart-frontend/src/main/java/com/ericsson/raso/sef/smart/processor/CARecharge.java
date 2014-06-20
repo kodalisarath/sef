@@ -190,24 +190,27 @@ public class CARecharge implements Processor {
 
 	}
 
-	private Map<String, String> prepareReversalRecharge(RechargeRequest rechargeRequest) {
-		Map<String, String> map = new HashMap<String, String>();
+	private Map<String, String> prepareReversalRecharge(RechargeRequest rechargeRequest) throws SmException {
+		Map<String, String> requestContext = requestContextCache.get();
 		
+		this.partialReadSubscriber(rechargeRequest.getCustomerId());
+		this.checkGraceAndLongestExpiryDate();
+		requestContext = requestContextCache.get();
 		
-		map.put(Constants.TX_AMOUNT, rechargeRequest.getAmountOfUnits().toString());
+		requestContext.put("msisdn", rechargeRequest.getCustomerId());
+		requestContext.put("SUBSCRIBER_ID", rechargeRequest.getCustomerId());
 
 		if (rechargeRequest.getRatingInput0() != null) {
-			map.put(Constants.CHANNEL_NAME, rechargeRequest.getRatingInput0());
-			map.put(Constants.EX_DATA3, rechargeRequest.getRatingInput0());
+			requestContext.put(Constants.CHANNEL_NAME, rechargeRequest.getRatingInput0());
+			requestContext.put(Constants.EX_DATA3, rechargeRequest.getRatingInput0());
 		}
 
-		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
-		map.put("eventName", rechargeRequest.getEventName());
-		map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
-		map.put("eventInfo", rechargeRequest.getEventName());
-		map.put(SmartConstants.USECASE, "reversal");
+		requestContext.put(Constants.EX_DATA1, rechargeRequest.getEventName());
+		requestContext.put("eventName", rechargeRequest.getEventName());
+		requestContext.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
+		requestContext.put("eventInfo", rechargeRequest.getEventName());
 
-		return map;
+		return requestContext;
 	}
 
 	private Map<String, String> prepareFlexibleRecharge(RechargeRequest rechargeRequest) throws SmException {
@@ -504,6 +507,7 @@ public class CARecharge implements Processor {
 		if (!anyOfferFound) {
 			logger.debug("Seems like subscriber is in GRACE state. Will create new Offer/DA/Wallet for this bum!!");
 			requestContext.put("graceCreateNew", "true");
+			requestContextCache.set(requestContext);
 		} else {
 
 			logger.debug("Contents of subsriberOffers: " + subscriberOffers);
@@ -516,6 +520,7 @@ public class CARecharge implements Processor {
 			requestContext.put("endurantOfferID", "" + sortedOffers.last().offerID);
 			requestContext.put("endurantDA", "" + sortedOffers.last().daID);
 
+			requestContextCache.set(requestContext);
 			subscriberOffersCache.set(subscriberOffers);
 			sortedOffersCache.set(sortedOffers);
 		}
