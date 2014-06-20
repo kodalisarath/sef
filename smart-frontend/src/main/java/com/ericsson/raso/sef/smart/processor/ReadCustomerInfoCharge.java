@@ -42,7 +42,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class ReadCustomerInfoCharge implements Processor {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
-	private static final Logger logger = LoggerFactory.getLogger(BalanceAdjustment.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReadCustomerInfoCharge.class);
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
