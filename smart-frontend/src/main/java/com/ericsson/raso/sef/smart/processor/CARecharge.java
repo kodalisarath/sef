@@ -260,6 +260,15 @@ public class CARecharge implements Processor {
 		OfferInfo oInfo = null; long requestedExpiryDate = 0; long longestExpiryDate = 0;
 		
 		if (requestContext.get("graceCreateNew") != null && requestContext.get("graceCreateNew").equals("true")) {
+			if (requestContext.get("expirationDatePolicy").equals("0")) {
+				longestExpiryDate = Long.parseLong(requestContext.get("absoluteDate"));
+			} else if (requestContext.get("expirationDatePolicy").equals("1")) {
+				throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
+			} else if (requestContext.get("expirationDatePolicy").equals("2")) {
+				throw ExceptionUtil.toSmException(ErrorCode.invalidParameterValue);
+			} else if (requestContext.get("expirationDatePolicy").equals("3")) {
+				longestExpiryDate = new Date().getTime() + (Long.parseLong(requestContext.get("daysOfExtension")) * 86400L);
+			}
 			requestContext.put("supervisionExpiryPeriod", "" + requestedExpiryDate);
 			requestContext.put("serviceFeeExpiryPeriod", "" + requestedExpiryDate);
 			requestContext.put("longestExpiry", "" + requestedExpiryDate);	
