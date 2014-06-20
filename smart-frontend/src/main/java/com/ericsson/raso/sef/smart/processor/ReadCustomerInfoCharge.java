@@ -45,7 +45,7 @@ public class ReadCustomerInfoCharge implements Processor {
 	     List<Meta> workflowMetas= new ArrayList<Meta>();
 	     workflowMetas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
 	     workflowMetas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
-	     workflowMetas.add(new Meta("Channel", String.valueOf(request.getChannel())));
+	     workflowMetas.add(new Meta("channelName", String.valueOf(request.getChannel())));
 	     workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 
 	     //List<Meta> metaSubscriber=new ArrayList<Meta>();
