@@ -56,7 +56,7 @@ public class ChargingStep extends Step<ChargingStepResult> {
 			//request.chargeAmount(endUserIdentifier, charge, referenceCode);
 			break;
 		}
-		return new ChargingStepResult(null, null);
+		return new ChargingStepResult(null, monetoryUnit);
 	}catch(Exception e){
 		logger.debug("Exception in execution of Charging: Exception: " +  e);
 		ChargingStepResult result = new ChargingStepResult(new StepExecutionException("Charging failed"), null);
