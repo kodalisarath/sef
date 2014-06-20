@@ -85,4 +85,38 @@ public class Constants {
 	public static final String READ_BALANCES_OFFER_INFO_START_DATE_TIME = "READ_BALANCES_OFFER_INFO_START_DATE_TIME";
 	public static final String READ_BALANCES_OFFER_INFO_EXPIRY_DATE_TIME = "READ_BALANCES_OFFER_INFO_EXPIRY_DATE_TIME";
 	public static final String READ_SUBSCRIBER_OFFER_INFO = "READ_SUBSCRIBER_OFFER_INFO";
+	
+	//Diameter
+	public static final String HEADER_PATTERN = "diameter-";
+	public static final String PROTOCOTYPE = "protocolType";
+	public static final String REALM = "realm";
+	public static final String PRODUCTID = "productId";
+	public static final String VENDORID = "vendorId";
+	public static final String ACCOUNTID = "accountId";
+	public static final String AUTHID = "authId";
+	public static final String MESSAGETIMEOUT = "messageTimeout";
+	public static final String FQDN = "fqdn";
+	public static final String OWNTCPPORT = "ownTcpPort";
+	public static final String POOLSIZE = "poolSize";
+	public static final String EVENTQUEUESIZE = "eventQueueSize";
+	public static final String SENDQUEUESIZE = "sendQueueSize";
+	public static final String SENDMESSAGELIMIT = "sendMessageLimit";
+	public static final String ETHINTERFACE="ethInterface";
+	public static final String ENDPOINTID = "endpointId";
+	public static final String EXCEPTION = "exception";
+	public static final String operationName = "operationName";
+	//Local Cache
+	public static final String EVICTIONDURATION = "evictionDuration";
+	public static final String EVICTIONTIMEUNIT = "evictionTimeUnit";
+	public static final String MAXSIZE = "maxSize";
+	public static final String EXCUTABLE_OFFER = "executableOffer";
+
+	//Activation Schedular
+	public static final String QUARTZ_INTERFACE = "sef-scheduler-interfaces";
+	public static final String QUARTZ_SERVER = "sef-scheduler-server";
+	public static final String QUARTZ_CLIENT = "sef-scheduler-client";
+	public static final String PURCHASE_ID = "purchaseID";
+
+	public static final String REQUEST_ID = "requestId";
+	public static final String IL_CHANNEL = "ILCHANNEL";
 }

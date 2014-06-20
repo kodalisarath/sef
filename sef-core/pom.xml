@@ -62,6 +62,7 @@
 			com.ericsson.raso.sef.core.db.service,
 			com.ericsson.raso.sef.core.db.model,
 			com.ericsson.raso.sef.core.lb,
+			com.ericsson.raso.sef.core.db.service.internal,
 			META-INF.sef-core,
 			wsdl,
 			com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1,
@@ -216,13 +217,37 @@
 			<artifactId>spring-core</artifactId>
 			<version>${spring-version}</version>
 		</dependency>
-
-
-<dependency>
-	<groupId>commons-codec</groupId>
-	<artifactId>commons-codec</artifactId>
-	<version>1.4</version>
-</dependency>
+<!-- Ericsson Charging SDK -->
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>dcc-api</artifactId>
+            <version>release</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>diameter-base-api</artifactId>
+            <version>release</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>high-level-api</artifactId>
+            <version>release</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>scap-v2-api</artifactId>
+            <version>release</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>utils</artifactId>
+            <version>release</version>
+        </dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.4</version>
+		</dependency>
 
 	</dependencies>
 

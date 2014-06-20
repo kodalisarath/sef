@@ -25,41 +25,39 @@ public class OfferVerification {
 			Map<String, Resource> serviceRegistry = (Map<String, Resource>) helper.fetchFromFile("C:\\Temp\\serviceRegistry.ccm");
 			Map<String, FulfillmentProfile<?>> profileRegistry = (Map<String, FulfillmentProfile<?>>) helper.fetchFromFile("C:\\Temp\\profileRegistry.ccm");
 			
-			System.out.println("Encrypted form: " + new String (encoder.encode(helper.encrypt("639777180104"))));
-			
-			System.out.println("\n1. Create Subscriber:\n" + offerStore.getOfferById("CREATE_SUBSCRIBER"));
-			System.out.println("\n2. Read Subscriber:\n" + offerStore.getOfferById("READ_SUBSCRIBER"));
-			System.out.println("\n3. Modify Tagging:\n" + offerStore.getOfferById("MODIFY_TAGGING"));
-			System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
-			System.out.println("\n5. Welcome Pack:\n" + offerStore.getOfferById("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
-			System.out.println("\n6. Modify Tagging Reset bit:\n" + offerStore.getOfferById("MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
+//			System.out.println("Encrypted form: " + new String (encoder.encode(helper.encrypt("639777180104"))));
+//			
+			System.out.println("\n1. Create Subscriber:\n" + offerStore.getOfferById("CUSTOMER_INFO_CHARGE"));
+//			System.out.println("\n2. Read Subscriber:\n" + offerStore.getOfferById("READ_SUBSCRIBER"));
+//			System.out.println("\n3. Modify Tagging:\n" + offerStore.getOfferById("MODIFY_TAGGING"));
+//			System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
+//			System.out.println("\n5. Welcome Pack:\n" + offerStore.getOfferById("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
+//			System.out.println("\n6. Modify Tagging Reset bit:\n" + offerStore.getOfferById("MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
 
-		
-			
 			System.out.println("Verifying all offers...");
 			
-			for(String offerId: offerStore.getOffersById().keySet()) {
-				Offer taggingOffer = offerStore.getOfferById(offerId);
-				//Offer taggingOffer = offerStore.getOfferById("katok-AT25-TEX25");
-				System.out.println("\nOffer name: " + taggingOffer.getName());
-				System.out.println("Offer contents: " + taggingOffer);
-				for (AtomicProduct product: taggingOffer.getAllAtomicProducts()) {
-					System.out.println("Product name: " + product.getName());
-					System.out.println("Product resource: " + product.getResource());
-					System.out.println("Service Registry Instance: " + serviceRegistry.get(product.getResource().getName()));
-					System.out.println("Service Registry Instance Type: " + serviceRegistry.get(product.getResource().getName()));
-
-					Service resource = (Service) product.getResource();
-					System.out.println("Resource name: " + resource.getName());
-
-					for (String profileId: resource.getFulfillmentProfiles()) {
-						System.out.println("Profile Id: " + profileId);
-						FulfillmentProfile profile = profileRegistry.get(profileId);
-						System.out.println("Profile Registry class: " + profile.getClass().getCanonicalName());
-						System.out.println("Profile Registry contents: " + profile.toString());
-					}
-				}
-			}
+//			for(String offerId: offerStore.getOffersById().keySet()) {
+//				Offer taggingOffer = offerStore.getOfferById(offerId);
+//				//Offer taggingOffer = offerStore.getOfferById("katok-AT25-TEX25");
+//				System.out.println("\nOffer name: " + taggingOffer.getName());
+//				System.out.println("\tOffer contents: " + taggingOffer);
+//				for (AtomicProduct product: taggingOffer.getAllAtomicProducts()) {
+//					System.out.println("\t\tProduct name: " + product.getName());
+//					System.out.println("\t\tProduct resource: " + product.getResource());
+//					System.out.println("\t\tService Registry Instance: " + serviceRegistry.get(product.getResource().getName()));
+//					System.out.println("\t\tService Registry Instance Type: " + serviceRegistry.get(product.getResource().getName()));
+//
+//					Service resource = (Service) product.getResource();
+//					System.out.println("\t\tResource name: " + resource.getName());
+//
+//					for (String profileId: resource.getFulfillmentProfiles()) {
+//						System.out.println("\t\t\tProfile Id: " + profileId);
+//						FulfillmentProfile profile = profileRegistry.get(profileId);
+//						System.out.println("\t\t\tProfile Registry class: " + profile.getClass().getCanonicalName());
+//						System.out.println("\t\t\tProfile Registry contents: " + profile.toString());
+//					}
+//				}
+//			}
 			
 		} catch (FrameworkException e) {
 			// TODO Auto-generated catch block

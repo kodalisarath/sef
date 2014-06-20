@@ -39,7 +39,6 @@
 			com.ericsson.raso.sef.core.db.service,
 			org.slf4j,
 			META-INF.sef-core,
-			com.ericsson.raso.sef.diameter,
 			org.springframework.*,
 			org.apache.tomcat.dbcp.dbcp,
 			org.apache.commons.codec.binary,

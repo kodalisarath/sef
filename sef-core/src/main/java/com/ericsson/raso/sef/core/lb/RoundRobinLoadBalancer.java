@@ -41,4 +41,13 @@ public class RoundRobinLoadBalancer implements LoadBalancer {
 		return pool.get(counter);
 	}
 
+	@Override
+	public Member chooseRoute() {
+		int size = pool.size();
+		if (++counter >= size) {
+			counter = 0;
+		}
+		return pool.get(counter);
+	}
+
 }

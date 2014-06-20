@@ -11,4 +11,6 @@ public interface LoadBalancer {
 	List<Member> getMembers();
 	
 	Member getRoute();
+
+	Member chooseRoute();
 }

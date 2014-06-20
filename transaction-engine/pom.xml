@@ -41,12 +41,21 @@
 		org.apache.cxf.interceptor,
 		org.xml.sax,
 		org.w3c.dom,
-		org.apache.cxf.*,		
+		org.apache.cxf.*,	
 		javax.xml,
 		META-INF.sef-core,
 		META-INF.product-catalog,
 		META-INF.sef-api,
-		org.slf4j
+		org.slf4j,
+		org.csapi.schema.parlayx.common.v2_1,
+		org.csapi.schema.parlayx.payment.amount_charging.v2_1.local,
+		org.csapi.schema.parlayx.payment.reserve_amount_charging.v2_1.local,
+		org.csapi.schema.parlayx.payment.v2_1,
+		org.csapi.wsdl.parlayx.common.v2_0.faults,
+		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface,
+		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
+		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
+		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service		
 		</osgi-import-package>
   </properties>
 

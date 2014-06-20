@@ -130,6 +130,37 @@
 			<artifactId>mybatis-spring</artifactId>
 			<version>${mybatis-spring-version}</version>
 		</dependency>
+<!-- Ericsson Charging SDK -->
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>dcc-api</artifactId>
+            <version>release</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>diameter-base-api</artifactId>
+            <version>release</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>high-level-api</artifactId>
+            <version>release</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>scap-v2-api</artifactId>
+            <version>release</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ericsson.pps.diameter</groupId>
+            <artifactId>utils</artifactId>
+            <version>release</version>
+        </dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.4</version>
+		</dependency>        		
 	</dependencies>
 	<build>
 		<defaultGoal>install</defaultGoal>
@@ -157,5 +188,8 @@
 		<module>../transformation-engine</module>
 		<module>../fulfillment-engine</module>
 		<module>../smart-il-features</module>
+		<module>../charging-adapter-api</module>
+		<module>../sef-smpp-gateway</module>
+		<module>../charging-adapter</module>
 	</modules>
 </project>

@@ -36,6 +36,8 @@
 		<property name="endpointId" value="fulfillment-request-client"/>
 	</bean>
 
-
-
+	<bean id="amountChargeClient" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
+		<property name="serviceType" value="org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface.AmountCharging"/>
+		<property name="endpointId" value="amountcharge-request-client"/>
+	 </bean>
 </beans>

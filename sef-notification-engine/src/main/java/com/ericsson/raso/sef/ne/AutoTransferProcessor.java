@@ -7,7 +7,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.util.StringUtils;
 
-import com.ericsson.raso.sef.ne.core.smpp.SmppMessage;
+import com.ericsson.raso.ne.core.smpp.SmppMessage;
 
 public class AutoTransferProcessor implements Processor {
 
