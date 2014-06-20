@@ -42,7 +42,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class ReadCustomerInfoCharge implements Processor {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
-	private static final Logger logger = LoggerFactory.getLogger(BalanceAdjustment.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReadCustomerInfoCharge.class);
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
@@ -52,14 +52,13 @@ public class ReadCustomerInfoCharge implements Processor {
 	     String requestId = RequestContextLocalStore.get().getRequestId();
 	     List<Meta> metas = new ArrayList<Meta>();
 	     logger.info("Collecting SOAP parameters");
-
 	     List<Meta> workflowMetas= new ArrayList<Meta>();
 	     workflowMetas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
 	     workflowMetas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
 	     workflowMetas.add(new Meta("Channel", String.valueOf(request.getChannel())));
 	     workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 
-	     List<Meta> metaSubscriber=new ArrayList<Meta>();
+	     //List<Meta> metaSubscriber=new ArrayList<Meta>();
 	     workflowMetas.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
 	     workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE"));
 	     
@@ -67,7 +66,7 @@ public class ReadCustomerInfoCharge implements Processor {
 	     logger.info("Going for Customer Info Charge Call");
 	     logger.info("Before read subscriber call");
 		
-	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metaSubscriber);
+	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), workflowMetas);
 	     
 	     logger.info("subscriber call done");
 		 if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
