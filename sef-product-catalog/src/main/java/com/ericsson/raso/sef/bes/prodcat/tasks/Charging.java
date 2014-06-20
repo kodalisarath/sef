@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.prodcat.tasks;
 
+import java.util.Map;
+
 import com.ericsson.raso.sef.bes.prodcat.entities.MonetaryUnit;
 
 public final class Charging extends TransactionTask {
@@ -9,6 +11,15 @@ public final class Charging extends TransactionTask {
 
 	private MonetaryUnit charging = null;
 	private String subscriberId = null;
+	private Map<String, Object> additionalInputs = null;
+	
+	public Charging(ChargingMode mode, MonetaryUnit charging, String subscriberId,Map<String, Object> additionalInputs) {
+		super(TaskType.CHARGING);
+		this.mode = mode;
+		this.charging = charging;
+		this.subscriberId = subscriberId;
+		this.additionalInputs = additionalInputs;
+	}
 	
 	public Charging(ChargingMode mode, MonetaryUnit charging, String subscriberId) {
 		super(TaskType.CHARGING);
@@ -17,8 +28,6 @@ public final class Charging extends TransactionTask {
 		this.subscriberId = subscriberId;
 	}
 	
-	
-
 	public MonetaryUnit getCharging() {
 		return charging;
 	}
@@ -52,6 +61,18 @@ public final class Charging extends TransactionTask {
 	@Override
 	public String toString() {
 		return "Charging [mode=" + mode + ", charging=" + charging + ", subscriberId=" + subscriberId + "]";
+	}
+
+
+
+	public Map<String, Object> getAdditionalInputs() {
+		return additionalInputs;
+	}
+
+
+
+	public void setAdditionalInputs(Map<String, Object> additionalInputs) {
+		this.additionalInputs = additionalInputs;
 	}
 
 	
