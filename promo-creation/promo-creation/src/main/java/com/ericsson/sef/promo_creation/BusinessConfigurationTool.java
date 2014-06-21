@@ -17,6 +17,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.Service;
 import com.ericsson.raso.sef.bes.prodcat.entities.State;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
+import com.ericsson.raso.sef.bes.prodcat.entities.smart.SmartSimplePricingPolicy;
 import com.ericsson.raso.sef.client.air.request.OfferSelection;
 import com.ericsson.raso.sef.client.air.request.PamInformation;
 import com.ericsson.raso.sef.client.air.request.ServiceOffering;
@@ -536,7 +537,9 @@ public class BusinessConfigurationTool {
 		templatedOffer.setRecurrent(false);
 		templatedOffer.setTrialPeriod(new InfiniteTime());
 		templatedOffer.setCommercial(true);
-		templatedOffer.setPrice(new Price("PHP", 100));
+		Price basePrice = new Price("PHP", 100);
+		basePrice.addRatingRule(new SmartSimplePricingPolicy("custInfoCharge"));
+		templatedOffer.setPrice(basePrice);
 
 		for (String handle: handles)
 			templatedOffer.addExternalHandle(handle);
@@ -549,7 +552,32 @@ public class BusinessConfigurationTool {
 		templatedOffer.addProduct(product);
 
 		return templatedOffer;
-	}
+	}	
+
+//	public Offer getSimpleOffer(String name, String description, List<String> handles, Resource resource) throws CatalogException {
+//		Offer templatedOffer = new Offer(name);
+//		templatedOffer.setDescription(description);
+//		templatedOffer.setAutoTermination(new NoTermination());
+//		templatedOffer.setRenewalPeriod(new InfiniteTime());
+//		templatedOffer.setOfferState(State.TESTING);
+//		templatedOffer.setOfferState(State.PUBLISHED);
+//		templatedOffer.setRecurrent(false);
+//		templatedOffer.setTrialPeriod(new InfiniteTime());
+//		templatedOffer.setCommercial(true);
+//		templatedOffer.setPrice(new Price("PHP", 100));
+//
+//		for (String handle: handles)
+//			templatedOffer.addExternalHandle(handle);
+//
+//		AtomicProduct product = new AtomicProduct(name);
+//		product.setQuota(new UnlimitedQuota());
+//		product.setResource(resource);
+//		product.setValidity(new InfiniteTime());
+//
+//		templatedOffer.addProduct(product);
+//
+//		return templatedOffer;
+//	}
 
 	public Resource createRefill(String name, String refillProfileId, Integer refillType, String transactionAmount, CurrencyCode transactionCurrency) throws CatalogException {
 
