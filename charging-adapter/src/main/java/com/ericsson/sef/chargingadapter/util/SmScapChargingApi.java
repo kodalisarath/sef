@@ -55,9 +55,10 @@ public class SmScapChargingApi implements ScapChargingApi {
 		builder.fqdn(config.getValue("scapClient",Constants.FQDN));
 		builder.tcpPort(Integer.valueOf(config.getValue("scapClient",Constants.OWNTCPPORT)));
 		//builder.ownIpAddress(SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE)));
-		String ownIpAddress =  SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE));
+		/*String ownIpAddress =  SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE));
 		log.debug("ownIPAddress: "+ownIpAddress);
-		if(ownIpAddress == null)ownIpAddress ="0.0.0.0";
+		if(ownIpAddress == null)ownIpAddress ="0.0.0.0";*/
+		String ownIpAddress = "0.0.0.0";
 		builder.ownIpAddress(ownIpAddress);
 		List<Member> routes = StaticRoutes();
 		for (Member staticRoute : routes) {
