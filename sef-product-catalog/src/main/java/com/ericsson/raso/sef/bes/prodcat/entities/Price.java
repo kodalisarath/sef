@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.prodcat.Constants;
-import com.ericsson.raso.sef.bes.prodcat.entities.smart.SmartSimplePricingPolicy;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.ruleengine.Rule;
 
