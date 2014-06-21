@@ -58,6 +58,7 @@ public class SmScapChargingApi implements ScapChargingApi {
 		String ownIpAddress =  SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE));
 		log.debug("ownIPAddress: "+ownIpAddress);
 		if(ownIpAddress == null)ownIpAddress ="0.0.0.0";
+		
 		//String ownIpAddress = "0.0.0.0";
 		builder.ownIpAddress(ownIpAddress);
 		List<Member> routes = StaticRoutes();
