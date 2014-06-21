@@ -46,7 +46,9 @@
 			org.springframework.aop,
 			org.springframework.aop.framework,
 			org.aopalliance.aop,
-			org.slf4j
+			org.slf4j,
+			javax.crypto,
+			javax.xml.namespace			
 		</osgi-import-packages>
 		<osgi-export-package>
 			com.ericsson.raso.sef.core,
@@ -62,6 +64,7 @@
 			com.ericsson.raso.sef.core.db.service,
 			com.ericsson.raso.sef.core.db.model,
 			com.ericsson.raso.sef.core.lb,
+			com.ericsson.raso.sef.diameter,
 			com.ericsson.raso.sef.core.db.service.internal,
 			META-INF.sef-core,
 			wsdl,

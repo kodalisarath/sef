@@ -1,0 +1,77 @@
+Transmission Control Protocol, Src Port: 32787 (32787), Dst Port: diameter (3868), Seq: 1, Ack: 1, Len: 472
+    Command Code: 272 Credit-Control
+    ApplicationId: 4
+d    AVP: Session-Id(263) l=26 f=-M- val=NGIN11015080067949
+d    AVP: Origin-Host(264) l=21 f=-M- val=10.128.133.15
+d    AVP: Origin-Realm(296) l=21 f=-M- val=smart1.com.ph
+d    AVP: Destination-Realm(283) l=20 f=-M- val=smart.com.ph
+d    AVP: Destination-Host(293) l=28 f=-M- val=maipd01.smart.com.ph
+d    AVP: Auth-Application-Id(258) l=12 f=-M- val=Diameter Credit Control (4)
+d    AVP: Service-Context-Id(461) l=23 f=-M- val=ccs_gex@nsn.com
+d    AVP: Event-Timestamp(55) l=12 f=-M- val=Mar 14, 2013 02:31:44.000000000 UTC
+d    AVP: Multiple-Services-Indicator(455) l=12 f=-M- val=MULTIPLE_SERVICES_SUPPORTED (1)
+d    AVP: CC-Request-Type(416) l=12 f=-M- val=INITIAL_REQUEST (1)
+d    AVP: Subscription-Id(443) l=40 f=-M-
+d        Subscription-Id: 000001c24000000c00000000000001bc4000001436333934...
+d            AVP: Subscription-Id-Type(450) l=12 f=-M- val=END_USER_E164 (0)
+d            AVP: Subscription-Id-Data(444) l=20 f=-M- val=639479584068
+d    AVP: Service-Information(873) l=156 f=VM- vnd=TGPP
+d        Service-Information: 00000066c000009000006f2a000000acc000000f00006f2a...
+d            AVP: NSN-PPI-Information(102) l=144 f=VM- vnd=Nokia Siemens Networks
+d                NSN-PPI-Information: 000000acc000000f00006f2a32353800000000aec0000014...
+d                   AVP: NSN-Access-Frontend-Id(172) l=15 f=VM- vnd=Nokia Siemens Networks val=258
+d                    AVP: NSN-Consumer-Account-Id(174) l=20 f=VM- vnd=Nokia Siemens Networks val=1
+d                    AVP: NSN-Merchant-Id(173) l=20 f=VM- vnd=Nokia Siemens Networks val=Recharge
+d                    AVP: NSN-Purpose(171) l=28 f=VM- vnd=Nokia Siemens Networks val=GENEV;predefined
+d                    AVP: NSN-Currency(175) l=15 f=VM- vnd=Nokia Siemens Networks val=GEN
+d                    AVP: NSN-Product-Id(170) l=14 f=VM- vnd=Nokia Siemens Networks val=U3
+d                    AVP: NSN-Method-Name(178) l=16 f=VM- vnd=Nokia Siemens Networks val=Authorize Amount (1)
+d    AVP: Multiple-Services-Credit-Control(456) l=48 f=-M-
+d        AVP Code: 456 Multiple-Services-Credit-Control
+d        Multiple-Services-Credit-Control: 000001b5400000280000019d40000020000001bd40000018...
+d            AVP: Requested-Service-Unit(437) l=40 f=-M-
+d                Requested-Service-Unit: 0000019d40000020000001bd40000018000001bf40000010...
+d                    AVP: CC-Money(413) l=32 f=-M-
+d                        CC-Money: 000001bd40000018000001bf400000100000000000000001
+d                            AVP: Unit-Value(445) l=24 f=-M-
+d                                    AVP: Value-Digits(447) l=16 f=-M- val=1
+d    AVP: CC-Request-Number(415) l=12 f=-M- val=0
+
+
+
+Answer Diameter Protocol
+    Command Code: 272 Credit-Control
+    ApplicationId: 4
+    AVP: Session-Id(263) l=26 f=-M- val=NGIN11015080067949
+    AVP: Origin-Realm(296) l=19 f=-M- val=siemens.com
+    AVP: Origin-Host(264) l=20 f=-M- val=10.109.23.27
+d    AVP: CC-Request-Type(416) l=12 f=-M- val=INITIAL_REQUEST (1)
+d    AVP: CC-Request-Number(415) l=12 f=-M- val=0
+d    AVP: Experimental-Result(297) l=32 f=-M-
+d        Experimental-Result: 0000010a4000000c00006f2a0000012a4000000c00000001
+            AVP: Vendor-Id(266) l=12 f=-M- val=28458
+d           AVP: Experimental-Result-Code(298) l=12 f=-M- val=Unknown (1)
+                AVP Code: 298 Experimental-Result-Code
+d    AVP: Service-Information(873) l=52 f=VM- vnd=TGPP
+        AVP Vendor Id: 3GPP (10415)
+d        Service-Information: 00000066c000002800006f2a000000b0c000000c00006f2a...
+d            AVP: NSN-PPI-Information(102) l=40 f=VM- vnd=Nokia Siemens Networks
+                AVP Vendor Id: Nokia Siemens Networks (28458)
+                NSN-PPI-Information: 000000b0c000000c00006f2a000000afc000000f00006f2a...
+                    AVP: NSN-Transparent-Data(176) l=12 f=VM- vnd=Nokia Siemens Networks
+                        [No data]
+                            [Expert Info (Warn/Undecoded): Data is empty]
+                                [Message: Data is empty]
+                                [Severity level: Warn]
+                                [Group: Undecoded]
+d                    AVP: NSN-Currency(175) l=15 f=VM- vnd=Nokia Siemens Networks val=Php
+    AVP: Multiple-Services-Credit-Control(456) l=48 f=-M-
+        Multiple-Services-Credit-Control: 000001af400000280000019d40000020000001bd40000018...
+            AVP: Granted-Service-Unit(431) l=40 f=-M-
+                Granted-Service-Unit: 0000019d40000020000001bd40000018000001bf40000010...
+                    AVP: CC-Money(413) l=32 f=-M-
+                            AVP: Unit-Value(445) l=24 f=-M-
+                                Unit-Value: 000001bf4000001000000000000005dc
+                                    AVP: Value-Digits(447) l=16 f=-M- val=1500
+    AVP: Result-Code(268) l=12 f=-M- val=DIAMETER_SUCCESS (2001)
+    AVP: Auth-Application-Id(258) l=12 f=-M- val=Diameter Credit Control (4)

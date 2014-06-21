@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/xsd/1"
+  xmlns:tns="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/xsd/1"
+  elementFormDefault="qualified" xml:lang="en">
+
+  <xsd:complexType name="Command">
+    <xsd:choice>
+      <xsd:element name="Operation" type="tns:Operation" />
+      <xsd:element name="Transaction" type="tns:Transaction" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="CommandResult">
+    <xsd:choice>
+      <xsd:element name="OperationResult" type="tns:OperationResult" />
+      <xsd:element name="TransactionResult" type="tns:TransactionResult" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="Transaction">
+    <xsd:choice maxOccurs="unbounded" minOccurs="0">
+      <xsd:element name="Assignment" type="tns:Assignment" />
+      <xsd:element name="Operation" type="tns:Operation" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="TransactionResult">
+    <xsd:sequence>
+      <xsd:element name="OperationResult" type="tns:OperationResult"
+        maxOccurs="unbounded" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Operation">
+    <xsd:sequence>
+      <xsd:element name="ParameterList" type="tns:ParameterList" minOccurs="0" />
+      <xsd:element name="OutputSpecification" type="tns:OutputSpecification"
+        minOccurs="0" />
+      <xsd:element name="WarningInfo" type="tns:WarningInfo" maxOccurs="unbounded"
+        minOccurs="0" />
+    </xsd:sequence>
+    <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="OperationResult">
+    <xsd:sequence>
+      <xsd:element name="Operation" type="tns:Operation" maxOccurs="unbounded"
+        minOccurs="0" />
+      <xsd:element name="WarningInfo" type="tns:WarningInfo" maxOccurs="unbounded"
+        minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ParameterList">
+    <xsd:choice maxOccurs="unbounded" minOccurs="0">
+      <xsd:element name="Parameter" type="tns:Parameter" />
+      <xsd:element name="BooleanParameter" type="tns:BooleanParameter" />
+      <xsd:element name="ByteParameter" type="tns:ByteParameter" />
+      <xsd:element name="ShortParameter" type="tns:ShortParameter" />
+      <xsd:element name="IntParameter" type="tns:IntParameter" />
+      <xsd:element name="LongParameter" type="tns:LongParameter" />
+      <xsd:element name="FloatParameter" type="tns:FloatParameter" />
+      <xsd:element name="DoubleParameter" type="tns:DoubleParameter" />
+      <xsd:element name="DateParameter" type="tns:DateParameter" />
+      <xsd:element name="DateTimeParameter" type="tns:DateTimeParameter" />
+      <xsd:element name="DurationParameter" type="tns:DurationParameter" />
+      <xsd:element name="StringParameter" type="tns:StringParameter" />
+      <xsd:element name="HexBinaryParameter" type="tns:HexBinaryParameter" />
+      <xsd:element name="Base64BinaryParameter" type="tns:Base64BinaryParameter" />
+      <xsd:element name="EnumerationValueParameter"
+        type="tns:EnumerationValueParameter" />
+      <xsd:element name="SymbolicParameter" type="tns:SymbolicParameter" />
+      <xsd:element name="VariableParameter" type="tns:VariableParameter" />
+      <xsd:element name="StructParameter" type="tns:StructParameter" />
+      <xsd:element name="ListParameter" type="tns:ListParameter" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="Assignment">
+    <xsd:choice>
+      <xsd:element name="Value" type="tns:Value" />
+      <xsd:element name="BooleanValue" type="xsd:boolean" />
+      <xsd:element name="ByteValue" type="tns:ByteValue" />
+      <xsd:element name="ShortValue" type="tns:ShortValue" />
+      <xsd:element name="IntValue" type="tns:IntValue" />
+      <xsd:element name="LongValue" type="tns:LongValue" />
+      <xsd:element name="FloatValue" type="tns:FloatValue" />
+      <xsd:element name="DoubleValue" type="tns:DoubleValue" />
+      <xsd:element name="DateValue" type="xsd:date" />
+      <xsd:element name="DateTimeValue" type="xsd:dateTime" />
+      <xsd:element name="DurationValue" type="xsd:duration" />
+      <xsd:element name="StringValue" type="xsd:string" />
+      <xsd:element name="HexBinaryValue" type="xsd:hexBinary" />
+      <xsd:element name="Base64BinaryValue" type="xsd:base64Binary" />
+      <xsd:element name="EnumerationValueValue" type="xsd:string" />
+      <xsd:element name="SymbolicValue" type="xsd:string" />
+      <xsd:element name="Operation" type="tns:Operation" />
+    </xsd:choice>
+    <xsd:attribute name="variableName" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    + Definitions for the Output Specification
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+  -->
+  <xsd:complexType name="OutputSpecification">
+    <xsd:choice maxOccurs="unbounded" minOccurs="0">
+      <xsd:element name="SimpleParam" type="tns:OutSimpleParamId" />
+      <xsd:element name="StructParam" type="tns:OutStructParamId" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="OutSimpleParamId">
+    <xsd:sequence></xsd:sequence>
+    <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="index" type="tns:Index" use="optional" />
+    <xsd:attribute name="formatString" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="OutStructParamId">
+    <xsd:choice maxOccurs="unbounded" minOccurs="0">
+      <xsd:element name="SimpleParam" type="tns:OutSimpleParamId" />
+      <xsd:element name="StructParam" type="tns:OutStructParamId" />
+    </xsd:choice>
+    <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="index" type="tns:Index" use="optional" />
+    <xsd:attribute name="formatString" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <!-- 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    + Definitions for Struct  
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+  <xsd:complexType name="StructParameter">
+    <xsd:choice maxOccurs="unbounded" minOccurs="0">
+      <xsd:element name="Parameter" type="tns:Parameter" />
+      <xsd:element name="BooleanParameter" type="tns:BooleanParameter" />
+      <xsd:element name="ByteParameter" type="tns:ByteParameter" />
+      <xsd:element name="ShortParameter" type="tns:ShortParameter" />
+      <xsd:element name="IntParameter" type="tns:IntParameter" />
+      <xsd:element name="LongParameter" type="tns:LongParameter" />
+      <xsd:element name="FloatParameter" type="tns:FloatParameter" />
+      <xsd:element name="DoubleParameter" type="tns:DoubleParameter" />
+      <xsd:element name="DateParameter" type="tns:DateParameter" />
+      <xsd:element name="DateTimeParameter" type="tns:DateTimeParameter" />
+      <xsd:element name="DurationParameter" type="tns:DurationParameter" />
+      <xsd:element name="StringParameter" type="tns:StringParameter" />
+      <xsd:element name="HexBinaryParameter" type="tns:HexBinaryParameter" />
+      <xsd:element name="Base64BinaryParameter" type="tns:Base64BinaryParameter" />
+      <xsd:element name="EnumerationValueParameter"
+        type="tns:EnumerationValueParameter" />
+      <xsd:element name="SymbolicParameter" type="tns:SymbolicParameter" />
+      <xsd:element name="VariableParameter" type="tns:VariableParameter" />
+      <xsd:element name="StructParameter" type="tns:StructParameter" />
+      <xsd:element name="ListParameter" type="tns:ListParameter" />
+    </xsd:choice>
+    <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="index" type="tns:Index" use="optional" />
+    <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+    <xsd:attribute name="notification" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <!-- 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    + Definitions for List
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+  -->
+  <xsd:complexType name="ListParameter">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+        Is used as top-level parameter or if a list is part of a structure.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice maxOccurs="unbounded" minOccurs="0">
+      <xsd:element name="Element" type="tns:Element" />
+      <xsd:element name="BooleanElement" type="tns:BooleanElement" />
+      <xsd:element name="ByteElement" type="tns:ByteElement" />
+      <xsd:element name="ShortElement" type="tns:ShortElement" />
+      <xsd:element name="IntElement" type="tns:IntElement" />
+      <xsd:element name="LongElement" type="tns:LongElement" />
+      <xsd:element name="FloatElement" type="tns:FloatElement" />
+      <xsd:element name="DoubleElement" type="tns:DoubleElement" />
+      <xsd:element name="DateElement" type="tns:DateElement" />
+      <xsd:element name="DateTimeElement" type="tns:DateTimeElement" />
+      <xsd:element name="DurationElement" type="tns:DurationElement" />
+      <xsd:element name="StringElement" type="tns:StringElement" />
+      <xsd:element name="HexBinaryElement" type="tns:HexBinaryElement" />
+      <xsd:element name="Base64BinaryElement" type="tns:Base64BinaryElement" />
+      <xsd:element name="EnumerationValueElement" type="tns:EnumerationValueElement" />
+      <xsd:element name="SymbolicElement" type="tns:SymbolicElement" />
+      <xsd:element name="VariableElement" type="tns:VariableElement" />
+      <xsd:element name="StructElement" type="tns:StructElement" />
+      <xsd:element name="ListElement" type="tns:ListElement" />
+    </xsd:choice>
+    <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="index" type="tns:Index" use="optional" />
+    <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+    <xsd:attribute name="notification" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="ListElement">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+        Is used for list which is part of a list.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice maxOccurs="unbounded" minOccurs="0">
+      <xsd:element name="Element" type="tns:Element" />
+      <xsd:element name="BooleanElement" type="tns:BooleanElement" />
+      <xsd:element name="ByteElement" type="tns:ByteElement" />
+      <xsd:element name="ShortElement" type="tns:ShortElement" />
+      <xsd:element name="IntElement" type="tns:IntElement" />
+      <xsd:element name="LongElement" type="tns:LongElement" />
+      <xsd:element name="FloatElement" type="tns:FloatElement" />
+      <xsd:element name="DoubleElement" type="tns:DoubleElement" />
+      <xsd:element name="DateElement" type="tns:DateElement" />
+      <xsd:element name="DateTimeElement" type="tns:DateTimeElement" />
+      <xsd:element name="DurationElement" type="tns:DurationElement" />
+      <xsd:element name="StringElement" type="tns:StringElement" />
+      <xsd:element name="HexBinaryElement" type="tns:HexBinaryElement" />
+      <xsd:element name="Base64BinaryElement" type="tns:Base64BinaryElement" />
+      <xsd:element name="EnumerationValueElement" type="tns:EnumerationValueElement" />
+      <xsd:element name="SymbolicElement" type="tns:SymbolicElement" />
+      <xsd:element name="VariableElement" type="tns:VariableElement" />
+      <xsd:element name="StructElement" type="tns:StructElement" />
+      <xsd:element name="ListElement" type="tns:ListElement" />
+    </xsd:choice>
+    <xsd:attribute name="index" type="tns:Index" use="optional" />
+    <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+    <xsd:attribute name="notification" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="StructElement">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+        Is used for structure which is part of a list.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice maxOccurs="unbounded" minOccurs="0">
+      <xsd:element name="Parameter" type="tns:Parameter" />
+      <xsd:element name="BooleanParameter" type="tns:BooleanParameter" />
+      <xsd:element name="ByteParameter" type="tns:ByteParameter" />
+      <xsd:element name="ShortParameter" type="tns:ShortParameter" />
+      <xsd:element name="IntParameter" type="tns:IntParameter" />
+      <xsd:element name="LongParameter" type="tns:LongParameter" />
+      <xsd:element name="FloatParameter" type="tns:FloatParameter" />
+      <xsd:element name="DoubleParameter" type="tns:DoubleParameter" />
+      <xsd:element name="DateParameter" type="tns:DateParameter" />
+      <xsd:element name="DateTimeParameter" type="tns:DateTimeParameter" />
+      <xsd:element name="DurationParameter" type="tns:DurationParameter" />
+      <xsd:element name="StringParameter" type="tns:StringParameter" />
+      <xsd:element name="HexBinaryParameter" type="tns:HexBinaryParameter" />
+      <xsd:element name="Base64BinaryParameter" type="tns:Base64BinaryParameter" />
+      <xsd:element name="EnumerationValueParameter"
+        type="tns:EnumerationValueParameter" />
+      <xsd:element name="SymbolicParameter" type="tns:SymbolicParameter" />
+      <xsd:element name="VariableParameter" type="tns:VariableParameter" />
+      <xsd:element name="StructParameter" type="tns:StructParameter" />
+      <xsd:element name="ListParameter" type="tns:ListParameter" />
+    </xsd:choice>
+    <xsd:attribute name="index" type="tns:Index" use="optional" />
+    <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+    <xsd:attribute name="notification" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <!-- 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    + Definitions for Simple without a typed value
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <!-- 
+    ***************************************************************************
+    * Untyped simple parameters are to be used when they do not contain a typed
+    * value
+    *          
+    * Possible Use Cases are:
+    *  - NULL value:                
+    *      <Parameter ... null="true" />
+    *  - Parameter without a value: 
+    *      <Parameter ... null="false" />
+    *  - Symbolic value (e.g. MAX_INT for an integer value):  
+    *      <SymbolicParameter ...>MAX_INT</SymbolicParameter>
+    * 
+    * Inside a ListParameter these are:
+    *  - NULL value:
+    *      <ListParameter ...>
+    *         <Element ... null="true"/>
+    *      </ListParameter>
+    *  - Parameter without a value:
+    *      <ListParameter ...>
+    *         <Element ... null="false"/>
+    *      </ListParameter>
+    *  - Symbolic value (e.g. MAX_INT for an integer value):
+    *      <ListParameter ...>
+    *         <SymbolicElement ...>MAX_INT</SymbolicElement>
+    *      </ListParameter>
+    ***************************************************************************
+  -->
+
+  <xsd:complexType name="Parameter">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+        Parameter without a value. To be used for NULL values and for parameters having
+        no value (e.g. if only a modifier is given in case of optional parameters).
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="index" type="tns:Index" use="optional" />
+    <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+    <xsd:attribute name="null" type="xsd:boolean" use="required" />
+    <xsd:attribute name="notification" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="Element">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+        List element without a value. To be used for NULL values. As list elements are
+        never optional and do not have modifiers, NULL values are the only use case for
+        this element (thus "null" has fixed value "true" in this element).
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="index" type="tns:Index" use="optional" />
+    <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+    <xsd:attribute name="null" type="xsd:boolean" fixed="true" use="required" />
+    <xsd:attribute name="notification" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="Value">
+    <xsd:attribute name="null" type="xsd:boolean" use="required" />
+  </xsd:complexType>
+
+  <xsd:complexType name="SymbolicParameter">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+        Parameter of any type containing a symbolic value. To be used if a symbolic
+        value shall be given instead of a typed value.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="SymbolicElement">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="en">
+        List element of any type containing a symbolic value. To be used if a symbolic
+        value shall be given instead of a typed value.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    + Definitions for Typed Simple
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <!-- 
+    ***************************************************************************
+    * Typed simple parameters are to be used when they contain a typed value
+    *          
+    *  - In case of a NULL value please use:
+    *        <Parameter ... null="true" />
+    *  - In case of a parameter without a value please use:
+    *        <Parameter ... null="false" />
+    *  - In case of passing a symbolic value (e.g. MAX_INT for an integer 
+    *    value) please use:
+    *        <SymbolicParameter ...>MAX_INT</SymbolicParameter> 
+    *    or
+    *        <SymbolicElement ...>MAX_INT</SymbolicElement> 
+    *    if inside a list  
+    *  - There is no TIME specific XML tag <LongParameter> or <LongElement> has
+    *    to be used instead.
+    ***************************************************************************
+  -->
+
+  <xsd:complexType name="BooleanParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:boolean">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="BooleanElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:boolean">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="ByteValue">
+    <xsd:restriction base="xsd:long">
+      <xsd:minInclusive value="-128" />
+      <xsd:maxInclusive value="127" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="ByteParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:ByteValue">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ByteElement">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:ByteValue">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="ShortValue">
+    <xsd:restriction base="xsd:long">
+      <xsd:minInclusive value="-32768" />
+      <xsd:maxInclusive value="32767" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="ShortParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:ShortValue">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ShortElement">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:ShortValue">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="IntValue">
+    <xsd:restriction base="xsd:long">
+      <xsd:minInclusive value="-2147483648" />
+      <xsd:maxInclusive value="2147483647" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="IntParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:IntValue">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IntElement">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:IntValue">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="LongValue">
+    <xsd:restriction base="xsd:long"></xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="LongParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:LongValue">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="LongElement">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:LongValue">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="FloatValue">
+    <xsd:restriction base="xsd:float">
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="FloatParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:FloatValue">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="FloatElement">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:FloatValue">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="DoubleValue">
+    <xsd:restriction base="xsd:double">
+      <xsd:minInclusive value="-9.9999E+125" />
+      <xsd:maxInclusive value="9.9999E+125" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="DoubleParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:DoubleValue">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DoubleElement">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:DoubleValue">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DateParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:date">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DateElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:date">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DateTimeParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:dateTime">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DateTimeElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:dateTime">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DurationParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:duration">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DurationElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:duration">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="StringParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="StringElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="HexBinaryParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:hexBinary">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="HexBinaryElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:hexBinary">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="Base64BinaryParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="Base64BinaryElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="EnumerationValueParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="EnumerationValueElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="VariableParameter">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="VariableElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="index" type="tns:Index" use="optional" />
+        <xsd:attribute name="modifier" type="xsd:string" use="optional" />
+        <xsd:attribute name="notification" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="Index">
+    <xsd:restriction base="xsd:long">
+      <xsd:minInclusive value="0" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    + Definitions for WSDL messages
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+  <xsd:element name="FaultMessage">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="ErrorInfo" type="tns:ErrorInfo" maxOccurs="unbounded"
+          minOccurs="0" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="ErrorInfo">
+    <xsd:sequence>
+      <xsd:element name="Component" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Code" type="xsd:string" />
+      <xsd:element name="Line" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Text" type="xsd:string" />
+      <xsd:element name="Parameter" type="xsd:string" maxOccurs="unbounded"
+        minOccurs="0" />
+      <xsd:element name="Repair" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Detail" type="xsd:string" minOccurs="0" />
+      <xsd:element name="ErrorInfo" type="tns:ErrorInfo" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="WarningInfo">
+    <xsd:sequence>
+      <xsd:element name="Component" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Code" type="xsd:string" />
+      <xsd:element name="Line" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Text" type="xsd:string" />
+      <xsd:element name="Parameter" type="xsd:string" maxOccurs="unbounded"
+        minOccurs="0" />
+      <xsd:element name="Repair" type="xsd:string" minOccurs="0" />
+      <xsd:element name="Detail" type="xsd:string" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Environment">
+    <xsd:sequence>
+      <xsd:element name="Parameter" type="tns:NameValuePair" maxOccurs="unbounded"
+        minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="NameValuePair">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="value" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <xsd:element name="CommandRequestData">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Environment" type="tns:Environment" minOccurs="0" />
+        <xsd:element name="Command" type="tns:Command" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="CommandResponseData">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="CommandResult" type="tns:CommandResult" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>

@@ -1,0 +1,282 @@
+Frame 2124: 272 bytes on wire (2176 bits), 272 bytes captured (2176 bits)
+    Arrival Time: Mar 14, 2013 10:35:09.003168000 PHT
+    [Time shift for this packet: 0.000000000 seconds]
+    Epoch Time: 1363228509.003168000 seconds
+    [Time delta from previous captured frame: 0.000003000 seconds]
+    [Time delta from previous displayed frame: 0.000003000 seconds]
+    [Time since reference or first frame: 0.426998000 seconds]
+    Frame Number: 2124
+    Frame Length: 272 bytes (2176 bits)
+    Capture Length: 272 bytes (2176 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: sll:ip:tcp:diameter:diameter]
+    [Coloring Rule Name: Bad TCP]
+    [Coloring Rule String: tcp.analysis.flags && !tcp.analysis.window_update]
+Linux cooked capture
+    Packet type: Sent by us (4)
+    Link-layer address type: 1
+    Link-layer address length: 6
+    Source: Hewlett-_6b:ab:84 (d4:85:64:6b:ab:84)
+    Protocol: IP (0x0800)
+Internet Protocol Version 4, Src: 10.109.8.6 (10.109.8.6), Dst: 10.128.133.15 (10.128.133.15)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x10 (DSCP 0x04: Unknown DSCP; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))
+        0001 00.. = Differentiated Services Codepoint: Unknown (0x04)
+        .... ..00 = Explicit Congestion Notification: Not-ECT (Not ECN-Capable Transport) (0x00)
+    Total Length: 256
+    Identification: 0x1aa2 (6818)
+    Flags: 0x02 (Don't Fragment)
+        0... .... = Reserved bit: Not set
+        .1.. .... = Don't fragment: Set
+        ..0. .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (6)
+    Header checksum: 0x7d44 [correct]
+        [Good: True]
+        [Bad: False]
+    Source: 10.109.8.6 (10.109.8.6)
+    Destination: 10.128.133.15 (10.128.133.15)
+    [Source GeoIP: Unknown]
+    [Destination GeoIP: Unknown]
+Transmission Control Protocol, Src Port: diameter (3868), Dst Port: 32787 (32787), Seq: 269, Ack: 865, Len: 204
+    Source port: diameter (3868)
+    Destination port: 32787 (32787)
+    [Stream index: 117]
+    Sequence number: 269    (relative sequence number)
+    [Next sequence number: 473    (relative sequence number)]
+    Acknowledgement number: 865    (relative ack number)
+    Header length: 32 bytes
+    Flags: 0x018 (PSH, ACK)
+        000. .... .... = Reserved: Not set
+        ...0 .... .... = Nonce: Not set
+        .... 0... .... = Congestion Window Reduced (CWR): Not set
+        .... .0.. .... = ECN-Echo: Not set
+        .... ..0. .... = Urgent: Not set
+        .... ...1 .... = Acknowledgement: Set
+        .... .... 1... = Push: Set
+        .... .... .0.. = Reset: Not set
+        .... .... ..0. = Syn: Not set
+        .... .... ...0 = Fin: Not set
+    Window size value: 709
+    [Calculated window size: 709]
+    [Window size scaling factor: -1 (unknown)]
+    Checksum: 0xa2f4 [validation disabled]
+        [Good Checksum: False]
+        [Bad Checksum: False]
+    Options: (12 bytes)
+        No-Operation (NOP)
+        No-Operation (NOP)
+        Timestamps: TSval 1936658702, TSecr 3094754119
+            Kind: Timestamp (8)
+            Length: 10
+            Timestamp value: 1936658702
+            Timestamp echo reply: 3094754119
+    [SEQ/ACK analysis]
+        [Bytes in flight: 204]
+        [TCP Analysis Flags]
+            [This frame is a (suspected) retransmission]
+                [Expert Info (Note/Sequence): Retransmission (suspected)]
+                    [Message: Retransmission (suspected)]
+                    [Severity level: Note]
+                    [Group: Sequence]
+            [The RTO for this segment was: 0.000003000 seconds]
+            [RTO based on delta from frame: 2123]
+    [PDU Size: 204]
+Diameter Protocol
+    Version: 0x01
+    Length: 204
+    Flags: 0x00
+        0... .... = Request: Not set
+        .0.. .... = Proxyable: Not set
+        ..0. .... = Error: Not set
+        ...0 .... = T(Potentially re-transmitted message): Not set
+        .... 0... = Reserved: Not set
+        .... .0.. = Reserved: Not set
+        .... ..0. = Reserved: Not set
+        .... ...0 = Reserved: Not set
+    Command Code: 272 Credit-Control
+    ApplicationId: 4
+    Hop-by-Hop Identifier: 0x0683d08b
+    End-to-End Identifier: 0x1095628c
+    [Request In: 2062]
+    [Response Time: 0.028011000 seconds]
+    AVP: Session-Id(263) l=26 f=-M- val=NGIN11015080067949
+        AVP Code: 263 Session-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 26
+        Session-Id: NGIN11015080067949
+    AVP: Origin-Realm(296) l=19 f=-M- val=siemens.com
+        AVP Code: 296 Origin-Realm
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 19
+        Origin-Realm: siemens.com
+    AVP: Origin-Host(264) l=20 f=-M- val=10.109.23.27
+        AVP Code: 264 Origin-Host
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 20
+        Origin-Host: 10.109.23.27
+    AVP: CC-Request-Type(416) l=12 f=-M- val=TERMINATION_REQUEST (3)
+        AVP Code: 416 CC-Request-Type
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        CC-Request-Type: TERMINATION_REQUEST (3)
+    AVP: CC-Request-Number(415) l=12 f=-M- val=1
+        AVP Code: 415 CC-Request-Number
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        CC-Request-Number: 1
+    AVP: Experimental-Result(297) l=32 f=-M-
+        AVP Code: 297 Experimental-Result
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 32
+        Experimental-Result: 0000010a4000000c00006f2a0000012a4000000c00000001
+            AVP: Vendor-Id(266) l=12 f=-M- val=28458
+                AVP Code: 266 Vendor-Id
+                AVP Flags: 0x40
+                    0... .... = Vendor-Specific: Not set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 12
+                Vendor-Id: 28458
+                VendorId: Nokia Siemens Networks (28458)
+            AVP: Experimental-Result-Code(298) l=12 f=-M- val=Unknown (1)
+                AVP Code: 298 Experimental-Result-Code
+                AVP Flags: 0x40
+                    0... .... = Vendor-Specific: Not set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 12
+                Experimental-Result-Code: Unknown (1)
+    AVP: Service-Information(873) l=36 f=VM- vnd=TGPP
+        AVP Code: 873 Service-Information
+        AVP Flags: 0xc0
+            1... .... = Vendor-Specific: Set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 36
+        AVP Vendor Id: 3GPP (10415)
+        Service-Information: 00000066c000001800006f2a000000b0c000000c00006f2a
+            AVP: NSN-PPI-Information(102) l=24 f=VM- vnd=Nokia Siemens Networks
+                AVP Code: 102 NSN-PPI-Information
+                AVP Flags: 0xc0
+                    1... .... = Vendor-Specific: Set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 24
+                AVP Vendor Id: Nokia Siemens Networks (28458)
+                NSN-PPI-Information: 000000b0c000000c00006f2a
+                    AVP: NSN-Transparent-Data(176) l=12 f=VM- vnd=Nokia Siemens Networks
+                        AVP Code: 176 NSN-Transparent-Data
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 12
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        [No data]
+                            [Expert Info (Warn/Undecoded): Data is empty]
+                                [Message: Data is empty]
+                                [Severity level: Warn]
+                                [Group: Undecoded]
+    AVP: Result-Code(268) l=12 f=-M- val=DIAMETER_SUCCESS (2001)
+        AVP Code: 268 Result-Code
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Result-Code: DIAMETER_SUCCESS (2001)
+    AVP: Auth-Application-Id(258) l=12 f=-M- val=Diameter Credit Control (4)
+        AVP Code: 258 Auth-Application-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Auth-Application-Id: Diameter Credit Control (4)

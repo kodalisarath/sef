@@ -1,0 +1,1248 @@
+No.     Time        Source                Destination           Protocol Length Info
+     26 0.003346    10.121.56.177         10.109.8.6            DIAMETER 484    cmd=Credit-ControlRequest(272) flags=RP-- appl=Diameter Credit Control Application(4) h2h=515bf8c0 e2e=403d34ae
+
+Frame 26: 484 bytes on wire (3872 bits), 484 bytes captured (3872 bits)
+    Arrival Time: Mar 14, 2013 10:35:08.579516000 PHT
+    [Time shift for this packet: 0.000000000 seconds]
+    Epoch Time: 1363228508.579516000 seconds
+    [Time delta from previous captured frame: 0.000212000 seconds]
+    [Time delta from previous displayed frame: 0.000000000 seconds]
+    [Time since reference or first frame: 0.003346000 seconds]
+    Frame Number: 26
+    Frame Length: 484 bytes (3872 bits)
+    Capture Length: 484 bytes (3872 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: sll:ip:tcp:diameter]
+    [Coloring Rule Name: TCP]
+    [Coloring Rule String: tcp]
+Linux cooked capture
+    Packet type: Unicast to us (0)
+    Link-layer address type: 1
+    Link-layer address length: 6
+    Source: F5Networ_d3:ba:84 (00:01:d7:d3:ba:84)
+    Protocol: IP (0x0800)
+Internet Protocol Version 4, Src: 10.121.56.177 (10.121.56.177), Dst: 10.109.8.6 (10.109.8.6)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..00 = Explicit Congestion Notification: Not-ECT (Not ECN-Capable Transport) (0x00)
+    Total Length: 468
+    Identification: 0x6603 (26115)
+    Flags: 0x02 (Don't Fragment)
+        0... .... = Reserved bit: Not set
+        .1.. .... = Don't fragment: Set
+        ..0. .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 59
+    Protocol: TCP (6)
+    Header checksum: 0x8284 [correct]
+        [Good: True]
+        [Bad: False]
+    Source: 10.121.56.177 (10.121.56.177)
+    Destination: 10.109.8.6 (10.109.8.6)
+    [Source GeoIP: Unknown]
+    [Destination GeoIP: Unknown]
+Transmission Control Protocol, Src Port: 35657 (35657), Dst Port: diameter (3868), Seq: 1, Ack: 1, Len: 416
+    Source port: 35657 (35657)
+    Destination port: diameter (3868)
+    [Stream index: 12]
+    Sequence number: 1    (relative sequence number)
+    [Next sequence number: 417    (relative sequence number)]
+    Acknowledgement number: 1    (relative ack number)
+    Header length: 32 bytes
+    Flags: 0x018 (PSH, ACK)
+        000. .... .... = Reserved: Not set
+        ...0 .... .... = Nonce: Not set
+        .... 0... .... = Congestion Window Reduced (CWR): Not set
+        .... .0.. .... = ECN-Echo: Not set
+        .... ..0. .... = Urgent: Not set
+        .... ...1 .... = Acknowledgement: Set
+        .... .... 1... = Push: Set
+        .... .... .0.. = Reset: Not set
+        .... .... ..0. = Syn: Not set
+        .... .... ...0 = Fin: Not set
+    Window size value: 4140
+    [Calculated window size: 4140]
+    [Window size scaling factor: -1 (unknown)]
+    Checksum: 0x946b [validation disabled]
+        [Good Checksum: False]
+        [Bad Checksum: False]
+    Options: (12 bytes)
+        No-Operation (NOP)
+        No-Operation (NOP)
+        Timestamps: TSval 2502242829, TSecr 1936658137
+            Kind: Timestamp (8)
+            Length: 10
+            Timestamp value: 2502242829
+            Timestamp echo reply: 1936658137
+    [SEQ/ACK analysis]
+        [Bytes in flight: 416]
+    [PDU Size: 416]
+Diameter Protocol
+    Version: 0x01
+    Length: 416
+    Flags: 0xc0
+        1... .... = Request: Set
+        .1.. .... = Proxyable: Set
+        ..0. .... = Error: Not set
+        ...0 .... = T(Potentially re-transmitted message): Not set
+        .... 0... = Reserved: Not set
+        .... .0.. = Reserved: Not set
+        .... ..0. = Reserved: Not set
+        .... ...0 = Reserved: Not set
+    Command Code: 272 Credit-Control
+    ApplicationId: 4
+    Hop-by-Hop Identifier: 0x515bf8c0
+    End-to-End Identifier: 0x403d34ae
+    [Answer In: 88]
+    AVP: Session-Id(263) l=26 f=-M- val=E13031410350857981
+        AVP Code: 263 Session-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 26
+        Session-Id: E13031410350857981
+    AVP: Origin-Host(264) l=20 f=-M- val=10.131.5.167
+        AVP Code: 264 Origin-Host
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 20
+        Origin-Host: 10.131.5.167
+    AVP: Origin-Realm(296) l=20 f=-M- val=smart.com.ph
+        AVP Code: 296 Origin-Realm
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 20
+        Origin-Realm: smart.com.ph
+    AVP: Auth-Application-Id(258) l=12 f=-M- val=Diameter Credit Control (4)
+        AVP Code: 258 Auth-Application-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Auth-Application-Id: Diameter Credit Control (4)
+    AVP: Service-Context-Id(461) l=23 f=-M- val=ccs_gex@nsn.com
+        AVP Code: 461 Service-Context-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 23
+        Service-Context-Id: ccs_gex@nsn.com
+    AVP: Destination-Realm(283) l=19 f=-M- val=siemens.com
+        AVP Code: 283 Destination-Realm
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 19
+        Destination-Realm: siemens.com
+    AVP: CC-Request-Type(416) l=12 f=-M- val=EVENT_REQUEST (4)
+        AVP Code: 416 CC-Request-Type
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        CC-Request-Type: EVENT_REQUEST (4)
+    AVP: CC-Request-Number(415) l=12 f=-M- val=0
+        AVP Code: 415 CC-Request-Number
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        CC-Request-Number: 0
+    AVP: Event-Timestamp(55) l=12 f=-M- val=Mar 14, 2013 02:35:08.000000000 UTC
+        AVP Code: 55 Event-Timestamp
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Event-Timestamp: Mar 14, 2013 02:35:08.000000000 UTC
+    AVP: Subscription-Id(443) l=40 f=-M-
+        AVP Code: 443 Subscription-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 40
+        Subscription-Id: 000001c24000000c00000000000001bc4000001436333931...
+            AVP: Subscription-Id-Type(450) l=12 f=-M- val=END_USER_E164 (0)
+                AVP Code: 450 Subscription-Id-Type
+                AVP Flags: 0x40
+                    0... .... = Vendor-Specific: Not set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 12
+                Subscription-Id-Type: END_USER_E164 (0)
+            AVP: Subscription-Id-Data(444) l=20 f=-M- val=639182886594
+                AVP Code: 444 Subscription-Id-Data
+                AVP Flags: 0x40
+                    0... .... = Vendor-Specific: Not set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 20
+                Subscription-Id-Data: 639182886594
+    AVP: Requested-Action(436) l=12 f=-M- val=CHECK_BALANCE (2)
+        AVP Code: 436 Requested-Action
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Requested-Action: CHECK_BALANCE (2)
+    AVP: Service-Information(873) l=184 f=VM- vnd=TGPP
+        AVP Code: 873 Service-Information
+        AVP Flags: 0xc0
+            1... .... = Vendor-Specific: Set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 184
+        AVP Vendor Id: 3GPP (10415)
+        Service-Information: 00000066c00000ac00006f2a000000aac000001100006f2a...
+            AVP: NSN-PPI-Information(102) l=172 f=VM- vnd=Nokia Siemens Networks
+                AVP Code: 102 NSN-PPI-Information
+                AVP Flags: 0xc0
+                    1... .... = Vendor-Specific: Set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 172
+                AVP Vendor Id: Nokia Siemens Networks (28458)
+                NSN-PPI-Information: 000000aac000001100006f2a4255444459000000000000ab...
+                    AVP: NSN-Product-Id(170) l=17 f=VM- vnd=Nokia Siemens Networks val=BUDDY
+                        AVP Code: 170 NSN-Product-Id
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 17
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Product-Id: BUDDY
+                    AVP: NSN-Purpose(171) l=22 f=VM- vnd=Nokia Siemens Networks val=predefined
+                        AVP Code: 171 NSN-Purpose
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 22
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Purpose: predefined
+                    AVP: NSN-Access-Frontend-Id(172) l=42 f=VM- vnd=Nokia Siemens Networks val=3572217308|EIRA-CRBT|VAS|AO|||
+                        AVP Code: 172 NSN-Access-Frontend-Id
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 42
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Access-Frontend-Id: 3572217308|EIRA-CRBT|VAS|AO|||
+                    AVP: NSN-Merchant-Id(173) l=18 f=VM- vnd=Nokia Siemens Networks val=SmsVas
+                        AVP Code: 173 NSN-Merchant-Id
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 18
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Merchant-Id: SmsVas
+                    AVP: NSN-Consumer-Account-Id(174) l=20 f=VM- vnd=Nokia Siemens Networks val=1
+                        AVP Code: 174 NSN-Consumer-Account-Id
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 20
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Consumer-Account-Id: 1
+                    AVP: NSN-Currency(175) l=15 f=VM- vnd=Nokia Siemens Networks val=GEN
+                        AVP Code: 175 NSN-Currency
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 15
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Currency: GEN
+                    AVP: NSN-Method-Name(178) l=16 f=VM- vnd=Nokia Siemens Networks val=Get Consumer Account List (6)
+                        AVP Code: 178 NSN-Method-Name
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 16
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Method-Name: Get Consumer Account List (6)
+
+No.     Time        Source                Destination           Protocol Length Info
+     87 0.015329    10.109.8.6            10.121.56.177         DIAMETER 452    cmd=Credit-ControlAnswer(272) flags=-P-- appl=Diameter Credit Control Application(4) h2h=515bf8c0 e2e=403d34ae
+
+Frame 87: 452 bytes on wire (3616 bits), 452 bytes captured (3616 bits)
+    Arrival Time: Mar 14, 2013 10:35:08.591499000 PHT
+    [Time shift for this packet: 0.000000000 seconds]
+    Epoch Time: 1363228508.591499000 seconds
+    [Time delta from previous captured frame: 0.000097000 seconds]
+    [Time delta from previous displayed frame: 0.011983000 seconds]
+    [Time since reference or first frame: 0.015329000 seconds]
+    Frame Number: 87
+    Frame Length: 452 bytes (3616 bits)
+    Capture Length: 452 bytes (3616 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: sll:ip:tcp:diameter:diameter]
+    [Coloring Rule Name: TCP]
+    [Coloring Rule String: tcp]
+Linux cooked capture
+    Packet type: Sent by us (4)
+    Link-layer address type: 1
+    Link-layer address length: 6
+    Source: Hewlett-_6b:ab:84 (d4:85:64:6b:ab:84)
+    Protocol: IP (0x0800)
+Internet Protocol Version 4, Src: 10.109.8.6 (10.109.8.6), Dst: 10.121.56.177 (10.121.56.177)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x10 (DSCP 0x04: Unknown DSCP; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))
+        0001 00.. = Differentiated Services Codepoint: Unknown (0x04)
+        .... ..00 = Explicit Congestion Notification: Not-ECT (Not ECN-Capable Transport) (0x00)
+    Total Length: 436
+    Identification: 0xafa5 (44965)
+    Flags: 0x02 (Don't Fragment)
+        0... .... = Reserved bit: Not set
+        .1.. .... = Don't fragment: Set
+        ..0. .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (6)
+    Header checksum: 0x33f2 [correct]
+        [Good: True]
+        [Bad: False]
+    Source: 10.109.8.6 (10.109.8.6)
+    Destination: 10.121.56.177 (10.121.56.177)
+    [Source GeoIP: Unknown]
+    [Destination GeoIP: Unknown]
+Transmission Control Protocol, Src Port: diameter (3868), Dst Port: 35657 (35657), Seq: 1, Ack: 417, Len: 384
+    Source port: diameter (3868)
+    Destination port: 35657 (35657)
+    [Stream index: 12]
+    Sequence number: 1    (relative sequence number)
+    [Next sequence number: 385    (relative sequence number)]
+    Acknowledgement number: 417    (relative ack number)
+    Header length: 32 bytes
+    Flags: 0x018 (PSH, ACK)
+        000. .... .... = Reserved: Not set
+        ...0 .... .... = Nonce: Not set
+        .... 0... .... = Congestion Window Reduced (CWR): Not set
+        .... .0.. .... = ECN-Echo: Not set
+        .... ..0. .... = Urgent: Not set
+        .... ...1 .... = Acknowledgement: Set
+        .... .... 1... = Push: Set
+        .... .... .0.. = Reset: Not set
+        .... .... ..0. = Syn: Not set
+        .... .... ...0 = Fin: Not set
+    Window size value: 709
+    [Calculated window size: 709]
+    [Window size scaling factor: -1 (unknown)]
+    Checksum: 0x5743 [validation disabled]
+        [Good Checksum: False]
+        [Bad Checksum: False]
+    Options: (12 bytes)
+        No-Operation (NOP)
+        No-Operation (NOP)
+        Timestamps: TSval 1936658290, TSecr 2502242829
+            Kind: Timestamp (8)
+            Length: 10
+            Timestamp value: 1936658290
+            Timestamp echo reply: 2502242829
+    [SEQ/ACK analysis]
+        [This is an ACK to the segment in frame: 26]
+        [The RTT to ACK the segment was: 0.011983000 seconds]
+        [Bytes in flight: 384]
+    [PDU Size: 384]
+Diameter Protocol
+    Version: 0x01
+    Length: 384
+    Flags: 0x40
+        0... .... = Request: Not set
+        .1.. .... = Proxyable: Set
+        ..0. .... = Error: Not set
+        ...0 .... = T(Potentially re-transmitted message): Not set
+        .... 0... = Reserved: Not set
+        .... .0.. = Reserved: Not set
+        .... ..0. = Reserved: Not set
+        .... ...0 = Reserved: Not set
+    Command Code: 272 Credit-Control
+    ApplicationId: 4
+    Hop-by-Hop Identifier: 0x515bf8c0
+    End-to-End Identifier: 0x403d34ae
+    [Request In: 26]
+    [Response Time: 0.011983000 seconds]
+    AVP: Session-Id(263) l=26 f=-M- val=E13031410350857981
+        AVP Code: 263 Session-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 26
+        Session-Id: E13031410350857981
+    AVP: Origin-Realm(296) l=19 f=-M- val=siemens.com
+        AVP Code: 296 Origin-Realm
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 19
+        Origin-Realm: siemens.com
+    AVP: Origin-Host(264) l=19 f=-M- val=10.109.5.12
+        AVP Code: 264 Origin-Host
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 19
+        Origin-Host: 10.109.5.12
+    AVP: CC-Request-Type(416) l=12 f=-M- val=EVENT_REQUEST (4)
+        AVP Code: 416 CC-Request-Type
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        CC-Request-Type: EVENT_REQUEST (4)
+    AVP: CC-Request-Number(415) l=12 f=-M- val=0
+        AVP Code: 415 CC-Request-Number
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        CC-Request-Number: 0
+    AVP: Experimental-Result(297) l=32 f=-M-
+        AVP Code: 297 Experimental-Result
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 32
+        Experimental-Result: 0000010a4000000c00006f2a0000012a4000000c00000001
+            AVP: Vendor-Id(266) l=12 f=-M- val=28458
+                AVP Code: 266 Vendor-Id
+                AVP Flags: 0x40
+                    0... .... = Vendor-Specific: Not set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 12
+                Vendor-Id: 28458
+                VendorId: Nokia Siemens Networks (28458)
+            AVP: Experimental-Result-Code(298) l=12 f=-M- val=Unknown (1)
+                AVP Code: 298 Experimental-Result-Code
+                AVP Flags: 0x40
+                    0... .... = Vendor-Specific: Not set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 12
+                Experimental-Result-Code: Unknown (1)
+    AVP: Service-Information(873) l=216 f=VM- vnd=TGPP
+        AVP Code: 873 Service-Information
+        AVP Flags: 0xc0
+            1... .... = Vendor-Specific: Set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 216
+        AVP Vendor Id: 3GPP (10415)
+        Service-Information: 00000066c00000cc00006f2a000000b0c000000c00006f2a...
+            AVP: NSN-PPI-Information(102) l=204 f=VM- vnd=Nokia Siemens Networks
+                AVP Code: 102 NSN-PPI-Information
+                AVP Flags: 0xc0
+                    1... .... = Vendor-Specific: Set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 204
+                AVP Vendor Id: Nokia Siemens Networks (28458)
+                NSN-PPI-Information: 000000b0c000000c00006f2a000000bac00000b400006f2a...
+                    AVP: NSN-Transparent-Data(176) l=12 f=VM- vnd=Nokia Siemens Networks
+                        AVP Code: 176 NSN-Transparent-Data
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 12
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        [No data]
+                            [Expert Info (Warn/Undecoded): Data is empty]
+                                [Message: Data is empty]
+                                [Severity level: Warn]
+                                [Group: Undecoded]
+                    AVP: NSN-Account(186) l=180 f=VM- vnd=Nokia Siemens Networks
+                        AVP Code: 186 NSN-Account
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 180
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Account: 000000c6c000001400006f2a0000000000000001000000ca...
+                            AVP: NSN-Account-Id(198) l=20 f=VM- vnd=Nokia Siemens Networks val=
+                                AVP Code: 198 NSN-Account-Id
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Id: 
+                            AVP: NSN-Account-Current-Balance(202) l=20 f=VM- vnd=Nokia Siemens Networks val=300
+                                AVP Code: 202 NSN-Account-Current-Balance
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Current-Balance: 300
+                            AVP: NSN-Account-Current-Authorized-Amount(203) l=20 f=VM- vnd=Nokia Siemens Networks val=0
+                                AVP Code: 203 NSN-Account-Current-Authorized-Amount
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Current-Authorized-Amount: 0
+                            AVP: NSN-Account-Expiry-Date(205) l=20 f=VM- vnd=Nokia Siemens Networks val=1364464475000
+                                AVP Code: 205 NSN-Account-Expiry-Date
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Expiry-Date: 1364464475000
+                            AVP: NSN-Account-Type(199) l=16 f=VM- vnd=Nokia Siemens Networks val=kagak_Tahu (0)
+                                AVP Code: 199 NSN-Account-Type
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 16
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Type: kagak_Tahu (0)
+                            AVP: NSN-Account-Last-Balance-Mod-Date(204) l=20 f=VM- vnd=Nokia Siemens Networks val=18446744073709551615
+                                AVP Code: 204 NSN-Account-Last-Balance-Mod-Date
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Last-Balance-Mod-Date: 18446744073709551615
+                            AVP: NSN-Account-Approved(201) l=16 f=VM- vnd=Nokia Siemens Networks val=1
+                                AVP Code: 201 NSN-Account-Approved
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 16
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Approved: 1
+                            AVP: NSN-Account-Owner-Id(200) l=24 f=VM- vnd=Nokia Siemens Networks val=639182886594
+                                AVP Code: 200 NSN-Account-Owner-Id
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 24
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Owner-Id: 639182886594
+                            AVP: NSN-Currency(175) l=12 f=VM- vnd=Nokia Siemens Networks
+                                AVP Code: 175 NSN-Currency
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 12
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                [No data]
+                                    [Expert Info (Warn/Undecoded): Data is empty]
+                                        [Message: Data is empty]
+                                        [Severity level: Warn]
+                                        [Group: Undecoded]
+    AVP: Result-Code(268) l=12 f=-M- val=DIAMETER_SUCCESS (2001)
+        AVP Code: 268 Result-Code
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Result-Code: DIAMETER_SUCCESS (2001)
+    AVP: Auth-Application-Id(258) l=12 f=-M- val=Diameter Credit Control (4)
+        AVP Code: 258 Auth-Application-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Auth-Application-Id: Diameter Credit Control (4)
+
+No.     Time        Source                Destination           Protocol Length Info
+     88 0.015332    10.109.8.6            10.121.56.177         DIAMETER 452    [TCP Retransmission] cmd=Credit-ControlAnswer(272) flags=-P-- appl=Diameter Credit Control Application(4) h2h=515bf8c0 e2e=403d34ae
+
+Frame 88: 452 bytes on wire (3616 bits), 452 bytes captured (3616 bits)
+    Arrival Time: Mar 14, 2013 10:35:08.591502000 PHT
+    [Time shift for this packet: 0.000000000 seconds]
+    Epoch Time: 1363228508.591502000 seconds
+    [Time delta from previous captured frame: 0.000003000 seconds]
+    [Time delta from previous displayed frame: 0.000003000 seconds]
+    [Time since reference or first frame: 0.015332000 seconds]
+    Frame Number: 88
+    Frame Length: 452 bytes (3616 bits)
+    Capture Length: 452 bytes (3616 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: sll:ip:tcp:diameter:diameter]
+    [Coloring Rule Name: Bad TCP]
+    [Coloring Rule String: tcp.analysis.flags && !tcp.analysis.window_update]
+Linux cooked capture
+    Packet type: Sent by us (4)
+    Link-layer address type: 1
+    Link-layer address length: 6
+    Source: Hewlett-_6b:ab:84 (d4:85:64:6b:ab:84)
+    Protocol: IP (0x0800)
+Internet Protocol Version 4, Src: 10.109.8.6 (10.109.8.6), Dst: 10.121.56.177 (10.121.56.177)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x10 (DSCP 0x04: Unknown DSCP; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))
+        0001 00.. = Differentiated Services Codepoint: Unknown (0x04)
+        .... ..00 = Explicit Congestion Notification: Not-ECT (Not ECN-Capable Transport) (0x00)
+    Total Length: 436
+    Identification: 0xafa5 (44965)
+    Flags: 0x02 (Don't Fragment)
+        0... .... = Reserved bit: Not set
+        .1.. .... = Don't fragment: Set
+        ..0. .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (6)
+    Header checksum: 0x33f2 [correct]
+        [Good: True]
+        [Bad: False]
+    Source: 10.109.8.6 (10.109.8.6)
+    Destination: 10.121.56.177 (10.121.56.177)
+    [Source GeoIP: Unknown]
+    [Destination GeoIP: Unknown]
+Transmission Control Protocol, Src Port: diameter (3868), Dst Port: 35657 (35657), Seq: 1, Ack: 417, Len: 384
+    Source port: diameter (3868)
+    Destination port: 35657 (35657)
+    [Stream index: 12]
+    Sequence number: 1    (relative sequence number)
+    [Next sequence number: 385    (relative sequence number)]
+    Acknowledgement number: 417    (relative ack number)
+    Header length: 32 bytes
+    Flags: 0x018 (PSH, ACK)
+        000. .... .... = Reserved: Not set
+        ...0 .... .... = Nonce: Not set
+        .... 0... .... = Congestion Window Reduced (CWR): Not set
+        .... .0.. .... = ECN-Echo: Not set
+        .... ..0. .... = Urgent: Not set
+        .... ...1 .... = Acknowledgement: Set
+        .... .... 1... = Push: Set
+        .... .... .0.. = Reset: Not set
+        .... .... ..0. = Syn: Not set
+        .... .... ...0 = Fin: Not set
+    Window size value: 709
+    [Calculated window size: 709]
+    [Window size scaling factor: -1 (unknown)]
+    Checksum: 0x5743 [validation disabled]
+        [Good Checksum: False]
+        [Bad Checksum: False]
+    Options: (12 bytes)
+        No-Operation (NOP)
+        No-Operation (NOP)
+        Timestamps: TSval 1936658290, TSecr 2502242829
+            Kind: Timestamp (8)
+            Length: 10
+            Timestamp value: 1936658290
+            Timestamp echo reply: 2502242829
+    [SEQ/ACK analysis]
+        [Bytes in flight: 384]
+        [TCP Analysis Flags]
+            [This frame is a (suspected) retransmission]
+                [Expert Info (Note/Sequence): Retransmission (suspected)]
+                    [Message: Retransmission (suspected)]
+                    [Severity level: Note]
+                    [Group: Sequence]
+            [The RTO for this segment was: 0.000003000 seconds]
+            [RTO based on delta from frame: 87]
+    [PDU Size: 384]
+Diameter Protocol
+    Version: 0x01
+    Length: 384
+    Flags: 0x40
+        0... .... = Request: Not set
+        .1.. .... = Proxyable: Set
+        ..0. .... = Error: Not set
+        ...0 .... = T(Potentially re-transmitted message): Not set
+        .... 0... = Reserved: Not set
+        .... .0.. = Reserved: Not set
+        .... ..0. = Reserved: Not set
+        .... ...0 = Reserved: Not set
+    Command Code: 272 Credit-Control
+    ApplicationId: 4
+    Hop-by-Hop Identifier: 0x515bf8c0
+    End-to-End Identifier: 0x403d34ae
+    [Request In: 26]
+    [Response Time: 0.011986000 seconds]
+    AVP: Session-Id(263) l=26 f=-M- val=E13031410350857981
+        AVP Code: 263 Session-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 26
+        Session-Id: E13031410350857981
+    AVP: Origin-Realm(296) l=19 f=-M- val=siemens.com
+        AVP Code: 296 Origin-Realm
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 19
+        Origin-Realm: siemens.com
+    AVP: Origin-Host(264) l=19 f=-M- val=10.109.5.12
+        AVP Code: 264 Origin-Host
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 19
+        Origin-Host: 10.109.5.12
+    AVP: CC-Request-Type(416) l=12 f=-M- val=EVENT_REQUEST (4)
+        AVP Code: 416 CC-Request-Type
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        CC-Request-Type: EVENT_REQUEST (4)
+    AVP: CC-Request-Number(415) l=12 f=-M- val=0
+        AVP Code: 415 CC-Request-Number
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        CC-Request-Number: 0
+    AVP: Experimental-Result(297) l=32 f=-M-
+        AVP Code: 297 Experimental-Result
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 32
+        Experimental-Result: 0000010a4000000c00006f2a0000012a4000000c00000001
+            AVP: Vendor-Id(266) l=12 f=-M- val=28458
+                AVP Code: 266 Vendor-Id
+                AVP Flags: 0x40
+                    0... .... = Vendor-Specific: Not set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 12
+                Vendor-Id: 28458
+                VendorId: Nokia Siemens Networks (28458)
+            AVP: Experimental-Result-Code(298) l=12 f=-M- val=Unknown (1)
+                AVP Code: 298 Experimental-Result-Code
+                AVP Flags: 0x40
+                    0... .... = Vendor-Specific: Not set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 12
+                Experimental-Result-Code: Unknown (1)
+    AVP: Service-Information(873) l=216 f=VM- vnd=TGPP
+        AVP Code: 873 Service-Information
+        AVP Flags: 0xc0
+            1... .... = Vendor-Specific: Set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 216
+        AVP Vendor Id: 3GPP (10415)
+        Service-Information: 00000066c00000cc00006f2a000000b0c000000c00006f2a...
+            AVP: NSN-PPI-Information(102) l=204 f=VM- vnd=Nokia Siemens Networks
+                AVP Code: 102 NSN-PPI-Information
+                AVP Flags: 0xc0
+                    1... .... = Vendor-Specific: Set
+                    .1.. .... = Mandatory: Set
+                    ..0. .... = Protected: Not set
+                    ...0 .... = Reserved: Not set
+                    .... 0... = Reserved: Not set
+                    .... .0.. = Reserved: Not set
+                    .... ..0. = Reserved: Not set
+                    .... ...0 = Reserved: Not set
+                AVP Length: 204
+                AVP Vendor Id: Nokia Siemens Networks (28458)
+                NSN-PPI-Information: 000000b0c000000c00006f2a000000bac00000b400006f2a...
+                    AVP: NSN-Transparent-Data(176) l=12 f=VM- vnd=Nokia Siemens Networks
+                        AVP Code: 176 NSN-Transparent-Data
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 12
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        [No data]
+                            [Expert Info (Warn/Undecoded): Data is empty]
+                                [Message: Data is empty]
+                                [Severity level: Warn]
+                                [Group: Undecoded]
+                    AVP: NSN-Account(186) l=180 f=VM- vnd=Nokia Siemens Networks
+                        AVP Code: 186 NSN-Account
+                        AVP Flags: 0xc0
+                            1... .... = Vendor-Specific: Set
+                            .1.. .... = Mandatory: Set
+                            ..0. .... = Protected: Not set
+                            ...0 .... = Reserved: Not set
+                            .... 0... = Reserved: Not set
+                            .... .0.. = Reserved: Not set
+                            .... ..0. = Reserved: Not set
+                            .... ...0 = Reserved: Not set
+                        AVP Length: 180
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Account: 000000c6c000001400006f2a0000000000000001000000ca...
+                            AVP: NSN-Account-Id(198) l=20 f=VM- vnd=Nokia Siemens Networks val=
+                                AVP Code: 198 NSN-Account-Id
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Id: 
+                            AVP: NSN-Account-Current-Balance(202) l=20 f=VM- vnd=Nokia Siemens Networks val=300
+                                AVP Code: 202 NSN-Account-Current-Balance
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Current-Balance: 300
+                            AVP: NSN-Account-Current-Authorized-Amount(203) l=20 f=VM- vnd=Nokia Siemens Networks val=0
+                                AVP Code: 203 NSN-Account-Current-Authorized-Amount
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Current-Authorized-Amount: 0
+                            AVP: NSN-Account-Expiry-Date(205) l=20 f=VM- vnd=Nokia Siemens Networks val=1364464475000
+                                AVP Code: 205 NSN-Account-Expiry-Date
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Expiry-Date: 1364464475000
+                            AVP: NSN-Account-Type(199) l=16 f=VM- vnd=Nokia Siemens Networks val=kagak_Tahu (0)
+                                AVP Code: 199 NSN-Account-Type
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 16
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Type: kagak_Tahu (0)
+                            AVP: NSN-Account-Last-Balance-Mod-Date(204) l=20 f=VM- vnd=Nokia Siemens Networks val=18446744073709551615
+                                AVP Code: 204 NSN-Account-Last-Balance-Mod-Date
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 20
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Last-Balance-Mod-Date: 18446744073709551615
+                            AVP: NSN-Account-Approved(201) l=16 f=VM- vnd=Nokia Siemens Networks val=1
+                                AVP Code: 201 NSN-Account-Approved
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 16
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Approved: 1
+                            AVP: NSN-Account-Owner-Id(200) l=24 f=VM- vnd=Nokia Siemens Networks val=639182886594
+                                AVP Code: 200 NSN-Account-Owner-Id
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 24
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                NSN-Account-Owner-Id: 639182886594
+                            AVP: NSN-Currency(175) l=12 f=VM- vnd=Nokia Siemens Networks
+                                AVP Code: 175 NSN-Currency
+                                AVP Flags: 0xc0
+                                    1... .... = Vendor-Specific: Set
+                                    .1.. .... = Mandatory: Set
+                                    ..0. .... = Protected: Not set
+                                    ...0 .... = Reserved: Not set
+                                    .... 0... = Reserved: Not set
+                                    .... .0.. = Reserved: Not set
+                                    .... ..0. = Reserved: Not set
+                                    .... ...0 = Reserved: Not set
+                                AVP Length: 12
+                                AVP Vendor Id: Nokia Siemens Networks (28458)
+                                [No data]
+                                    [Expert Info (Warn/Undecoded): Data is empty]
+                                        [Message: Data is empty]
+                                        [Severity level: Warn]
+                                        [Group: Undecoded]
+    AVP: Result-Code(268) l=12 f=-M- val=DIAMETER_SUCCESS (2001)
+        AVP Code: 268 Result-Code
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Result-Code: DIAMETER_SUCCESS (2001)
+    AVP: Auth-Application-Id(258) l=12 f=-M- val=Diameter Credit Control (4)
+        AVP Code: 258 Auth-Application-Id
+        AVP Flags: 0x40
+            0... .... = Vendor-Specific: Not set
+            .1.. .... = Mandatory: Set
+            ..0. .... = Protected: Not set
+            ...0 .... = Reserved: Not set
+            .... 0... = Reserved: Not set
+            .... .0.. = Reserved: Not set
+            .... ..0. = Reserved: Not set
+            .... ...0 = Reserved: Not set
+        AVP Length: 12
+        Auth-Application-Id: Diameter Credit Control (4)
