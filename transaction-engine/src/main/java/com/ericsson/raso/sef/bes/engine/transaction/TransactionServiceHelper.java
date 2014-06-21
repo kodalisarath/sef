@@ -291,8 +291,10 @@ public abstract class TransactionServiceHelper {
 	public static Set<Product> translateProducts(List<AtomicProduct> allAtomicProducts) {
 		Set<Product> products = new TreeSet<Product>();
 		
-		for (AtomicProduct source: allAtomicProducts) 
+		for (AtomicProduct source: allAtomicProducts)  {
+			logger.debug("Translating product: " + source);
 			products.add(TransactionServiceHelper.getApiEntity(source));
+		}
 		
 		return products;
 	}
@@ -367,11 +369,21 @@ public abstract class TransactionServiceHelper {
 		
 		returned.setName(other.getName());
 		returned.setResourceName(other.getResource().getName());
-		returned.setQuotaDefined(other.getQuota().getDefinedQuota());
-		returned.setQuotaConsumed(other.getQuota().getConsumedQuota());
-		returned.setValidity(other.getValidity().getExpiryTimeInMillis());
-		returned.setMetas(getApiMap(other.getMetas()));
+		logger.debug("Packing the api Product entity buildup: " + returned);
 		
+		if (other.getQuota() != null) {
+			returned.setQuotaDefined(other.getQuota().getDefinedQuota());
+			returned.setQuotaConsumed(other.getQuota().getConsumedQuota());
+		}
+		logger.debug("Quota - Packing the api Product entity buildup: " + returned);
+		
+		if (other.getValidity() != null) {
+			returned.setValidity(other.getValidity().getExpiryTimeInMillis());
+		}
+		logger.debug("Validity - Packing the api Product entity buildup: " + returned);
+		
+		returned.setMetas(getApiMap(other.getMetas()));
+		logger.debug("Translated product entity: " + returned);
 		return returned;
 	}
 	
@@ -420,8 +432,13 @@ public abstract class TransactionServiceHelper {
 	public static Map<String, String> getApiMap(Map<String, Object> map) {
 		Map<String, String> returned = new HashMap<String, String>();
 		
-		for (String key: map.keySet()) {
-			returned.put(key, "" + map.get(key));
+		if (map != null) {
+			for (String key: map.keySet()) {
+				returned.put(key, "" + map.get(key));
+			}
+			logger.debug("Transferred the map (metas) to api entity: " + returned);
+		} else {
+			logger.debug("No map (metas) available to process... was null!!");
 		}
 		
 		return returned;
