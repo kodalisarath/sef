@@ -208,9 +208,10 @@ public abstract class TransactionServiceHelper {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
 		Date dateField = null;
 		
-		
+		logger.debug("Checking the prodcat offer: " + other);
 		returned.setName(other.getName());
-		returned.setDescription(other.getDescription());
+		returned.setDescription(other.getDescription());		
+		logger.debug("Checking the api entity buildup: " + returned);
 		
 		// unfortunately, format class in java sdk is not synchronized and have to take this hit in every thread...
 		long date = other.getRenewalPeriod().getExpiryTimeInMillis();
@@ -220,7 +221,8 @@ public abstract class TransactionServiceHelper {
 			dateField = new Date(date);
 			returned.setValidity(formatter.format(dateField));
 		}
-
+		logger.debug("Renewal/Validity Period - Checking the api entity buildup: " + returned);
+		
 		returned.setRecurrence(other.isRecurrent());
 		
 		if (other.getTrialPeriod() != null) {
@@ -231,7 +233,10 @@ public abstract class TransactionServiceHelper {
 				dateField = new Date(date);
 				returned.setTrial(formatter.format(dateField));
 			}
+		} else {
+			returned.setTrial("No Trial");
 		}
+		logger.debug("Trial Period - Checking the api entity buildup: " + returned);
 		
 		if (other.getMinimumCommitment() != null) {
 			try {
@@ -245,7 +250,10 @@ public abstract class TransactionServiceHelper {
 			} catch (CatalogException e) {
 				returned.setMinimumCommitment("No Commitment");
 			}
+		} else {
+			returned.setMinimumCommitment("No Commitment");
 		}
+		logger.debug("Commitment - Checking the api entity buildup: " + returned);
 		
 		if (other.getAutoTermination() != null) {
 			try {
@@ -259,12 +267,22 @@ public abstract class TransactionServiceHelper {
 			} catch (CatalogException e) {
 				returned.setMinimumCommitment("No Automatic Termination");
 			}
+		} else {
+			returned.setAutoTerminate("No Automatic Termination");
 		}
+		logger.debug("Termination - Checking the api entity buildup: " + returned);
 		
-		returned.setPrice(other.getPrice().getSimpleAdviceOfCharge().getAmount());
-		returned.setCurrency(other.getPrice().getIso4217CurrencyCode());
-		
+		if (other.isCommercial()) {
+			returned.setPrice(other.getPrice().getSimpleAdviceOfCharge().getAmount());
+			returned.setCurrency(other.getPrice().getIso4217CurrencyCode());
+		} else {
+			returned.setPrice(0);
+			returned.setCurrency("-");
+		}
+		logger.debug("Price - Checking the api entity buildup: " + returned);
+
 		returned.setProducts(TransactionServiceHelper.translateProducts(other.getAllAtomicProducts()));
+		logger.debug("Products - Checking the api entity buildup: " + returned);
 
 		
 		return returned;
