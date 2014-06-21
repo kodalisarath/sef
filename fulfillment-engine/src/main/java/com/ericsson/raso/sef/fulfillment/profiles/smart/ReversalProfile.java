@@ -136,9 +136,11 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 				if (newExpiryDate > toSecondLongestDate) {
 					supervisionPeriodExpiryDate = newExpiryDate;
 					serviceFeeExpiryDate = newExpiryDate;
+					LOGGER.debug("new supervision: " + new Date(supervisionPeriodExpiryDate) + ", servicefee: " + new Date(serviceFeeExpiryDate));
 				} else {
 					supervisionPeriodExpiryDate = toSecondLongestDate;
 					serviceFeeExpiryDate = toSecondLongestDate;
+					LOGGER.debug("new supervision: " + new Date(supervisionPeriodExpiryDate) + ", servicefee: " + new Date(serviceFeeExpiryDate));
 				}
 				// now do the reversal of all other impacted offers...
 				///impactedOffer.setExpiryDate(new Date(newExpiryDate));
