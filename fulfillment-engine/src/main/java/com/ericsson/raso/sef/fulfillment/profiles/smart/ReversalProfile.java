@@ -111,8 +111,8 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		}
 		
 		// Now... calculate the balance & dates to reverse
-		long supervisionPeriodExpiryDate = 0;
-		long serviceFeeExpiryDate = 0;
+		long supervisionPeriodExpiryDate = toLongestDate;
+		long serviceFeeExpiryDate = toLongestDate;
 		long newExpiryDate = 0;
 		List<OfferInformation> offersToUpdate = new ArrayList<OfferInformation>();
 		List<DedicatedAccountUpdateInformation> dasToUpdate = new ArrayList<DedicatedAccountUpdateInformation>();
@@ -219,6 +219,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String reversalEntry = "" + updatedOffer.getOfferID() + "," + format.format(updatedOffer.getExpiryDateTime());
 			Integer associatedDaId = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", "" + updateOfferRequest.getOfferID()));
+			LOGGER.debug("associatedDA ID: " + associatedDaId");
 			for (DedicatedAccountChangeInformation daResultInfo: updateBalanceAndDateResponse.getDedicatedAccountInformation()) {
 				if (daResultInfo.getDedicatedAccountID().compareTo(associatedDaId)==0) {
 					reversalEntry += associatedDaId 
