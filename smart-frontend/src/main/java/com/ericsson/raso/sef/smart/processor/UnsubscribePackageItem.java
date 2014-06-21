@@ -180,10 +180,13 @@ public class UnsubscribePackageItem implements Processor {
 					if (oInfo.offerID.equals("2")) {
 						logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 						IsGrace=true;
-					}
-					if (oInfo.offerID.equals("4")) {
+					} else if (oInfo.offerID.equals("4")) {
 						logger.debug("FLEXI:: CUSTOMER IN RECYCLE!!!");
 						NotRecycle=true;
+					} else {
+						logger.debug("FLEXI:: CUSTOMER IN ACTIVE!!!");
+						workflowMetas.add(new Meta("Package", "Rev" + String.valueOf(request.getPackaze())));
+						
 					}
 				}
 			}
