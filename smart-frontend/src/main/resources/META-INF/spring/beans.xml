@@ -148,7 +148,21 @@
 
 		<route>
 			<from uri="cxf:bean:subscriptionResponse"/>
-			<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PurchaseResponseProcessor"/>
+			<camel:doTry>
+				<camel:choice>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'purchase'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PurchaseResponseProcessor"/>
+					</camel:when>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.DicoverOfferByFederatedIdResponseProcessor"/>
+					</camel:when>
+				</camel:choice>
+				<camel:doFinally>
+				<!-- Add exception handler -->
+				</camel:doFinally>
+			</camel:doTry>
 		</route>
 
 		<route>
