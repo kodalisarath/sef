@@ -219,7 +219,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String reversalEntry = "" + updatedOffer.getOfferID() + "," + format.format(updatedOffer.getExpiryDateTime());
 			Integer associatedDaId = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", "" + updateOfferRequest.getOfferID()));
-			LOGGER.debug("associatedDA ID: " + associatedDaId");
+			LOGGER.debug("associatedDA ID: " + associatedDaId);
 			for (DedicatedAccountChangeInformation daResultInfo: updateBalanceAndDateResponse.getDedicatedAccountInformation()) {
 				if (daResultInfo.getDedicatedAccountID().compareTo(associatedDaId)==0) {
 					reversalEntry += associatedDaId 
