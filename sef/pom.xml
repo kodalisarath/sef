@@ -191,5 +191,7 @@
 		<module>../charging-adapter-api</module>
 		<module>../sef-smpp-gateway</module>
 		<module>../charging-adapter</module>
+		<module>../charging-gateway</module>
+		<module>../charging-gateway-engine</module>
 	</modules>
 </project>

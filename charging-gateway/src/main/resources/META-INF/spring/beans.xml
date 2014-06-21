@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:q0="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/xsd/1"
+	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<import resource="classpath:META-INF/sef-core/beans.xml" />
+
+	<!--<bean id="cgProperties" class="com.ericsson.sm.core.config.ComponentPropertiesBean"> 
+		<constructor-arg name="config" ref="cfg"/> <constructor-arg name="component" 
+		value="charging-gateway"/> </bean> <context:property-placeholder properties-ref="cgProperties"/> 
+		<bean id="cgContext" class="com.ericsson.sm.cg.CgContext"/> -->
+
+	<bean id="peerConnectionListener"
+		class="com.ericsson.raso.sef.charginggateway.CgPeerConnectionListener" />
+	<bean id="requestListener" class="com.ericsson.raso.sef.charginggateway.CgRequestListener">
+		<constructor-arg name="camelContext"
+			ref="com.ericsson.raso.sef.charginggateway" />
+		<!-- <constructor-arg name="requestQueue" value="activemq:queue:${requestQueue}"/> -->
+	</bean>
+
+	<bean id="chargingGateway" class="com.ericsson.raso.sef.charginggateway.ChargingGateway">
+		<!-- <constructor-arg name="diameterEndpoint" value="${diameterEndpoint}"/> -->
+		<constructor-arg name="connectionListener" ref="peerConnectionListener" />
+		<constructor-arg name="requestListener" ref="requestListener" />
+	</bean>
+	<camelContext id="com.ericsson.raso.sef.charginggateway"
+		xmlns="http://camel.apache.org/schema/spring">
+		<!-- <propertyPlaceholder id="properties" location="ref:cgProperties"/> -->
+
+		<route id="cg-engine-route-dispatch">
+			<from uri="direct:charging-gateway" />
+			<camel:marshal>
+				<camel:serialization />
+			</camel:marshal>
+			<camel:to uri="http://0.0.0.0:9090/charginggateway/CgWeb/process" />
+			<camel:unmarshal>
+				<camel:serialization />
+			</camel:unmarshal>
+		</route>
+	</camelContext>
+</beans>

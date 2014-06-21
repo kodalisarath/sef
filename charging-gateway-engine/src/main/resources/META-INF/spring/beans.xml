@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:q0="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/xsd/1"
+	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:META-INF/sef-core/beans.xml" />
+	<import resource="classpath:META-INF/sef-api/beans.xml" />
+	<bean id="cgContext" class="com.ericsson.raso.sef.cg.engine.CgEngineContext" />
+
+	<!-- <bean id="scapChargingClient" factory-bean="scapFactory" factory-method="create"> 
+		<constructor-arg type="java.lang.String" value="${scapClient}"/> </bean> -->
+
+	<bean id="ipcCluster" class="com.ericsson.raso.sef.cg.engine.IpcCluster">
+		<!-- <constructor-arg name="smCache" ref="smCache"/> -->
+	</bean>
+
+	<bean id="cdr" class="com.ericsson.raso.sef.cg.engine.CdrProcessor" />
+
+	<alias name="gatekeeper" alias="gatekeeperProcessor" />
+	<!-- <alias name="requestContextService" alias="rcs" /> -->
+	<bean id="smScapChargingApi" class="com.ericsson.raso.sef.cg.engine.util.SmScapChargingApi"
+		init-method="start" destroy-method="stop" />
+
+
+	<cxf:cxfEndpoint id="subscriptionResponse"
+		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse"
+		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" wsdlURL="classpath:wsdl/TisService.xml">
+
+		<cxf:properties>
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscription" />
+		</cxf:properties>
+		<cxf:inInterceptors>
+			<!-- <ref bean="loggingInInterceptor" /> -->
+			<!-- <ref bean="licenseInterceptor" /> -->
+			<!-- <ref bean="authenticationInterceptor" /> -->
+		</cxf:inInterceptors>
+
+		<cxf:outInterceptors>
+			<!-- <ref bean="loggingOutInterceptor" /> -->
+		</cxf:outInterceptors>
+	</cxf:cxfEndpoint>
+	<cxf:cxfEndpoint id="subscriberResponse"
+		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse"
+		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" wsdlURL="classpath:wsdl/TisService.xml">
+
+		<cxf:properties>
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriber" />
+		</cxf:properties>
+		<cxf:inInterceptors>
+			<!-- <ref bean="loggingInInterceptor" /> -->
+			<!-- <ref bean="licenseInterceptor" /> -->
+			<!-- <ref bean="authenticationInterceptor" /> -->
+		</cxf:inInterceptors>
+
+		<cxf:outInterceptors>
+			<!-- <ref bean="loggingOutInterceptor" /> -->
+		</cxf:outInterceptors>
+	</cxf:cxfEndpoint>
+
+	<cxf:rsServer id="cgeServer" address="http://0.0.0.0:9090/charginggateway/CgWeb/process"
+		serviceClass="com.ericsson.raso.sef.cg.engine.web.CgWeb" />
+
+<!-- 	<jaxrs:server id="reloadArtifactService" address="/cg/engine">
+		<jaxrs:serviceBeans>
+			<bean class="com.ericsson.raso.sef.cg.engine.web.ReloadArtifactServiceImpl" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<bean
+				class="com.ericsson.raso.sef.cg.engine.web.ReloadArtifactAuthorizationInterceptor" />
+		</jaxrs:providers>
+	</jaxrs:server> -->
+
+
+	<camelContext id="com.ericsson.raso.sef.charginggatewayengine"
+		xmlns="http://camel.apache.org/schema/spring">
+		<!-- <propertyPlaceholder id="properties" location="ref:cgProperties" /> -->
+		<route id="cg-engine-route">
+			<!-- <from uri="direct-vm:charging-gateway-engine" /> 
+			<from uri="direct:charginggatewayEngine" />-->
+			 <from uri="cxfrs://bean://cgeServer"/>
+			<camel:doTry>
+				<!-- <camel:bean ref="rcs" method="enter" /> -->
+				<camel:unmarshal>
+					<camel:serialization />
+				</camel:unmarshal>
+				<camel:bean ref="cdr" method="requestIn" />
+				<camel:bean
+					beanType="com.ericsson.raso.sef.cg.engine.processor.RequestEntryProcessor" />
+				<!-- <camel:bean ref="gatekeeperProcessor" method="process"/> -->
+				<!-- <camel:bean beanType="com.ericsson.raso.sef.cg.engine.processor.SubscriberValidationProcessor"/> -->
+				<camel:bean
+					beanType="com.ericsson.raso.sef.cg.engine.processor.TransactionIdentityProcessor" />
+				<camel:bean
+					beanType="com.ericsson.raso.sef.cg.engine.processor.RouteProcessor" />
+				<camel:bean
+					beanType="com.ericsson.raso.sef.cg.engine.usecase.UsecaseProcessor" />
+				<!-- <camel:bean beanType="com.ericsson.sm.cg.engine.processor.RequestExitProcessor"/> -->
+
+				<camel:marshal>
+					<camel:serialization />
+				</camel:marshal>
+
+				<camel:doCatch>
+					<camel:exception>java.lang.Exception</camel:exception>
+					<camel:bean
+						beanType="com.ericsson.raso.sef.cg.engine.processor.CgExceptionHandler" />
+				</camel:doCatch>
+				<camel:doFinally>
+					<camel:bean ref="cdr" method="responseOut" />
+					<!-- <camel:bean ref="rcs" method="exit" /> -->
+				</camel:doFinally>
+			</camel:doTry>
+		</route>
+	</camelContext>
+
+</beans>

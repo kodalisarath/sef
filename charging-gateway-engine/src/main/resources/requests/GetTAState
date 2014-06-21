@@ -1,0 +1,43 @@
+    AVP: Session-Id(263) l=26 f=-M- val=USKO13729970611001
+        AVP Code: 263 Session-Id
+        Session-Id: USKO13729970611001
+    AVP: Origin-Realm(296) l=19 f=-M- val=siemens.com
+        AVP Code: 296 Origin-Realm
+        Origin-Realm: siemens.com
+    AVP: Origin-Host(264) l=29 f=-M- val=advantage.siemens.com
+        Origin-Host: advantage.siemens.com
+    AVP: CC-Request-Type(416) l=12 f=-M- val=EVENT_REQUEST (4)
+        AVP Code: 416 CC-Request-Type
+        CC-Request-Type: EVENT_REQUEST (4)
+    AVP: CC-Request-Number(415) l=12 f=-M- val=1
+        AVP Code: 415 CC-Request-Number
+        CC-Request-Number: 1
+    AVP: Service-Information(873) l=52 f=VM- vnd=TGPP
+        AVP Code: 873 Service-Information
+        AVP Vendor Id: 3GPP (10415)
+        Service-Information: 00000066c000002800006f2a000000b0c000000c00006f2a...
+            AVP: NSN-PPI-Information(102) l=40 f=VM- vnd=Nokia Siemens Networks
+                AVP Code: 102 NSN-PPI-Information
+                AVP Vendor Id: Nokia Siemens Networks (28458)
+                NSN-PPI-Information: 000000b0c000000c00006f2a000000bcc000001000006f2a...
+                    AVP: NSN-Transparent-Data(176) l=12 f=VM- vnd=Nokia Siemens Networks
+                        AVP Code: 176 NSN-Transparent-Data
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                    AVP: NSN-Transaction-Status(188) l=16 f=VM- vnd=Nokia Siemens Networks val=authorized (5)
+                        AVP Code: 188 NSN-Transaction-Status
+                        AVP Vendor Id: Nokia Siemens Networks (28458)
+                        NSN-Transaction-Status: authorized (5)
+    AVP: Experimental-Result(297) l=32 f=-M-
+        AVP Code: 297 Experimental-Result
+        Experimental-Result: 0000010a4000000c00006f2a0000012a4000000c00000001
+            AVP: Vendor-Id(266) l=12 f=-M- val=28458
+                AVP Code: 266 Vendor-Id
+                VendorId: Nokia Siemens Networks (28458)
+            AVP: Experimental-Result-Code(298) l=12 f=-M- val=Unknown (1)
+                AVP Code: 298 Experimental-Result-Code
+                Experimental-Result-Code: Unknown (1)
+    AVP: Result-Code(268) l=12 f=-M- val=DIAMETER_SUCCESS (2001)
+        AVP Code: 268 Result-Code
+        Result-Code: DIAMETER_SUCCESS (2001)
+    AVP: Auth-Application-Id(258) l=12 f=-M- val=Diameter Credit Control (4)
+        AVP Code: 258 Auth-Application-Id

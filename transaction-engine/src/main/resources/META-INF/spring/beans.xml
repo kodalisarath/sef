@@ -141,10 +141,10 @@
 						<camel:simple>${header.operationName} == 'discoverOfferForUserById'</camel:simple>
 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.CreateSubscriberProcessor" />
 					</camel:when>
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByFederatedIdProcessor" /> -->
-<!-- 					</camel:when> -->
+					<camel:when>
+						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByFederatedIdProcessor" />
+					</camel:when>
 <!-- 					<camel:when> -->
 <!-- 						<camel:simple>${header.operationName} == 'getAdviceOfCharge'</camel:simple> -->
 <!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.GetAdviceOfChargeProcessor" /> -->

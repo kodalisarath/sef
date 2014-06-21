@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<wsdl:definitions name="Tis"
+  xmlns:tns="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/wsdl/1"
+  targetNamespace="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/wsdl/1"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+  xmlns:wsp="http://www.w3.org/ns/ws-policy"
+  xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+  xmlns:xsd1="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/xsd/1">
+
+  <wsp:Policy wsu:Id="AddressingPolicy">
+    <wsam:Addressing wsp:Optional="true">
+      <wsp:Policy>
+        <wsam:AnonymousResponses />
+      </wsp:Policy>
+    </wsam:Addressing>
+  </wsp:Policy>
+
+  <wsp:Policy wsu:Id="SecurityPolicy">
+    <sp:UsernameToken
+      sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+      <wsp:Policy>
+        <sp:WssUsernameToken11 />
+      </wsp:Policy>
+    </sp:UsernameToken>
+  </wsp:Policy>
+
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/xsd/1"
+        schemaLocation="NSN-Tis.xsd">
+      </xsd:import>
+    </xsd:schema>
+  </wsdl:types>
+
+  <wsdl:message name="ExecuteCommandRequest">
+    <wsdl:part name="request" element="xsd1:CommandRequestData" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteCommandResponse">
+    <wsdl:part name="response" element="xsd1:CommandResponseData" />
+  </wsdl:message>
+  <wsdl:message name="TisException">
+    <wsdl:part name="fault" element="xsd1:FaultMessage" />
+  </wsdl:message>
+
+  <wsdl:portType name="TisInterface">
+    <wsdl:operation name="ExecuteCommand">
+      <wsdl:input message="tns:ExecuteCommandRequest" />
+      <wsdl:output message="tns:ExecuteCommandResponse" />
+      <wsdl:fault name="fault" message="tns:TisException" />
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:binding name="TisSoapBinding" type="tns:TisInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+   <!--  <wsp:PolicyReference URI="#AddressingPolicy" wsdl:required="false" />
+    <wsp:PolicyReference URI="#SecurityPolicy" wsdl:required="false" /> -->
+    <wsdl:operation name="ExecuteCommand">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault use="literal" name="fault" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="TisService">
+    <wsdl:documentation>
+      The location defined in soap:address is never used and has no relevance. It
+      serves as a pattern for the SOAP request to see how it could look like
+    </wsdl:documentation>
+    <wsdl:port name="TisSoapPort" binding="tns:TisSoapBinding">
+      <soap:address location="http://atws33zc:49728/services/TisService" />
+    </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>

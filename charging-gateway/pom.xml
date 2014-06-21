@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ericsson.sef</groupId>
+	<version>0.0.1-SNAPSHOT</version>
+	<description>Charging Gateway</description>
+	<artifactId>charging-gateway</artifactId>
+	<packaging>bundle</packaging>
+
+	<properties>
+		<osgi-import-package>
+			<!-- org.csapi.schema.parlayx.common.v2_1,
+			org.csapi.schema.parlayx.payment.amount_charging.v2_1.local,
+			org.csapi.schema.parlayx.payment.reserve_amount_charging.v2_1.local,
+			org.csapi.schema.parlayx.payment.v2_1,
+			org.csapi.wsdl.parlayx.common.v2_0.faults,
+			org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface,
+			org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
+			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
+			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service, -->
+			org.springframework.*,
+			com.ericsson.raso.sef.core,
+			com.ericsson.raso.sef.core.camelprocessors,
+			com.ericsson.raso.sef.auth.*,
+			com.ericsson.raso.sef.core.config,
+			com.ericsson.raso.sef.logging,
+			com.ericsson.raso.sef.core.lb,
+			com.ericsson.raso.sef.core.db.service,
+			org.slf4j,
+			META-INF.sef-core,
+			com.ericsson.raso.sef.diameter,
+			org.springframework.*,
+			org.apache.tomcat.dbcp.dbcp,
+			org.apache.commons.codec.binary,
+			com.ericsson.raso.sef.core.db.service.internal,
+			javax.sql,
+			org.xml.sax,
+			org.apache.cxf.binding.soap.interceptor,
+			org.apache.camel,
+			org.w3c.dom,
+			org.apache.cxf.*,
+			com.hazelcast.config,
+			com.hazelcast.core,
+			org.mybatis.spring,
+			org.apache.ibatis.type,
+			org.apache.ibatis.exceptions,
+			org.apache.ibatis.exceptions.*,
+			org.mybatis.spring.mapper,
+			org.springframework.aop,
+			org.springframework.aop.framework,
+			org.apache.cxf.interceptor,
+    		org.apache.cxf.bus.spring,
+    		org.eclipse.jetty.server.nio,
+			org.aopalliance.aop,
+			com.ericsson.pps.diameter.dccapi,
+ 			com.ericsson.pps.diameter.dccapi.avp,
+ 			com.ericsson.pps.diameter.dccapi.command,
+ 			com.ericsson.pps.diameter.dccapi.avp.avpdatatypes,
+ 			com.ericsson.pps.diameter.scapv2,
+ 			com.ericsson.pps.diameter.scapv2.avp,
+ 			com.ericsson.pps.diameter.rfcapi.base,
+ 			com.ericsson.pps.diameter.rfcapi.base.avp,
+ 			com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes,
+ 			com.ericsson.pps.diameter.rfcapi.base.message,
+ 			com.ericsson.raso.sef.core.db.model,
+ 			com.ericsson.raso.sef.cg.engine.nsn.avp,
+			com.ericsson.raso.sef.cg.engine.nsn.avp.sms,
+			com.ericsson.raso.sef.cg.engine.nsn.avp.mms
+		</osgi-import-package>
+		<osgi-export-package>
+			com.ericsson.raso.sef.charginggateway.diameter
+		</osgi-export-package>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ericsson.sef</groupId>
+			<artifactId>sef-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>2.4.0</version>
+				<configuration>
+					<instructions>
+						<_failok>true</_failok>
+						<_nouses>true</_nouses>
+						<Export-Package>${osgi-export-package}</Export-Package>
+						<Import-Package>${osgi-import-package}</Import-Package>
+						<DynamicImport-Package>${osgi-dynamicimport-package}</DynamicImport-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
