@@ -109,10 +109,12 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 				}
 			}
 		}
+		LOGGER.debug("Longest Date: " + toLongestDate + ", Second Longest Date: " + toSecondLongestDate);
 		
 		// Now... calculate the balance & dates to reverse
 		long supervisionPeriodExpiryDate = toLongestDate;
 		long serviceFeeExpiryDate = toLongestDate;
+		LOGGER.debug("supervision: " + supervisionPeriodExpiryDate + ", service fee: " + serviceFeeExpiryDate);
 		long newExpiryDate = 0;
 		List<OfferInformation> offersToUpdate = new ArrayList<OfferInformation>();
 		List<DedicatedAccountUpdateInformation> dasToUpdate = new ArrayList<DedicatedAccountUpdateInformation>();
@@ -127,7 +129,9 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			LOGGER.debug("From Biz Config: " + toReversal.hoursToReverse + ", hours getter form: " + toReversal.getHoursToReverse());
 			newExpiryDate = impactedExpiry - (toReversal.hoursToReverse);
 			LOGGER.debug("New Expiry Calculated: " + newExpiryDate + ", date form: " + new Date(newExpiryDate));
+			LOGGER.debug("Check impactedExpiry: " + new Date(impactedExpiry) + " with longestDate: " + new Date(toLongestDate));
 			if (impactedExpiry == toLongestDate) {
+				LOGGER.debug("found offer with longest expiry...");
 				// calculating new activeEndDate here....
 				if (newExpiryDate > toSecondLongestDate) {
 					supervisionPeriodExpiryDate = newExpiryDate;
@@ -222,7 +226,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			LOGGER.debug("associatedDA ID: " + associatedDaId);
 			for (DedicatedAccountChangeInformation daResultInfo: updateBalanceAndDateResponse.getDedicatedAccountInformation()) {
 				if (daResultInfo.getDedicatedAccountID().compareTo(associatedDaId)==0) {
-					reversalEntry += associatedDaId 
+					reversalEntry += "," + associatedDaId 
 							+ "," + daResultInfo.getDedicatedAccountValue1() 
 							+ "," + this.getReversalDA(associatedDaId).getAmountToReverse();
 				}
