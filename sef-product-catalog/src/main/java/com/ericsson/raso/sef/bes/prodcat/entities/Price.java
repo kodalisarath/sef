@@ -17,8 +17,8 @@ public final class Price extends MonetaryUnit {
 	private static final long serialVersionUID = 8359880187271854753L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(Price.class);
 	private MonetaryUnit cost = null;
-	private List<Tax> taxes = null;
-	private List<PricingPolicy> ratingRules = null;
+	private List<Tax> taxes = new ArrayList<Tax>();
+	private List<PricingPolicy> ratingRules = new ArrayList<PricingPolicy>();
 	private Rule criteria = null;
 	
 	private Map<String, Object> context = null;
