@@ -47,7 +47,7 @@ public class FetchOfferByHandleForUser extends AbstractTransaction {
 		
 		com.ericsson.sef.bes.api.entities.Offer resultantOffer = TransactionServiceHelper.getApiEntity(prodcatOffer);
 		logger.debug("Translated to API entity: " + resultantOffer);
-		((FetchOfferByHandleForUserResponse)this.getResponse()).setSubscriberId(((FetchOfferForUserRequest)this.getRequest()).getSusbcriberId());
+		((FetchOfferByHandleForUserResponse)this.getResponse()).setSubscriberId(((FetchOfferByHandleForUserRequest)this.getRequest()).getSusbcriberId());
 		((FetchOfferByHandleForUserResponse)this.getResponse()).setResult(resultantOffer);
 
 		status.setCode(0);

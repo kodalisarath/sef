@@ -446,12 +446,11 @@ public abstract class TransactionServiceHelper {
 	
 	public static Map<String, Object> getNativeMap(Map<String, String> map) {
 		Map<String, Object> returned = new HashMap<String, Object>();
+		
 		if (map!=null) {
-		
-		for (String key: map.keySet()) {
-			returned.put(key, map.get(key));
-		}
-		
+			for (String key: map.keySet()) {
+				returned.put(key, map.get(key));
+			}
 		}
 		return returned;
 	}
