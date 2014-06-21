@@ -96,26 +96,35 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		
 		long toLongestDate = 0;
 		long toSecondLongestDate = 0;
+		int longestExpiringOffer = 0;
 		for (OfferInformation offerInformation: balanceAndDateResponse.getOfferInformationList()) {
 			String offerId = "" + offerInformation.getOfferID();
 			String relatedDA = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", offerId);
 			if (relatedDA != null) {
 				long expiryDate = ((offerInformation.getExpiryDate() != null)?offerInformation.getExpiryDate().getTime():offerInformation.getExpiryDateTime().getTime());
-				if (expiryDate > toLongestDate) {
-					toLongestDate = toSecondLongestDate;
-					toSecondLongestDate = expiryDate;
-					if (toLongestDate == 0)
+				if(expiryDate > toSecondLongestDate) {
+					if (expiryDate > toLongestDate) {
+						toSecondLongestDate = toLongestDate;
 						toLongestDate = expiryDate;
+						longestExpiringOffer = offerInformation.getOfferID();
+					} else {
+						toSecondLongestDate = expiryDate;
+					}
 				}
+				
 			}
 		}
+		LOGGER.debug("Longest Date: " + toLongestDate + ", Second Longest Date: " + toSecondLongestDate);
 		
 		// Now... calculate the balance & dates to reverse
-		long supervisionPeriodExpiryDate = 0;
-		long serviceFeeExpiryDate = 0;
+		long supervisionPeriodExpiryDate = toLongestDate;
+		long serviceFeeExpiryDate = toLongestDate;
+		LOGGER.debug("supervision: " + supervisionPeriodExpiryDate + ", service fee: " + serviceFeeExpiryDate);
 		long newExpiryDate = 0;
+		
 		List<OfferInformation> offersToUpdate = new ArrayList<OfferInformation>();
 		List<DedicatedAccountUpdateInformation> dasToUpdate = new ArrayList<DedicatedAccountUpdateInformation>();
+		
 		for (TimerOfferReversal toReversal: toReversals) {
 			OfferInformation impactedOffer = this.getImpactedOffer(toReversal.getOfferID(), balanceAndDateResponse.getOfferInformationList());
 			if (impactedOffer == null) {
@@ -127,45 +136,45 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			LOGGER.debug("From Biz Config: " + toReversal.hoursToReverse + ", hours getter form: " + toReversal.getHoursToReverse());
 			newExpiryDate = impactedExpiry - (toReversal.hoursToReverse);
 			LOGGER.debug("New Expiry Calculated: " + newExpiryDate + ", date form: " + new Date(newExpiryDate));
-			if (impactedExpiry == toLongestDate) {
-				// calculating new activeEndDate here....
-				if (newExpiryDate > toSecondLongestDate) {
-					supervisionPeriodExpiryDate = newExpiryDate;
-					serviceFeeExpiryDate = newExpiryDate;
-				} else {
-					supervisionPeriodExpiryDate = toSecondLongestDate;
-					serviceFeeExpiryDate = toSecondLongestDate;
+			LOGGER.debug("Check impactedExpiry: " + new Date(impactedExpiry) + " with longestDate: " + new Date(toLongestDate));
+			
+			if (impactedOffer.getOfferID().compareTo(longestExpiringOffer)==0) {
+				if (newExpiryDate < toLongestDate) {
+					if (newExpiryDate < toSecondLongestDate) {
+						supervisionPeriodExpiryDate = toSecondLongestDate;
+						serviceFeeExpiryDate = toSecondLongestDate;
+						LOGGER.debug("new supervision: " + new Date(supervisionPeriodExpiryDate) + ", servicefee: " + new Date(serviceFeeExpiryDate));
+					} else {
+						supervisionPeriodExpiryDate = newExpiryDate;
+						serviceFeeExpiryDate = newExpiryDate;
+						LOGGER.debug("new supervision: " + new Date(supervisionPeriodExpiryDate) + ", servicefee: " + new Date(serviceFeeExpiryDate));
+					}
 				}
-				// now do the reversal of all other impacted offers...
-				///impactedOffer.setExpiryDate(new Date(newExpiryDate));
-				impactedOffer.setExpiryDateTime(new Date(newExpiryDate));
-				///impactedOffer.setStartDate(new Date(impactedExpiry - toReversal.hoursToReverse));
-				//impactedOffer.setStartDateTime(new Date(impactedOffer.getStartDateTime().getTime() - (long)(toReversal.hoursToReverse)));
-				
-				offersToUpdate.add(impactedOffer);
-				
-				DedicatedAccountInformation impactedDA =  this.getImpactedDA(toReversal.dedicatedAccountInformationID, balanceAndDateResponse.getDedicatedAccountInformation());
-				DedicatedAccountReversal daReversal = this.getRelevantReveralDA(toReversal.dedicatedAccountInformationID);
-				DedicatedAccountUpdateInformation daToUpdate = new DedicatedAccountUpdateInformation();
-				daToUpdate.setDedicatedAccountID(impactedDA.getDedicatedAccountID());
-				daToUpdate.setDedicatedAccountUnitType(impactedDA.getDedicatedAccountUnitType());
-				daToUpdate.setAdjustmentAmountRelative("-" + this.getAmountToReverse(impactedDA.getDedicatedAccountID()));
-				daToUpdate.setExpiryDate(new Date(newExpiryDate));
-				dasToUpdate.add(daToUpdate);
-				LOGGER.debug("Adding DA to update in the AIR UCIP Request: " + daToUpdate);
-				
 			}
+			
+			// now do the reversal of all other impacted offers...
+			///impactedOffer.setExpiryDate(new Date(newExpiryDate));
+			impactedOffer.setExpiryDateTime(new Date(newExpiryDate));
+			///impactedOffer.setStartDate(new Date(impactedExpiry - toReversal.hoursToReverse));
+			//impactedOffer.setStartDateTime(new Date(impactedOffer.getStartDateTime().getTime() - (long)(toReversal.hoursToReverse)));
+
+			offersToUpdate.add(impactedOffer);
+
+			DedicatedAccountInformation impactedDA =  this.getImpactedDA(toReversal.dedicatedAccountInformationID, balanceAndDateResponse.getDedicatedAccountInformation());
+			DedicatedAccountReversal daReversal = this.getRelevantReveralDA(toReversal.dedicatedAccountInformationID);
+			DedicatedAccountUpdateInformation daToUpdate = new DedicatedAccountUpdateInformation();
+			daToUpdate.setDedicatedAccountID(impactedDA.getDedicatedAccountID());
+			daToUpdate.setDedicatedAccountUnitType(impactedDA.getDedicatedAccountUnitType());
+			daToUpdate.setAdjustmentAmountRelative("-" + this.getAmountToReverse(impactedDA.getDedicatedAccountID()));
+			daToUpdate.setExpiryDate(new Date(newExpiryDate));
+			dasToUpdate.add(daToUpdate);
+			LOGGER.debug("Adding DA to update in the AIR UCIP Request: " + daToUpdate);
+				
 		}
 		
 		
 		// Now... send the reversal on DAs....
 		
-//		for (DedicatedAccountReversal daReversal: daReversals) {
-//			DedicatedAccountUpdateInformation daUpdate = new DedicatedAccountUpdateInformation();
-//			daUpdate.setDedicatedAccountID(daReversal.getDedicatedAccountInformationID());
-//			daUpdate.setAdjustmentAmountRelative("-" + daReversal.getAmountToReverse());
-//			daUpdate.setDedicatedAccountUnitType(Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", "" + daReversal.getDedicatedAccountInformationID())));
-//		}
 		UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
 		request.setDedicatedAccountUpdateInformation(dasToUpdate);
 		request.setExternalData1(externalData1);
@@ -175,6 +184,12 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		//request.setTransactionType(channel);
 		request.setTransactionCurrency("PHP");
 		//request.setTransactionCode(externalData1);
+		
+		if (supervisionPeriodExpiryDate < toLongestDate)
+			request.setSupervisionExpiryDate(new Date(supervisionPeriodExpiryDate));
+		
+		if (serviceFeeExpiryDate < toLongestDate)
+			request.setServiceFeeExpiryDate(new Date(serviceFeeExpiryDate));
 		
 		UpdateBalanceAndDateCommand updateBalanceAndDateCommand = new UpdateBalanceAndDateCommand(request);
 		UpdateBalanceAndDateResponse updateBalanceAndDateResponse = null;
@@ -213,9 +228,10 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String reversalEntry = "" + updatedOffer.getOfferID() + "," + format.format(updatedOffer.getExpiryDateTime());
 			Integer associatedDaId = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", "" + updateOfferRequest.getOfferID()));
+			LOGGER.debug("associatedDA ID: " + associatedDaId);
 			for (DedicatedAccountChangeInformation daResultInfo: updateBalanceAndDateResponse.getDedicatedAccountInformation()) {
 				if (daResultInfo.getDedicatedAccountID().compareTo(associatedDaId)==0) {
-					reversalEntry += associatedDaId 
+					reversalEntry += "," + associatedDaId 
 							+ "," + daResultInfo.getDedicatedAccountValue1() 
 							+ "," + this.getReversalDA(associatedDaId).getAmountToReverse();
 				}

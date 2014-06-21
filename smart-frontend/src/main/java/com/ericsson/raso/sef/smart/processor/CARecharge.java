@@ -873,8 +873,10 @@ public class CARecharge implements Processor {
 		for (Meta meta : response.getBillingMetas()) {
 			logger.debug("Proessing meta: " + meta);
 			// Process the entries....
-			if (meta.getKey().equals(REVERSAL_OFFER_ID)) {
+			if (meta.getKey().startsWith(REVERSAL_OFFER_ID)) {
+				logger.debug("handling meta: " + meta);
 				String rev[] = meta.getValue().split(",");
+				logger.debug("post split size: " + rev.length);
 				ReversalEntry entry = new ReversalEntry();
 				entry.offerID = rev[0];
 				entry.finalExpiryDate = rev[1];
@@ -882,6 +884,7 @@ public class CARecharge implements Processor {
 				entry.finalBalance = rev[3];
 				entry.reversedAmount = rev[4];
 				entry.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", entry.offerID);
+				logger.debug("created reversal entity: " + entry);
 				
 				StringElement stringElement = new StringElement();
 				stringElement.setValue(entry.walletName + ":s_PeriodicBonus;" 
