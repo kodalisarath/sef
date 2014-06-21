@@ -466,6 +466,25 @@ public class Offer implements Serializable {
 	
 	protected List<TransactionTask> query(String subscriberId, Map<String, Object> metas) {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
+		Map<String, Object> context = RequestContextLocalStore.get().getInProcess();
+		
+		
+		context.putAll(metas);
+		LOGGER.debug("Trying to add CharingStep Task......");
+		if (this.isCommercial) 
+		{
+			LOGGER.debug("Yes commercial offer......");
+			MonetaryUnit rate = this.price.getSimpleAdviceOfCharge();
+			if (rate.getAmount() != 0) {
+				LOGGER.debug("Rated AMount: " + rate.getAmount() + rate.getIso4217CurrencyCode());
+				tasks.add(new Charging(ChargingMode.CHARGE, rate, subscriberId, metas));
+			} else {
+				LOGGER.debug("Rated amount was zero... not sending charging request...");
+			}
+			
+		}else{
+			LOGGER.debug("ChargingStep Task not added");
+		}
 		
 		for (AtomicProduct product: this.getAllAtomicProducts()) {
 			tasks.add(new Fulfillment(FulfillmentMode.QUERY, product, subscriberId, metas));
