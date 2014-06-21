@@ -54,12 +54,7 @@ public class SmScapChargingApi implements ScapChargingApi {
 		builder.ownRealm(config.getValue("scapClient",Constants.REALM));
 		builder.fqdn(config.getValue("scapClient",Constants.FQDN));
 		builder.tcpPort(Integer.valueOf(config.getValue("scapClient",Constants.OWNTCPPORT)));
-		//builder.ownIpAddress(SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE)));
-		String ownIpAddress =  SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE));
-		log.debug("ownIPAddress: "+ownIpAddress);
-		if(ownIpAddress == null)ownIpAddress ="0.0.0.0";
-		//String ownIpAddress = "0.0.0.0";
-		builder.ownIpAddress(ownIpAddress);
+		builder.ownIpAddress(SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE)));
 		List<Member> routes = StaticRoutes();
 		for (Member staticRoute : routes) {
 			builder.addStaticRoute(staticRoute.getRealm(), staticRoute.getAddress());
@@ -69,7 +64,7 @@ public class SmScapChargingApi implements ScapChargingApi {
 		scapStack.getDiameterConfig().setValue(DiameterConfig.EVENT_QUEUE_SIZE , config.getValue("scapClient",Constants.EVENTQUEUESIZE));
 		scapStack.getDiameterConfig().setValue(DiameterConfig.SEND_QUEUE_SIZE, config.getValue("scapClient",Constants.SENDQUEUESIZE));
 		scapStack.getDiameterConfig().setValue(DiameterConfig.SEND_MESSAGE_LIMIT , config.getValue("scapClient",Constants.SENDMESSAGELIMIT));
-		
+		scapStack.getDiameterConfig().setValue(DiameterConfig.OWN_VENDOR_ID, "10415");
 		scapStack.getDiameterConfig().addSupportedVendor(10415);
 
 		try {
