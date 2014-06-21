@@ -476,6 +476,7 @@ public class Offer implements Serializable {
 	
 	
 	protected List<TransactionTask> purchase(String subscriberId, boolean override, Map<String, Object> metas) throws CatalogException {
+		LOGGER.debug(".....inside purchase method....");
 		long PURCHASE_TIMESTAMP = System.currentTimeMillis();
 		
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
@@ -574,8 +575,10 @@ public class Offer implements Serializable {
 		 * 1. Evaluate Price and create Charging Task
 		 */
 		context.putAll(metas);
-		
-		if (this.isCommercial && !isTrialAllowed) {
+		LOGGER.debug("Trying to add CharingStep Task......");
+		if (this.isCommercial && !isTrialAllowed) 
+		{
+			LOGGER.debug("Yes commercial offer......");
 			MonetaryUnit rate = this.price.getSimpleAdviceOfCharge();
 			if (rate.getAmount() != 0) {
 				LOGGER.debug("Rated AMount: " + rate.getAmount() + rate.getIso4217CurrencyCode());
@@ -586,6 +589,8 @@ public class Offer implements Serializable {
 			
 			LOGGER.debug("Adding purchase history for charging...");
 			purchase.addPurchaseHistory(SubscriptionLifeCycleEvent.PURCHASE, PURCHASE_TIMESTAMP, rate);
+		}else{
+			LOGGER.debug("ChargingStep Task not added");
 		}
 				
 		//---------- Fulfillment Tasks
