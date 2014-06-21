@@ -49,36 +49,40 @@ public final class Price extends MonetaryUnit {
 		 * 1. process all policies over the base cost
 		 * 2. calculate all taxes
 		 * 3. sum up the entries to "final offer" entry
-		 * 4. load up the cost elements building up to final price in the hashmap
+		 * 4. load up the cost elements building up to final price in the hashma
 		 */
 		
 		// Step 1
+		LOGGER.debug("Processing Pricing Policies : " + this.ratingRules);
 		if(this.ratingRules != null) {
-		for (PricingPolicy rating: this.ratingRules) {
-			rating.setCost(this.cost);
-			if (rating.execute()) {
-				LOGGER.debug("PricePolicy True. Setting Amount");
-				long ratedAmount = (long) context.get(Constants.RATED_AMOUNT.name());
-				costElements.put(rating.getName(), 
-						new Cost(this.getIso4217CurrencyCode(), ratedAmount));
-				this.setAmount(this.getAmount() + ratedAmount);
+			for (PricingPolicy rating: this.ratingRules) {
+				LOGGER.debug("Executing pricing policy: " + rating);
+				rating.setCost(this.cost);
+				if (rating.execute()) {
+					long ratedAmount = (long) context.get(Constants.RATED_AMOUNT.name());
+					LOGGER.debug("PricePolicy True. Setting Amount: " + ratedAmount);
+					costElements.put(rating.getName(), new Cost(this.getIso4217CurrencyCode(), ratedAmount));
+					this.setAmount(this.getAmount() + ratedAmount);
+					LOGGER.debug("Price updated to: " + this.getAmount());
+				}
 			}
-		}
 		}
 		
 		// Step 2
 		
 		long finalOffer = this.getAmount();
-		LOGGER.debug("FinalOffer before taxes: "+finalOffer);
+		LOGGER.debug("FinalOffer before taxes: "+ finalOffer);
 		for (Tax tax: this.taxes) {
+			LOGGER.debug("Working tax: " + tax);
 			MonetaryUnit taxAmount = tax.calculateTax(this);
 			costElements.put(tax.getName(), taxAmount);
 			finalOffer += taxAmount.getAmount();
+			LOGGER.debug("Price updated after tax: "+ finalOffer);
 		}
-		LOGGER.debug("FinalOffer after taxes: "+finalOffer);
+		LOGGER.debug("FinalOffer after all taxes: "+ finalOffer);
+
 		// Step 3
-		costElements.put(Constants.FINAL_OFFER.name(), 
-				new Cost(this.getIso4217CurrencyCode(), finalOffer));
+		costElements.put(Constants.FINAL_OFFER.name(), new Cost(this.getIso4217CurrencyCode(), finalOffer));
 
 				
 		return costElements;

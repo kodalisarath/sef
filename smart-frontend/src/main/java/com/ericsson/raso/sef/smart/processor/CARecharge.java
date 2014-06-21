@@ -468,9 +468,9 @@ public class CARecharge implements Processor {
 				 * As per Tanzeem the following offers must be ignored from considering life-cycle date impacts
 				 */
 				int offerID = Integer.parseInt(offerId);
-				if (offerID == 1 || offerID == 2 || offerID == 4 || offerID == 1241 || (offerID >= 7000 && offerID <= 9999)) {
-					logger.debug("FLEXI:: Offer listed in omission case. Ignoring...");
-					continue;
+				if (offerID == 2) {
+					requestContext.put("inGrace", "true");
+					logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
 				}
 				
 				if (offerID == 4) {
@@ -483,6 +483,11 @@ public class CARecharge implements Processor {
 					continue;
 				}
 				
+				if (offerID == 1 || offerID == 2 || offerID == 4 || offerID == 1241 || (offerID >= 7000 && offerID <= 9999)) {
+					logger.debug("FLEXI:: Offer listed in omission case. Ignoring...");
+					continue;
+				}
+				
 				oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), daID, walletName);
 				subscriberOffers.put(offerId, oInfo);
 				sortedOffers.add(oInfo);
@@ -490,10 +495,7 @@ public class CARecharge implements Processor {
 				
 				logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
 
-				if (offerID == 2) {
-					requestContext.put("inGrace", "true");
-					logger.debug("FLEXI:: CUSTOMER IN GRACE!!!");
-				}
+				
 			}
 			
 			if (key.startsWith("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG")) {
