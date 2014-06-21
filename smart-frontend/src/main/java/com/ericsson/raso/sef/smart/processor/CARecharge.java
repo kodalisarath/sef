@@ -696,8 +696,7 @@ public class CARecharge implements Processor {
 
 		}
 
-		logger.debug("PREDEFINED::Before Offer Entries Size: " + beforeOfferEntries.size() + ", After Entries Size: "
-				+ afterOfferEntries.size());
+		logger.debug("PREDEFINED::Before Offer Entries Size: " + beforeOfferEntries.size() + ", After Entries Size: " + afterOfferEntries.size());
 		logger.debug("PREDEFINED::Before DA Entries Size: " + beforeDaEntries.size() + ", After DA Size: " + afterDaEntries.size());
 
 		// Calculate...
@@ -890,7 +889,7 @@ public class CARecharge implements Processor {
 				stringElement.setValue(entry.walletName + ":s_PeriodicBonus;" 
 							+ entry.reversedAmount + ";"
 							+ entry.finalBalance + ";"
-							+ format.format(new Date(Long.parseLong(entry.finalExpiryDate))));
+							+ entry.finalExpiryDate);
 				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
 				logger.debug("Adding response item to CARecharge: " + entry.toString());			
 			}
