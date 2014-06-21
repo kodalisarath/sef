@@ -84,7 +84,7 @@ public class SmScapChargingApi implements ScapChargingApi {
 	
 	public void stop() {
 		log.debug("Removing Peer connection");
-		scapStack.getDiameterStack().removePeerConnectionListener(this);
+		//scapStack.getDiameterStack().removePeerConnectionListener(this);
 		scapStack.stop();
 		
 	}
