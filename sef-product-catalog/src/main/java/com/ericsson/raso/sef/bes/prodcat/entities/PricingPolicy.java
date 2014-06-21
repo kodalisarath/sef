@@ -32,10 +32,11 @@ public class PricingPolicy extends Policy {
 		 * 2. allow each transform unit to execute...
 		 * 3. capture the output of tranform into new MonetaryUnit
 		 */
-		LOGGER.debug("..Inside PricingPolicy...");
+		LOGGER.debug("..Executing PricingPolicy...");
 		if (this.getRule().execute()) {
 			for (TransformUnit transform: this.getTransforms()) {
 				try {
+					LOGGER.debug("Executing Transform: "+transform.toString());
 					if (!transform.execute())
 						return false;
 				} catch (TransformFailedException e) {
@@ -50,6 +51,7 @@ public class PricingPolicy extends Policy {
 
 	@Override
 	public void addTransformAction(TransformUnit transform) {
+		LOGGER.debug("Inside addTransformAction.");
 		transform.setOutputSchema(Constants.RATED_AMOUNT.name());
 		super.addTransformAction(transform);
 	}
@@ -61,6 +63,7 @@ public class PricingPolicy extends Policy {
 
 	@Override
 	public void setTransforms(List<TransformUnit> transforms) {
+		LOGGER.debug("Inside setTransforms.");
 		for (TransformUnit transform: transforms) {
 			transform.setOutputSchema("RatedAmount");
 			super.addTransformAction(transform);

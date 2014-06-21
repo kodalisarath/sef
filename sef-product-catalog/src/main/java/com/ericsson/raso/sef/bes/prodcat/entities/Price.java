@@ -34,6 +34,7 @@ public final class Price extends MonetaryUnit {
 		 * 1. invoke getPrintableAdviceOfCharge()
 		 * 2. extract & return "final offer"
 		 */
+		LOGGER.debug("Inside getSimpleAdviceOfCharge method");
 		Map<String, MonetaryUnit> costs = this.getPrintableAdviceOfCharge();
 		return costs.get(Constants.FINAL_OFFER.name());
 	}
@@ -66,13 +67,15 @@ public final class Price extends MonetaryUnit {
 		}
 		
 		// Step 2
+		
 		long finalOffer = this.getAmount();
+		LOGGER.debug("FinalOffer before taxes: "+finalOffer);
 		for (Tax tax: this.taxes) {
 			MonetaryUnit taxAmount = tax.calculateTax(this);
 			costElements.put(tax.getName(), taxAmount);
 			finalOffer += taxAmount.getAmount();
 		}
-		
+		LOGGER.debug("FinalOffer after taxes: "+finalOffer);
 		// Step 3
 		costElements.put(Constants.FINAL_OFFER.name(), 
 				new Cost(this.getIso4217CurrencyCode(), finalOffer));
@@ -83,7 +86,7 @@ public final class Price extends MonetaryUnit {
 	
 	public Map<String, MonetaryUnit> getPenalty() {
 		Map<String, MonetaryUnit> costElements = new TreeMap<String, MonetaryUnit>();
-		
+		LOGGER.debug("Inside getPenalty method");
 		for (PricingPolicy rating: this.ratingRules) {
 			rating.setCost(this.cost);
 			if (rating.execute()) {
@@ -118,6 +121,7 @@ public final class Price extends MonetaryUnit {
 	}
 
 	public void addRatingRule(PricingPolicy rating) {
+		LOGGER.debug("PricingPolicy: "+rating.toString());
 		if (this.ratingRules == null)
 			this.ratingRules = new ArrayList<PricingPolicy>();
 		this.ratingRules.add(rating);
