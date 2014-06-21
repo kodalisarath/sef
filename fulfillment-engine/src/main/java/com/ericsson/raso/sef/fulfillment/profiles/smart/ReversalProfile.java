@@ -176,6 +176,12 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		request.setTransactionCurrency("PHP");
 		//request.setTransactionCode(externalData1);
 		
+		if (supervisionPeriodExpiryDate > 0)
+			request.setSupervisionExpiryDate(new Date(supervisionPeriodExpiryDate));
+		
+		if (serviceFeeExpiryDate > 0)
+			request.setServiceFeeExpiryDate(new Date(serviceFeeExpiryDate));
+		
 		UpdateBalanceAndDateCommand updateBalanceAndDateCommand = new UpdateBalanceAndDateCommand(request);
 		UpdateBalanceAndDateResponse updateBalanceAndDateResponse = null;
 		try {
