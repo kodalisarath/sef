@@ -5,13 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.Constants;
+import com.ericsson.raso.sef.bes.prodcat.entities.smart.SmartSimplePricingPolicy;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.ruleengine.Rule;
 
 public final class Price extends MonetaryUnit {
 	private static final long serialVersionUID = 8359880187271854753L;
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Price.class);
 	private MonetaryUnit cost = null;
 	private List<Tax> taxes = null;
 	private List<PricingPolicy> ratingRules = null;
@@ -35,6 +39,7 @@ public final class Price extends MonetaryUnit {
 	}
 	
 	public Map<String, MonetaryUnit> getPrintableAdviceOfCharge() {
+		LOGGER.debug("Inside getPrintableAdviceOfCharge method");
 		Map<String, MonetaryUnit> costElements = new TreeMap<String, MonetaryUnit>();
 
 		context = RequestContextLocalStore.get().getInProcess();
@@ -51,6 +56,7 @@ public final class Price extends MonetaryUnit {
 		for (PricingPolicy rating: this.ratingRules) {
 			rating.setCost(this.cost);
 			if (rating.execute()) {
+				LOGGER.debug("PricePolicy True. Setting Amount");
 				long ratedAmount = (long) context.get(Constants.RATED_AMOUNT.name());
 				costElements.put(rating.getName(), 
 						new Cost(this.getIso4217CurrencyCode(), ratedAmount));

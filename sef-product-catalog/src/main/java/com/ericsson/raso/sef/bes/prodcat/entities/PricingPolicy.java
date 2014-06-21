@@ -2,6 +2,9 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.Constants;
 import com.ericsson.raso.sef.bes.prodcat.tasks.CostInputTask;
 import com.ericsson.raso.sef.ruleengine.Policy;
@@ -10,7 +13,7 @@ import com.ericsson.raso.sef.ruleengine.TransformUnit;
 
 public class PricingPolicy extends Policy {
 	private static final long serialVersionUID = 6928999115192214745L;
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PricingPolicy.class);
 	public PricingPolicy(String name) {
 		super(name);
 	}
@@ -29,7 +32,7 @@ public class PricingPolicy extends Policy {
 		 * 2. allow each transform unit to execute...
 		 * 3. capture the output of tranform into new MonetaryUnit
 		 */
-		
+		LOGGER.debug("..Inside PricingPolicy...");
 		if (this.getRule().execute()) {
 			for (TransformUnit transform: this.getTransforms()) {
 				try {
