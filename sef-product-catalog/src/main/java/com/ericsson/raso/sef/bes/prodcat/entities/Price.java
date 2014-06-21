@@ -71,13 +71,17 @@ public final class Price extends MonetaryUnit {
 		
 		long finalOffer = this.getAmount();
 		LOGGER.debug("FinalOffer before taxes: "+ finalOffer);
-		for (Tax tax: this.taxes) {
-			LOGGER.debug("Working tax: " + tax);
-			MonetaryUnit taxAmount = tax.calculateTax(this);
-			costElements.put(tax.getName(), taxAmount);
-			finalOffer += taxAmount.getAmount();
-			LOGGER.debug("Price updated after tax: "+ finalOffer);
-		}
+		if (this.taxes != null) {
+			LOGGER.debug("taxes are not null. Size: " + this.taxes.size());
+			for (Tax tax: this.taxes) {
+				LOGGER.debug("Working tax: " + tax);
+				MonetaryUnit taxAmount = tax.calculateTax(this);
+				costElements.put(tax.getName(), taxAmount);
+				finalOffer += taxAmount.getAmount();
+				LOGGER.debug("Price updated after tax: "+ finalOffer);
+			}
+		} else
+			LOGGER.debug("taxes are null!!");
 		LOGGER.debug("FinalOffer after all taxes: "+ finalOffer);
 
 		// Step 3
