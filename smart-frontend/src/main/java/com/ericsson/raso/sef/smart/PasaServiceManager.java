@@ -44,7 +44,7 @@ public class PasaServiceManager {
 	public boolean isPasaReceiveAllowed(String subscriberId, String pasaLoadID) {
 		String subscriberPasaFile = this.pasaServiceStoreLocation;
 		
-		LOGGER.debug("Entering save pasa function...");
+		LOGGER.debug("Entering get pasa function...");
 
 		if (this.pasaServiceStoreLocation == null) {
 			LOGGER.debug("SMART_PASA_STORE_URI is not configured. Cannot process request");
@@ -74,7 +74,7 @@ public class PasaServiceManager {
 			semaphore.init(0);
 			semaphore.acquire();
 		} catch (InterruptedException e) {
-
+			LOGGER.debug("Apparently interrupted in smeaphore... Mostly the request will fail!!");
 		}
 		LOGGER.info("Check if response received...");
 		discoveryResponse = (DiscoveryResponse) RequestCorrelationStore.remove(requestCorrelator);
@@ -135,7 +135,7 @@ public class PasaServiceManager {
 			semaphore.init(0);
 			semaphore.acquire();
 		} catch (InterruptedException e) {
-
+			LOGGER.debug("Apparently interrupted in smeaphore... Mostly the request will fail!!");
 		}
 		LOGGER.info("Check if response received...");
 		discoveryResponse = (DiscoveryResponse) RequestCorrelationStore.remove(requestCorrelator);
@@ -170,6 +170,7 @@ public class PasaServiceManager {
 			oisPasa.close();
 			fisPasa.close();
 
+			LOGGER.debug("Fetched Pasa file...");
 			return pasa;
 
 		} catch (FileNotFoundException e) {
@@ -192,7 +193,8 @@ public class PasaServiceManager {
 
 			oosPasa.close();
 			fosPasa.close();
-
+			
+			LOGGER.debug("Saved the pasa file: " + subscriberPasaFile);
 			return true;
 
 		} catch (FileNotFoundException e) {
@@ -279,7 +281,7 @@ public class PasaServiceManager {
 				pasaAmountToday.put(relevantKey, 1);
 			else 
 				pasaAmountToday.put(relevantKey, (pasaAmount + value));
-
+			LOGGER.debug("Updated pasa info... Will persist...");
 			return true;
 		}
 

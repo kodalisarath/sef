@@ -116,6 +116,84 @@ public class Offer implements Serializable {
 				+ ", recurrence=" + recurrence + ", trial=" + trial + ", minimumCommitment=" + minimumCommitment + ", autoTerminate="
 				+ autoTerminate + ", price=" + price + ", currency=" + currency + ", products=" + products + "]";
 	}
+
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((autoTerminate == null) ? 0 : autoTerminate.hashCode());
+		result = prime * result + ((currency == null) ? 0 : currency.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((minimumCommitment == null) ? 0 : minimumCommitment.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + (int) (price ^ (price >>> 32));
+		result = prime * result + ((products == null) ? 0 : products.hashCode());
+		result = prime * result + (recurrence ? 1231 : 1237);
+		result = prime * result + ((subscriptionId == null) ? 0 : subscriptionId.hashCode());
+		result = prime * result + ((trial == null) ? 0 : trial.hashCode());
+		result = prime * result + ((validity == null) ? 0 : validity.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Offer other = (Offer) obj;
+		if (autoTerminate == null) {
+			if (other.autoTerminate != null)
+				return false;
+		} else if (!autoTerminate.equals(other.autoTerminate))
+			return false;
+		if (currency == null) {
+			if (other.currency != null)
+				return false;
+		} else if (!currency.equals(other.currency))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (minimumCommitment == null) {
+			if (other.minimumCommitment != null)
+				return false;
+		} else if (!minimumCommitment.equals(other.minimumCommitment))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (price != other.price)
+			return false;
+		if (products == null) {
+			if (other.products != null)
+				return false;
+		} else if (!products.equals(other.products))
+			return false;
+		if (recurrence != other.recurrence)
+			return false;
+		if (subscriptionId == null) {
+			if (other.subscriptionId != null)
+				return false;
+		} else if (!subscriptionId.equals(other.subscriptionId))
+			return false;
+		if (trial == null) {
+			if (other.trial != null)
+				return false;
+		} else if (!trial.equals(other.trial))
+			return false;
+		if (validity == null) {
+			if (other.validity != null)
+				return false;
+		} else if (!validity.equals(other.validity))
+			return false;
+		return true;
+	}
 	
 	
 

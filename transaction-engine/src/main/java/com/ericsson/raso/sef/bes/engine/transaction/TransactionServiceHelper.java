@@ -289,7 +289,7 @@ public abstract class TransactionServiceHelper {
 	}
 	
 	public static Set<Product> translateProducts(List<AtomicProduct> allAtomicProducts) {
-		Set<Product> products = new TreeSet<Product>();
+		Set<Product> products = new HashSet<Product>();
 		
 		for (AtomicProduct source: allAtomicProducts)  {
 			logger.debug("Translating product: " + source);
