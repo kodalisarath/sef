@@ -135,7 +135,8 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 			LOGGER.debug("user is in grace and now getting unset...");
 			updateGraceOfferRequest.setOfferID(2);
 			updateGraceOfferRequest.setExpiryDateTime(new Date(System.currentTimeMillis() + 2000));
-			
+			updateOfferRequest.setOfferType(2);
+				
 			UpdateOfferCommand updateGraceOfferCommand = new UpdateOfferCommand(updateGraceOfferRequest);
 			try {
 				LOGGER.debug("Sending Update Grace Offer for flexi-case..");

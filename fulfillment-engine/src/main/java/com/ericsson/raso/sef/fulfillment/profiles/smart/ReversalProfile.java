@@ -113,6 +113,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		// Now... calculate the balance & dates to reverse
 		long supervisionPeriodExpiryDate = 0;
 		long serviceFeeExpiryDate = 0;
+		long newExpiryDate = 0;
 		List<OfferInformation> offersToUpdate = new ArrayList<OfferInformation>();
 		List<DedicatedAccountUpdateInformation> dasToUpdate = new ArrayList<DedicatedAccountUpdateInformation>();
 		for (TimerOfferReversal toReversal: toReversals) {
@@ -123,7 +124,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			}
 			
 			long impactedExpiry = ((impactedOffer.getExpiryDate() != null)?impactedOffer.getExpiryDate().getTime():impactedOffer.getExpiryDateTime().getTime());
-			long newExpiryDate = impactedExpiry - toReversal.getHoursToReverse();
+			newExpiryDate = impactedExpiry - toReversal.getHoursToReverse();
 			
 			if (impactedExpiry == toLongestDate) {
 				// calculating new activeEndDate here....
@@ -191,7 +192,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 
 			UpdateOfferRequest updateOfferRequest = new UpdateOfferRequest();
 			//updateOfferRequest.setExpiryDate(updatedOffer.getExpiryDate());
-			updateOfferRequest.setExpiryDateTime(updatedOffer.getExpiryDateTime());
+			updateOfferRequest.setExpiryDateTime(new Date(newExpiryDate));
 			//updateOfferRequest.setStartDateTime(updatedOffer.getStartDate());
 			//updateOfferRequest.setStartDateTime(updatedOffer.getStartDateTime());
 			updateOfferRequest.setOfferID(updatedOffer.getOfferID());
