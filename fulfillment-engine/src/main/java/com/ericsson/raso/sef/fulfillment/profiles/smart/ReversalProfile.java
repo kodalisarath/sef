@@ -123,8 +123,9 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			}
 			
 			long impactedExpiry = ((impactedOffer.getExpiryDate() != null)?impactedOffer.getExpiryDate().getTime():impactedOffer.getExpiryDateTime().getTime());
+			long newExpiryDate = impactedExpiry - toReversal.getHoursToReverse();
+			
 			if (impactedExpiry == toLongestDate) {
-				long newExpiryDate = impactedExpiry - toReversal.getHoursToReverse();
 				// calculating new activeEndDate here....
 				if (newExpiryDate > toSecondLongestDate) {
 					supervisionPeriodExpiryDate = newExpiryDate;
