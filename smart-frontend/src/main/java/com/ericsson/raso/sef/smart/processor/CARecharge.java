@@ -567,6 +567,8 @@ public class CARecharge implements Processor {
 			logger.debug("Pasa service seems to be badly configured...");
 			throw ExceptionUtil.toSmException(ErrorCode.systemError);
 		}
+		
+		logger.debug("Checking with pasa if allowed or not: " + rechargeRequest.getEventName());
 		if (!pasaService.isPasaReceiveAllowed(rechargeRequest.getCustomerId(), rechargeRequest.getEventName())) {
 			logger.debug("Pasaload is not allowed until tomorrow for this promo: " + rechargeRequest.getEventName());
 			throw ExceptionUtil.toSmException(ErrorCode.maxCreditViolation);

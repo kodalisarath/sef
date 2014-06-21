@@ -19,7 +19,6 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
 import com.ericsson.raso.sef.smart.subscription.response.DiscoveryResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
-import com.ericsson.sef.bes.api.entities.Offer;
 import com.hazelcast.core.ISemaphore;
 
 public class PasaServiceManager {
