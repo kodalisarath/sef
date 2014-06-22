@@ -100,7 +100,7 @@ public class PasaServiceManager {
 			return true;
 
 		} catch (Exception e) {
-			LOGGER.error("Bad Configuration for Pasa(" + pasaLoadID + "). Cannot afford revenue exposures!!!");
+			LOGGER.error("Bad Configuration for Pasa(" + pasaLoadID + "). Cannot afford revenue exposures!!!", e);
 			this.persistToFile(subscriberPasaFile, subscriberPasa);
 			return false;
 		}
