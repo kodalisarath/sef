@@ -6,8 +6,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SubscriberPasa implements Serializable {
 		private static final long	serialVersionUID	= 7366456574101630585L;
+		private static final Logger LOGGER = LoggerFactory.getLogger(SubscriberPasa.class);
 
 		private Map<String, Map<String, Integer>> pasaReceivedCount = new HashMap<String, Map<String,Integer>>();
 		private Map<String, Map<String, Integer>> pasaReceivedAmount = new HashMap<String, Map<String,Integer>>();
