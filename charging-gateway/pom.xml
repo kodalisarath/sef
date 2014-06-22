@@ -65,7 +65,8 @@
  			com.ericsson.raso.sef.core.db.model,
  			com.ericsson.raso.sef.cg.engine.nsn.avp,
 			com.ericsson.raso.sef.cg.engine.nsn.avp.sms,
-			com.ericsson.raso.sef.cg.engine.nsn.avp.mms
+			com.ericsson.raso.sef.cg.engine.nsn.avp.mms,
+			org.apache.camel.component.gson
 		</osgi-import-package>
 		<osgi-export-package>
 			com.ericsson.raso.sef.charginggateway.diameter
@@ -77,6 +78,11 @@
 			<groupId>com.ericsson.sef</groupId>
 			<artifactId>sef-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		 <dependency>
+		  <groupId>org.apache.camel</groupId>
+		  <artifactId>camel-gson</artifactId>
+		  <version>2.10.0</version>
 		</dependency>
 	</dependencies>
 

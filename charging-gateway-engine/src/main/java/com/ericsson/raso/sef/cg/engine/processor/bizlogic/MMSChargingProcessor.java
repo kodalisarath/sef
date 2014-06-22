@@ -42,7 +42,7 @@ public class MMSChargingProcessor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		
+		log.debug(String.format("Enter MMSChargingProcessor.process. exchange is %s", exchange));
 		log.debug("MMSChargingProcessor  Inside ProcessMethod");
 		ChargingRequest request = (ChargingRequest) exchange.getIn().getBody();	
 		Ccr sourceCcr = request.getSourceCcr();
@@ -60,11 +60,13 @@ public class MMSChargingProcessor implements Processor {
 		response.setAvpList(resultAvps);
 		log.debug("MMSChargingProcessor  Inside ProcessMethod response is "+resultAvps);
 		exchange.getOut().setBody(response);
+		log.debug("End MMSChargingProcessor.process");
 	}
 
 	protected Ccr toScapCcr(Ccr sourceCcr, ChargingRequest request) throws Exception {
 		
 		log.debug("MMSChargingProcessor  Inside toScapCcr method");
+		log.debug(String.format("Enter MMSChargingProcessor.toScapCcr sourceCcr is %s, request is %s", sourceCcr, request));
 		Ccr scapCcr = CgEngineContext.getChargingApi().createScapCcr(sourceCcr.getSessionId(), request.getHostId());
 
 		scapCcr.setServiceContextId("SCAP_V.2.0@ericsson.com");
@@ -147,6 +149,7 @@ public class MMSChargingProcessor implements Processor {
 	
 		
 		log.debug("MMSChargingProcessor  Inside toNsnAnswer method");
+		log.debug(String.format("Enter MMSChargingProcessor.toScapCcr cca is %s, response is %s, chargingRequest is %s", cca, response, chargingRequest));
 		List<Avp> answerAvp = new ArrayList<Avp>();
 		answerAvp.add(new ResultCodeAvp(cca.getResultCode()));
 		answerAvp.add(new OriginHostAvp(cca.getOriginHost()));

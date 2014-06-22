@@ -2,6 +2,9 @@ package com.ericsson.raso.sef.cg.engine.processor.bizlogic;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.pps.diameter.dccapi.avp.CCMoneyAvp;
 import com.ericsson.pps.diameter.dccapi.avp.CCServiceSpecificUnitsAvp;
 import com.ericsson.pps.diameter.dccapi.avp.GrantedServiceUnitAvp;
@@ -25,6 +28,8 @@ import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
 
 public class CommitAmountProcessor extends AbstractChargingProcessor {
 
+	private final static Logger logger = LoggerFactory.getLogger(CancelAmountProcessor.class);
+	
 	@Override
 	protected Integer getRequestNumber() {
 		return 1;
@@ -32,16 +37,20 @@ public class CommitAmountProcessor extends AbstractChargingProcessor {
 
 	@Override
 	protected void preProcess(ChargingRequest request, Ccr scapCcr) throws AvpDataException {
+		logger.debug(String.format("Enter CommitAmountProcessor.preProcess, request is %s, scapCcr is %s", 
+				request, scapCcr));
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
 		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
 		List<Avp> responseAvps = session.getResponseAvp(Type.TRANSACATION_START);
 		List<Avp> reqAvps = session.getRequestAvp(Type.TRANSACATION_START);
 		UsedServiceUnitAvp usedServiceUnitAvp = getUsedServiceUnitAvpre(responseAvps, reqAvps, scapCcr);
 		scapCcr.addAvp(usedServiceUnitAvp);
+		logger.debug(String.format("End CommitAmountProcessor.preProcess, response avp is %s", responseAvps));
 	}
 
 	@Override
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
+		logger.debug(String.format("Enter CommitAmountProcessor.preProcess, request is %s, response is %s, cca is %s", request, response, cca));
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
 		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
 
@@ -51,10 +60,15 @@ public class CommitAmountProcessor extends AbstractChargingProcessor {
 			session.setTransactionStatus(TransactionStatus.FAILED);
 		}
 		CgEngineContext.getIpcCluster().updateChargingSession(response.getSessionId(), session);
+		logger.debug("End CommitAmountProcessor.postProcess");
 	}
 
 	private UsedServiceUnitAvp getUsedServiceUnitAvpre(List<Avp> resAvps, List<Avp> reqAvps, Ccr scapCcr)
 			throws AvpDataException {
+	
+		logger.debug(String.format("Enter CommitAmountProcessor.getUsedServiceUnitAvpre, resAvps is %s, reqAvps is %s, scapCcr is %s", 
+				resAvps, reqAvps, scapCcr));
+		
 		Ccr resCcr = CgEngineContext.getChargingApi().createDummyCcr();
 		resCcr.addAvps(resAvps);
 

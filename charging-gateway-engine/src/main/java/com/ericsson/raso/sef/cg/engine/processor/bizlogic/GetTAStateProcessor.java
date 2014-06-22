@@ -31,6 +31,7 @@ public class GetTAStateProcessor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
+		log.debug(String.format("Enter GetTAStateProcessor.process. Exchange is %s", exchange));
 		ChargingRequest request = (ChargingRequest) exchange.getIn().getBody();	
 
 		ChargingInfo response = new ChargingInfo();
@@ -104,6 +105,7 @@ public class GetTAStateProcessor implements Processor {
 		answerAvp.add(serviceInfoAvp);
 
 		exchange.getOut().setBody(response);
+		log.debug("End GetTAStateProcessor.process");
 	
 	}
 }

@@ -44,6 +44,7 @@ public class SMSChargingProcessor implements Processor {
 	SefScapChargingApi sefScapChargingApi = null;
 	@Override
 	public void process(Exchange exchange) throws Exception {
+		log.debug(String.format("Enter SMSChargingProcessor.process. exchange is %s", exchange));
 		ChargingRequest request = (ChargingRequest) exchange.getIn().getBody();	
 		
 		Ccr sourceCcr = request.getSourceCcr();
@@ -59,10 +60,12 @@ public class SMSChargingProcessor implements Processor {
 		response.setAvpList(resultAvps);
 
 		exchange.getOut().setBody(response);
+		log.debug("End SMSChargingProcessor.process");
 	}
 
 	protected Ccr toScapCcr(Ccr sourceCcr, ChargingRequest request) throws Exception {
-
+		log.debug(String.format("Enter SMSChargingProcessor.toScapCcr. sourceCcr is %s, request is %s", 
+				sourceCcr, request));
 		 sefScapChargingApi = new SefScapChargingApi();
 		Ccr scapCcr = sefScapChargingApi.createScapCcr(sourceCcr.getSessionId(), request.getHostId());
 
@@ -163,12 +166,14 @@ public class SMSChargingProcessor implements Processor {
 		if (mmsInfoAvp.geMessageIdAvp() != null) {
 			scapCcr.addAvp(mmsInfoAvp.geMessageIdAvp());
 		}
-
+		log.debug("End SMSChargingProcessor.toScapCcr");
 		return scapCcr;
 	}
 
 	protected List<Avp> toNsnAnswer(Cca cca, ChargingInfo response, ChargingRequest chargingRequest)
 			throws AvpDataException {
+		log.debug(String.format("Enter SMSChargingProcessor.toNsnAnswer. cca is %s, response is %s, chargingRequest is %s", 
+				cca, response, chargingRequest));
 		List<Avp> answerAvp = new ArrayList<Avp>();
 		ResultCodeAvp resultCodeAvp = new ResultCodeAvp(cca.getResultCode());
 		answerAvp.add(resultCodeAvp);
@@ -194,6 +199,7 @@ public class SMSChargingProcessor implements Processor {
 			}
 		}
 		answerAvp.add(msccAvp);
+		log.debug("End SMSChargingProcessor.toNsnAnswer");
 		return answerAvp;
 	}
 }

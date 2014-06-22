@@ -34,20 +34,22 @@
 		<constructor-arg name="connectionListener" ref="peerConnectionListener" />
 		<constructor-arg name="requestListener" ref="requestListener" />
 	</bean>
+	
+	<bean id="gson" class="org.apache.camel.component.gson.GsonDataFormat">
+		<!-- we want to unmarshal to ChargingInfo pojo -->
+		<property name="unmarshalType" value="com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo" />
+	</bean>
 
 	<camelContext id="com.ericsson.raso.sef.charginggateway"
 		xmlns="http://camel.apache.org/schema/spring">
 		<propertyPlaceholder id="properties" location="ref:cgProperties" />
 		<route id="cg-engine-route-dispatch">
 			<from uri="direct:charging-gateway" />
-			<camel:marshal>
-				<camel:serialization />
-			</camel:marshal>
+			<camel:marshal ref="gson"/>
+			<camel:log message="From Charging Gateway :${body}"/>
 			<!-- <camel:to uri="http://0.0.0.0:9090/charginggateway/CgWeb/process"/> -->
 			<camel:to uri="{{chargingGatewayEngineUrl}}" />
-			<camel:unmarshal>
-				<camel:serialization />
-			</camel:unmarshal>
+			<camel:unmarshal ref="gson"/>
 		</route>
 	</camelContext>
 </beans>

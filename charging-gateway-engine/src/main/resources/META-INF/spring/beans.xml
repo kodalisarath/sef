@@ -27,7 +27,11 @@
 
 	<bean id="sefScapChargingApi" class="com.ericsson.raso.sef.cg.engine.util.SefScapChargingApi"
 		init-method="start" destroy-method="stop" />
-
+	
+	<bean id="gson" class="org.apache.camel.component.gson.GsonDataFormat">
+		<!-- we want to unmarshal to ChargingInfo pojo -->
+		<property name="unmarshalType" value="com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo" />
+	</bean>
 
 	<cxf:cxfEndpoint id="subscriberResponse"
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
@@ -49,9 +53,7 @@
 			<from uri="cxfrs://bean://cgeServer" />
 			<camel:doTry>
 				<!-- <camel:bean ref="rcs" method="enter" /> -->
-				<camel:unmarshal>
-					<camel:serialization />
-				</camel:unmarshal>
+				<camel:unmarshal ref="gson" />
 				<camel:bean ref="cdr" method="requestIn" />
 				<camel:bean
 					beanType="com.ericsson.raso.sef.cg.engine.processor.RequestEntryProcessor" />
@@ -74,9 +76,7 @@
 				<camel:doFinally>
 					<camel:bean ref="cdr" method="responseOut" />
 					<!-- <camel:bean ref="rcs" method="exit" /> -->
-					<camel:marshal>
-						<camel:serialization />
-					</camel:marshal>
+					<camel:marshal ref="gson" />
 				</camel:doFinally>
 			</camel:doTry>
 		</route>

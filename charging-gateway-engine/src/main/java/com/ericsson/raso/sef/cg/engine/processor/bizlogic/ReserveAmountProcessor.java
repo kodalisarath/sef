@@ -1,5 +1,8 @@
 package com.ericsson.raso.sef.cg.engine.processor.bizlogic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.pps.diameter.dccapi.avp.CCMoneyAvp;
 import com.ericsson.pps.diameter.dccapi.avp.CCServiceSpecificUnitsAvp;
 import com.ericsson.pps.diameter.dccapi.avp.CurrencyCodeAvp;
@@ -21,20 +24,26 @@ import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
 
 public class ReserveAmountProcessor extends AbstractChargingProcessor {
 
+	private final static Logger logger = LoggerFactory.getLogger(ChargeAmountProcessor.class);
+	
 	protected Integer getRequestNumber() {
 		return 0;
 	}
 
 	@SuppressWarnings("unchecked")
-		protected void preProcess(ChargingRequest request, Ccr scapCcr) {
+	protected void preProcess(ChargingRequest request, Ccr scapCcr) {
+		logger.debug(String.format("Enter ReserveAmountProcessor.preProcess, request is %s, scapCcr is %s", request, scapCcr));
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
 		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
 		session.addRequestAvp(Type.TRANSACATION_START, scapCcr.getDiameterMessage().getAvps());
 		CgEngineContext.getIpcCluster().updateChargingSession(request.getSessionId(), session);
+		logger.debug("End ReserveAmountProcessor.preProcess");
 	}
 
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
+		logger.debug(String.format("Enter ReserveAmountProcessor.postProcess request is %s, response is %s, cca is %s", 
+				request, response, cca));
 		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(response.getSessionId());
 		session.addResponseAvp(Type.TRANSACATION_START, response.getAvpList());
 		
@@ -46,10 +55,12 @@ public class ReserveAmountProcessor extends AbstractChargingProcessor {
 		}
 		
 		CgEngineContext.getIpcCluster().updateChargingSession(response.getSessionId(), session);
+		logger.debug("End ReserveAmountProcessor.postProcess");
 	}
 
 	private MultipleServicesCreditControlAvp createCreditControlAvp(Cca cca, ChargingRequest request)
 			throws AvpDataException {
+		logger.debug(String.format("Enter ReserveAmountProcessor.createCreditControlAvp, cca is %s, request is %s", cca, request));
 		MultipleServicesCreditControlAvp ccAvp = new MultipleServicesCreditControlAvp();
 		
 		GrantedServiceUnitAvp gsUnitAvp = new GrantedServiceUnitAvp(cca.getAvp(GrantedServiceUnitAvp.AVP_CODE));
@@ -69,6 +80,7 @@ public class ReserveAmountProcessor extends AbstractChargingProcessor {
 			ccAvp.addSubAvp(gsUnitAvp2);
 
 		}
+		logger.debug("End ReserveAmountProcessor.createCreditControlAvp");
 		return ccAvp;
 	}
 

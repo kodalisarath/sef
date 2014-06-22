@@ -44,10 +44,11 @@ import com.ericsson.raso.sef.core.config.IConfig;
 
 public class GetConsumerAccountlistProcessor implements Processor {
 
-	protected Logger log = LoggerFactory.getLogger(this.getClass());
+	protected static Logger log = LoggerFactory.getLogger(GetConsumerAccountlistProcessor.class);
 	
 	@Override
 	public void process(Exchange exchange) throws Exception {
+		log.debug(String.format("Enter GetConsumerAccountlistProcessor.porcess. exchange is %s", exchange));
 		ChargingRequest request = (ChargingRequest) exchange.getIn().getBody();
 
 		Ccr sourceCcr = request.getSourceCcr();
@@ -71,11 +72,12 @@ public class GetConsumerAccountlistProcessor implements Processor {
 		response.setResultCodeAvp(resultCodeAvp);
 		
 		exchange.getOut().setBody(response);
-	
+		log.debug("End GetConsumerAccountlistProcessor");
 	}
 
 	@Handler
 	public ChargingInfo process(@Body ChargingRequest request) throws Exception {
+		log.debug(String.format("Enter GetConsumerAccountlistProcessor.porcess. request is %s", request));
 		Ccr sourceCcr = request.getSourceCcr();
 
 		ServiceInfoAvp serviceInfoAvp = new ServiceInfoAvp(sourceCcr.getAvp(ServiceInfoAvp.AVP_CODE));
@@ -96,11 +98,14 @@ public class GetConsumerAccountlistProcessor implements Processor {
 		response.setAvpList(toNsnAnswer(sourceCcr, getBalResponse, accountIdAvps,request.getMsisdn()));
 		ResultCodeAvp resultCodeAvp = new ResultCodeAvp(DiameterErrorCode.DIAMETER_SUCCESS.getCode());
 		response.setResultCodeAvp(resultCodeAvp);
+		log.debug("End GetConsumerAccountlistProcessor");
 		return response;
 	}
 
 	private List<Avp> toNsnAnswer(Ccr ccr, GetBalanceAndDateResponse balresponse, List<ConsumerAccountIdAvp> list,String msisdn) {
-
+		log.debug(String.format("Enter GetConsumerAccountlistProcessor.toNsnAnswer. ccr is %s, balresponse is %s " +
+				"list is %s, msisdn is %s", 
+				ccr, balresponse, list, msisdn));
 		final String WALLET_MAPPING = "GLOBAL_walletMapping";
 		final String OFFER_MAPPING = "Global_offerMapping";
 
@@ -189,18 +194,22 @@ public class GetConsumerAccountlistProcessor implements Processor {
 			answerAvp.clear();
 			answerAvp.add(new ResultCodeAvp(DiameterErrorCode.DIAMETER_UNABLE_TO_COMPLY.getCode()));
 		}
+		log.debug("End toNsnAnswer");
 		return answerAvp;
 	}
 
 	private Map<Integer, DedicatedAccountInformation> toDaMap(List<DedicatedAccountInformation> list) {
+		log.debug(String.format("Enter GetConsumerAccountlistProcessor.toDaMap. list is %s", list));
 		Map<Integer, DedicatedAccountInformation> map = new LinkedHashMap<Integer, DedicatedAccountInformation>();
 		for (DedicatedAccountInformation da : list) {
 			map.put(da.getDedicatedAccountID(), da);
 		}
+		log.debug("GetConsumerAccountlistProcessor.toDaMap");
 		return map;
 	}
 
 	private boolean isExistCaId(Long id, List<ConsumerAccountIdAvp> list) {
+		log.debug(String.format("Enter GetConsumerAccountlistProcessor.isExistCaId. id is %s, list is %s", id, list));
 		for (ConsumerAccountIdAvp accountIdAvp : list) {
 			try {
 				if (id == accountIdAvp.getAsLong())
@@ -209,10 +218,12 @@ public class GetConsumerAccountlistProcessor implements Processor {
 				continue;
 			}
 		}
+		log.debug("GetConsumerAccountlistProcessor.isExistCaId");
 		return false;
 	}
 
 	private static long getConversionFector(String offerId) {
+		log.debug(String.format("Enter GetConsumerAccountlistProcessor.getConversionFector. offerId is %s", offerId));
 
 		long conFec = 1;
 		// IConfig config = SmCoreContext.getConfig();
@@ -236,6 +247,7 @@ public class GetConsumerAccountlistProcessor implements Processor {
 		 * String conv = offerConvMapping.getProperty(walletName);
 		 * if(conv!=null){ conFec= Long.parseLong(conv); } }
 		 */
+		log.debug("GetConsumerAccountlistProcessor.getConversionFector");
 		return conFec;
 	}
 	

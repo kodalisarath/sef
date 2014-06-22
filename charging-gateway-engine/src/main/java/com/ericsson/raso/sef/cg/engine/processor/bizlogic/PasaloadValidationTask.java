@@ -34,7 +34,7 @@ public class PasaloadValidationTask implements Task<Void> {
 
 	@Override
 	public Void execute() throws SmException {
-
+		log.debug("Enter PasaloadValidationTask.execute");
 		GetBalanceAndDateRequest request = new GetBalanceAndDateRequest();
 		request.setSubscriberNumber(msisdn);
 
@@ -83,7 +83,7 @@ public class PasaloadValidationTask implements Task<Void> {
 			log.error("Pasaload:: Cannot transfer the amount recieved during the day.");
 			throw new SmException(com.ericsson.raso.sef.cg.engine.ResponseCode.SUBSCRIBER_INSUFFICIENT_BALANCE);
 		}
-
+		log.debug("End PasaloadValidationTask.execute");
 		return null;
 	}
 }
