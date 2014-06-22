@@ -393,6 +393,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				result = persistence.call();
 				persistence.setResult(result);
 				this.sbRequestResultMapper.put(persistence.getStepCorrelator(), result);
+				this.sbExecutionStatus.put(persistence.getStepCorrelator(), Status.DONE_SUCCESS);
 				logger.debug("Execution graceful...");
 			} catch (Exception e) {
 				logger.debug("Execution blew up on the face!!!", e);
