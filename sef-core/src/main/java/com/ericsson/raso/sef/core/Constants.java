@@ -104,12 +104,12 @@ public class Constants {
 	public static final String ENDPOINTID = "endpointId";
 	public static final String EXCEPTION = "exception";
 	public static final String operationName = "operationName";
+	public static final String OWN_DIAMETER_URI = "ownDiameterURI";
 	//Local Cache
 	public static final String EVICTIONDURATION = "evictionDuration";
 	public static final String EVICTIONTIMEUNIT = "evictionTimeUnit";
 	public static final String MAXSIZE = "maxSize";
 	public static final String EXCUTABLE_OFFER = "executableOffer";
-	public static final String OWN_DIAMETER_URI = "ownDiameterURI";
 	//Activation Schedular
 	public static final String QUARTZ_INTERFACE = "sef-scheduler-interfaces";
 	public static final String QUARTZ_SERVER = "sef-scheduler-server";
