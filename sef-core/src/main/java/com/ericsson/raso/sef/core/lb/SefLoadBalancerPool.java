@@ -63,6 +63,7 @@ public class SefLoadBalancerPool implements LoadBalancerPool {
 	
 	
 	private Member getMemberByUri(String uri) {
+		logger.debug("URI : "+uri);
 		for (Member route : hostRouteMap.values()) {
 			if(uri.contains(route.getHostId())) {
 				return route;
@@ -81,7 +82,11 @@ public class SefLoadBalancerPool implements LoadBalancerPool {
 
 	@Override
 	public Member getMemberBySite(String site) {
+		logger.debug("loadBalancerMap size: "+loadBalancerMap.size());
 		LoadBalancer balancer = loadBalancerMap.get(site);
+		if(loadBalancerMap == null){
+			logger.debug("LoadBalancer is null.");
+		}
 		return balancer.chooseRoute();
 	}
 }
