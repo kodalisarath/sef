@@ -3,8 +3,12 @@ package com.ericsson.raso.sef.core.config;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @XmlRootElement(name="range")
 public class Range implements Comparable<Range> {
+	private static final Logger logger = LoggerFactory.getLogger(Range.class);
 	
 	private long start;
 	private long end;
@@ -48,6 +52,7 @@ public class Range implements Comparable<Range> {
 	}
 
 	public boolean contains(long searched) {
+		logger.debug("Searching for :" + searched + " in " +  this.toString());
 		if (searched >= this.start && searched <= this.end)
 			return true;
 		return false;

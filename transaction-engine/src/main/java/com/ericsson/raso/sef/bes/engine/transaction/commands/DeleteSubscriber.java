@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.engine.transaction.Constants;
 import com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver;
 import com.ericsson.raso.sef.bes.engine.transaction.TransactionException;
+import com.ericsson.raso.sef.bes.engine.transaction.TransactionServiceHelper;
+import com.ericsson.raso.sef.bes.engine.transaction.entities.CreateSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.DeleteSubscriberRequest;
 import com.ericsson.raso.sef.bes.engine.transaction.entities.DeleteSubscriberResponse;
 import com.ericsson.raso.sef.bes.engine.transaction.orchestration.AbstractStepResult;
@@ -45,10 +47,11 @@ public class DeleteSubscriber extends AbstractTransaction {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
 		
 		try {
-		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = ((DeleteSubscriberRequest)this.getRequest()).persistableEntity();
+			com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = ((DeleteSubscriberRequest)this.getRequest()).persistableEntity();
 		LOGGER.debug("Cnverted from API to DB Format:");
 		if(subscriberEntity == null){
-			this.getResponse().setReturnFault(new TransactionException(this.getClass().getCanonicalName(), new ResponseCode(504,"Subscriber not found")));
+			this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504,"Subscriber not found")));
+			sendResponse();
 		}else{
 			tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.REMOVE, subscriberEntity, subscriberEntity.getMsisdn()));
 			
@@ -76,6 +79,7 @@ public class DeleteSubscriber extends AbstractTransaction {
 		sendResponse();
 		return true;
 	}
+	
 	
 	public void sendResponse() {
 		
