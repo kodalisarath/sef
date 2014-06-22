@@ -172,22 +172,22 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 	}
 
 	private void processUsageThreadholdAndCountersResponse(HashMap<String, String> details, GetUsageThresholdsAndCountersResponse response) {
-		String availableCapabilities = "";
-		for (int asCap: response.getAvailableServerCapabilities()) {
-			availableCapabilities += (availableCapabilities.isEmpty()?"":",") + asCap;
-		}
-		details.put("AVAILABLE_SERVER_CAPABILITIES", availableCapabilities);
-		LOGGER.debug("Available Server Capabilities: " + availableCapabilities);
+//		String availableCapabilities = "";
+//		for (int asCap: response.getAvailableServerCapabilities()) {
+//			availableCapabilities += (availableCapabilities.isEmpty()?"":",") + asCap;
+//		}
+//		details.put("AVAILABLE_SERVER_CAPABILITIES", availableCapabilities);
+//		LOGGER.debug("Available Server Capabilities: " + availableCapabilities);
 		
 		details.put("CURRENCY1", response.getCurrency1());
 		details.put("CURRENCY2", response.getCurrency2());
 		
-		String negotiatedCapabilities = "";
-		for (int asCap: response.getNegotiatedCapabilities()) {
-			negotiatedCapabilities += (negotiatedCapabilities.isEmpty()?"":",") + asCap;
-		}
-		details.put("NEGOTIATED_SERVER_CAPABILITIES", negotiatedCapabilities);
-		LOGGER.debug("Negotiated Capabilities: " + negotiatedCapabilities);
+//		String negotiatedCapabilities = "";
+//		for (int asCap: response.getNegotiatedCapabilities()) {
+//			negotiatedCapabilities += (negotiatedCapabilities.isEmpty()?"":",") + asCap;
+//		}
+//		details.put("NEGOTIATED_SERVER_CAPABILITIES", negotiatedCapabilities);
+//		LOGGER.debug("Negotiated Capabilities: " + negotiatedCapabilities);
 		
 		String usageInfo = "";
 		for (UsageCounterUsageThresholdInformation uct: response.getUsageCounterUsageThresholdInformation()) {
