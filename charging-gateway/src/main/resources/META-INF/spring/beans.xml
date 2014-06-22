@@ -13,11 +13,14 @@
 
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 
-	<!--<bean id="cgProperties" class="com.ericsson.sm.core.config.ComponentPropertiesBean"> 
-		<constructor-arg name="config" ref="cfg"/> <constructor-arg name="component" 
-		value="charging-gateway"/> </bean> <context:property-placeholder properties-ref="cgProperties"/> 
-		<bean id="cgContext" class="com.ericsson.sm.cg.CgContext"/> -->
-
+	<bean id="cfg" class="com.ericsson.raso.sef.core.config.ConfigService" />
+	<bean id="cgProperties"
+		class="com.ericsson.raso.sef.core.config.ComponentPropertiesBean">
+		<constructor-arg name="config" ref="cfg" />
+		<constructor-arg name="component" value="chargingGateway" />
+	</bean>
+	<context:property-placeholder
+		properties-ref="cgProperties" />
 	<bean id="peerConnectionListener"
 		class="com.ericsson.raso.sef.charginggateway.CgPeerConnectionListener" />
 	<bean id="requestListener" class="com.ericsson.raso.sef.charginggateway.CgRequestListener">
@@ -31,16 +34,17 @@
 		<constructor-arg name="connectionListener" ref="peerConnectionListener" />
 		<constructor-arg name="requestListener" ref="requestListener" />
 	</bean>
+
 	<camelContext id="com.ericsson.raso.sef.charginggateway"
 		xmlns="http://camel.apache.org/schema/spring">
-		<!-- <propertyPlaceholder id="properties" location="ref:cgProperties"/> -->
-
+		<propertyPlaceholder id="properties" location="ref:cgProperties" />
 		<route id="cg-engine-route-dispatch">
 			<from uri="direct:charging-gateway" />
 			<camel:marshal>
 				<camel:serialization />
 			</camel:marshal>
-			<camel:to uri="http://0.0.0.0:9090/charginggateway/CgWeb/process" />
+			<!-- <camel:to uri="http://0.0.0.0:9090/charginggateway/CgWeb/process"/> -->
+			<camel:to uri="{{chargingGatewayEngineUrl}}" />
 			<camel:unmarshal>
 				<camel:serialization />
 			</camel:unmarshal>
