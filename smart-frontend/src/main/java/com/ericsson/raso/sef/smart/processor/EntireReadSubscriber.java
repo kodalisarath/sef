@@ -72,6 +72,7 @@ public class EntireReadSubscriber implements Processor {
 				Collection<Rpp> rpps = entireRead.getRpps();
 
 				for (Rpp rpp : rpps) {
+					
 					operationResult.getOperation().add(EntireReadUtil.createRppRead(rpp.getRppRead()));
 					operationResult.getOperation().add(EntireReadUtil.createRppBucketRead(rpp.getRppBucketRead()));
 					operationResult.getOperation().add(EntireReadUtil.createRppVersionRead(rpp.getRppVersionRead()));
@@ -79,15 +80,16 @@ public class EntireReadSubscriber implements Processor {
 				}
 			}
 
+			logger.debug("WelcomePack: " + entireRead.getWelcomePack() + ", Package: " + entireRead.getWelcomePack().getRead().getsPackageId());
 			if (entireRead.getWelcomePack() != null && entireRead.getWelcomePack().getRead().getsPackageId() != null) {
+				logger.debug("inside welcome pack....");
 				entireRead.getWelcomePack().getRead().setKey(lastIndex + 1);
 				entireRead.getWelcomePack().getVersionRead().setKey(lastIndex + 1);
 				entireRead.getWelcomePack().getBucketRead().setKey(lastIndex + 1);
 
 				operationResult.getOperation().add(EntireReadUtil.createWelcomePackRead(entireRead.getWelcomePack().getRead()));
 				operationResult.getOperation().add(EntireReadUtil.createWelcomePackBucketRead(entireRead.getWelcomePack().getBucketRead()));
-				operationResult.getOperation().add(
-						EntireReadUtil.createWelcomePackVersionRead(entireRead.getWelcomePack().getVersionRead()));
+				operationResult.getOperation().add(EntireReadUtil.createWelcomePackVersionRead(entireRead.getWelcomePack().getVersionRead()));
 			}
 		}
 		return responseData;

@@ -1393,19 +1393,14 @@ public class EntireReadUtil {
 			if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO)) {
 				value = metaMap.get(key);
 
-				logger.debug("Manila getOfferStartDateTime Key Matched is "
-						+ key + " Value is " + value);
+				logger.debug("Manila getOfferStartDateTime Key Matched is " + key + " Value is " + value);
 				StringTokenizer str = new StringTokenizer(value, ",");
 				String offerIdTemp = str.nextToken();
-				/*
-				 * String startDate = str.nextToken(); String startDateTime =
-				 * str.nextToken(); String expiryDate = str.nextToken(); String
-				 * expiryDateTime = str.nextToken();
-				 */
-				value = metaMap.get(key);
-				if (!"1".equals(offerIdTemp)) {
-					Rpp rpp = createRpp(subscriber, key, index++, currentTime,
-							offerIdTemp);
+
+				logger.debug("selected offerId: " + offerIdTemp);
+				if (SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offerIdTemp) != null) {
+					value = metaMap.get(key);
+					Rpp rpp = createRpp(subscriber, key, index++, currentTime, offerIdTemp);
 					if (rpp != null) {
 						rpps.add(rpp);
 					}
