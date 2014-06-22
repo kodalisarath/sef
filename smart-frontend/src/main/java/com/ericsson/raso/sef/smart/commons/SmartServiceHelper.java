@@ -150,41 +150,13 @@ public abstract class SmartServiceHelper {
 		}
 		logger.info("Check if response received for read subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+		
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0)
+			throw ExceptionUtil.toSmException(new ResponseCode(13423, "EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + subscriberId + " does not exist"));
 		return subscriberInfo;
 
 	}
 
-	/*
-	 * private static void populateAccountDetails(Subscriber subscriberInfo) {
-	 * 
-	 * if (subscriberInfo != null && subscriberInfo.getAccountDetailsResponse() != null) { accountDetailsResponse =
-	 * subscriberInfo.getAccountDetailsResponse(); } else { GetAccountDetailsRequest accountDetailsRequest = new GetAccountDetailsRequest();
-	 * accountDetailsRequest.setSubscriberNumber(customerId); accountDetailsResponse = new GetAccountDetailsCommand(
-	 * accountDetailsRequest).execute(); }
-	 * 
-	 * }
-	 * 
-	 * private static void populateUsAndUt() { GetUsageThresholdsAndCountersRequest countersRequest = new
-	 * GetUsageThresholdsAndCountersRequest(); countersRequest.setSubscriberNumber(customerId); GetUsageThresholdsAndCountersResponse
-	 * usageRes = new GetUsageThresholdsAndCountersCmd( countersRequest).execute();
-	 * 
-	 * List<UsageCounterUsageThresholdInformation> ucUtList = usageRes .getUsageCounterUsageThresholdInformation(); ucUtMap = new
-	 * HashMap<Integer, UsageCounterUsageThresholdInformation>(); for (UsageCounterUsageThresholdInformation
-	 * usageCounterUsageThresholdInformation : ucUtList) { ucUtMap.put( usageCounterUsageThresholdInformation.getUsageCounterID(),
-	 * usageCounterUsageThresholdInformation); }
-	 * 
-	 * }
-	 * 
-	 * private static void populateDaAndOffers() { GetBalanceAndDateRequest gbdReq = new GetBalanceAndDateRequest();
-	 * gbdReq.setSubscriberNumber(customerId); GetBalanceAndDateResponse gbdRes = new GetBalanceAndDateCommand(gbdReq) .execute();
-	 * List<DedicatedAccountInformation> daList = gbdRes .getDedicatedAccountInformation();
-	 * 
-	 * daMap = new HashMap<Integer, DedicatedAccountInformation>(); for (DedicatedAccountInformation da : daList) {
-	 * daMap.put(da.getDedicatedAccountID(), da); }
-	 * 
-	 * List<OfferInformation> offerList = gbdRes.getOfferInformationList(); offerMap = new HashMap<Integer, OfferInformation>(); for
-	 * (OfferInformation offerInformation : offerList) { offerMap.put(offerInformation.getOfferID(), offerInformation); } }
-	 */
 
 	public static EntireRead entireReadSubscriber(String msisdn) throws SmException {
 		Date currentTime = new Date();
@@ -195,6 +167,8 @@ public abstract class SmartServiceHelper {
 		SubscriberInfo subscriberInfo = readEntireSubscriberInfo(requestId, msisdn, metaList);
 
 		logger.debug("subscriberInfo returned is " + subscriberInfo);
+		
+		
 		Subscriber subscriber = subscriberInfo.getSubscriber();
 		logger.debug("subscriber object returned is " + subscriber);
 		if (subscriber == null) {

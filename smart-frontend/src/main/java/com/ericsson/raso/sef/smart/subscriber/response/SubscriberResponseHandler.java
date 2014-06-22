@@ -26,34 +26,32 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 
 		SubscriberInfo subscriberInfo = ((SubscriberInfo)SubscriberResponseStore.get(requestCorrelator));
 
-		if (fault != null && fault.getCode() !=0) {
-			subscriberInfo.setStatus(fault);
-			this.triggerResponse(requestCorrelator, subscriberInfo);
-			return;
-		}
-	/*	if (fault != null) {
-			
-		} */
-		if (subscriber == null) {
-			subscriberInfo.setStatus(new TransactionStatus("txe", 504, "Invalid Account - Subscriber canot be found!!"));
-			this.triggerResponse(requestCorrelator, subscriberInfo);
-			logger.debug("Subscriber is null: " + requestCorrelator);
-			return;
-		}
-
-		else if (subscriber.getMsisdn() == null || 
-				subscriber.getUserId() == null|| 
-				subscriber.getCustomerId() == null|| 
-				subscriber.getContractId() == null || 
-				subscriber.getContractState() == null ||
-				subscriber.getMetas() == null ) {
-
-			subscriberInfo.setStatus(new TransactionStatus("txe", 2002, "Invalid Account - Subscriber entity seems to be corrupt or badly managed!!"));
-			this.triggerResponse(requestCorrelator, subscriberInfo);
-			return;
-		}
-
 		try {
+			if (fault != null && fault.getCode() !=0) {
+				subscriberInfo.setStatus(fault);
+				this.triggerResponse(requestCorrelator, subscriberInfo);
+				return;
+			}
+
+			if (subscriber == null) {
+				subscriberInfo.setStatus(new TransactionStatus("txe", 504, "Invalid Account - Subscriber canot be found!!"));
+				this.triggerResponse(requestCorrelator, subscriberInfo);
+				logger.debug("Subscriber is null: " + requestCorrelator);
+				return;
+			}
+
+			else if (subscriber.getMsisdn() == null || 
+					subscriber.getUserId() == null|| 
+					subscriber.getCustomerId() == null|| 
+					subscriber.getContractId() == null || 
+					subscriber.getContractState() == null ||
+					subscriber.getMetas() == null ) {
+
+				subscriberInfo.setStatus(new TransactionStatus("txe", 2002, "Invalid Account - Subscriber entity seems to be corrupt or badly managed!!"));
+				this.triggerResponse(requestCorrelator, subscriberInfo);
+				return;
+			}
+
 			subscriberInfo.setMsisdn(subscriber.getMsisdn());
 			subscriberInfo.setLocalState(ContractState.apiValue(subscriber.getContractState()));
 			Map<String, String> subscriberMetas = subscriber.getMetas();
@@ -128,7 +126,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		SubscriberInfo subInfo = (SubscriberInfo) SubscriberResponseStore.get(requestCorrelator);
 		if(subInfo !=null)
 			subInfo.setStatus(fault);
-		
+
 		SubscriberResponseStore.put(requestCorrelator, subInfo);
 
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
