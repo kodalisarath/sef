@@ -48,10 +48,12 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		response.setOffer(offer);
 		response.setFault(fault);
 		RequestCorrelationStore.put(requestCorrelator, response);
+		logger.debug("Successfully set the response object in response store: " + response);
 
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
+		logger.debug("Released the semaphore lock waiting on: " + requestCorrelator);
 	}
 
 	@Override

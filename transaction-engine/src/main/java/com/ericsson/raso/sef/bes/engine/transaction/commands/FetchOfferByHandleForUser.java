@@ -36,6 +36,7 @@ public class FetchOfferByHandleForUser extends AbstractTransaction {
 		
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 		Offer prodcatOffer = catalog.getOfferByExternalHandle(((FetchOfferByHandleForUserRequest)this.getRequest()).getHandle());
+		logger.debug("Got prodcat offer: " + prodcatOffer);
 		if (prodcatOffer == null) {
 			status.setCode(999);
 			status.setComponent("txe");

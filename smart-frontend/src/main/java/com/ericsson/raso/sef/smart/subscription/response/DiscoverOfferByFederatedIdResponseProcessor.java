@@ -17,12 +17,18 @@ public class DiscoverOfferByFederatedIdResponseProcessor implements Processor {
 
 		logger.debug("Discover Offer with Federated Id Response arrived!!!");
 		Object[] objectArray=(Object[]) exchange.getIn().getBody(Object[].class);
+		logger.debug("back to basics... Object[] size: " + objectArray.length);
 		String correlationId = (String)objectArray[0];
-	 	TransactionStatus fault =(TransactionStatus)objectArray[1];
-	 	Offer offer = (Offer) objectArray[2]; 
+	 	TransactionStatus fault = null;
+	 	if (objectArray[1] != null)
+	 		fault = (TransactionStatus)objectArray[1];
+	 	
+	 	Offer offer = null;
+	 	if (objectArray[2] != null)
+	 		offer = (Offer) objectArray[2]; 
 		
 	 	SubscriptionResponseHandler responseHandler = new SubscriptionResponseHandler();
-	 	logger.debug("Notifying handler with correlationID: " + correlationId + " New Offer: " + offer);
+	 	logger.debug("Notifying handler with correlationID: " + correlationId + " fetched Offer: " + offer);
 	 	responseHandler.discoverOfferByFederatedId(correlationId, fault, offer);
 	}
 
