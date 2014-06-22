@@ -48,6 +48,7 @@ public class EntireReadSubscriber implements Processor {
 		logger.debug("Lets just get ILDB first, to handle Preactive");
 		Subscriber subscriber = this.simpleRead(request.getCustomerId());
 		
+		logger.debug("contract state: " + subscriber.getContractState());
 		if (subscriber.getContractState().equals(ContractState.PREACTIVE.getName())) {
 			exchange.getOut().setBody(createPreactiveResponse(subscriber, request.isTransactional()));
 			return;
