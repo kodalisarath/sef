@@ -166,7 +166,7 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 		product.setQuotaDefined(-1);
 		product.setValidity(-1);product.setMetas(details);
 		products.add(product);
-		return products;
+		return products; 
 
 
 	}
