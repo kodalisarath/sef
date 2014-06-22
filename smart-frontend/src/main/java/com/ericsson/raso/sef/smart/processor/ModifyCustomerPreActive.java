@@ -24,6 +24,13 @@ import com.ericsson.raso.sef.smart.usecase.ModifyCustomerPreActiveRequest;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.DateTimeParameter;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ParameterList;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class ModifyCustomerPreActive implements Processor {
 
@@ -36,6 +43,7 @@ public class ModifyCustomerPreActive implements Processor {
 				.getIn().getBody();
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		List<Meta> metas = new ArrayList<Meta>();
+		String newExpiry = new String();
 		
 		metas.add(new Meta("EventInfo",String.valueOf(request.getEventInfo())));
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
@@ -62,7 +70,7 @@ public class ModifyCustomerPreActive implements Processor {
 				SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 				Date currentExpiryDate = metaStoreFormat.parse(date);
 				Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000L));
-				String newExpiry = smartDateFormat.format(newExpiryDate);
+				newExpiry = smartDateFormat.format(newExpiryDate);
 				
 				
 				
@@ -81,10 +89,45 @@ public class ModifyCustomerPreActive implements Processor {
 		else{
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
-		DummyProcessor.response(exchange);
+		CommandResponseData responseData = createResponse(true, newExpiry);
+		exchange.getOut().setBody(responseData);
+		//DummyProcessor.response(exchange);
 		//exchange.getOut().setBody(subscriberInfo);
 		
 	}
+	
+	private CommandResponseData createResponse(boolean isTransactional, String newDate ) {
+		CommandResponseData responseData = new CommandResponseData();
+		CommandResult result = new CommandResult();
+		responseData.setCommandResult(result);
+
+		OperationResult operationResult = new OperationResult();
+
+		if (isTransactional) {
+			TransactionResult transactionResult = new TransactionResult();
+			result.setTransactionResult(transactionResult);
+			transactionResult.getOperationResult().add(operationResult);
+		} else {
+			result.setOperationResult(operationResult);
+		}
+
+		Operation operation = new Operation();
+		operation.setModifier("CustomerPreActive");
+		operation.setName("Modify");
+		operationResult.getOperation().add(operation);
+
+		ParameterList parameterList = new ParameterList();
+		List<Object> dataSetList = parameterList.getParameterOrBooleanParameterOrByteParameter();
+
+		DateTimeParameter dParameter = new DateTimeParameter();
+		dParameter.setName("PreActiveEndDate");
+		dParameter.setModifier(newDate);
+		dataSetList.add(dParameter);
+
+		operation.setParameterList(parameterList);
+
+		return responseData;
+	}	
 	
 	
 	private SubscriberInfo readSubscriber(String requestId,String customer_id, List<Meta> metas) {
