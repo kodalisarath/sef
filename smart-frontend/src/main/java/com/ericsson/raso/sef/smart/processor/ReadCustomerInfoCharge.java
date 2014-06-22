@@ -42,6 +42,10 @@ public class ReadCustomerInfoCharge implements Processor {
 		ReadCustomerInfoChargeRequest request = (ReadCustomerInfoChargeRequest) exchange.getIn().getBody();
 		IConfig config = SefCoreServiceResolver.getConfigService();
 		String channel = String.valueOf(request.getChannel());
+		if(channel == null||channel.isEmpty()){
+			logger.debug("Channel is null/empty");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidOperation);
+		}
 		int channelValue = Integer.parseInt(config.getValue("SMART_customerInfoChannel",channel));
 		logger.info("ChannelName: "+channel+", ChannelValue: "+channelValue);
 	     String requestId = RequestContextLocalStore.get().getRequestId();
@@ -262,14 +266,24 @@ public class ReadCustomerInfoCharge implements Processor {
 		
 		for (int offerID: offerList.keySet()) {
 			OfferInfo oinfo = offerList.get(offerID);
+			logger.debug("OfferId: "+offerID+" OfferInfo: "+oinfo);
 			if (offerID > 2000) {
-				subscriptionsEntry += ((subscriptionsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + oinfo.offerExpiry + ";" + daList.get(oinfo.daID).daVal1;
+				
+				DAInfo daInfo = daList.get(oinfo.daID);
+				logger.info("DaInfo is: "+daInfo);
+				String nullString = "null";
+				if(daInfo != null)
+					subscriptionsEntry += ((subscriptionsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + String.valueOf(oinfo.offerExpiry) + ";" + String.valueOf(daList.get(oinfo.daID).daVal1);
+				else{
+					subscriptionsEntry += ((subscriptionsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + String.valueOf(oinfo.offerExpiry) + ";" + nullString;
+				}				
+				
 			} else {
 				accountsEntry += ((accountsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + oinfo.offerExpiry;
 				
 			}
 		}
-			
+		logger.info("SubscriptionENtry: "+subscriptionsEntry);
 		
 	// End of Get Balances & Dates processing....
 		
