@@ -51,7 +51,7 @@ public class EntireDeleteSubscriber implements Processor{
 			//exchange.getOut().setBody(subscriberInfo);
 			DummyProcessor.response(exchange);
 		} catch (Exception e) {
-			logger.error("Error in the processor class:",e.getClass().getName(),e);
+			//logger.error("Error in the processor class:",e.getClass().getName(),e);
 		}
 	}
 
