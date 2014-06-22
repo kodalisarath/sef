@@ -10,14 +10,19 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.client.air.command.GetAccountDetailsCommand;
 import com.ericsson.raso.sef.client.air.command.GetBalanceAndDateCommand;
+import com.ericsson.raso.sef.client.air.command.GetUsageThresholdsAndCountersCmd;
 import com.ericsson.raso.sef.client.air.request.GetAccountDetailsRequest;
 import com.ericsson.raso.sef.client.air.request.GetBalanceAndDateRequest;
+import com.ericsson.raso.sef.client.air.request.GetUsageThresholdsAndCountersRequest;
 import com.ericsson.raso.sef.client.air.response.AccountFlags;
 import com.ericsson.raso.sef.client.air.response.DedicatedAccountInformation;
 import com.ericsson.raso.sef.client.air.response.GetAccountDetailsResponse;
 import com.ericsson.raso.sef.client.air.response.GetBalanceAndDateResponse;
+import com.ericsson.raso.sef.client.air.response.GetUsageThresholdsAndCountersResponse;
 import com.ericsson.raso.sef.client.air.response.OfferInformation;
 import com.ericsson.raso.sef.client.air.response.SubDedicatedInfo;
+import com.ericsson.raso.sef.client.air.response.UsageCounterUsageThresholdInformation;
+import com.ericsson.raso.sef.client.air.response.UsageThresholdInformation;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
@@ -31,8 +36,6 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final String READ_SUBSCRIBER_ACTIVATION_DATE = "READ_SUBSCRIBER_ACTIVATION_DATE";
 	private static final String READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE = "READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE";
 	private static final String READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE = "READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE";
-	private static final String READ_SUBSCRIBER_SERVICE_OFFERING_ID = "READ_SUBSCRIBER_SERVICE_OFFERING_ID";
-	private static final String READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG = "READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG";
 	private static final String READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG = "READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG";
 	private static final String READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG = "READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG";
 	private static final String READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG = "READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG";
@@ -40,12 +43,6 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 	private static final String READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG = "READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG";
 	private static final String READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG = "READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG";
 	private static final String READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG = "READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG";
-	/*private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER_ID = "READ_SUBSCRIBER_OFFER_ID";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE = "READ_SUBSCRIBER_START_DATE";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE = "READ_SUBSCRIBER_EXPIRY_DATE";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME = "READ_SUBSCRIBER_START_DATE_TIME";
-	private static final String READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME = "READ_SUBSCRIBER_EXPIRY_DATE_TIME";
-*/
 	private static final String	READ_SUBSCRIBER_OFFER_INFO	= "READ_SUBSCRIBER_OFFER_INFO";
 	private static final String	READ_SUBSCRIBER_SERVICE_OFFERING	= "READ_SUBSCRIBER_SERVICE_OFFERING";	
 	//Get Balance & Dates...
@@ -105,6 +102,7 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 		if (map == null || map.isEmpty())
 			throw new FulfillmentException("ffe", new ResponseCode(1001, "runtime parameters 'metas' missing in request!!"));
 
+		// Get account details
 		GetAccountDetailsRequest accountDetailsRequest = new GetAccountDetailsRequest();
 		String subscriberId = map.get("SUBSCRIBER_ID");
 		if (subscriberId == null)
@@ -118,7 +116,7 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 		try {
 			accountDetailsResponse = accountDetailsCommand.execute();
 		} catch (SmException e1) {
-			e1.printStackTrace();
+			LOGGER.debug("AIR Exception: " + e1.getMessage(), e);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
 
@@ -126,7 +124,7 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 		LOGGER.debug("Query request for read balances...");
 
-
+		// Get balance and dates
 		GetBalanceAndDateRequest balanceAndDateRequest = new GetBalanceAndDateRequest();
 		balanceAndDateRequest.setSubscriberNumber(subscriberId);
 		balanceAndDateRequest.setSubscriberNumberNAI(1);
@@ -137,11 +135,30 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 		try {
 			balanceAndDateResponse = balanceAndDateCommand.execute();
 		} catch (SmException e1) {
-			e1.printStackTrace();
+			LOGGER.debug("AIR Exception: " + e1.getMessage(), e);
 			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
 		}
 
 		this.processBalanceAndDateResponse(details, balanceAndDateResponse);
+		
+		// Usage Counter and Thresholds
+		
+		GetUsageThresholdsAndCountersRequest usageRequest = new GetUsageThresholdsAndCountersRequest();
+		usageRequest.setSubscriberNumber(subscriberId);
+		usageRequest.setSubscriberNumberNAI(1);
+		
+		
+		GetUsageThresholdsAndCountersResponse usageResponse = null;
+		
+		GetUsageThresholdsAndCountersCmd usageCommand = new GetUsageThresholdsAndCountersCmd(usageRequest);
+		
+		try {
+			usageResponse = usageCommand.execute();
+		} catch (SmException e1) {
+			LOGGER.debug("AIR Exception: " + e1.getMessage(), e1);
+			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getStatusCode().getMessage()));
+		}
+		this.processUsageThreadholdAndCountersResponse(details, usageResponse);
 
 		List<Product> products = new ArrayList<Product>();
 		Product product = new Product();
@@ -154,6 +171,49 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 	}
 
+	private void processUsageThreadholdAndCountersResponse(HashMap<String, String> details, GetUsageThresholdsAndCountersResponse response) {
+		String availableCapabilities = "";
+		for (int asCap: response.getAvailableServerCapabilities()) {
+			availableCapabilities += (availableCapabilities.isEmpty()?"":",") + asCap;
+		}
+		details.put("AVAILABLE_SERVER_CAPABILITIES", availableCapabilities);
+		LOGGER.debug("Available Server Capabilities: " + availableCapabilities);
+		
+		details.put("CURRENCY1", response.getCurrency1());
+		details.put("CURRENCY2", response.getCurrency2());
+		
+		String negotiatedCapabilities = "";
+		for (int asCap: response.getNegotiatedCapabilities()) {
+			negotiatedCapabilities += (negotiatedCapabilities.isEmpty()?"":",") + asCap;
+		}
+		details.put("NEGOTIATED_SERVER_CAPABILITIES", negotiatedCapabilities);
+		LOGGER.debug("Negotiated Capabilities: " + negotiatedCapabilities);
+		
+		String usageInfo = "";
+		for (UsageCounterUsageThresholdInformation uct: response.getUsageCounterUsageThresholdInformation()) {
+			usageInfo += (usageInfo.isEmpty()?"":"|+|") + uct.getUsageCounterID() 
+				+ "," + ((uct.getProductID()==null)?"null":uct.getProductID()) 
+				+ "," + uct.getAssociatedPartyID() 
+				+ "," + uct.getUsageCounterMonetaryValue1() 
+				+ "," + uct.getUsageCounterMonetaryValue2()
+				+ "," + uct.getUsageCounterValue();
+			
+			String utInfo = "";
+			for (UsageThresholdInformation ut: uct.getUsageThresholdInformation()) {
+				utInfo += utInfo.isEmpty()?"":"+" + ut.getUsageThresholdID() 
+						+ ":" + ut.getAssociatedPartyID()
+						+ ":" + ut.getUsageThresholdMonetaryValue1()
+						+ ":" + ut.getUsageThresholdMonetaryValue2()
+						+ ":" + ut.getUsageThresholdValue()
+						+ ":" + ut.getUsageThresholdSource();
+			}
+			usageInfo += utInfo;
+		}
+		
+		details.put("USAGE_COUNT_THRESHOLD", usageInfo);
+	}
+	
+	
 	@Override
 	public List<Product> revert(Product e, Map<String, String> map) throws FulfillmentException {
 		List<Product> returned = new ArrayList<Product>();
@@ -177,14 +237,6 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 		LOGGER.debug("Packed all date attributes...");
 
-		/*// service offerings
-		int index = 0;
-		for (com.ericsson.raso.sef.client.air.response.ServiceOffering serviceOffering: response.getServiceOfferings()) {
-			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING_ID + "." + ++index, "" + serviceOffering.getServiceOfferingID());
-			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG + "." + index, "" + serviceOffering.isServiceOfferingActiveFlag());
-		}
-		LOGGER.debug("Packed all service offerings...");
-		*/
 		
 		// service offerings
 		int index = 0;
@@ -228,47 +280,6 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 
 		LOGGER.debug("Packed all account flags...");
 
-/*		// offer info...
-		index = 0;
-		for (OfferInformation offerInformation: response.getOfferInformationList()) {
-			
-			if(offerInformation != null) {
-				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID + "." + ++index, "" + offerInformation.getOfferID());
-
-				if(offerInformation.getStartDate() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE + "." + index, "" + offerInformation.getStartDate().getTime());
-
-				if(offerInformation.getStartDateTime() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME + "." + index, "" + offerInformation.getStartDateTime().getTime());
-
-				if(offerInformation.getExpiryDate() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
-
-				if(offerInformation.getExpiryDateTime() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
-			}
-		}
-		
-		
-		// offer info...
-		index = 0;
-		for (OfferInformation offerInformation: response.getOfferInformationList()) {
-			if(offerInformation != null) {
-				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_OFFER_ID + "." + ++index, "" + offerInformation.getOfferID());
-
-				if(offerInformation.getStartDate() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE + "." + index, "" + offerInformation.getStartDate().getTime());
-
-				if(offerInformation.getStartDateTime() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME + "." + index, "" + offerInformation.getStartDateTime().getTime());
-
-				if(offerInformation.getExpiryDate() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + "." + index, "" + offerInformation.getExpiryDate().getTime());
-
-				if(offerInformation.getExpiryDateTime() != null)
-					accountDetails.put(READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + "." + index, "" + offerInformation.getExpiryDateTime().getTime());
-			}
-		}*/
 		
 		
 		// offer info...
@@ -283,17 +294,12 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 						"," + ((offerInformation.getStartDateTime()==null)?"null":offerInformation.getStartDateTime().getTime()) + 
 						"," + ((offerInformation.getExpiryDate()==null)?"null":offerInformation.getExpiryDate().getTime()) + 
 						"," + ((offerInformation.getExpiryDateTime()==null)?"null":offerInformation.getExpiryDateTime().getTime())));
-			
-			
 			}
 		}
 		else
-		{
 			LOGGER.debug("OfferInformationList is null." );
-		}
 
 		
-	
 		LOGGER.debug("Packed all offer info..." + accountDetails.toString());
 	}
 

@@ -59,6 +59,7 @@ public class SubscriberPasa implements Serializable {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String relevantKey = format.format(new Date());
 
+		LOGGER.debug("Entering pasa structure to manipulate...");
 		this.pruneObsoleteData();
 
 		// now get to do what you came here for...
@@ -74,6 +75,7 @@ public class SubscriberPasa implements Serializable {
 			pasaCountToday.put(relevantKey, 1);
 		else 
 			pasaCountToday.put(relevantKey, ++pasaCount);
+		this.pasaReceivedCount.put(relevantKey, pasaCountToday);
 
 		Map<String, Integer> pasaAmountToday = this.pasaReceivedAmount.get(relevantKey);
 		if (pasaAmountToday == null) {
@@ -86,11 +88,14 @@ public class SubscriberPasa implements Serializable {
 			pasaAmountToday.put(relevantKey, 1);
 		else 
 			pasaAmountToday.put(relevantKey, (pasaAmount + value));
-		LOGGER.debug("Updated pasa info... Will persist...");
+		this.pasaReceivedAmount.put(relevantKey, pasaAmountToday);
+		
+		LOGGER.debug("Updated pasa info... Will persist...pasaInfo: " + this.toString());
 		return true;
 	}
 
 	private void pruneObsoleteData() {
+		LOGGER.debug("PASA Pruning routine invoked...");
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String relevantKey = format.format(new Date());
 		LOGGER.debug("relevant Key: " + relevantKey);
@@ -103,7 +108,8 @@ public class SubscriberPasa implements Serializable {
 				this.pasaReceivedCount.remove(key);
 			}
 		}
-
+		LOGGER.debug("pasacount pruned...");
+		
 		for (String key: this.pasaReceivedAmount.keySet()) {
 			LOGGER.debug("Checking pasaamount for obsolete key: " + key);
 			if (!key.equals(relevantKey)) {
@@ -111,6 +117,7 @@ public class SubscriberPasa implements Serializable {
 				this.pasaReceivedAmount.remove(key);
 			}
 		}
+		LOGGER.debug("pasaamount pruned...");
 	}
 
 	@Override
