@@ -29,18 +29,15 @@
 		init-method="start" destroy-method="stop" />
 
 
-
 	<cxf:cxfEndpoint id="subscriberResponse"
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
 		<cxf:properties>
-			<entry key="address"
-				value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
 		</cxf:properties>
 	</cxf:cxfEndpoint>
 
 	<cxf:rsServer id="cgeServer" address="http://0.0.0.0:9090/charginggateway/"
 		serviceClass="com.ericsson.raso.sef.cg.engine.web.CgWeb" />
-
 
 
 	<camelContext id="com.ericsson.raso.sef.charginggatewayengine"

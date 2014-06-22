@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.cg.engine.subscriber.response;
+package com.ericsson.raso.sef.smart.subscriber.response;
 
 import java.util.List;
 import java.util.Map;

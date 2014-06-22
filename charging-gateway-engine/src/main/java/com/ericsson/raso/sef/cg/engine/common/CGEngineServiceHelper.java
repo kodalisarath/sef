@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
-import com.ericsson.raso.sef.cg.engine.subscriber.response.SubscriberInfo;
-import com.ericsson.raso.sef.cg.engine.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;

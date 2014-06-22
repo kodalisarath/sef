@@ -9,9 +9,9 @@ import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.Operation;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.common.CGEngineServiceHelper;
-import com.ericsson.raso.sef.cg.engine.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 
 public class SubscriberValidationProcessor implements Processor {
 

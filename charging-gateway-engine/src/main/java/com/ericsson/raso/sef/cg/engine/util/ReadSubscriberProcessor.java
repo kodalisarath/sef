@@ -5,7 +5,7 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.cg.engine.subscriber.response.SubscriberResponseHandler;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseHandler;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 

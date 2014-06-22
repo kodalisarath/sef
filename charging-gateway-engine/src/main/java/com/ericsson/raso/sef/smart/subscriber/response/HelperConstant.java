@@ -1,8 +1,8 @@
-package com.ericsson.raso.sef.cg.engine.subscriber.response;
+package com.ericsson.raso.sef.smart.subscriber.response;
 
 public interface HelperConstant {
 
-	public static final String CG_ENGINE_CORRELATION_STORE	= "CG_ENGINE_CORRELATION_STORE";
+	public static final String	SMFE_CORRELATION_STORE	= "SMFE_CORRELATION_STORE";
 	/*public static final String MAX_DATETIME = "MAX_DATEANDTIME";
 	public static final String QUARTZ_INTERFACE = "sef-scheduler-interfaces";
 	public static final String QUARTZ_SERVER = "sef-scheduler-server";
