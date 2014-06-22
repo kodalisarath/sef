@@ -1720,23 +1720,21 @@ public class EntireReadUtil {
 		read.setsCanBeSharedByMultipleRops(false);
 		read.setsInsertedViaBatch(false);
 		read.setOfferProfileKey(1);
-		if (subscriber.getMetas() != null
-				&& subscriber.getMetas().containsKey("package")) {
+		if (subscriber.getMetas() != null && ((subscriber.getMetas().containsKey("package") || subscriber.getMetas().containsKey("Package")))) {
 			String welcomePack = subscriber.getMetas().get("package");
+			if (welcomePack == null)
+				welcomePack = subscriber.getMetas().get("Package");
 
 			read.setsPackageId(welcomePack);
 		}
-		read.setsPreActive(ContractState.apiValue(
-				ContractState.PREACTIVE.name()).equals(
-				subscriber.getContractState()));
+		read.setsPreActive(ContractState.PREACTIVE.getName().equals(subscriber.getContractState()));
 		if (subscriber.getActiveDate() != null)
 			read.setsActivationStartTime(subscriber.getActiveDate());
 		read.setsPeriodStartPoint(-1);
 		return read;
 	}
 
-	private static WelcomePackVersionRead createVersionRead(
-			Subscriber subscriber) {
+	private static WelcomePackVersionRead createVersionRead(Subscriber subscriber) {
 		WelcomePackVersionRead read = new WelcomePackVersionRead();
 		read.setCategory("ONLINE");
 		read.setCustomerId(subscriber.getCustomerId());
@@ -1744,8 +1742,7 @@ public class EntireReadUtil {
 		IConfig config = SefCoreServiceResolver.getConfigService();
 
 		if (subscriber.getActiveDate() != null)
-			read.setvValidFrom(DateUtil.convertDateToString(new Date(subscriber
-					.getActiveDate())));
+			read.setvValidFrom(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
 		read.setvInvalidFrom(SmartConstants.MAX_DATETIME);
 		return read;
 	}
@@ -1761,11 +1758,9 @@ public class EntireReadUtil {
 		read.setsValid(true);
 		read.setCustomerId(subscriber.getCustomerId());
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		logger.debug("subscriber.getActiveDate() is ......."
-				+ subscriber.getActiveDate());
+		logger.debug("subscriber.getActiveDate() is ......." + subscriber.getActiveDate());
 		if (subscriber.getActiveDate() != null)
-			read.setbValidFrom(DateUtil.convertDateToString(new Date(subscriber
-					.getActiveDate())));
+			read.setbValidFrom(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
 		read.setbInvalidFrom(SmartConstants.MAX_DATETIME);
 
 		return read;

@@ -199,7 +199,7 @@ public abstract class SmartServiceHelper {
 		logger.debug("subscriber object returned is " + subscriber);
 		if (subscriber == null) {
 			logger.error("Subscriber Information is empty -- Will treat as unknown subscriber.");
-			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+			throw ExceptionUtil.toSmException(new ResponseCode(13423, "EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + subscriber.getMsisdn() + " does not exist"));
 
 		}
 
