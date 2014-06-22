@@ -2,8 +2,6 @@ package com.ericsson.raso.sef.smart.subscription.response;
 
 import java.util.List;
 
-import javax.xml.ws.Holder;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
