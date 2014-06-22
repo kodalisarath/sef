@@ -356,7 +356,7 @@ public class EntireReadUtil {
 
 		if (ropRead.getLastKnownPeriod() != null) {
 			parameterList.add(EntireReadUtil.stringParameter("LastKnownPeriod",
-					ropRead.getLastKnownPeriod()));
+								toSmartEnumerated(ropRead.getLastKnownPeriod())));
 		}
 
 		if (ropRead.getPreActiveEndDate() != null) {
@@ -365,6 +365,28 @@ public class EntireReadUtil {
 		}
 
 		return operation;
+	}
+
+	private static String toSmartEnumerated(String lastKnownPeriod) {
+		switch(ContractState.apiValue(lastKnownPeriod)) {
+			case ACTIVE:
+				return "Active";
+			case BARRED:
+				return "-";
+			case DUNNING:
+				return null;
+			case GRACE:
+				return "Grace";
+			case NONE:
+				return "-";
+			case PREACTIVE:
+				return "PreActive";
+			case READY_TO_DELETE:
+			case RECYCLED:
+				return "Recycle";
+			default:
+				return "-";
+		}
 	}
 
 	public static Operation createRopBucketRead(RopBucketRead ropBucketRead) {
