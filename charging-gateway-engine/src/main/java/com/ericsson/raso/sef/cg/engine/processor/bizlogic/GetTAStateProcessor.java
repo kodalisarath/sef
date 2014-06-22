@@ -45,7 +45,7 @@ public class GetTAStateProcessor implements Processor {
 		response.setSessionId(request.getSessionId());
 
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = IpcCluster.getChargingSession(response.getSessionId());
+		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(response.getSessionId());
 
 		long resultCode = ResponseCode.DIAMETER_SUCCESS.getCode();
 		if (session == null) {

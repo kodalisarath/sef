@@ -31,10 +31,10 @@ public class TransactionIdentityProcessor implements Processor {
 
 		if (request.getOperation().getType() == Type.TRANSACATION_START
 				|| request.getOperation().getType() == Type.NO_TRANSACTION) {
-			IpcCluster.initiateIpcRequest(sessionId, request.getOperation(), request.getMsisdn());
+			CgEngineContext.getIpcCluster().initiateIpcRequest(sessionId, request.getOperation(), request.getMsisdn());
 		} else if (request.getOperation().getType() == Type.INTERMEDIATE_TRANSACTION
 				|| request.getOperation().getType() == Type.TRANSACTION_END) {
-			ChargingSession session = IpcCluster.getChargingSession(sessionId);
+			ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(sessionId);
 			if (session == null || session.getOperation().getType() != Type.TRANSACATION_START) {
 				log.error("Invalid request with session ID: " + sessionId);
 				throw new SmException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID);

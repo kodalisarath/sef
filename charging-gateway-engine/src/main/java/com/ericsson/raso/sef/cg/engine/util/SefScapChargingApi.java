@@ -19,7 +19,7 @@ import com.ericsson.raso.sef.core.lb.LoadBalancerPool;
 import com.ericsson.raso.sef.core.lb.Member;
 
 
-public class SmScapChargingApi implements ScapChargingApi {
+public class SefScapChargingApi implements ScapChargingApi {
 
 	private DCCStack scapStack;
 	protected Logger log = LoggerFactory.getLogger(this.getClass());
@@ -54,7 +54,7 @@ public class SmScapChargingApi implements ScapChargingApi {
 		builder.fqdn(config.getValue("scapClient",Constants.FQDN));
 		builder.tcpPort(Integer.valueOf(config.getValue("scapClient",Constants.OWNTCPPORT)));
 		//builder.ownIpAddress(SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE)));
-		String ownIpAddress =  SmCoreUtil.getServerIP(config.getValue("scapClient","ethInterface"));
+		String ownIpAddress =  SefCoreUtil.getServerIP(config.getValue("scapClient","ethInterface"));
 		if(ownIpAddress == null)ownIpAddress ="0.0.0.0";
 		builder.ownIpAddress(ownIpAddress);
 		
@@ -112,7 +112,6 @@ public class SmScapChargingApi implements ScapChargingApi {
 		return staticRoutes;
 	}
 
-	@Override
 	public Diameter getDiameterConfig() {
 		// TODO Auto-generated method stub
 		return null;

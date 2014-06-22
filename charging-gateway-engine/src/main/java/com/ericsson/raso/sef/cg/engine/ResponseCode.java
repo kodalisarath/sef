@@ -56,12 +56,11 @@ public enum ResponseCode implements StatusCode {
 		this.message = message;
 	}
 
-	@Override
+	
 	public int getCode() {
 		return code;
 	}
 
-	@Override
 	public String getMessage() {
 		return message;
 	}

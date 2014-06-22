@@ -49,6 +49,7 @@ public class SmScapChargingApi implements ScapChargingApi {
 		log.debug("Starting DCC STACK");
 		IConfig config = SefCoreServiceResolver.getConfigService();	
 		DiameterStackBuilder builder = new DiameterStackBuilder(Stack.SCAPV2);
+		
 		log.debug("Value getting picked from properties file: "+config.getValue("scapClient",Constants.PRODUCTID));
 		builder.ownProductId(config.getValue("scapClient",Constants.PRODUCTID));
 		builder.ownRealm(config.getValue("scapClient",Constants.REALM));
@@ -66,7 +67,8 @@ public class SmScapChargingApi implements ScapChargingApi {
 		scapStack.getDiameterConfig().setValue(DiameterConfig.SEND_MESSAGE_LIMIT , config.getValue("scapClient",Constants.SENDMESSAGELIMIT));
 		scapStack.getDiameterConfig().setValue(DiameterConfig.OWN_VENDOR_ID, "10415");
 		scapStack.getDiameterConfig().addSupportedVendor(10415);
-
+		scapStack.getDiameterConfig().setValue(DiameterConfig.OWN_DIAMETER_URI, config.getValue("scapClient",Constants.OWN_DIAMETER_URI));
+		scapStack.getDiameterConfig().setValue(DiameterConfig.OWN_DIAMETER_URI, config.getValue("scapClient",Constants.OWN_DIAMETER_URI));
 		try {
 			scapStack.start();
 			log.debug("DCC STACK STARTED");

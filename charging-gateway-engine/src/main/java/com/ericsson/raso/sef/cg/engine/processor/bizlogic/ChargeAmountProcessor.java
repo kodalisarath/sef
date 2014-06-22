@@ -26,13 +26,13 @@ public class ChargeAmountProcessor extends AbstractChargingProcessor {
 	@Override
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = IpcCluster.getChargingSession(response.getSessionId());
+		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(response.getSessionId());
 		
 		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
 			session.setTransactionStatus(TransactionStatus.PROCESSED);
 		} else {
 			session.setTransactionStatus(TransactionStatus.FAILED);
 		}
-		IpcCluster.updateChargingSession(response.getSessionId(), session);
+		CgEngineContext.getIpcCluster().updateChargingSession(response.getSessionId(), session);
 	}
 }

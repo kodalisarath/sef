@@ -1,4 +1,4 @@
-/*package com.ericsson.raso.sef.cg.engine.processor;
+package com.ericsson.raso.sef.cg.engine.processor;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.Operation;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
-import com.ericsson.raso.sef.cg.engine.util.SmartServiceHelper;
-import com.ericsson.raso.sef.cg.engine.util.SubscriberInfo;
+import com.ericsson.raso.sef.cg.engine.common.CGEngineServiceHelper;
+import com.ericsson.raso.sef.cg.engine.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 
@@ -25,7 +25,7 @@ public class SubscriberValidationProcessor implements Processor {
 
 		SubscriberInfo  subscriberInfo = null;
 		try {
-			subscriberInfo =SmartServiceHelper.getAndRefreshSubscriber(request.getMsisdn());
+			subscriberInfo =CGEngineServiceHelper.getSubscriberInfo(request.getMsisdn());
 		} catch (SmException e) {
 			if(e.getStatusCode().getCode() == 102) {
 				throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);
@@ -59,4 +59,3 @@ public class SubscriberValidationProcessor implements Processor {
 
 
 }
-*/

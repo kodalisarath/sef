@@ -14,6 +14,7 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.ExperimentalResultCodeAvp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.ResultCodeAvp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.VendorIdAvp;
 import com.ericsson.raso.sef.cg.engine.CgConstants;
+import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingSession;
 import com.ericsson.raso.sef.cg.engine.IpcCluster;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
@@ -59,10 +60,10 @@ public class CgExceptionHandler implements Processor {
 
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
 		if (sessionId != null) {
-			ChargingSession session = IpcCluster.getChargingSession(sessionId);
+			ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(sessionId);
 			if (session != null) {
 				session.setTransactionStatus(TransactionStatus.FAILED);
-				IpcCluster.updateChargingSession(sessionId, session);
+				CgEngineContext.getIpcCluster().updateChargingSession(sessionId, session);
 			}
 		}
 		exchange.getOut().setBody(chargingInfo);

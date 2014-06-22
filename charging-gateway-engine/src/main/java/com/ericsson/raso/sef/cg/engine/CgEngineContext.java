@@ -13,7 +13,7 @@ public class CgEngineContext implements ApplicationContextAware {
 
 	private static ApplicationContext context;
 	
-	@Override
+	
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		CgEngineContext.context = applicationContext;
 	}
@@ -30,10 +30,10 @@ public class CgEngineContext implements ApplicationContextAware {
 		return "charging-gateway";
 	}
 	
-	/*public static IpcCluster getIpcCluster() {
+	public static IpcCluster getIpcCluster() {
 		return context.getBean(IpcCluster.class);
 	}
-	*/
+	
 /*	public static SubscriberManagement getSubscriberManagement() {
 		return context.getBean(SubscriberManagement.class);
 	}

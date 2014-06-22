@@ -3,12 +3,15 @@ package com.ericsson.raso.sef.core.lb;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RoundRobinLoadBalancer implements LoadBalancer {
 
 	private String name;
 	private int counter = -1;
 	private final List<Member> pool = new CopyOnWriteArrayList<Member>();
-	
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	public RoundRobinLoadBalancer(String name) {
 		this.name = name;
 	}
@@ -44,6 +47,7 @@ public class RoundRobinLoadBalancer implements LoadBalancer {
 	@Override
 	public Member chooseRoute() {
 		int size = pool.size();
+		logger.debug("Pool Size: "+size);
 		if (++counter >= size) {
 			counter = 0;
 		}
