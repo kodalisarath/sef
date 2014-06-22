@@ -58,10 +58,8 @@ public class EntireReadSubscriber implements Processor {
 		if (entireRead != null) {
 			if (entireRead.getCustomer() != null) {
 				operationResult.getOperation().add(EntireReadUtil.createCustomerRead(entireRead.getCustomer().getCustomerRead()));
-				operationResult.getOperation().add(
-						EntireReadUtil.createCustomerBucketRead(entireRead.getCustomer().getCustomerBucketRead()));
-				operationResult.getOperation().add(
-						EntireReadUtil.createCustomerVersionRead(entireRead.getCustomer().getCustomerVersionRead()));
+				operationResult.getOperation().add(EntireReadUtil.createCustomerBucketRead(entireRead.getCustomer().getCustomerBucketRead()));
+				operationResult.getOperation().add(EntireReadUtil.createCustomerVersionRead(entireRead.getCustomer().getCustomerVersionRead()));
 			}
 
 			if (entireRead.getRop() != null) {

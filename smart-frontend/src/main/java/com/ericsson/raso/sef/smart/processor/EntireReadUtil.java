@@ -131,36 +131,28 @@ public class EntireReadUtil {
 		operation.setName("Read");
 		operation.setModifier("Customer");
 
-		List<Object> parameterList = operation.getParameterList()
-				.getParameterOrBooleanParameterOrByteParameter();
+		List<Object> parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
-		parameterList.add(EntireReadUtil.stringParameter("CustomerId",
-				customerRead.getCustomerId()));
+		parameterList.add(EntireReadUtil.stringParameter("CustomerId", customerRead.getCustomerId()));
 
 		if (customerRead.getBillCycleId() != null) {
-			parameterList.add(EntireReadUtil.shortParameter("billCycleId",
-					customerRead.getBillCycleId()));
+			parameterList.add(EntireReadUtil.shortParameter("billCycleId", customerRead.getBillCycleId()));
 		}
 
 		if (customerRead.getBillCycleSwitch() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"billCycleSwitch", customerRead.getBillCycleSwitch()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("billCycleSwitch", customerRead.getBillCycleSwitch()));
 		}
 
 		if (customerRead.getBillCycleIdAfterSwitch() != null) {
-			parameterList.add(EntireReadUtil.shortParameter(
-					"billCycleIdAfterSwitch",
-					customerRead.getBillCycleIdAfterSwitch()));
+			parameterList.add(EntireReadUtil.shortParameter("billCycleIdAfterSwitch", customerRead.getBillCycleIdAfterSwitch()));
 		}
 
 		if (customerRead.getPrefetchFilter() != null) {
-			parameterList.add(EntireReadUtil.intParameter("prefetchFilter",
-					customerRead.getPrefetchFilter()));
+			parameterList.add(EntireReadUtil.intParameter("prefetchFilter", customerRead.getPrefetchFilter()));
 		}
 
 		if (customerRead.getCategory() != null) {
-			parameterList.add(EntireReadUtil.enumerationValueParameter(
-					"category", customerRead.getCategory()));
+			parameterList.add(EntireReadUtil.enumerationValueParameter("category", customerRead.getCategory()));
 		}
 
 		return operation;
@@ -473,92 +465,69 @@ public class EntireReadUtil {
 	public static Operation createRppRead(RppRead rppRead) {
 		Operation operation = new Operation();
 		operation.setName("Read");
-		operation.setModifier("RPP");
+		operation.setModifier("RPP_s_subLifeIncentive");
 
-		List<Object> parameterList = operation.getParameterList()
-				.getParameterOrBooleanParameterOrByteParameter();
+		List<Object> parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
-		parameterList.add(EntireReadUtil.stringParameter("CustomerId",
-				rppRead.getCustomerId()));
+		parameterList.add(EntireReadUtil.stringParameter("CustomerId", rppRead.getCustomerId()));
 		if (rppRead.getsCanBeSharedByMultipleRops() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"s_CanBeSharedByMultipleRops",
-					rppRead.getsCanBeSharedByMultipleRops()));
+			parameterList.add(EntireReadUtil.booleanParameter("s_CanBeSharedByMultipleRops", rppRead.getsCanBeSharedByMultipleRops()));
 		}
 
 		if (rppRead.getsInsertedViaBatch() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"s_InsertedViaBatch", rppRead.getsInsertedViaBatch()));
+			parameterList.add(EntireReadUtil.booleanParameter("s_InsertedViaBatch", rppRead.getsInsertedViaBatch()));
 		}
 
 		if (rppRead.getsPreActive() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter("s_PreActive",
-					rppRead.getsPreActive()));
+			parameterList.add(EntireReadUtil.booleanParameter("s_PreActive", rppRead.getsPreActive()));
 		}
 
 		if (rppRead.getCategory() != null) {
-			parameterList.add(EntireReadUtil.enumerationValueParameter(
-					"category", rppRead.getCategory()));
+			parameterList.add(EntireReadUtil.enumerationValueParameter("category", rppRead.getCategory()));
 		}
 
 		if (rppRead.getcIACCreditLimitValidity() != null) {
-			parameterList.add(EntireReadUtil.longParameter(
-					"c_IACCreditLimitValidity",
-					rppRead.getcIACCreditLimitValidity()));
+			parameterList.add(EntireReadUtil.longParameter("c_IACCreditLimitValidity", rppRead.getcIACCreditLimitValidity()));
 		}
 
 		if (rppRead.getcUnliResetRechargeValidity() != null) {
-			parameterList.add(EntireReadUtil.longParameter(
-					"c_UnliResetRechargeValidity",
-					rppRead.getcUnliResetRechargeValidity()));
+			parameterList.add(EntireReadUtil.longParameter("c_UnliResetRechargeValidity", rppRead.getcUnliResetRechargeValidity()));
 		}
 
 		if (rppRead.getKey() != null) {
-			parameterList.add(EntireReadUtil.intParameter("Key",
-					rppRead.getKey()));
+			parameterList.add(EntireReadUtil.intParameter("Key", rppRead.getKey()));
 		}
 
 		if (rppRead.getOfferProfileKey() != null) {
-			parameterList.add(EntireReadUtil.intParameter("OfferProfileKey",
-					rppRead.getOfferProfileKey()));
+			parameterList.add(EntireReadUtil.intParameter("OfferProfileKey", rppRead.getOfferProfileKey()));
 		}
 
 		if (rppRead.getPrefetchFilter() != null) {
-			parameterList.add(EntireReadUtil.intParameter("prefetchFilter",
-					rppRead.getPrefetchFilter()));
+			parameterList.add(EntireReadUtil.intParameter("prefetchFilter", rppRead.getPrefetchFilter()));
 		}
 
 		if (rppRead.getsActivationEndTime() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"s_ActivationEndTime", rppRead.getsActivationEndTime()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("s_ActivationEndTime", rppRead.getsActivationEndTime()));
 		}
 
 		if (rppRead.getsActivationStartTime() != null) {
-			parameterList
-					.add(EntireReadUtil.symbolicOrDateParameter(
-							"s_ActivationStartTime",
-							rppRead.getsActivationStartTime()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("s_ActivationStartTime", rppRead.getsActivationStartTime()));
 		}
 
 		if (rppRead.getsCRMTitle() != null) {
-			parameterList.add(EntireReadUtil.stringParameter("s_CRMTitle",
-					rppRead.getsCRMTitle()));
+			parameterList.add(EntireReadUtil.stringParameter("s_CRMTitle", rppRead.getsCRMTitle()));
 		}
 
 		if (rppRead.getsPackageId() != null) {
-			parameterList.add(EntireReadUtil.stringParameter("s_PackageId",
-					rppRead.getsPackageId()));
+			parameterList.add(EntireReadUtil.stringParameter("s_PackageId", rppRead.getsPackageId()));
 		}
 
 		if (rppRead.getC_TokenBasedExpiredDate() != null) {
-			parameterList.add(EntireReadUtil.longParameter(
-					"c_TokenBasedExpiredDate",
-					rppRead.getC_TokenBasedExpiredDate()));
+			parameterList.add(EntireReadUtil.longParameter( "c_TokenBasedExpiredDate", rppRead.getC_TokenBasedExpiredDate()));
 		}
 
 		if (rppRead.getsPeriodStartPoint() != null) {
-			parameterList.add(EntireReadUtil.intParameter("s_PeriodStartPoint",
-					rppRead.getsPeriodStartPoint()));
+			parameterList.add(EntireReadUtil.intParameter("s_PeriodStartPoint", rppRead.getsPeriodStartPoint()));
 		}
 
 		return operation;
@@ -567,87 +536,71 @@ public class EntireReadUtil {
 	public static Operation createRppBucketRead(RppBucketRead rppBucketRead) {
 		Operation operation = new Operation();
 		operation.setName("BucketRead");
-		operation.setModifier("RPP");
+		operation.setModifier("RPP_s_subLifeIncentive");
 
 		List<Object> parameterList = operation.getParameterList()
 				.getParameterOrBooleanParameterOrByteParameter();
 
-		parameterList.add(EntireReadUtil.stringParameter("CustomerId",
-				rppBucketRead.getCustomerId()));
+		parameterList.add(EntireReadUtil.stringParameter("CustomerId", rppBucketRead.getCustomerId()));
 
 		if (rppBucketRead.getsActive() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter("s_Active",
-					rppBucketRead.getsActive()));
+			parameterList.add(EntireReadUtil.booleanParameter("s_Active", rppBucketRead.getsActive()));
 		}
 
 		if (rppBucketRead.getsValid() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter("s_Valid",
-					rppBucketRead.getsValid()));
+			parameterList.add(EntireReadUtil.booleanParameter("s_Valid", rppBucketRead.getsValid()));
 		}
 
 		if (rppBucketRead.getbCategory() != null) {
-			parameterList.add(EntireReadUtil.enumerationValueParameter(
-					"bCategory", rppBucketRead.getbCategory()));
+			parameterList.add(EntireReadUtil.enumerationValueParameter("bCategory", rppBucketRead.getbCategory()));
 		}
 
 		if (rppBucketRead.getbInvalidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"bInvalidFrom", rppBucketRead.getbInvalidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", rppBucketRead.getbInvalidFrom()));
 		}
 
 		if (rppBucketRead.getbValidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"bValidFrom", rppBucketRead.getbValidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", rppBucketRead.getbValidFrom()));
 		}
 
 		if (rppBucketRead.getbSeriesId() != null) {
-			parameterList.add(EntireReadUtil.intParameter("bSeriesId",
-					rppBucketRead.getbSeriesId()));
+			parameterList.add(EntireReadUtil.intParameter("bSeriesId", rppBucketRead.getbSeriesId()));
 		}
 
 		if (rppBucketRead.getKey() != null) {
-			parameterList.add(EntireReadUtil.intParameter("Key",
-					rppBucketRead.getKey()));
+			parameterList.add(EntireReadUtil.intParameter("Key", rppBucketRead.getKey()));
 		}
 
 		if (rppBucketRead.getOfferProfileKey() != null) {
-			parameterList.add(EntireReadUtil.intParameter("OfferProfileKey",
-					rppBucketRead.getOfferProfileKey()));
+			parameterList.add(EntireReadUtil.intParameter("OfferProfileKey", rppBucketRead.getOfferProfileKey()));
 		}
 
 		if (rppBucketRead.getsError() != null) {
-			parameterList.add(EntireReadUtil.byteParameter("s_Error",
-					rppBucketRead.getsError()));
+			parameterList.add(EntireReadUtil.byteParameter("s_Error", rppBucketRead.getsError()));
 		}
 
 		if (rppBucketRead.getsExpireDate() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"s_ExpireDate", rppBucketRead.getsExpireDate()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("s_ExpireDate", rppBucketRead.getsExpireDate()));
 		}
 
 		if (rppBucketRead.getsInfo() != null) {
-			parameterList.add(EntireReadUtil.intParameter("s_Info",
-					rppBucketRead.getsInfo()));
+			parameterList.add(EntireReadUtil.intParameter("s_Info", rppBucketRead.getsInfo()));
 		}
 
 		if (rppBucketRead.getsNextPeriodAct() != null) {
-			parameterList.add(EntireReadUtil.longParameter("s_NextPeriodAct",
-					rppBucketRead.getsNextPeriodAct().getTime()));
+			parameterList.add(EntireReadUtil.longParameter("s_NextPeriodAct", rppBucketRead.getsNextPeriodAct().getTime()));
 		}
 
 		if (rppBucketRead.getsPeriodicBonusBalance() != null) {
 			StructParameter parameter = new StructParameter();
 			parameter.setName("s_PeriodicBonus_FU");
-			parameter.getParameterOrBooleanParameterOrByteParameter().add(
-					EntireReadUtil.longParameter("Balance",
-							rppBucketRead.getsPeriodicBonusBalance()));
+			parameter.getParameterOrBooleanParameterOrByteParameter().add(EntireReadUtil.longParameter("Balance",
+																						rppBucketRead.getsPeriodicBonusBalance()));
 			parameterList.add(parameter);
 		}
 
 		if (rppBucketRead.getsRenewalPeriodEnd() != null) {
-			parameterList.add(EntireReadUtil.longParameter(
-					"s_RenewalPeriodEnd", rppBucketRead.getsNextPeriodAct()
-							.getTime()));
+			parameterList.add(EntireReadUtil.longParameter("s_RenewalPeriodEnd", rppBucketRead.getsNextPeriodAct().getTime()));
 		}
 
 		return operation;
@@ -656,26 +609,22 @@ public class EntireReadUtil {
 	public static Operation createRppVersionRead(RppVersionRead rppVersionRead) {
 		Operation operation = new Operation();
 		operation.setName("VersionRead");
-		operation.setModifier("RPP");
+		operation.setModifier("RPP_s_subLifeIncentive");
 
 		List<Object> parameterList = operation.getParameterList()
 				.getParameterOrBooleanParameterOrByteParameter();
-		parameterList.add(EntireReadUtil.stringParameter("CustomerId",
-				rppVersionRead.getCustomerId()));
+		parameterList.add(EntireReadUtil.stringParameter("CustomerId", rppVersionRead.getCustomerId()));
 
 		if (rppVersionRead.getCategory() != null) {
-			parameterList.add(EntireReadUtil.enumerationValueParameter(
-					"Category", rppVersionRead.getCategory()));
+			parameterList.add(EntireReadUtil.enumerationValueParameter("Category", rppVersionRead.getCategory()));
 		}
 
 		if (rppVersionRead.getKey() != null) {
-			parameterList.add(EntireReadUtil.intParameter("Key",
-					rppVersionRead.getKey()));
+			parameterList.add(EntireReadUtil.intParameter("Key", rppVersionRead.getKey()));
 		}
 
 		if (rppVersionRead.getOfferProfileKey() != null) {
-			parameterList.add(EntireReadUtil.intParameter("OfferProfileKey",
-					rppVersionRead.getOfferProfileKey()));
+			parameterList.add(EntireReadUtil.intParameter("OfferProfileKey", rppVersionRead.getOfferProfileKey()));
 		}
 
 		if (rppVersionRead.getsPeriodicBonusExpiryDate() != null
@@ -685,26 +634,22 @@ public class EntireReadUtil {
 			parameterList.add(parameter);
 
 			if (rppVersionRead.getsPeriodicBonusExpiryDate() != null) {
-				parameter.getParameterOrBooleanParameterOrByteParameter().add(
-						EntireReadUtil.symbolicOrDateParameter("ExpiryDate",
-								rppVersionRead.getsPeriodicBonusExpiryDate()));
+				parameter.getParameterOrBooleanParameterOrByteParameter().add(EntireReadUtil.symbolicOrDateParameter("ExpiryDate",
+																						rppVersionRead.getsPeriodicBonusExpiryDate()));
 			}
 
 			if (rppVersionRead.getsPeriodicBonusCreditLimit() != null) {
-				parameter.getParameterOrBooleanParameterOrByteParameter().add(
-						EntireReadUtil.longParameter("CreditLimit",
-								rppVersionRead.getsPeriodicBonusCreditLimit()));
+				parameter.getParameterOrBooleanParameterOrByteParameter().add(EntireReadUtil.longParameter("CreditLimit",
+																					rppVersionRead.getsPeriodicBonusCreditLimit()));
 			}
 		}
 
 		if (rppVersionRead.getvInvalidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"vInvalidFrom", rppVersionRead.getvInvalidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", rppVersionRead.getvInvalidFrom()));
 		}
 
 		if (rppVersionRead.getvValidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"vValidFrom", rppVersionRead.getvValidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", rppVersionRead.getvValidFrom()));
 		}
 
 		return operation;
@@ -910,10 +855,8 @@ public class EntireReadUtil {
 	public static Customer getCustomer(Subscriber subcriber, Date currentTime) {
 		Customer customer = new Customer();
 		customer.setCustomerRead(createCustomerRead(subcriber));
-		customer.setCustomerBucketRead(createCustomerBucketRead(subcriber,
-				currentTime));
-		customer.setCustomerVersionRead(createCustomerVersionRead(subcriber,
-				currentTime));
+		customer.setCustomerBucketRead(createCustomerBucketRead(subcriber, currentTime));
+		customer.setCustomerVersionRead(createCustomerVersionRead(subcriber, currentTime));
 		return customer;
 	}
 
@@ -928,8 +871,7 @@ public class EntireReadUtil {
 		return customerRead;
 	}
 
-	private static CustomerVersionRead createCustomerVersionRead(
-			Subscriber subcriber, Date currentTime) {
+	private static CustomerVersionRead createCustomerVersionRead(Subscriber subcriber, Date currentTime) {
 		CustomerVersionRead versionRead = new CustomerVersionRead();
 		versionRead.setCustomerId(subcriber.getMsisdn());
 		versionRead.setCategory("ONLINE");
@@ -939,8 +881,7 @@ public class EntireReadUtil {
 		return versionRead;
 	}
 
-	private static CustomerBucketRead createCustomerBucketRead(
-			Subscriber subscriber, Date currentTime) {
+	private static CustomerBucketRead createCustomerBucketRead(Subscriber subscriber, Date currentTime) {
 		CustomerBucketRead bucketRead = new CustomerBucketRead();
 		bucketRead.setCustomerId(subscriber.getMsisdn());
 		bucketRead.setbCategory("ONLINE");
@@ -966,26 +907,18 @@ public class EntireReadUtil {
 		ropRead.setKey(1);
 		ropRead.setCategory("ONLINE");
 		ropRead.setPrefetchFilter(-1);
+		
 		if (subscriber.getMetas() != null) {
+			if (subscriber.getMetas().containsKey(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE)) {
 
-			if (subscriber.getMetas().containsKey(
-					Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE)) {
+				logger.debug("Active End Date is " + subscriber.getMetas().get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE));
 
-				logger.debug("Active End Date is "
-						+ subscriber
-								.getMetas()
-								.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE));
-
-				if (subscriber.getMetas().get(
-						Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE) != null) {
-					ropRead.setActiveEndDate(DateUtil.convertDateToString(new Date(
-							Long.parseLong(subscriber
-									.getMetas()
-									.get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE)))));
+				String serviceFeeExpiry = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE);
+				if (serviceFeeExpiry != null) {
+					ropRead.setActiveEndDate(DateUtil.convertDateToString(new Date(Long.parseLong(serviceFeeExpiry))));
 				}
-				logger.debug("Active End Date after formating is "
-						+ ropRead.getActiveEndDate());
-
+				
+				logger.debug("Active End Date after formating is " + ropRead.getActiveEndDate());
 			}
 		}
 
@@ -1005,20 +938,8 @@ public class EntireReadUtil {
 
 		IConfig config = SefCoreServiceResolver.getConfigService();
 		if (subscriber.getActiveDate() != null)
-			ropRead.setFirstCallDate(DateUtil.convertDateToString(new Date(
-					subscriber.getActiveDate())));
+			ropRead.setFirstCallDate(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
 
-		// if (accountDetailsResponse != null
-		// && accountDetailsResponse.getActivationDate() != null) {
-		// ropRead.setFirstCallDate(accountDetailsResponse.getActivationDate()
-		// .toString());
-		// }
-		//
-		/*
-		 * OfferInformation graceOffer = offerMap.get(Integer.valueOf(1)); if
-		 * (graceOffer != null && graceOffer.getExpiryDate() != null) {
-		 * ropRead.setGraceEndDate(graceOffer.getExpiryDate().toString()); }
-		 */
 
 		String graceEndDate = getGraceEndDate(subscriber);
 		logger.debug("  graceEndDate  is "+graceEndDate);
@@ -1031,47 +952,36 @@ public class EntireReadUtil {
 		if (isCFMOC != null) {
 			int val = Boolean.parseBoolean(isCFMOC) ? 1 : 0;
 			ropRead.setIsCFMOC(val);
-		}
+		} 
 
-		String IsCollectCallAllowed = subscriber.getMetas().get(
-				"IsCollectCallAllowed");
+		String IsCollectCallAllowed = subscriber.getMetas().get("IsCollectCallAllowed");
 		if (IsCollectCallAllowed != null) {
-			ropRead.setIsCollectCallAllowed(Boolean
-					.valueOf(IsCollectCallAllowed));
+			ropRead.setIsCollectCallAllowed(Boolean.valueOf(IsCollectCallAllowed));
 		}
 
-		String IsFirstCallPassed = subscriber.getMetas().get(
-				"IsFirstCallPassed");
-
+		String IsFirstCallPassed = subscriber.getMetas().get("IsFirstCallPassed");
 		if (IsFirstCallPassed != null) {
 			ropRead.setIsFirstCallPassed(Boolean.valueOf(IsFirstCallPassed));
 		}
 
 		String IsGPRSUsed = subscriber.getMetas().get("IsGPRSUsed");
-
 		if (IsGPRSUsed != null) {
 			ropRead.setIsGPRSUsed(Boolean.valueOf(IsGPRSUsed));
 		}
 
-		String IsLastRechargeInfoStored = subscriber.getMetas().get(
-				"IsLastRechargeInfoStored");
+		String IsLastRechargeInfoStored = subscriber.getMetas().get("IsLastRechargeInfoStored");
 		if (IsLastRechargeInfoStored != null) {
-			ropRead.setIsLastRechargeInfoStored(Boolean
-					.valueOf(IsLastRechargeInfoStored));
+			ropRead.setIsLastRechargeInfoStored(Boolean.valueOf(IsLastRechargeInfoStored));
 		}
 
-		String IsLastTransactionEnqUsed = subscriber.getMetas().get(
-				"IsLastTransactionEnqUsed");
+		String IsLastTransactionEnqUsed = subscriber.getMetas().get("IsLastTransactionEnqUsed");
 		if (IsLastTransactionEnqUsed != null) {
-			ropRead.setIsLastTransactionEnqUsed(Boolean
-					.valueOf(IsLastTransactionEnqUsed));
+			ropRead.setIsLastTransactionEnqUsed(Boolean.valueOf(IsLastTransactionEnqUsed));
 		}
 
-		String IsOperatorCollectCallAllowed = subscriber.getMetas().get(
-				"IsOperatorCollectCallAllowed");
+		String IsOperatorCollectCallAllowed = subscriber.getMetas().get("IsOperatorCollectCallAllowed");
 		if (IsOperatorCollectCallAllowed != null) {
-			ropRead.setIsOperatorCollectCallAllowed(Boolean
-					.valueOf(IsOperatorCollectCallAllowed));
+			ropRead.setIsOperatorCollectCallAllowed(Boolean.valueOf(IsOperatorCollectCallAllowed));
 		}
 
 		String IsSmsAllowed = subscriber.getMetas().get("IsSmsAllowed");
@@ -1080,28 +990,19 @@ public class EntireReadUtil {
 		}
 
 		String preActiveEndDate = subscriber.getMetas().get("PreactiveEndDate");
-		logger.debug(" preActiveEndDate Before formatting is "
-				+ preActiveEndDate);
+		logger.debug(" preActiveEndDate Before formatting is " + preActiveEndDate);
 		if (preActiveEndDate != null) {
-
-			Date d = null;
+			Date date = null;
 			try {
-				d = DateUtil.convertStringToDate(preActiveEndDate,
-						"yyyyMMddHHmmss");
-
+				date = DateUtil.convertStringToDate(preActiveEndDate, "yyyyMMddHHmmss");
 			} catch (ParseException e) {
-
 				logger.error("Date ParseException ", e);
 			}
-
-			ropRead.setPreActiveEndDate(DateUtil.convertDateToString(d));
-
+			ropRead.setPreActiveEndDate(DateUtil.convertDateToString(date));
 		}
-		logger.debug(" preActiveEndDate After formatting is "
-				+ ropRead.getPreActiveEndDate());
+		logger.debug(" preActiveEndDate After formatting is " + ropRead.getPreActiveEndDate());
 
 		ropRead.setLastKnownPeriod(subscriber.getContractState());
-
 		ropRead.setS_CRMTitle("-");
 		if (tag != null && tag.isSmartTag()) {
 			ropRead.setIsLocked(true);
