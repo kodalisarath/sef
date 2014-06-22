@@ -106,7 +106,7 @@ public class CARecharge implements Processor {
 			} else if (eventClass.equals("pasaload")) {
 				rechargeRequest.setRatingInput0("pasaload");
 				offerid = rechargeRequest.getEventName();
-				metas = prepareRecharge(rechargeRequest);
+				metas = preparePasaload(rechargeRequest);
 			} else if (eventClass.equals("reversal")) {
 				offerid = rechargeRequest.getEventName();
 				metas = prepareReversalRecharge(rechargeRequest);
