@@ -70,7 +70,6 @@ public class SubscriberPasa implements Serializable {
 		}
 
 		Integer pasaCount = pasaCountToday.get(relevantKey);
-		LOGGER.debug("Updating pasa count...key: " + relevantKey + ", pasacount: " + (pasaCount+1) );
 		if (pasaCount == null) 
 			pasaCountToday.put(pasaID, 1);
 		else 
@@ -84,7 +83,6 @@ public class SubscriberPasa implements Serializable {
 		}
 
 		Integer pasaAmount = pasaAmountToday.get(relevantKey);
-		LOGGER.debug("Updating pasa count...key: " + relevantKey + ", pasaamount: " + (pasaAmount + value));
 		if (pasaAmount == null) 
 			pasaAmountToday.put(pasaID, 1);
 		else 
