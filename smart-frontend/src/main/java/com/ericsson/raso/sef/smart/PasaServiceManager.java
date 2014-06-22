@@ -159,7 +159,7 @@ public class PasaServiceManager {
 			
 			int consumedAmount = subscriberPasa.getPasaAmount(offerId);
 			LOGGER.debug("User consumption for today: " + consumedAmount + ", storing consumption for this event: " + value);
-			subscriberPasa.setPasaReceived(pasaLoadID, (value + consumedAmount));
+			subscriberPasa.setPasaReceived(offerId, value);
 
 			this.persistToFile(subscriberPasaFile, subscriberPasa);
 			LOGGER.debug("Pasa setup for the user...");
