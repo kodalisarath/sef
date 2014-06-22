@@ -103,16 +103,7 @@ public class EntireDeleteSubscriber implements Processor{
 		logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 		
 		SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-		logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-		if(purchaseResponse.getStatus() != null && purchaseResponse.getStatus().getCode() >0) {
-			logger.debug("No response arrived???");
-			throw new SmException(ErrorCode.internalServerError);
-		}
-		else{
-			logger.info("Check if response received for update subscriber");
-			return purchaseResponse;
-		}	
-		
+		return purchaseResponse;
 		
 	}
 

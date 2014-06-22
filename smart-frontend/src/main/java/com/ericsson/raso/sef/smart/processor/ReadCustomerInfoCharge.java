@@ -10,9 +10,11 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
@@ -36,11 +38,13 @@ public class ReadCustomerInfoCharge implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		ReadCustomerInfoChargeRequest request = (ReadCustomerInfoChargeRequest) exchange.getIn().getBody();
-		
 		 logger.info("Customer Info Charge: process()");
+		ReadCustomerInfoChargeRequest request = (ReadCustomerInfoChargeRequest) exchange.getIn().getBody();
+		IConfig config = SefCoreServiceResolver.getConfigService();
+		String channel = String.valueOf(request.getChannel());
+		int channelValue = Integer.parseInt(config.getValue("SMART_customerInfoChannel",channel));
+		logger.info("ChannelName: "+channel+", ChannelValue: "+channelValue);
 	     String requestId = RequestContextLocalStore.get().getRequestId();
-	     List<Meta> metas = new ArrayList<Meta>();
 	     logger.info("Collecting SOAP parameters");
 	     List<Meta> workflowMetas= new ArrayList<Meta>();
 	     workflowMetas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
@@ -49,8 +53,14 @@ public class ReadCustomerInfoCharge implements Processor {
 	     workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 
 	     //List<Meta> metaSubscriber=new ArrayList<Meta>();
+	     if(channelValue > 0){
+	    	 workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE")); 
+	     }
+	     else{
+	    	 workflowMetas.add(new Meta("READ_SUBSCRIBER","READ_BALANCES"));
+	     }
 	     workflowMetas.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
-	     workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE"));
+	     
 	     
 	     logger.info("Collected SOAP parameters");
 	     logger.info("Going for Customer Info Charge Call");
@@ -165,22 +175,22 @@ public class ReadCustomerInfoCharge implements Processor {
 				int daID = Integer.parseInt(mainDaElements[0]);
 				String daVal1 = mainDaElements[1];
 				String daVal2 = mainDaElements[2];
-				Long startDate = Long.parseLong(((mainDaElements[3].equals("null"))?null:mainDaElements[3]));
-				Long expiryDate = Long.parseLong(((mainDaElements[4].equals("null"))?null:mainDaElements[4]));
-				Integer pamServiceID = Integer.parseInt(((mainDaElements[5].equals("null"))?null:mainDaElements[5]));
-				Integer offerID = Integer.parseInt(((mainDaElements[6].equals("null"))?null:mainDaElements[6]));
-				Integer productID = Integer.parseInt(((mainDaElements[7].equals("null"))?null:mainDaElements[7]));
-				Boolean isRealMoney = Boolean.parseBoolean(((mainDaElements[8].equals("null"))?null:mainDaElements[8]));
-				Long closestExpiryDate = Long.parseLong(((mainDaElements[9].equals("null"))?null:mainDaElements[9]));
-				String closestExpiryValue1 = ((mainDaElements[10].equals("null"))?null:mainDaElements[10]);
-				String closestExpiryValue2 = ((mainDaElements[11].equals("null"))?null:mainDaElements[11]);
-				Long closestAccessibleDate = Long.parseLong(((mainDaElements[12].equals("null"))?null:mainDaElements[12]));
-				String closestAccessibleValue1 = ((mainDaElements[13].equals("null"))?null:mainDaElements[13]);
-				String closestAccessibleValue2 = ((mainDaElements[14].equals("null"))?null:mainDaElements[14]);
-				String daActiveValue1 = ((mainDaElements[15].equals("null"))?null:mainDaElements[15]);
-				String daActiveValue2 = ((mainDaElements[16].equals("null"))?null:mainDaElements[16]);
-				Integer daUnitType = Integer.parseInt(((mainDaElements[17].equals("null"))?null:mainDaElements[17]));
-				Boolean isCompositeDAFlag = Boolean.parseBoolean(((mainDaElements[18].equals("null"))?null:mainDaElements[18]));
+				Long startDate =("null".equals(mainDaElements[3]))?null: Long.parseLong(mainDaElements[3]);
+				Long expiryDate = (("null").equals(mainDaElements[4]))?null:Long.parseLong(mainDaElements[4]);
+				Integer pamServiceID = (("null").equals(mainDaElements[5]))?null:Integer.parseInt(mainDaElements[5]);
+				Integer offerID = (("null").equals(mainDaElements[6]))?null:Integer.parseInt(mainDaElements[6]);
+				Integer productID = (("null").equals(mainDaElements[7]))?null:Integer.parseInt(mainDaElements[7]);
+				Boolean isRealMoney = (("null").equals(mainDaElements[8]))?null:Boolean.parseBoolean(mainDaElements[8]);
+				Long closestExpiryDate = (("null").equals(mainDaElements[9]))?null:Long.parseLong(mainDaElements[9]);
+				String closestExpiryValue1 = (("null").equals(mainDaElements[10]))?null:mainDaElements[10];
+				String closestExpiryValue2 = (("null").equals(mainDaElements[11]))?null:mainDaElements[11];
+				Long closestAccessibleDate = (("null".equals(mainDaElements[12])))?null:Long.parseLong(mainDaElements[12]);
+				String closestAccessibleValue1 = (("null").equals(mainDaElements[13]))?null:mainDaElements[13];
+				String closestAccessibleValue2 = (("null").equals(mainDaElements[14]))?null:mainDaElements[14];
+				String daActiveValue1 = (("null").equals(mainDaElements[15]))?null:mainDaElements[15];
+				String daActiveValue2 = (("null").equals(mainDaElements[16]))?null:mainDaElements[16];
+				Integer daUnitType = (("null").equals(mainDaElements[17]))?null:Integer.parseInt(mainDaElements[17]);
+				Boolean isCompositeDAFlag = (("null").equals(mainDaElements[18]))?null:Boolean.parseBoolean(mainDaElements[18]);
 				
 				DAInfo daInfo = new DAInfo(daID, daVal1, daVal2, startDate, expiryDate, pamServiceID, offerID, productID, isRealMoney, 
 						closestExpiryDate, closestExpiryValue1, closestExpiryValue2, closestAccessibleDate, closestAccessibleValue1, 
