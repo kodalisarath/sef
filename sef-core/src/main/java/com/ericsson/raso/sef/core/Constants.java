@@ -18,7 +18,6 @@ public class Constants {
 	// TO:DO remove after fixing an issue with Hazlecast
 	public static final String SMFE_TXE_CORRELLATOR = "CorrelationStore";
 	
-	
 	//Constants to deferrentiate use cases
 	
 	public static final String ModifyCustomerGrace = "ModifyCustomerGrace";
@@ -110,7 +109,7 @@ public class Constants {
 	public static final String EVICTIONTIMEUNIT = "evictionTimeUnit";
 	public static final String MAXSIZE = "maxSize";
 	public static final String EXCUTABLE_OFFER = "executableOffer";
-
+	public static final String OWN_DIAMETER_URI = "ownDiameterURI";
 	//Activation Schedular
 	public static final String QUARTZ_INTERFACE = "sef-scheduler-interfaces";
 	public static final String QUARTZ_SERVER = "sef-scheduler-server";
