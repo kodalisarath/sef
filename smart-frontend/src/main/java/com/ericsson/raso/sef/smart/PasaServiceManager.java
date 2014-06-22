@@ -86,7 +86,13 @@ public class PasaServiceManager {
 			String offerId = discoveryResponse.getOffer().getName();
 			LOGGER.debug("Getting PASA: " + offerId + " for handle: " + pasaLoadID);
 			
-			int allowedCount = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_pasaLoad", offerId));
+			String pasaOffer = SefCoreServiceResolver.getConfigService().getValue("SMART_pasaLoad", offerId);
+			if (pasaOffer == null) {
+				LOGGER.debug("Cannot find restriction mapping in config for pasa: " + offerId);
+				return false;
+			} 
+			
+			int allowedCount = Integer.parseInt(pasaOffer);
 			LOGGER.debug("Allowed PASA from config: " + allowedCount);
 			
 			int consumedCount = subscriberPasa.getPasaCount(offerId);
@@ -172,6 +178,8 @@ public class PasaServiceManager {
 			ObjectInputStream oisPasa = new ObjectInputStream(fisPasa);
 			SubscriberPasa pasa = (SubscriberPasa) oisPasa.readObject();
 
+			LOGGER.debug("Pasa Content fetched: " + pasa);
+			
 			oisPasa.close();
 			fisPasa.close();
 
@@ -194,6 +202,7 @@ public class PasaServiceManager {
 			FileOutputStream fosPasa = new FileOutputStream(subscriberPasaFile);
 			ObjectOutputStream oosPasa = new ObjectOutputStream(fosPasa);
 
+			LOGGER.debug("Pasa Content to Save: " + pasa);
 			oosPasa.writeObject(pasa);
 
 			oosPasa.close();
