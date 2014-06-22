@@ -84,9 +84,13 @@ public class PasaServiceManager {
 
 		try {
 			String offerId = discoveryResponse.getOffer().getName();
-			LOGGER.debug("Getting PASA: " + offerId);
+			LOGGER.debug("Getting PASA: " + offerId + " for handle: " + pasaLoadID);
+			
 			int allowedCount = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("SMART_pasaLoad", offerId));
+			LOGGER.debug("Allowed PASA from config: " + allowedCount);
+			
 			int consumedCount = subscriberPasa.getPasaCount(offerId);
+			LOGGER.debug("PASA in user account for today: " + consumedCount);
 			if ((allowedCount != -1) && (consumedCount >= allowedCount)) {
 				LOGGER.debug("User already exhausted pasa receive restriction");
 				return false;
@@ -145,8 +149,10 @@ public class PasaServiceManager {
 
 		try {
 			String offerId = discoveryResponse.getOffer().getName();
-			LOGGER.debug("Setting PASA: " + offerId);
+			LOGGER.debug("Getting PASA: " + offerId + " for handle: " + pasaLoadID);
+			
 			int consumedAmount = subscriberPasa.getPasaAmount(offerId);
+			LOGGER.debug("User consumption for today: " + consumedAmount + ", storing consumption for this event: " + value);
 			subscriberPasa.setPasaReceived(pasaLoadID, (value + consumedAmount));
 
 			this.persistToFile(subscriberPasaFile, subscriberPasa);
