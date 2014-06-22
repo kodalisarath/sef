@@ -87,8 +87,12 @@ public class EntireReadSubscriber implements Processor {
 		logger.info("Check if response received for simpleread subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		
-		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0)
-			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0) {
+			if (subscriberInfo.getStatus().getCode() == 504)
+				throw ExceptionUtil.toSmException(ErrorCode.primaryKeyAlreadyExists1);
+			else
+				throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
+		}
 		
 		return subscriberInfo.getSubscriber();
 	}
@@ -227,7 +231,7 @@ public class EntireReadSubscriber implements Processor {
 		// skipping grace date, since the user is not yet active
 		if (subscriber.getMetas().get("s_CRMTitle") != null) 
 			parameterList.add(EntireReadUtil.stringParameter("s_CRMTitle", subscriber.getMetas().get("s_CRMTitle")));
-		parameterList.add(EntireReadUtil.stringParameter("LastKnownPeriod", "PREACTIVE"));
+		parameterList.add(EntireReadUtil.stringParameter("LastKnownPeriod", "PreActive"));
 		if (subscriber.getMetas().get("PreActiveEndDate") != null) 
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("PreActiveEndDate", subscriber.getMetas().get("PreActiveEndDate")));
 		operationResult.getOperation().add(operation);
