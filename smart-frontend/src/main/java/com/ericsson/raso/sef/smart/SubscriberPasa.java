@@ -71,7 +71,7 @@ public class SubscriberPasa implements Serializable {
 		} else
 			LOGGER.debug("pasacount already existed: " + pasaCountToday);
 
-		Integer pasaCount = pasaCountToday.get(relevantKey);
+		Integer pasaCount = pasaCountToday.get(pasaID);
 		if (pasaCount == null) {
 			LOGGER.debug("initiating account for pasacount for pasaID: " + pasaID);
 			pasaCountToday.put(pasaID, 1);
@@ -93,7 +93,7 @@ public class SubscriberPasa implements Serializable {
 			LOGGER.debug("pasaamount already existed: " + pasaCountToday);
 
 
-		Integer pasaAmount = pasaAmountToday.get(relevantKey);
+		Integer pasaAmount = pasaAmountToday.get(pasaID);
 		if (pasaAmount == null) {
 			LOGGER.debug("initiating account for pasaamount for pasaID: " + pasaID);
 			pasaAmountToday.put(pasaID, value);
