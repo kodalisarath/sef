@@ -51,7 +51,8 @@ public class AccountFinderRoute  {
 		List<Member> members = new ArrayList<>();
 		//assuming max 10 end points can be configured 
 		for (int i = 1; i < 11; i++) {
-			String sectionName = "dns" + i;
+			//String sectionName = "dns" + i;
+			String sectionName = "af" + i;
 			IConfig config = DnsServiceResolver.getConfig();
 			Section dns = config.getSection(sectionName);
 			if (dns == null)
