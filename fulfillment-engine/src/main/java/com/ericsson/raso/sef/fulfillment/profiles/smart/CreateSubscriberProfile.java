@@ -16,10 +16,12 @@ import com.ericsson.raso.sef.client.air.command.DeleteSubscriberCommand;
 import com.ericsson.raso.sef.client.air.command.InstallSubscriberCommand;
 import com.ericsson.raso.sef.client.air.request.DeleteSubscriberRequest;
 import com.ericsson.raso.sef.client.air.request.InstallSubscriberRequest;
+import com.ericsson.raso.sef.core.RangeRouter;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.config.Value;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
 import com.ericsson.raso.sef.fulfillment.profiles.BlockingFulfillment;
 import com.ericsson.raso.sef.fulfillment.profiles.DnsUpdateProfile;
@@ -60,6 +62,21 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 	
 		List<Product> returned = new ArrayList<Product>();
 		
+		//TODO: After the requisite Router implementation, move this to smfe and cleanup....
+		LOGGER.debug("Fetching the sdpId from Router");
+		Value route = RangeRouter.getInstance().getRoute("SMART_router", Long.parseLong(map.get("SUBSCRIBER_ID")));
+		String sdpId = null;
+		String siteName = null;
+		
+		  
+		if (route == null) {
+			sdpId = (String) SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "sdpId");
+			siteName =  (String) SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultSite");
+		} else {
+			sdpId = route.getSdpId();
+			siteName = route.getSiteId();
+		}
+
 		
 		// AF Install - function here
 		LOGGER.debug("Preparing request pojo for CS-AF....");
@@ -70,11 +87,8 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		dnsRequest.setRdata(this.getRdata());
 		dnsRequest.setTtl(this.getTtl());
 		dnsRequest.setZname(this.getZname());
-		
-		//TODO: After the requisite Router implementation, move this to smfe and cleanup....
-		LOGGER.debug("Fetching the sdpId from Router");
-		String sdpId= (String) RequestContextLocalStore.get().getInProcess().get("sdpId");
 		dnsRequest.setSdpId(sdpId);
+		dnsRequest.setSiteId(siteName);
 		
 		try {
 			LOGGER.debug("Shall I fire the command to CS-AF DNS?");

@@ -38,7 +38,7 @@ public class AddDnsCommand implements Command<Void> {
 			String lastDigit = msisdn.substring(msisdn.length() - 1);
 			String restMsisdn = msisdn.substring(0, msisdn.length() - 1);
 			String updateMsisdn = restMsisdn + '.' + lastDigit;
-			String rData = "PIDCSDP01" + request.getRdata();
+			String rData = request.getSdpId() + request.getRdata();
 			
 			Name zone = Name.fromString(lastDigit + request.getZname());
 			Update update = new Update(zone);
