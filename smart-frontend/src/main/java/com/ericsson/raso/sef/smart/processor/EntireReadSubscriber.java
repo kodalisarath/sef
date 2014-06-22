@@ -73,7 +73,7 @@ public class EntireReadSubscriber implements Processor {
 	
 	private Subscriber simpleRead(String customerId) throws SmException {
 		List<Meta> metaList = new ArrayList<Meta>();
-		metaList.add(new Meta("READ_SUBSCRIBER", "ENTIRE_READ_SUBSCRIBER"));
+		//metaList.add(new Meta("READ_SUBSCRIBER", "ENTIRE_READ_SUBSCRIBER"));
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		
 		String requestId = iSubscriberRequest.readSubscriber(UniqueIdGenerator.generateId(), customerId, metaList);
