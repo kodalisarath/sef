@@ -39,13 +39,16 @@ public class RangeRouter {
 		}
 		
 		if (this.routers.get(section) == null) {
+			LOGGER.debug("No routers found for section: " + section + ". Will try to initialize now...");
 			this.init(section);
 		}
+		
 		RangeRouter router = this.routers.get(section);
 		if (router == null || !router.isAvailable) {
 			LOGGER.error("Router Config Section: " + section + " is either missing or badly done.. Disabling this router!!");
 			throw new IllegalStateException("Router Config Section: " + section + " is either missing or badly done.. Disabling this router!!");
 		} else {
+			LOGGER.debug("Found a router for section: " + section);
 			return router.locateRoute(searched);
 		}
 
@@ -54,8 +57,13 @@ public class RangeRouter {
 	private Value locateRoute(long searched) {
 		for (Range range: this.ranges) {
 			if (range.contains(searched)) {
+				LOGGER.debug("Found the range for: " + searched);
 				String valuePointer = range.getValue();
-				return this.values.get(valuePointer);
+				LOGGER.debug("valuePointer: " + valuePointer);
+				Value value = this.values.get(valuePointer);
+				LOGGER.debug("value returned: " + value);
+				
+				return value;
 			}
 		}
 		return null;
@@ -63,22 +71,27 @@ public class RangeRouter {
 
 	private synchronized void init(String section) {
 		Section configSection = SefCoreServiceResolver.getConfigService().getSection(section);
-		if (configSection == null)
+		if (configSection == null) {
+			LOGGER.debug("Section requested: '" + section + "' was not found in the config!!");
 			return;
+		}
 		
 		Router routerConfig = configSection.getRouter();
 		ArrayList<Range> ranges = routerConfig.getRanges().getRange();
 		ArrayList<Value> values = routerConfig.getValues().getValue();
+		LOGGER.debug("Located config for ranges:" + ranges + " & values: " + values);
 		
 		RangeRouter router = new RangeRouter();
 		if (ranges != null || values != null) {
 			this.isAvailable = this.validateRanges(ranges);
 			router.loadRanges(router, ranges);
 			router.loadValues(router, values);
+			
 		} else {
 			LOGGER.error("configuration missing for Router in specified Section: '" + section + "'. Please check config.xml");
 			router.isAvailable = false;
 		}
+		LOGGER.debug("Adding new router (" + router + ") to section: " + section);
 		this.routers.put(section, router);
 	}
 
@@ -120,6 +133,7 @@ public class RangeRouter {
 		for (Range range: ranges) {
 			try {
 				router.ranges.add(range);
+				LOGGER.debug("Added all Route Element Ranges to the Router...");
 			} catch (Exception e) {
 				LOGGER.error("Failed to load range: " + range + " into Router. Cause: " + e.getMessage(), e);
 				router.isAvailable = false;
@@ -128,13 +142,13 @@ public class RangeRouter {
 				return;
 			}
 		}
-		LOGGER.debug("Added all Route Element Ranges to the Router...");
 	}
 
 	private void loadValues(RangeRouter router, ArrayList<Value> values) {
 		for (Value value: values) {
 			try {
 				router.values.put(value.getId(), value);
+				LOGGER.debug("Added all Route Element Values to the Router...");
 			} catch (Exception e) {
 				LOGGER.error("Failed to load value: " + value + " into Router. Cause: " + e.getMessage(), e);
 				router.isAvailable = false;
@@ -143,6 +157,5 @@ public class RangeRouter {
 				return;
 			}
 		}
-		LOGGER.debug("Added all Route Element Values to the Router...");
 	}
 }
