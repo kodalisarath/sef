@@ -31,7 +31,7 @@ public abstract class CGEngineServiceHelper {
 		List<Meta> metas = new ArrayList<Meta>();
 		Meta meta = new Meta();
 		meta.setKey("READ_SUBSCRIBER");
-		meta.setValue("READ_BALANCES");
+		meta.setValue("PARTIAL_READ");
 		metas.add(meta);
 		logger.debug("Entering CGEngineServiceHelper.....");
 
