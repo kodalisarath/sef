@@ -136,11 +136,6 @@ public class UnsubscribePackageItem implements Processor {
 		}
 		else {
 			Subscriber subscriber = subscriberObj.getSubscriber();
-			if (subscriber == null) {
-				logger.error("Unable to fetch the subscriber entity out");
-				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-			}
-
 			Map<String, String> subscriberMetas = subscriber.getMetas();
 			logger.info("SK GET METAS BALANCE " + subscriberMetas);
 			
@@ -182,6 +177,18 @@ public class UnsubscribePackageItem implements Processor {
 				}
 			}
 			if (inRecycle==false) {
+				
+				workflowMetas.add(new Meta("msisdn", request.getCustomerId()));
+				workflowMetas.add(new Meta("SUBSCRIBER_ID", request.getCustomerId()));
+
+				workflowMetas.add(new Meta(Constants.CHANNEL_NAME, "UREG"));
+				workflowMetas.add(new Meta(Constants.EX_DATA3, "UREG"));
+
+				workflowMetas.add(new Meta(Constants.EX_DATA1, "Rev" + request.getPackaze()));
+				workflowMetas.add(new Meta("eventName", "Rev" + request.getPackaze()));
+				workflowMetas.add(new Meta(Constants.EX_DATA2, request.getEventInfo()));
+				workflowMetas.add(new Meta("eventInfo", request.getEventInfo()));
+				
 				ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 				String correlationId = subscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 				PurchaseResponse response = new PurchaseResponse();
@@ -204,16 +211,14 @@ public class UnsubscribePackageItem implements Processor {
 				PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
 				//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 				logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+				
 				if(purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0) {
 					logger.debug("No response arrived???");
 					throw new SmException(ErrorCode.internalServerError);
-				}
-				else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 )
-				{
+				} else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 ) {
 					logger.debug("");
 					throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
-				}
-				else{
+				} else{
 					CommandResponseData cr = this.createResponse(true);
 					exchange.getOut().setBody(cr);
 				}	
