@@ -32,7 +32,7 @@ public class CancelAmountProcessor extends AbstractChargingProcessor {
 	@Override
 	protected void preProcess(ChargingRequest request, Ccr scapCcr) throws AvpDataException {
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = IpcCluster.getChargingSession(request.getSessionId());
+		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
 		List<Avp> responseAvps = session.getResponseAvp(Type.TRANSACATION_START);
 
 		UsedServiceUnitAvp usedServiceUnitAvp = getUsedServiceUnitAvp(responseAvps,scapCcr);
@@ -42,14 +42,14 @@ public class CancelAmountProcessor extends AbstractChargingProcessor {
 	@Override
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
 //		/IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = IpcCluster.getChargingSession(request.getSessionId());
+		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
 		
 		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
 			session.setTransactionStatus(TransactionStatus.PROCESSED);
 		} else {
 			session.setTransactionStatus(TransactionStatus.FAILED);
 		}
-		IpcCluster.updateChargingSession(response.getSessionId(), session);
+		CgEngineContext.getIpcCluster().updateChargingSession(response.getSessionId(), session);
 	}
 
 	private UsedServiceUnitAvp getUsedServiceUnitAvp(List<Avp> avps,Ccr scapCcr) throws AvpDataException {

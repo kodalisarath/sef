@@ -70,7 +70,12 @@
 			javax.ws.rs.container;version=2.0.0.m10,
 			javax.ws.rs.ext;version=2.0.0.m10,
 			javax.ws.rs;version=2.0.0.m10,
-			org.csapi.schema.parlayx.common.v2_1,
+			com.ericsson.raso.sef.client.air.command,
+			com.ericsson.raso.sef.client.air.request,
+			com.ericsson.raso.sef.client.air.response,
+    		com.ericsson.raso.sef.client.af.command,
+			com.ericsson.raso.sef.client.af.request,
+<!-- 			org.csapi.schema.parlayx.common.v2_1,
 			org.csapi.schema.parlayx.payment.amount_charging.v2_1.local,
 			org.csapi.schema.parlayx.payment.reserve_amount_charging.v2_1.local,
 			org.csapi.schema.parlayx.payment.v2_1,
@@ -78,7 +83,7 @@
 			org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface,
 			org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
 			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
-			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service			
+			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service	 -->		
 		</osgi-import-package>
 		<osgi-export-package>
 			com.ericsson.raso.sef.cg.engine.nsn.avp,

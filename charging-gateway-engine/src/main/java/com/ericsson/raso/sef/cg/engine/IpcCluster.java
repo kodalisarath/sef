@@ -19,7 +19,7 @@ public class IpcCluster {
 		
 	}
 
-	public static void initiateIpcRequest(String sessionId, Operation operation, String msisdn) {
+	public  void initiateIpcRequest(String sessionId, Operation operation, String msisdn) {
 
 		Map<String, ChargingSession> map = SefCoreServiceResolver.getCloudAwareCluster().getMap(CHARGING_REQUEST_STORE);
 
@@ -33,17 +33,17 @@ public class IpcCluster {
 		map.put(sessionId, session);
 	}
 
-	public static ChargingSession getChargingSession(String sessionId) {
+	public  ChargingSession getChargingSession(String sessionId) {
 		Map<String, ChargingSession> map = SefCoreServiceResolver.getCloudAwareCluster().getMap(CHARGING_REQUEST_STORE);
 		return map.get(sessionId);
 	}
 	
-	public  static void updateChargingSession(String sessionId, ChargingSession session) {
+	public   void updateChargingSession(String sessionId, ChargingSession session) {
 		Map<String, ChargingSession> map = SefCoreServiceResolver.getCloudAwareCluster().getMap(CHARGING_REQUEST_STORE);
 		map.put(sessionId, session);
 	}
 	
-	public static void invalidate(String sessionId) {
+	public  void invalidate(String sessionId) {
 		Map<String, ChargingSession> map = SefCoreServiceResolver.getCloudAwareCluster().getMap(CHARGING_REQUEST_STORE);
 		map.remove(sessionId);
 	}

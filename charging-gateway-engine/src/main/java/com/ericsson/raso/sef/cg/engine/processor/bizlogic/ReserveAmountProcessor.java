@@ -28,14 +28,14 @@ public class ReserveAmountProcessor extends AbstractChargingProcessor {
 	@SuppressWarnings("unchecked")
 		protected void preProcess(ChargingRequest request, Ccr scapCcr) {
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = IpcCluster.getChargingSession(request.getSessionId());
+		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
 		session.addRequestAvp(Type.TRANSACATION_START, scapCcr.getDiameterMessage().getAvps());
-		IpcCluster.updateChargingSession(request.getSessionId(), session);
+		CgEngineContext.getIpcCluster().updateChargingSession(request.getSessionId(), session);
 	}
 
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = IpcCluster.getChargingSession(response.getSessionId());
+		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(response.getSessionId());
 		session.addResponseAvp(Type.TRANSACATION_START, response.getAvpList());
 		
 		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
@@ -45,7 +45,7 @@ public class ReserveAmountProcessor extends AbstractChargingProcessor {
 			session.setTransactionStatus(TransactionStatus.FAILED);
 		}
 		
-		IpcCluster.updateChargingSession(response.getSessionId(), session);
+		CgEngineContext.getIpcCluster().updateChargingSession(response.getSessionId(), session);
 	}
 
 	private MultipleServicesCreditControlAvp createCreditControlAvp(Cca cca, ChargingRequest request)

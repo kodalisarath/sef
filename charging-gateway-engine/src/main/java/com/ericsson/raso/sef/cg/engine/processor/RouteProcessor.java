@@ -23,7 +23,7 @@ public class RouteProcessor implements Processor {
 	public void process(Exchange exchange) throws Exception {
 		ChargingRequest request = (ChargingRequest) exchange.getIn().getBody();
 	//	IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = IpcCluster.getChargingSession(request.getSessionId());
+		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
 		
 		switch (request.getOperation().getType()) {
 		case TRANSACTION_END:
@@ -39,7 +39,7 @@ public class RouteProcessor implements Processor {
 			log.debug("ENDED...DEBUG2");
 			request.setHostId(route.getHostId());
 			session.setHostId(route.getHostId());
-			IpcCluster.updateChargingSession(session.getSessionId(), session);
+			CgEngineContext.getIpcCluster().updateChargingSession(session.getSessionId(), session);
 			
 			break;
 		}

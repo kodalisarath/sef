@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.ericsson.pps.diameter.rfcapi.base.PeerConnectionListener;
 import com.ericsson.raso.sef.core.lb.Member;
-import com.ericsson.raso.sef.core.lb.SmLoadBalancerPool;
+import com.ericsson.raso.sef.core.lb.SefLoadBalancerPool;
 
 
-public class DiameterLoadBalancerPool extends SmLoadBalancerPool implements PeerConnectionListener {
+public class DiameterLoadBalancerPool extends SefLoadBalancerPool implements PeerConnectionListener {
 
 	public DiameterLoadBalancerPool(List<Member> routes) {
 		super(routes);
