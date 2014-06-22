@@ -63,34 +63,36 @@ public class SubscriberPasa implements Serializable {
 		this.pruneObsoleteData();
 
 		// now get to do what you came here for...
-		LOGGER.debug("Updating pasa...key: " + relevantKey + ", pasa: " + pasaID);
+		LOGGER.debug("Updating pasa...key: " + relevantKey + ", pasa: " + pasaID  + ", value: " + value);
 		Map<String, Integer> pasaCountToday = this.pasaReceivedCount.get(relevantKey);
 		if (pasaCountToday == null) {
 			pasaCountToday = new HashMap<String, Integer>();
 		}
 
-		Integer pasaCount = pasaCountToday.get(pasaID);
+		Integer pasaCount = pasaCountToday.get(relevantKey);
 		LOGGER.debug("Updating pasa count...key: " + relevantKey + ", pasacount: " + (pasaCount+1) );
 		if (pasaCount == null) 
-			pasaCountToday.put(relevantKey, 1);
+			pasaCountToday.put(pasaID, 1);
 		else 
-			pasaCountToday.put(relevantKey, ++pasaCount);
+			pasaCountToday.put(pasaID, ++pasaCount);
 		this.pasaReceivedCount.put(relevantKey, pasaCountToday);
+		LOGGER.debug("Updated pasacount for today: " + this.pasaReceivedCount);
 
 		Map<String, Integer> pasaAmountToday = this.pasaReceivedAmount.get(relevantKey);
 		if (pasaAmountToday == null) {
 			pasaAmountToday = new HashMap<String, Integer>();
 		}
 
-		Integer pasaAmount = pasaAmountToday.get(pasaID);
+		Integer pasaAmount = pasaAmountToday.get(relevantKey);
 		LOGGER.debug("Updating pasa count...key: " + relevantKey + ", pasaamount: " + (pasaAmount + value));
 		if (pasaAmount == null) 
-			pasaAmountToday.put(relevantKey, 1);
+			pasaAmountToday.put(pasaID, 1);
 		else 
-			pasaAmountToday.put(relevantKey, (pasaAmount + value));
+			pasaAmountToday.put(pasaID, (pasaAmount + value));
 		this.pasaReceivedAmount.put(relevantKey, pasaAmountToday);
+		LOGGER.debug("Updated pasaamount for today: " + this.pasaReceivedAmount);
 		
-		LOGGER.debug("Updated pasa info... Will persist...pasaInfo: " + this.toString());
+		LOGGER.debug("Updated.. Will persist...pasaInfo: " + this.toString());
 		return true;
 	}
 
