@@ -137,7 +137,7 @@ public abstract class SmartServiceHelper {
 
 	}
 
-	private static SubscriberInfo readEntireSubscriberInfo(String requestId, String subscriberId, List<Meta> metas) {
+	private static SubscriberInfo readEntireSubscriberInfo(String requestId, String subscriberId, List<Meta> metas) throws SmException {
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
@@ -153,8 +153,8 @@ public abstract class SmartServiceHelper {
 		
 		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0)
 			throw ExceptionUtil.toSmException(new ResponseCode(13423, "EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + subscriberId + " does not exist"));
+	
 		return subscriberInfo;
-
 	}
 
 
