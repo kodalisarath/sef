@@ -190,7 +190,7 @@ public class UnsubscribePackageItem implements Processor {
 				workflowMetas.add(new Meta("eventInfo", request.getEventInfo()));
 				
 				ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
-				String correlationId = subscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
+				String correlationId = subscriptionRequest.purchase(requestId, "Rev" + request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 				PurchaseResponse response = new PurchaseResponse();
 				logger.debug("Got past event class in subscription for grace and active....");
 				RequestCorrelationStore.put(correlationId, response);
