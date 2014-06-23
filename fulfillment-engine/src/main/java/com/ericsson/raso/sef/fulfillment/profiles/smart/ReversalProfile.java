@@ -182,7 +182,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		request.setSubscriberNumber(msisdn);
 		request.setSubscriberNumberNAI(1);
 		//request.setTransactionType(channel);
-		request.setTransactionCurrency("PHP");
+		request.setTransactionCurrency(this.transactionCurrency);
 		//request.setTransactionCode(externalData1);
 		
 		if (supervisionPeriodExpiryDate < toLongestDate)
@@ -377,7 +377,10 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 
 	@Override
 	public String toString() {
-		return null;
+		return "ReversalProfile [transactionCurrency=" + transactionCurrency + ", transactionType=" + transactionType + ", daReversals="
+				+ daReversals + ", toReversals=" + toReversals + "]";
 	}
+
+	
 
 }
