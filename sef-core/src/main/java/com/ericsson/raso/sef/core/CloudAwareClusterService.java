@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Lock;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.config.XmlConfigBuilder;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -27,6 +28,7 @@ public class CloudAwareClusterService implements CloudAwareCluster {
 		try {
 			FileInputStream fis = new FileInputStream(configHome + getFileSeparator() +  "hazelcast.xml");
 			Config config = new XmlConfigBuilder(fis).build();
+//			// config.setClassLoader(getClass().getClassLoader());
 			instance = Hazelcast.newHazelcastInstance(config);
 			
 		} catch (FileNotFoundException e) {
