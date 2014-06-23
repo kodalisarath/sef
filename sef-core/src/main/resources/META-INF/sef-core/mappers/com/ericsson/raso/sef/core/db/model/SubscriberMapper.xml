@@ -42,7 +42,7 @@
 		(user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
 		values
 		(#{userId},#{accountId},#{msisdn},#{registrationDate
-		jdbcType=TIMESTAMP},#{contractState.name},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment}); commit;
+		jdbcType=TIMESTAMP},#{contractState.name},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment}); commit
 	</insert>
 	
 	<resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
@@ -62,7 +62,7 @@
 	<!-- <select id="userSequence" resultMap="SequenceResult" parameterType="String"> 
 		select user_id_sequence.nextval as seq, #{rand} as rand from dual </select> -->
 	<update id="deleteSubscriber" parameterType="String">
-		delete from subscriber where msisdn = #{userId}; commit;
+		delete from subscriber where msisdn = #{userId}; commit
 		<!-- update subscriber set deleted = #{userId} where user_id = #{userId} -->
 	</update>
 
@@ -73,7 +73,7 @@
 		where user_id = #{userId}
 	</select>
 	<delete id="deleteSubscriberMetas" parameterType="String" >
-	delete from susbcriber_meta where user_id=#{userId}; commit;
+	delete from susbcriber_meta where user_id=#{userId}
 	</delete>
 
 	<select id="getSubscriberByUserId" resultMap="SubscriberResult"
@@ -85,16 +85,16 @@
 	
 	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta">
 		insert into subscriber_meta (user_id, attribute_name, attribute_value)
-		values (#{subscriberId}, #{key}, #{value}); commit;
+		values (#{subscriberId}, #{key}, #{value}); commit
 	</insert>
 	
 	<update id="updateSubscriberMeta" parameterType="SubscriberMeta">
 		update subscriber_meta set attribute_value = #{value}
 		where user_id = #{subscriberId}
-		and attribute_name = #{key}; commit;
+		and attribute_name = #{key}; commit
 	</update>
 	<update id="changeContractStatus" parameterType="Subscriber">
-	update subscriber set contract_state=#{contractState.name} where user_id=#{userId}; commit;
+	update subscriber set contract_state=#{contractState.name} where user_id=#{userId}; commit
 	</update>
 	<!-- <update id="updateSubscriberTable" >
 	update subscriber
@@ -110,7 +110,7 @@
 	</select>
 	<update id="updateSubscriber" parameterType="Subscriber">
 		update subscriber
-		<set>
+		set
 			contract_state=#{contractState jdbcType=VARCHAR},
 			account_id=#{accountId jdbcType=VARCHAR},
 			customer_id=#{customerId
@@ -132,8 +132,7 @@
 			jdbcType=TIMESTAMP},
 			active_date=#{activeDate jdbcType=TIMESTAMP},
 			rate_plan=#{ratePlan jdbcType=VARCHAR}
-		</set>
-		where user_id = #{userId}; commit;
+		where user_id = #{userId}; commit
 	</update>
 	<insert id="insertSubscriberHistory" parameterType="SubscriberAuditTrial">
 		insert into
@@ -142,7 +141,7 @@
 		values
 		(#{userId},
 		#{eventTimestamp}, #{attributeName}, #{attributeNewValue
-		jdbcType=VARCHAR},#{changedByUser jdbccType=VARCHAR}); commit;
+		jdbcType=VARCHAR},#{changedByUser jdbccType=VARCHAR}); commit
 	</insert>
 	<select id="getAllSubscriberMetas" resultMap="MetaResult"
 		parameterType="String">
