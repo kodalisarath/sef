@@ -61,6 +61,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 		try {
 			countSubscriber = subscriberMapper.isSubscriberExists(msisdn);
+			
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause:", e);throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError, e.getMessage()), e);
 		}
