@@ -1,5 +1,9 @@
 package com.ericsson.sef.promo_creation;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 
 import com.ericsson.raso.sef.bes.prodcat.OfferContainer;
@@ -12,11 +16,23 @@ import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.Service;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.fulfillment.profiles.FulfillmentProfile;
+
 import org.apache.commons.codec.binary.Base64;
 
 public class OfferVerification {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		
+		BufferedWriter bw = null;
+		File outfile = new File("C:\\Temp\\offerVerification.txt");
+		
+		if (!outfile.exists()) {
+			outfile.createNewFile();
+		}
+		
+		FileWriter fw = new FileWriter(outfile);
+		
+		bw = new BufferedWriter(fw);
 		try {
 			SecureSerializationHelper helper = new SecureSerializationHelper();
 			Base64 encoder = new Base64();
@@ -29,6 +45,7 @@ public class OfferVerification {
 //			
 			Offer offer = offerStore.getOfferById("UnsubscribePackageItem");
 			System.out.println("\n1. Unsubscriber Package Item:\n" + offer);
+			bw.write("\n1. Unsubscriber Package Item:\n" + offer);
 				for (AtomicProduct product: offer.getAllAtomicProducts()) {
 					System.out.println("\t\tProduct name: " + product.getName());
 					System.out.println("\t\tProduct resource: " + product.getResource());
@@ -82,8 +99,26 @@ public class OfferVerification {
 						System.out.println("\t\t\tProfile Registry class: " + profile.getClass().getCanonicalName());
 						System.out.println("\t\t\tProfile Registry contents: " + profile.toString());
 					}
+				}
+				
+				offer = offerStore.getOfferById("CUSTOMER_INFO_CHARGE");
+			System.out.println("\n4. Delete Subscriber:\n" + offer);
+				for (AtomicProduct product: offer.getAllAtomicProducts()) {
+					System.out.println("\t\tProduct name: " + product.getName());
+					System.out.println("\t\tProduct resource: " + product.getResource());
+					System.out.println("\t\tService Registry Instance: " + serviceRegistry.get(product.getResource().getName()));
+					System.out.println("\t\tService Registry Instance Type: " + serviceRegistry.get(product.getResource().getName()));
+		
+					Service resource = (Service) product.getResource();
+					System.out.println("\t\tResource name: " + resource.getName());
+		
+					for (String profileId: resource.getFulfillmentProfiles()) {
+						System.out.println("\t\t\tProfile Id: " + profileId);
+						FulfillmentProfile profile = profileRegistry.get(profileId);
+						System.out.println("\t\t\tProfile Registry class: " + profile.getClass().getCanonicalName());
+						System.out.println("\t\t\tProfile Registry contents: " + profile.toString());
+					}
 				}				
-//			System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
 //			System.out.println("\n5. Welcome Pack:\n" + offerStore.getOfferById("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
 //			System.out.println("\n6. Modify Tagging Reset bit:\n" + offerStore.getOfferById("MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
 
@@ -116,6 +151,8 @@ public class OfferVerification {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		bw.close();
 	}
 
 }
