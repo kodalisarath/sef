@@ -9,14 +9,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.ericsson.sef</groupId>
-			<artifactId>charging-adapter-api</artifactId>
+			<artifactId>sef-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ericsson.sef</groupId>
-			<artifactId>sef-core</artifactId>
+			<artifactId>sef-api</artifactId>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency>		
 	</dependencies>
 		<properties>
 		<osgi-import-package>
@@ -39,6 +39,7 @@
 			com.ericsson.raso.sef.core.db.service,
 			org.slf4j,
 			META-INF.sef-core,
+			META-INF.sef-api,
 			org.springframework.*,
 			org.apache.tomcat.dbcp.dbcp,
 			org.apache.commons.codec.binary,
@@ -73,7 +74,7 @@
 		</osgi-import-package>
 	</properties>
 	<build>
-	<defaultGoal>install</defaultGoal>
+		<defaultGoal>install</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
