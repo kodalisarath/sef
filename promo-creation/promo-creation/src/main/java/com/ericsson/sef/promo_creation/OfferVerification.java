@@ -27,9 +27,62 @@ public class OfferVerification {
 			
 //			System.out.println("Encrypted form: " + new String (encoder.encode(helper.encrypt("639777180104"))));
 //			
-			System.out.println("\n1. Create Subscriber:\n" + offerStore.getOfferById("CUSTOMER_INFO_CHARGE"));
-//			System.out.println("\n2. Read Subscriber:\n" + offerStore.getOfferById("READ_SUBSCRIBER"));
-//			System.out.println("\n3. Modify Tagging:\n" + offerStore.getOfferById("MODIFY_TAGGING"));
+			Offer offer = offerStore.getOfferById("UnsubscribePackageItem");
+			System.out.println("\n1. Unsubscriber Package Item:\n" + offer);
+				for (AtomicProduct product: offer.getAllAtomicProducts()) {
+					System.out.println("\t\tProduct name: " + product.getName());
+					System.out.println("\t\tProduct resource: " + product.getResource());
+					System.out.println("\t\tService Registry Instance: " + serviceRegistry.get(product.getResource().getName()));
+					System.out.println("\t\tService Registry Instance Type: " + serviceRegistry.get(product.getResource().getName()));
+		
+					Service resource = (Service) product.getResource();
+					System.out.println("\t\tResource name: " + resource.getName());
+		
+					for (String profileId: resource.getFulfillmentProfiles()) {
+						System.out.println("\t\t\tProfile Id: " + profileId);
+						FulfillmentProfile profile = profileRegistry.get(profileId);
+						System.out.println("\t\t\tProfile Registry class: " + profile.getClass().getCanonicalName());
+						System.out.println("\t\t\tProfile Registry contents: " + profile.toString());
+					}
+				}
+				
+				offer = offerStore.getOfferById("Economy30");
+			System.out.println("\n2. Economy 30:\n" + offer);
+				for (AtomicProduct product: offer.getAllAtomicProducts()) {
+					System.out.println("\t\tProduct name: " + product.getName());
+					System.out.println("\t\tProduct resource: " + product.getResource());
+					System.out.println("\t\tService Registry Instance: " + serviceRegistry.get(product.getResource().getName()));
+					System.out.println("\t\tService Registry Instance Type: " + serviceRegistry.get(product.getResource().getName()));
+		
+					Service resource = (Service) product.getResource();
+					System.out.println("\t\tResource name: " + resource.getName());
+		
+					for (String profileId: resource.getFulfillmentProfiles()) {
+						System.out.println("\t\t\tProfile Id: " + profileId);
+						FulfillmentProfile profile = profileRegistry.get(profileId);
+						System.out.println("\t\t\tProfile Registry class: " + profile.getClass().getCanonicalName());
+						System.out.println("\t\t\tProfile Registry contents: " + profile.toString());
+					}
+				}
+				
+				offer = offerStore.getOfferById("Reversal Economy (30)");
+			System.out.println("\n3. Economy 30 Reversal:\n" + offer);
+				for (AtomicProduct product: offer.getAllAtomicProducts()) {
+					System.out.println("\t\tProduct name: " + product.getName());
+					System.out.println("\t\tProduct resource: " + product.getResource());
+					System.out.println("\t\tService Registry Instance: " + serviceRegistry.get(product.getResource().getName()));
+					System.out.println("\t\tService Registry Instance Type: " + serviceRegistry.get(product.getResource().getName()));
+		
+					Service resource = (Service) product.getResource();
+					System.out.println("\t\tResource name: " + resource.getName());
+		
+					for (String profileId: resource.getFulfillmentProfiles()) {
+						System.out.println("\t\t\tProfile Id: " + profileId);
+						FulfillmentProfile profile = profileRegistry.get(profileId);
+						System.out.println("\t\t\tProfile Registry class: " + profile.getClass().getCanonicalName());
+						System.out.println("\t\t\tProfile Registry contents: " + profile.toString());
+					}
+				}				
 //			System.out.println("\n4. Delete Subscriber:\n" + offerStore.getOfferById("DELETE_TAGGING"));
 //			System.out.println("\n5. Welcome Pack:\n" + offerStore.getOfferById("SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
 //			System.out.println("\n6. Modify Tagging Reset bit:\n" + offerStore.getOfferById("MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
