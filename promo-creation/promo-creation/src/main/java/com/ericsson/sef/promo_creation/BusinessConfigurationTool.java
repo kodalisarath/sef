@@ -9,6 +9,7 @@ import com.ericsson.raso.sef.bes.prodcat.OfferManager;
 import com.ericsson.raso.sef.bes.prodcat.SecureSerializationHelper;
 import com.ericsson.raso.sef.bes.prodcat.ServiceRegistry;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
+import com.ericsson.raso.sef.bes.prodcat.entities.DaysTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.InfiniteTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.NoTermination;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
@@ -485,7 +486,51 @@ public class BusinessConfigurationTool {
 			
 			
 			
-						
+			resource = new Service("Araw Araw");
+			resource.setDescription("Refill Profile");
+			resource.setConsumable(true);
+			resource.setDiscoverable(true);
+			resource.setExternallyConsumed(true);
+			resource.setConsumptionUnitName("PHP");
+
+			RefillProfile fulfillmentProfile = new RefillProfile("Refill Profile");
+			fulfillmentProfile.setRefillProfileId("L001");
+			fulfillmentProfile.setRefillType(1);
+			fulfillmentProfile.setTransactionAmount("0");
+			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile.setPurchaseAmount("20000");
+			fulfillmentProfile.setRenewalAmount("2000");
+			
+
+			resource.addFulfillmentProfile(fulfillmentProfile.getName());
+			profileRegistry.createProfile(fulfillmentProfile);
+			
+			handles = new ArrayList<String>();
+			handles.add("A1");
+			
+			Offer templatedOffer = new Offer("ArawAraw20");
+			templatedOffer.setDescription("Araw Araw - Daily 20");
+			templatedOffer.setAutoTermination(new NoTermination());
+			templatedOffer.setRenewalPeriod(new InfiniteTime());
+			templatedOffer.setOfferState(State.TESTING);
+			templatedOffer.setOfferState(State.PUBLISHED);
+			templatedOffer.setRecurrent(true);
+			templatedOffer.setRenewalPeriod(new DaysTime(7));
+			templatedOffer.setTrialPeriod(null);
+			templatedOffer.setCommercial(false);
+
+			for (String handle: handles)
+				templatedOffer.addExternalHandle(handle);
+
+			AtomicProduct product = new AtomicProduct("ArawAraw20");
+			product.setQuota(new UnlimitedQuota());
+			product.setResource(resource);
+			product.setValidity(new DaysTime(7));
+
+			templatedOffer.addProduct(product); 
+			offerManager.createOffer(templatedOffer);
+			serviceRegistry.createResource(resource);
+				
 			
 
 		//TODO: insert new bizconfig here...

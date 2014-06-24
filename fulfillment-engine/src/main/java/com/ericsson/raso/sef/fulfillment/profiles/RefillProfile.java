@@ -28,6 +28,8 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	private Integer refillType;
 	private String transactionAmount;
 	private CurrencyCode transactionCurrency;
+	private String renewalAmount;
+	private String purchaseAmount;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RefillProfile.class);
 	
@@ -47,10 +49,19 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		refillRequest.setSubscriberNumberNAI(1);
 		refillRequest.setRefProfID(this.refillProfileId);
 		refillRequest.setRefType(this.refillType);
-		refillRequest.setTransacAmount(this.transactionAmount);
 		refillRequest.setTransacCurrency(this.transactionCurrency.name());
 		refillRequest.setRefAccBeforeFlag(true);
 		refillRequest.setRefAccAfterFlag(true);
+		
+		
+		if (map.get("lifeCycleEvent") != null) {
+			if (map.get("lifeCycleEvent").equals("purchase"))
+				this.transactionAmount = this.purchaseAmount;
+			else if (map.get("lifeCycleEvent").equals("renewal"))
+				this.transactionAmount = this.renewalAmount;
+		}
+		refillRequest.setTransacAmount(this.transactionAmount);
+		
 		
 		String extData1 = map.get(Constants.EX_DATA1);
 		if(extData1 != null) {
@@ -184,7 +195,16 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		this.transactionCurrency = transactionCurrency;
 	}
 
-	
+	public void setRenewalAmount(String renewalAmount) {
+		this.renewalAmount = renewalAmount;
+		
+	}
+
+
+	public void setPurchaseAmount(String purchaseAmount) {
+		this.purchaseAmount= purchaseAmount;
+		
+	}
 	
 	@Override
 	public int hashCode() {
@@ -244,4 +264,9 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 				+ transactionCurrency + "]";
 	}
 
+
+
+
+
+	
 }
