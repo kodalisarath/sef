@@ -139,5 +139,24 @@ public class SubscriberPasa implements Serializable {
 		return "SubscriberPasa [pasaReceivedCount=" + pasaReceivedCount + ", pasaReceivedAmount=" + pasaReceivedAmount + "]";
 	}
 
+	public int getTodayPasaAmount(String offerId) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String relevantKey = format.format(new Date());
+
+		this.pruneObsoleteData();
+
+		// now get to do what you came here for...
+		Map<String, Integer> pasaToday = this.pasaReceivedAmount.get(relevantKey);
+		if (pasaToday == null) {
+			return 0;
+		}
+		
+		int balance = 0;
+		for (int value: pasaToday.values())
+			balance += value;
+		
+		return balance;
+	}
+
 	
 }

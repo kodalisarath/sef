@@ -64,12 +64,6 @@ public class ModifyTagging implements Processor {
 
 		metaSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
 	    metaSubscriber.add(new Meta("READ_SUBSCRIBER","PARTIAL_READ_SUBSCRIBER"));
-//		Object[] objectArray = (Object[]) exchange.getIn().getBody(Object[].class);
-//		metas.add(new Meta("customerId", (String) objectArray[0].toString()));
-//		metas.add(new Meta("accessKey", (String) objectArray[1].toString()));
-//		metas.add(new Meta("tagging", (String)objectArray[2].toString()));
-//		metas.add(new Meta("eventInfo", (String)objectArray[3].toString()));
-//		metas.add(new Meta("messageId", (String)objectArray[4].toString()));
 
 		String tagging = String.valueOf(request.getTagging());
 		//Integer tag = Integer.valueOf(tagging);

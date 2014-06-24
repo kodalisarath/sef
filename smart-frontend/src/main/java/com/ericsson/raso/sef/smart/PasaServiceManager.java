@@ -134,7 +134,7 @@ public class PasaServiceManager {
 			int subscriberBalance = this.getRelevantPasaBalance(subscriberInfo.getSubscriber().getMetas());
 
 			// check what the user recived today
-			int consumedAmount = subscriberPasa.getPasaAmount(offerId);
+			int consumedAmount = subscriberPasa.getTodayPasaAmount(offerId);
 			LOGGER.debug("PASA in user account for today: " + consumedAmount);
 			
 			// check if real balance is available for sending....
