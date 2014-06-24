@@ -63,7 +63,7 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		logger.debug("Response purchase received.. now creating front end response");
 		//exchange.getOut().setBody(subscriberInfo);
 		
-		Thread.sleep(20); // bcos i am too fast??
+		Thread.sleep(25); // bcos i am too fast??
 		
 		DummyProcessor.response(exchange);		
 	}
