@@ -138,7 +138,7 @@ public class PasaServiceManager {
 			LOGGER.debug("PASA in user account for today: " + consumedAmount);
 			
 			// check if real balance is available for sending....
-			if (subscriberBalance - consumedAmount > value) {
+			if (subscriberBalance - consumedAmount >= value) {
 				LOGGER.debug("User has adequate balance!! Subscriber Balance: " + subscriberBalance + ", pasaToday: " + consumedAmount + ", Available Balance: " + (subscriberBalance - consumedAmount) + ", Required Value: " + value);
 				return true;
 			} else {
@@ -393,8 +393,12 @@ public class PasaServiceManager {
 		LOGGER.debug("Size of daList "+daList.size()+" daList.keyset: "+daList.keySet());
 		
 		
-		// TODO: get navneet and identify the wallets to sum up for pasa balance
-		return null;
+		// TODO: as per navneet, only DA:1 is checked... potentially can fail when CS BC is defined without coordinating with IL.
+		String daValue = daList.get(1).daVal1;
+		if (daValue == null)
+			return 0;
+		else 
+			return Integer.parseInt(daValue);
 	}
 
 
