@@ -82,7 +82,7 @@ public class ReadCustomerInfoCharge implements Processor {
 	    	 logger.info("PRE_ACTIVE state");
 	    	 throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 	     }
-	     if(subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0 && subscriberObj.getLocalState().getName().equalsIgnoreCase(ContractState.RECYCLED.getName())){
+	     if(subscriberObj!=null && subscriberObj.getLocalState().getName().equalsIgnoreCase(ContractState.RECYCLED.getName())){
 	    	 logger.info("DE_ACTIVE state");
 	    	 throw ExceptionUtil.toSmException(ErrorCode.invalidLifecycleError1);
 	     }
