@@ -54,4 +54,15 @@ public enum Tag {
 		
 		return null;
 	}
+	
+	public static Tag getTagBySmartId(int smartID) {
+		Tag[] tags = Tag.values();
+		for (Tag tag : tags) {
+			if(tag.getSmartId().intValue() == smartID) {
+				return tag;
+			}
+		}
+		
+		return null;
+	}
 }
