@@ -143,6 +143,7 @@ public class ModifyCustomerPreActive implements Processor {
 		} catch (InterruptedException e) {
 
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
@@ -160,6 +161,7 @@ public class ModifyCustomerPreActive implements Processor {
 		} catch (InterruptedException e) {
 
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
 				.remove(requestId);

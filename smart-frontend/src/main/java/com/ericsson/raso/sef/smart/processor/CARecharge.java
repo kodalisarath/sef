@@ -141,7 +141,8 @@ public class CARecharge implements Processor {
 				e.printStackTrace();
 				logger.debug("Exception while sleep     :" + e.getMessage());
 			}
-
+			semaphore.destroy();
+			
 			logger.debug("Awake from sleep.. going to check response in store with id: " + correlationId);
 
 			logger.debug("If noli really did a pull & rebuild, you would see this!!");
@@ -547,6 +548,7 @@ public class CARecharge implements Processor {
 		} catch (InterruptedException e) {
 			logger.error("Abnormal execution with semaphore being released!!!");
 		}
+		semaphore.destroy();
 		
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);

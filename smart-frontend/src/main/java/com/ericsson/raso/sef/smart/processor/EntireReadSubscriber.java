@@ -84,6 +84,7 @@ public class EntireReadSubscriber implements Processor {
 			semaphore.acquire();
 		} catch (InterruptedException e) {
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for simpleread subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		
