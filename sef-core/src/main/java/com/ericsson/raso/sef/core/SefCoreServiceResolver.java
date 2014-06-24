@@ -7,6 +7,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -20,6 +22,7 @@ import com.ericsson.raso.sef.core.db.service.UserManagementService;
 import com.ericsson.raso.sef.watergate.IWatergate;
 
 public class SefCoreServiceResolver implements ApplicationContextAware {
+	private static final Logger logger = LoggerFactory.getLogger("SefCoreServiceResolver");
 
 	public static ApplicationContext context; 
 	private static int maxThreadsForCurrentOs = 0;
@@ -57,13 +60,19 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 		if (maxThreadsForCurrentOs == 0)
 			maxThreadsForCurrentOs = getMaxThreadLimit();
 		
-		if (ManagementFactory.getThreadMXBean().getThreadCount() <= maxThreadsForCurrentOs) {
+		int jvmThreads = ManagementFactory.getThreadMXBean().getThreadCount();
+		String logMessage = "JVM Threads: " + jvmThreads;
+		if (jvmThreads <= maxThreadsForCurrentOs) {
 			if (localExecutor == null) {
 				localExecutor = new ThreadPoolExecutor(50, 100, 30000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(5));
+				logMessage += " creating new local executor...";
 			}
+			logMessage += " returning local executor...";
+			logger.error(logMessage);
 			return localExecutor;
 		}
-		
+		logMessage += "returning cloud executor....";
+		logger.error(logMessage);
 		return SefCoreServiceResolver.context.getBean(CloudAwareCluster.class).getDistributedService(name);
 	}
 	
