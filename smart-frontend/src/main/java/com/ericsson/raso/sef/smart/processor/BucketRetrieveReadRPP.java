@@ -79,6 +79,7 @@ public class BucketRetrieveReadRPP implements Processor {
 		} catch(InterruptedException e) {
 			logger.error("Error while acquire() call",this.getClass().getName(),e);
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for Read subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;

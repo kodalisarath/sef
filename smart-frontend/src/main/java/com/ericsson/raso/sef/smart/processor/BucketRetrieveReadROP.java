@@ -80,6 +80,7 @@ public class BucketRetrieveReadROP implements Processor {
 		} catch(InterruptedException e) {
 			
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for Read subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;

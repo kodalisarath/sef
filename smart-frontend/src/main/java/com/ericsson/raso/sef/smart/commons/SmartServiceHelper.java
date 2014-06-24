@@ -82,7 +82,8 @@ public abstract class SmartServiceHelper {
 			e.printStackTrace();
 			logger.debug("Exception while sleep     :" + e.getMessage());
 		}
-
+		semaphore.destroy();
+		
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
 
 		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(correlationId);
@@ -126,7 +127,8 @@ public abstract class SmartServiceHelper {
 			e.printStackTrace();
 			logger.debug("Exception while sleep     :" + e.getMessage());
 		}
-
+		semaphore.destroy();
+		
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
 
 		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(correlationId);
@@ -148,6 +150,7 @@ public abstract class SmartServiceHelper {
 			semaphore.acquire();
 		} catch (InterruptedException e) {
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for read subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		

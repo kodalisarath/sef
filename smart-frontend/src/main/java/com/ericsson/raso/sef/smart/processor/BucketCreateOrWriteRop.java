@@ -68,7 +68,8 @@ public class BucketCreateOrWriteRop implements Processor {
 		} catch (InterruptedException e) {
 			logger.error("Error while acquire()", this.getClass().getName(), e);
 		}
-
+		semaphore.destroy();
+		
 		logger.info("Check if response received for create bucket rop");
 
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore

@@ -100,6 +100,7 @@ public class EntireDeleteSubscriber implements Processor{
 		} catch(InterruptedException e) {
             
 		}
+		semaphore.destroy();
 		logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 		
 		SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);

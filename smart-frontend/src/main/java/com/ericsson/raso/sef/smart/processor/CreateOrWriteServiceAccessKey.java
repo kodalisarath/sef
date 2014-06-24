@@ -65,6 +65,7 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		} catch (InterruptedException e) {
 			logger.error("Error while calling acquire()");
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
 				.remove(requestId);

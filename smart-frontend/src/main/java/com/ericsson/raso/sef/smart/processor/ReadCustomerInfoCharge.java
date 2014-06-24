@@ -1,6 +1,8 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,7 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
+import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.SmartServiceResolver;
@@ -70,18 +73,25 @@ public class ReadCustomerInfoCharge implements Processor {
 	     logger.info("Going for Customer Info Charge Call");
 	     logger.info("Before read subscriber call");
 	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), workflowMetas);
-	     
-	     logger.info("subscriber call done");
-		 if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
-			logger.debug("Inside the if condition for status check");
-			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-		 }
+	     String value = String.valueOf(subscriberObj);
+	     logger.info("subscriber call "+value);
+	     if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0 && subscriberObj.getLocalState()== null){
+				logger.debug("Inside the if condition for status check");
+				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+			 }
+	     if(subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0 && subscriberObj.getLocalState().getName().equalsIgnoreCase(ContractState.PREACTIVE.getName())){
+	    	 logger.info("PRE_ACTIVE state");
+	    	 throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+	     }
+	     if(subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0 && subscriberObj.getLocalState().getName().equalsIgnoreCase(ContractState.RECYCLED.getName())){
+	    	 logger.info("DE_ACTIVE state");
+	    	 throw ExceptionUtil.toSmException(ErrorCode.invalidLifecycleError1);
+	     }
          logger.info("Recieved a SubscriberInfo Object and it is not null");
 		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		 logger.info("Billing Metas: " + subscriberObj.getMetas());
 	     
 		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional(), subscriberObj.getSubscriber().getMetas()));
-
 	}
 
 
@@ -99,6 +109,7 @@ public class ReadCustomerInfoCharge implements Processor {
 		} catch (InterruptedException e) {
 
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		logger.debug("Hi HERE I AM::: Result " + subscriberInfo.getStatus() );
@@ -175,9 +186,9 @@ public class ReadCustomerInfoCharge implements Processor {
 				// first part is main DA...
 				logger.debug("Main DA: " + daPart[0]);
 				String mainDaElements[] = daPart[0].split(",");
-				
 				int daID = Integer.parseInt(mainDaElements[0]);
 				String daVal1 = mainDaElements[1];
+				logger.debug("daId: "+daID+", daVal1: "+daVal1);
 				String daVal2 = mainDaElements[2];
 				Long startDate =("null".equals(mainDaElements[3]))?null: Long.parseLong(mainDaElements[3]);
 				Long expiryDate = (("null").equals(mainDaElements[4]))?null:Long.parseLong(mainDaElements[4]);
@@ -216,13 +227,12 @@ public class ReadCustomerInfoCharge implements Processor {
 						daInfo.addSubDA(subDAInfo);
 						logger.debug("Added SubDA: " + subDAInfo);
 					}
-					daList.put(daID, daInfo);
 				} else {
 					logger.debug("Sub DAs does not seem to available to extract...");
 				}
+				daList.put(daID, daInfo);
 				logger.debug("Packed DA: " + daInfo);
 			} // end of if for DA handling 
-			
 			if (key.startsWith("OFFER_INFO")) {
 				logger.debug("FLEXI:: OFFER_ID...." + metas.get(key));
 				String offerForm = metas.get(key);
@@ -258,9 +268,9 @@ public class ReadCustomerInfoCharge implements Processor {
 				
 			}
 		} // end of for loop... 
-			
-		
-	// End of Get Balances & Dates processing....
+		log.debug("Size of offerList "+offerList.size()+" offerList.keyset: "+offerList.keySet());
+		log.debug("Size of daList "+daList.size()+" daList.keyset: "+daList.keySet());
+	/*// End of Get Balances & Dates processing....
 		
 		String accountsEntry = ""; String subscriptionsEntry = "";
 		
@@ -286,6 +296,26 @@ public class ReadCustomerInfoCharge implements Processor {
 		logger.info("SubscriptionENtry: "+subscriptionsEntry);
 		
 	// End of Get Balances & Dates processing....
+	 
+*/	//Modifications by Chandra
+		// End of Get Balances & Dates processing....
+				String accountsEntry = ""; String subscriptionsEntry = "";
+				
+				for (int offerID: offerList.keySet()) {
+					OfferInfo oinfo = offerList.get(offerID);
+					logger.debug("OfferId: "+offerID+" OfferInfo: "+oinfo);
+					String convertedDate = convertDateToReadableFormat(oinfo.offerExpiry+"");
+					if (offerID > 2000) {
+							subscriptionsEntry += ((subscriptionsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + convertedDate;			
+					} else {	
+						if(oinfo.daID != null){
+						accountsEntry += ((accountsEntry.isEmpty())?"":"|") + oinfo.walletName + ";"+ (daList.get(Integer.parseInt(oinfo.daID))).daVal1+ ";" + convertedDate;
+						}
+					}
+				}
+				logger.info("accountsEntry: "+accountsEntry);				
+			// End of Get Balances & Dates processing....
+				
 		
 		
 		StringParameter accounts = new StringParameter();
@@ -302,6 +332,16 @@ public class ReadCustomerInfoCharge implements Processor {
 		return responseData;
 	}
 	
+	private String convertDateToReadableFormat(String expiryDate) {
+		log.debug("ExpirtyDate : "+expiryDate);
+		if(!expiryDate.equals("null")){
+			Date date=new Date(Long.parseLong(expiryDate));
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			return simpleDateFormat.format(date);
+		}	
+		return expiryDate;
+	}
+
 	
 	
 	class SubDAInfo {

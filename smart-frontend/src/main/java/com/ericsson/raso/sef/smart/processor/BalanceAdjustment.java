@@ -150,7 +150,8 @@ public class BalanceAdjustment implements Processor {
 							e.printStackTrace();
 							logger.debug("Exception while sleep     :"+e.getMessage());
 						}
-
+						semaphore.destroy();
+						
 						
 						logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 						
@@ -180,6 +181,7 @@ public class BalanceAdjustment implements Processor {
 		} catch (InterruptedException e) {
 
 		}
+		semaphore.destroy();
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		logger.debug("Hi HERE I AM::: Result " + subscriberInfo.getStatus() );

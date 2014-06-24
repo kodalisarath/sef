@@ -83,7 +83,8 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		} catch(InterruptedException e) {
 			logger.error("Interrupted from waiting for response... This use case might cause inconsistencies...");
 		}
-
+		semaphore.destroy();
+		
 		logger.info("Check if response received for create subscriber");
 
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
