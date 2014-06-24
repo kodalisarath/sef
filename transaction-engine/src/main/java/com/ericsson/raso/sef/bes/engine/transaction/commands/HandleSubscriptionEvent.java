@@ -182,11 +182,42 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
 		if (subscriptionClient != null) {
 			logger.debug("Subscription Response client available. Can send the response now...");
-			subscriptionClient.purchase(this.getRequestId(), 
-					                    txnStatus, 
-										subscriptionId, 
-										products, 
-										billingMetas);
+			switch (((HandleSubscriptionEventRequest)this.getRequest()).getEvent()) {
+				case PURCHASE:
+					subscriptionClient.purchase(this.getRequestId(), 
+		                    txnStatus, 
+							subscriptionId, 
+							products, 
+							billingMetas);
+					break;
+				case EXPIRY:
+					subscriptionClient.expiry(this.getRequestId(), 
+		                    txnStatus, 
+							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
+					break;
+				case PRE_EXPIRY:
+					subscriptionClient.preExpiry(this.getRequestId(), 
+		                    txnStatus, 
+							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
+					break;
+				case PRE_RENEWAL:
+					subscriptionClient.preRenewal(this.getRequestId(), 
+		                    txnStatus, 
+							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
+					break;
+				case RENEWAL:
+					subscriptionClient.renew(this.getRequestId(), 
+		                    txnStatus, 
+							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
+					break;
+				case TERMINATE:
+					subscriptionClient.terminate(this.getRequestId(), 
+		                    txnStatus, 
+							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
+					break;
+				default:
+					logger.error("Not Implemented yet... FE Request must timeout!!"); //TODO: in CR scope... high potential of memory leak
+			}
 			logger.debug("Subscription response posted");
 		} else {
 			logger.error("Seems like Subscription Response Client is not available... releasing transaction(" + this.getRequestId() + ") to avoid stress accumulation!!!");

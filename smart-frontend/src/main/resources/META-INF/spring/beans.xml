@@ -155,8 +155,24 @@
 						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PurchaseResponseProcessor"/>
 					</camel:when>
 					<camel:when>
-						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.DiscoverOfferByFederatedIdResponseProcessor"/>
+						<camel:simple>${header.operationName} == 'renew'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.RenewResponseProcessor"/>
+					</camel:when>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'terminate'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.TerminateResponseProcessor"/>
+					</camel:when>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'expiry'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.ExpiryResponseProcessor"/>
+					</camel:when>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'preExpiry'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PreExpiryResponseProcessor"/>
+					</camel:when>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'preRewnal'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PreRenewResponseProcessor"/>
 					</camel:when>
 				</camel:choice>
 				<camel:doFinally>
