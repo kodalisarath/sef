@@ -38,25 +38,26 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 				this.triggerResponse(requestCorrelator, subscriberInfo);
 				logger.debug("Subscriber is null: " + requestCorrelator);
 				return;
-			}
-
-			else if (subscriber.getMsisdn() == null || 
+			} else { 
+				
+				if (subscriber.getMsisdn() == null || 
 					subscriber.getUserId() == null|| 
 					subscriber.getCustomerId() == null|| 
 					subscriber.getContractId() == null || 
 					subscriber.getContractState() == null ||
-					subscriber.getMetas() == null ) {
+					subscriber.getMetas() == null) {
 
-				subscriberInfo.setStatus(new TransactionStatus("txe", 2002, "Invalid Account - Subscriber entity seems to be corrupt or badly managed!!"));
-				this.triggerResponse(requestCorrelator, subscriberInfo);
-				return;
+					subscriberInfo.setStatus(new TransactionStatus("txe", 2002, "Invalid Account - Subscriber entity seems to be corrupt or badly managed!!"));
+					this.triggerResponse(requestCorrelator, subscriberInfo);
+					return;
+				}
 			}
 
+			
+			//get the subscriber status from back end
 			subscriberInfo.setMsisdn(subscriber.getMsisdn());
 			subscriberInfo.setLocalState(ContractState.apiValue(subscriber.getContractState()));
 			Map<String, String> subscriberMetas = subscriber.getMetas();
-
-			//get the subscriber status from back end
 			String activationStatus = subscriberMetas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG);
 			logger.debug("Subscriber activationStatus: " +  activationStatus);
 			boolean isActive = false;
