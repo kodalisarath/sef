@@ -36,7 +36,6 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.StringParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 
 public class ReadCustomerInfoCharge implements Processor {
-	private Logger log = LoggerFactory.getLogger(this.getClass());
 	private static final Logger logger = LoggerFactory.getLogger(ReadCustomerInfoCharge.class);
 
 	@Override
@@ -268,8 +267,8 @@ public class ReadCustomerInfoCharge implements Processor {
 				
 			}
 		} // end of for loop... 
-		log.debug("Size of offerList "+offerList.size()+" offerList.keyset: "+offerList.keySet());
-		log.debug("Size of daList "+daList.size()+" daList.keyset: "+daList.keySet());
+		logger.debug("Size of offerList "+offerList.size()+" offerList.keyset: "+offerList.keySet());
+		logger.debug("Size of daList "+daList.size()+" daList.keyset: "+daList.keySet());
 	/*// End of Get Balances & Dates processing....
 		
 		String accountsEntry = ""; String subscriptionsEntry = "";
@@ -333,7 +332,7 @@ public class ReadCustomerInfoCharge implements Processor {
 	}
 	
 	private String convertDateToReadableFormat(String expiryDate) {
-		log.debug("ExpirtyDate : "+expiryDate);
+		logger.debug("ExpirtyDate : "+expiryDate);
 		if(!expiryDate.equals("null")){
 			Date date=new Date(Long.parseLong(expiryDate));
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
