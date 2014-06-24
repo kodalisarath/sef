@@ -2,20 +2,15 @@
 <features name="service-enablement-framework">
 	
 	<feature name="sef-core" version="0.0.1-SNAPSHOT">
+		<feature version="3.2.8.RELEASE_1">spring-jdbc</feature>
 		<bundle>mvn:com.oracle/ojdbc6/11.2.0.4</bundle>
-				
-		
 		<bundle>mvn:org.apache.ibatis/ibatis-core/3.0</bundle>
 		<bundle>mvn:org.mybatis/mybatis/3.1.1</bundle>
 		<bundle>mvn:org.mybatis/mybatis-spring/1.2.2</bundle>
-
-		
 		<bundle>wrap:mvn:c3p0/c3p0/0.9.1.2</bundle>
 		<bundle>mvn:org.apache.tomcat/tomcat-dbcp/7.0.50</bundle>
-		
-		<bundle>mvn:com.hazelcast/hazelcast/3.2</bundle>
-		<bundle>mvn:com.hazelcast/hazelcast-client/3.2</bundle>
-	
+		<bundle>mvn:com.hazelcast/hazelcast/3.2.3</bundle>
+		<bundle>mvn:com.hazelcast/hazelcast-client/3.2.3</bundle>
 		<bundle>mvn:com.ericsson.sef/sef-core/0.0.1-SNAPSHOT</bundle>
 		
 	</feature>
@@ -46,12 +41,40 @@
 		
 	</feature>
 
-	<feature name="all-features" version="0.0.1-SNAPSHOT">
+	<feature name="charging-adapter" version="0.0.1-SNAPSHOT">
 		<feature version="0.0.1-SNAPSHOT">sef-core</feature>
-		<feature version="0.0.1-SNAPSHOT">product-catalog</feature>
-		<feature version="0.0.1-SNAPSHOT">fulfillment-engine</feature>
-		<feature version="0.0.1-SNAPSHOT">transaction-engine</feature>
-		<feature version="0.0.1-SNAPSHOT">smart-frontend</feature>
+		<bundle>mvn:com.ericsson.sef/sef-api/0.0.1-SNAPSHOT</bundle>
+		<bundle>wrap:mvn:com.ericsson.pps.diameter/diameter-base-api/release</bundle>
+		<bundle>wrap:mvn:com.ericsson.pps.diameter/dcc-api/release</bundle>
+		<bundle>wrap:mvn:com.ericsson.pps.diameter/utils/release</bundle>
+		<bundle>wrap:mvn:com.ericsson.pps.diameter/scap-v2-api/release</bundle>
+		<bundle>mvn:com.ericsson.sef/charging-adapter/0.0.1-SNAPSHOT</bundle>
 	</feature>
+	<feature name="charging-gateway" version="0.0.1-SNAPSHOT">
+		<bundle>wrap:mvn:com.ericsson.pps.diameter/diameter-base-api/release</bundle>
+		<bundle>wrap:mvn:com.ericsson.pps.diameter/dcc-api/release</bundle>
+		<bundle>wrap:mvn:com.ericsson.pps.diameter/utils/release</bundle>
+		<bundle>wrap:mvn:com.ericsson.pps.diameter/scap-v2-api/release</bundle>
+		<bundle>mvn:com.ericsson.sef/charging-gateway/0.0.1-SNAPSHOT</bundle>
+	</feature>
+	<feature name="charging-gateway-engine" version="0.0.1-SNAPSHOT">
+        <feature version="0.0.1-SNAPSHOT">charging-gateway</feature>
+        <bundle>wrap:mvn:com.ericsson.pps.diameter/diameter-base-api/release</bundle>
+        <bundle>wrap:mvn:javax.ws.rs/javax.ws.rs-api/2.0-m10</bundle>
+        <bundle>wrap:mvn:com.ericsson.pps.diameter/dcc-api/release</bundle>
+        <bundle>wrap:mvn:com.ericsson.pps.diameter/utils/release</bundle>
+        <bundle>wrap:mvn:com.ericsson.pps.diameter/scap-v2-api/release</bundle>
+        <bundle>mvn:com.ericsson.sef/charging-gateway-engine/0.0.1-SNAPSHOT</bundle>
+	</feature>
+	<feature name="all-features" version="0.0.1-SNAPSHOT">
+        <feature version="0.0.1-SNAPSHOT">sef-core</feature>
+        <feature version="0.0.1-SNAPSHOT">product-catalog</feature>
+        <feature version="0.0.1-SNAPSHOT">fulfillment-engine</feature>
+        <feature version="0.0.1-SNAPSHOT">transaction-engine</feature>
+        <feature version="0.0.1-SNAPSHOT">smart-frontend</feature>
+        <feature version="0.0.1-SNAPSHOT">charging-gateway</feature>
+        <feature version="0.0.1-SNAPSHOT">charging-gateway-engine</feature>
+	</feature>
+
 </features>
 
