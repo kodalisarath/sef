@@ -153,7 +153,7 @@
 					<camel:when>
 						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
 						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.DiscoverOfferByFederatedIdResponseProcessor"/>
-					</camel:when>
+					</camel:when> 
 					<camel:when>
 						<camel:simple>${header.operationName} == 'purchase'</camel:simple>
 						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PurchaseResponseProcessor"/>
