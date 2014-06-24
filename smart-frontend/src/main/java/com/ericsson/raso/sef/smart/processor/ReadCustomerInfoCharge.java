@@ -82,14 +82,13 @@ public class ReadCustomerInfoCharge implements Processor {
 	    	 logger.info("PRE_ACTIVE state");
 	    	 throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 	     }
-	     if(subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0 && subscriberObj.getLocalState().getName().equalsIgnoreCase(ContractState.RECYCLED.getName())){
+	     if(subscriberObj!=null && subscriberObj.getLocalState().getName().equalsIgnoreCase(ContractState.RECYCLED.getName())){
 	    	 logger.info("DE_ACTIVE state");
 	    	 throw ExceptionUtil.toSmException(ErrorCode.invalidLifecycleError1);
 	     }
          logger.info("Recieved a SubscriberInfo Object and it is not null");
 		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		 logger.info("Billing Metas: " + subscriberObj.getMetas());
-	     
 		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional(), subscriberObj.getSubscriber().getMetas()));
 	}
 

@@ -25,7 +25,11 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		logger.debug("readSubscriber CorrelationID: " + requestCorrelator);
 
 		SubscriberInfo subscriberInfo = ((SubscriberInfo)SubscriberResponseStore.get(requestCorrelator));
-
+		if(subscriber!=null){
+			logger.debug("Subscriber Status: "+subscriber.getContractState());
+			subscriberInfo.setMsisdn(subscriber.getMsisdn());
+			subscriberInfo.setLocalState(ContractState.apiValue(subscriber.getContractState()));
+			}
 		try {
 			if (fault != null && fault.getCode() !=0) {
 				subscriberInfo.setStatus(fault);
