@@ -49,8 +49,10 @@ public class WSSByPassInterceptor extends AbstractSoapInterceptor {
             	processUsernameToken((SoapHeader)header);
             	
             	System.out.println("Must understand!!!");
-            	if(((SoapHeader)header).isMustUnderstand())
-            	((SoapHeader)header).setMustUnderstand(false);
+            	if(((SoapHeader)header).isMustUnderstand()) {
+            		//((SoapHeader)header).setMustUnderstand(false);
+            		message.getHeaders().remove(header);
+            	}
             }
             
 		}
