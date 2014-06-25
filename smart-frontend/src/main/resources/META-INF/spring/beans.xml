@@ -24,7 +24,8 @@
 <!-- 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" /> -->
 
 <!-- 	<bean id="licenseInterceptor" class="com.ericsson.raso.sef.auth.integration.LicenseThrottleInterceptor" /> -->
-<!-- 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" /> -->
+		<!-- hdr -->
+		<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
 
 	<cxf:cxfEndpoint id="smartInterface"
 	  serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface"
