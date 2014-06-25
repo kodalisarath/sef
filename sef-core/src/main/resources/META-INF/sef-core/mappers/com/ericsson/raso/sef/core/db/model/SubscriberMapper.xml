@@ -36,7 +36,7 @@
 	<select id="getSubscriberMetas" parameterType="String" resultMap="MetaResult">
 	select * from subscriber_meta where user_id=#{subscriberId}
 	</select>
-	<insert id="createSubscriber" parameterType="Subscriber" flushCache="true">
+	<insert id="createSubscriber" parameterType="Subscriber">
 		insert into
 		subscriber
 		(user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
@@ -83,17 +83,17 @@
 		where s.user_id = #{userId}
 	</select>
 	
-	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta" flushCache="true">
+	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta">
 		insert into subscriber_meta (user_id, attribute_name, attribute_value)
 		values (#{subscriberId}, #{key}, #{value})
 	</insert>
 	
-	<update id="updateSubscriberMeta" parameterType="SubscriberMeta" flushCache="true">
+	<update id="updateSubscriberMeta" parameterType="SubscriberMeta">
 		update subscriber_meta set attribute_value = #{value}
 		where user_id = #{subscriberId}
 		and attribute_name = #{key}
 	</update>
-	<update id="changeContractStatus" parameterType="Subscriber" flushCache="true">
+	<update id="changeContractStatus" parameterType="Subscriber">
 	update subscriber set contract_state=#{contractState.name} where user_id=#{userId}
 	</update>
 	<!-- <update id="updateSubscriberTable" >
@@ -105,10 +105,10 @@
      where user_id=#{userId}
 	</update> -->
 	
-	<select id="getContractState" parameterType="String" flushCache="true">
+	<select id="getContractState" parameterType="String">
 	select contract_state from subscriber where user_id=#{userId}
 	</select>
-	<update id="updateSubscriber" parameterType="Subscriber" flushCache="true">
+	<update id="updateSubscriber" parameterType="Subscriber">
 		update subscriber
 		set
 			contract_state=#{contractState jdbcType=VARCHAR},
@@ -134,7 +134,7 @@
 			rate_plan=#{ratePlan jdbcType=VARCHAR}
 		where user_id = #{userId}
 	</update>
-	<insert id="insertSubscriberHistory" parameterType="SubscriberAuditTrial" flushCache="true">
+	<insert id="insertSubscriberHistory" parameterType="SubscriberAuditTrial">
 		insert into
 		SUBSCRIBER_AUDIT_TRAIL (user_id,event_timestamp, CHANGE_BY_USER,
 		ATTRIBUTE_NAME, ATTRIBUTE_NEW_VALUE)
