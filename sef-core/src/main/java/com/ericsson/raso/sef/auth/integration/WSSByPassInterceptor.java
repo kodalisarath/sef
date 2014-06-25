@@ -69,17 +69,17 @@ public class WSSByPassInterceptor extends AbstractSoapInterceptor {
         while (child != null) {
             if (SPConstants.USERNAME_TOKEN.equals(child.getLocalName())) {
                 try  {
-                	 org.apache.ws.security.message.token.UsernameToken ut = 
-                	            new org.apache.ws.security.message.token.UsernameToken(child);
-                	 if(authenticate(ut.getName(), ut.getPassword(), ut.getNonce())) {
-                		 actor = enrichSecurityContext(ut.getName());
-                	 }
+                	 org.apache.ws.security.message.token.UsernameToken ut =  new org.apache.ws.security.message.token.UsernameToken(child);
                 	 
-                	 if(actor == null) throw new SecurityException();
-                	
-                	 RequestContext ctx = new RequestContext();
-                	 ctx.setActor(actor);
-                	 RequestContextLocalStore.put(ctx);
+//                	 if(authenticate(ut.getName(), ut.getPassword(), ut.getNonce())) {
+//                		 actor = enrichSecurityContext(ut.getName());
+//                	 }
+//                	 
+//                	 if(actor == null) throw new SecurityException();
+//                	
+//                	 RequestContext ctx = new RequestContext();
+//                	 ctx.setActor(actor);
+//                	 RequestContextLocalStore.put(ctx);
                 	
                 } catch (Exception ex) {
                     throw new SecurityException();
