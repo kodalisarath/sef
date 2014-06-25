@@ -30,13 +30,13 @@
 		<result property="customerSegment" column="customer_segment" />
 	</resultMap>
 	
-	<select id="isSubscriberExists" parameterType="String" resultType="int">
+	<select id="isSubscriberExists" parameterType="String" resultType="int" >
 		select 1 from subscriber where msisdn = #{msisdn}
 	</select>
 	<select id="getSubscriberMetas" parameterType="String" resultMap="MetaResult">
 	select * from subscriber_meta where user_id=#{subscriberId}
 	</select>
-	<insert id="createSubscriber" parameterType="Subscriber">
+	<insert id="createSubscriber" parameterType="Subscriber" flushCache="true">
 		insert into
 		subscriber
 		(user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
@@ -61,7 +61,7 @@
 	</resultMap>
 	<!-- <select id="userSequence" resultMap="SequenceResult" parameterType="String"> 
 		select user_id_sequence.nextval as seq, #{rand} as rand from dual </select> -->
-	<update id="deleteSubscriber" parameterType="String">
+	<update id="deleteSubscriber" parameterType="String" flushCache="true">
 		delete from subscriber where msisdn = #{userId}
 		<!-- update subscriber set deleted = #{userId} where user_id = #{userId} -->
 	</update>
@@ -83,17 +83,17 @@
 		where s.user_id = #{userId}
 	</select>
 	
-	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta">
+	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta" flushCache="true">
 		insert into subscriber_meta (user_id, attribute_name, attribute_value)
 		values (#{subscriberId}, #{key}, #{value})
 	</insert>
 	
-	<update id="updateSubscriberMeta" parameterType="SubscriberMeta">
+	<update id="updateSubscriberMeta" parameterType="SubscriberMeta" flushCache="true">
 		update subscriber_meta set attribute_value = #{value}
 		where user_id = #{subscriberId}
 		and attribute_name = #{key}
 	</update>
-	<update id="changeContractStatus" parameterType="Subscriber">
+	<update id="changeContractStatus" parameterType="Subscriber" flushCache="true">
 	update subscriber set contract_state=#{contractState.name} where user_id=#{userId}
 	</update>
 	<!-- <update id="updateSubscriberTable" >
@@ -105,10 +105,10 @@
      where user_id=#{userId}
 	</update> -->
 	
-	<select id="getContractState" parameterType="String">
+	<select id="getContractState" parameterType="String" flushCache="true">
 	select contract_state from subscriber where user_id=#{userId}
 	</select>
-	<update id="updateSubscriber" parameterType="Subscriber">
+	<update id="updateSubscriber" parameterType="Subscriber" flushCache="true">
 		update subscriber
 		set
 			contract_state=#{contractState jdbcType=VARCHAR},
@@ -134,7 +134,7 @@
 			rate_plan=#{ratePlan jdbcType=VARCHAR}
 		where user_id = #{userId}
 	</update>
-	<insert id="insertSubscriberHistory" parameterType="SubscriberAuditTrial">
+	<insert id="insertSubscriberHistory" parameterType="SubscriberAuditTrial" flushCache="true">
 		insert into
 		SUBSCRIBER_AUDIT_TRAIL (user_id,event_timestamp, CHANGE_BY_USER,
 		ATTRIBUTE_NAME, ATTRIBUTE_NEW_VALUE)
@@ -150,5 +150,7 @@
 		subscriber_meta s
 		where user_id = #{subscriberId}
 	</select>
+	
+	
 
 </mapper>
