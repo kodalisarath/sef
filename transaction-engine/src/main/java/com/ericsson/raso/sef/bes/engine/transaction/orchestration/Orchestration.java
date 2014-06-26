@@ -163,15 +163,15 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					}
 				} 
 
-				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
-					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
-						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
-						this.promote2Persist();
-					}	else {
-						this.status = Status.DONE_FAULT;
-						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
-					}
-				} 
+//				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
+//					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
+//						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
+//						this.promote2Persist();
+//					}	else {
+//						this.status = Status.DONE_FAULT;
+//						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
+//					}
+//				} 
 				
 				if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
