@@ -14,14 +14,14 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
 import com.hazelcast.core.ISemaphore;
 
-public class CloudAwareClusterService<K, V> implements CloudAwareCluster {
+public class CloudAwareClusterService implements CloudAwareCluster {
 
 	//private HazelcastInstance instance;
-	private CloudAwareClusterService<K, V> instance = new CloudAwareClusterService<K, V>();
+	//private CloudAwareClusterService instance = null;
 	
 	private static final String HZ_CONFIG = "HZ_CONFIG";
 	
-	private TreeMap<String, HashMap<K, V>> localStore = new TreeMap<String, HashMap<K,V>>(); 
+	private TreeMap<String, Map> localStore = new TreeMap<String, Map>(); 
 	private TreeMap<String, ISemaphore> localSignals = new TreeMap<String, ISemaphore>(); 
 	
 	public CloudAwareClusterService() {
@@ -46,10 +46,10 @@ public class CloudAwareClusterService<K, V> implements CloudAwareCluster {
 //		instance.shutdown();
 	}
 	
-	public Map<K, V> getMap(String name) {
+	public  <K, V> Map<K, V> getMap(String name) {
 		//return instance.getMap(name);
 		
-		HashMap<K, V> namedMap = this.localStore.get(name);
+		Map<K, V> namedMap = this.localStore.get(name);
 		if (namedMap == null) {
 			namedMap = new HashMap<K,V>();
 			this.localStore.put(name, namedMap);
