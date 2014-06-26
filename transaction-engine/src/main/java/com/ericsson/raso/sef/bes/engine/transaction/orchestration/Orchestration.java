@@ -35,6 +35,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Notification;
 import com.ericsson.raso.sef.bes.prodcat.tasks.NotificationMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.raso.sef.core.CloudAwareClusterService;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
@@ -149,13 +150,36 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				break;
 			case PROCESSING:
 				// the logic below must be checked in reverse order, so the dependency ordering will enforce right sequence
+				// proceed to scheduling...
+				// proceed to persistence...
+				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
+					logger.debug("Yes.. we will do persistence...");
+					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
+						this.status = Status.DONE_SUCCESS;
+						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
+					}	else {
+						this.status = Status.DONE_FAULT;
+						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
+					}
+				} 
+
+				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
+					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
+						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
+						this.promote2Persist();
+					}	else {
+						this.status = Status.DONE_FAULT;
+						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
+					}
+				} 
+				
 				if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
-//						this.processNotification();
-//						this.promote2Schedule();
+						this.processNotification();
+						this.promote2Schedule();
 						//TODO: remove this when uncomment the above two tasks
-						this.promote2Persist();
+//						this.promote2Persist();
 						//this.status = Status.DONE_SUCCESS; 
 
 					} else {
@@ -168,7 +192,6 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 							this.promote2Fulfill();
 						}
 					}
-					logger.debug("Seems to be out fulfillment...are we going to schedule?\n State: " + this.printPhasingProgress());
 				} 
 				
 				if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
@@ -183,29 +206,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					logger.debug("Seems to have completed PREP_FULFILLMENT. State: " + this.printPhasingProgress());
 				} 
 				
-//				// proceed to scheduling...
-//				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
-//					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
-//						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
-//						this.promote2Persist();
-//					}	else {
-//						this.status = Status.DONE_FAULT;
-//						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
-//					}
-//				} 
-//				
 				logger.debug("Seems to be crossing schedule.... are we going to persistence?\n State: " + this.printPhasingProgress());
-				// proceed to persistence...
-				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
-					logger.debug("Yes.. we will do persistence...");
-					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
-						this.status = Status.DONE_SUCCESS;
-						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
-					}	else {
-						this.status = Status.DONE_FAULT;
-						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
-					}
-				} 
 				break;
 			case DONE_FAILED:
 				//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
@@ -466,6 +467,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
+			
 		}
 		
 		Iterator  iterator1 = this.prepareFulfillment.iterator();
