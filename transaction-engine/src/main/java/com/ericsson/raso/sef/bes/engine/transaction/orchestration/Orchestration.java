@@ -138,117 +138,118 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	public AbstractResponse call() throws Exception {
 		logger.debug("Current status before call() run: " + this.status + "State Machine: " + this.printPhasingProgress());
 		try {
-		switch (this.status) {
-			case WAITING:
-				logger.debug("Entering waiting phase");
-				try {
-					this.initiateExecution();
-				} catch (Exception e) {
-					logger.error("Exception while preparation, Exception:" + e);
-					this.status = Status.DONE_FAULT;
-					this.executionFault = new TransactionException("txe", new ResponseCode(999, "Chargng Failed: " + e.getMessage()));
-				}
-				break;
-			case PROCESSING:
-				// the logic below must be checked in reverse order, so the dependency ordering will enforce right sequence
-				switch(this.currentPhase) {
-					case TX_PHASE_PERSISTENCE:
-						this.phasingProgress.put(currentPhase, Status.DONE_SUCCESS);
-						this.promote2Persist();
-						this.currentPhase = this.currentPhase.getNextPhase();
-						this.phasingProgress.put(currentPhase, Status.PROCESSING);
-						break;
-					case TX_PHASE_SCHEDULE:
-						//TODO: this logic has to fixed when testing scheduler...
-						this.phasingProgress.put(currentPhase, Status.DONE_SUCCESS);
-						//TODO: call schedule step here...
-						this.currentPhase = this.currentPhase.getNextPhase();
-						this.phasingProgress.put(currentPhase, Status.PROCESSING);
-						break;
-						
-//				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
-//					logger.debug("Yes.. we will do persistence...");
-//					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
-//						this.status = Status.DONE_SUCCESS;
-//						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
-//					}	else {
-//						this.status = Status.DONE_FAULT;
-//						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
-//					}
-//				} 
+			switch (this.status) {
+				case WAITING:
+					logger.debug("Entering waiting phase");
+					try {
+						this.initiateExecution();
+					} catch (Exception e) {
+						logger.error("Exception while preparation, Exception:" + e);
+						this.status = Status.DONE_FAULT;
+						this.executionFault = new TransactionException("txe", new ResponseCode(999, "Chargng Failed: " + e.getMessage()));
+					}
+					break;
+				case PROCESSING:
+					// the logic below must be checked in reverse order, so the dependency ordering will enforce right sequence
+					switch(this.currentPhase) {
+						case TX_PHASE_PERSISTENCE:
+							this.phasingProgress.put(currentPhase, Status.DONE_SUCCESS);
+							this.promote2Persist();
+							this.currentPhase = this.currentPhase.getNextPhase();
+							this.phasingProgress.put(currentPhase, Status.PROCESSING);
+							break;
+						case TX_PHASE_SCHEDULE:
+							//TODO: this logic has to fixed when testing scheduler...
+							this.phasingProgress.put(currentPhase, Status.DONE_SUCCESS);
+							//TODO: call schedule step here...
+							this.currentPhase = this.currentPhase.getNextPhase();
+							this.phasingProgress.put(currentPhase, Status.PROCESSING);
+							break;
 
-//				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
-//					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
-//						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
-//						this.promote2Persist();
-//					}	else {
-//						this.status = Status.DONE_FAULT;
-//						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
-//					}
-//				} 
-					case TX_PHASE_FULFILLMENT:
-						if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
-							logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
-							if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
-								//this.promote2Persist();
-								this.currentPhase = this.currentPhase.getNextPhase();
-								this.phasingProgress.put(currentPhase, Status.PROCESSING);
-								break;
-								
-							
-							} else {
-								if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
-									this.status = Status.DONE_FAULT;
-									this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT FAILED");
+							//				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
+							//					logger.debug("Yes.. we will do persistence...");
+							//					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
+							//						this.status = Status.DONE_SUCCESS;
+							//						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
+							//					}	else {
+							//						this.status = Status.DONE_FAULT;
+							//						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
+							//					}
+							//				} 
+
+							//				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
+							//					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
+							//						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
+							//						this.promote2Persist();
+							//					}	else {
+							//						this.status = Status.DONE_FAULT;
+							//						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
+							//					}
+							//				} 
+						case TX_PHASE_FULFILLMENT:
+							if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
+								logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
+								if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
 									this.currentPhase = this.currentPhase.getNextPhase();
 									this.phasingProgress.put(currentPhase, Status.PROCESSING);
-									break;
-									
-								}
+									this.promote2Persist();
 
-								if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
+									break;
+
+
+								} else {
+									if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
+										this.status = Status.DONE_FAULT;
+										this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT FAILED");
+										this.currentPhase = this.currentPhase.getNextPhase();
+										this.phasingProgress.put(currentPhase, Status.PROCESSING);
+										break;
+
+									}
+
+									if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
+										this.promote2Fulfill();
+									}
+								}
+							} 
+							break;
+						case TX_PHASE_PREP_FULFILLMENT:
+
+							if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
+								logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
+								if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) { 
+									this.currentPhase = this.currentPhase.getNextPhase();
+									this.phasingProgress.put(currentPhase, Status.PROCESSING);
 									this.promote2Fulfill();
 								}
-							}
-						} 
-						break;
-					case TX_PHASE_PREP_FULFILLMENT:
-						
-						if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
-							logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
-							if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) { 
-								this.promote2Fulfill();
-							}
-							else {
-								this.status = Status.DONE_FAULT;
-								this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
-								this.currentPhase = this.currentPhase.getNextPhase();
-								this.phasingProgress.put(currentPhase, Status.PROCESSING);
-							}
-							logger.debug("Seems to have completed PREP_FULFILLMENT. State: " + this.printPhasingProgress());
-						} 
-						break;
-				}
-			case DONE_FAILED:
-				//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
-				break;
-			case DONE_FAULT:
-				//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
-				break;
-			case DONE_SUCCESS:
-				//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
-				break;
-		}
+								else {
+									this.status = Status.DONE_FAULT;
+									this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
+								}
+								logger.debug("Seems to have completed PREP_FULFILLMENT. State: " + this.printPhasingProgress());
+							} 
+							break;
+					}
+				case DONE_FAILED:
+					//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
+					break;
+				case DONE_FAULT:
+					//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
+					break;
+				case DONE_SUCCESS:
+					//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
+					break;
+			}
 
-		logger.debug("Current status after call() run: " + this.status + "State Machine: " + this.printPhasingProgress());
+			logger.debug("Current status after call() run: " + this.status + "State Machine: " + this.printPhasingProgress());
 
-		if (this.status.name().startsWith("DONE_")) {
-			logger.debug("Orchestration completed with status: " + this.status.name());
-			//this.processNotification();
-			OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
-		}
-		
-		return null;
+			if (this.status.name().startsWith("DONE_")) {
+				logger.debug("Orchestration completed with status: " + this.status.name());
+				//this.processNotification();
+				OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
+			}
+
+			return null;
 		} catch(Exception e) {
 			logger.error("Exception in orchestration. Exception Message: " + e.getMessage() + "Exception: " + e, e);
 			this.status = Status.DONE_FAULT;
@@ -601,6 +602,13 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				+ "Status: " + this.status.name() + "Phasing: " + printPhasingProgress());
 		
 		
+		if(this.prepareFulfillment.size() < 1) {
+			logger.debug("No Prepare Fulfillment to trigger... will go straight to fulfillment");
+			this.currentPhase = this.currentPhase.getNextPhase();
+			this.phasingProgress.put(currentPhase, Status.PROCESSING);
+			promote2Fulfill();
+		}
+		
 		Iterator iterator = this.prepareFulfillment.iterator();
 		while(iterator.hasNext()) {
 			Step prepare = (Step) iterator.next();
@@ -614,9 +622,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 		logger.debug("Prepare fulfilment initiated...");
 		
-		if(this.prepareFulfillment.size() < 1) {
-			promote2Fulfill();
-		}
+		
 	}
 
  	private List<ChargingStep> extractChargingSteps(List<TransactionTask> tasks) {
