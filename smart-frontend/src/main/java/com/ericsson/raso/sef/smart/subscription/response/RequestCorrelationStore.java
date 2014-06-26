@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.smart.subscription.response;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -10,8 +11,9 @@ import com.ericsson.raso.sef.smart.commons.SmartConstants;
 
 public class RequestCorrelationStore {
 	private static final Logger logger = LoggerFactory.getLogger(RequestCorrelationStore.class);
-	//private static Map<String, AbstractSubscriptionResponse> store = new TreeMap<String, AbstractSubscriptionResponse>();
-	private static Map<String, AbstractSubscriptionResponse> store = SefCoreServiceResolver.getCloudAwareCluster().getMap(SmartConstants.SMFE_CORRELATION_STORE);
+	
+	private static Map<String, AbstractSubscriptionResponse> store = new HashMap<String, AbstractSubscriptionResponse>();
+	//private static Map<String, AbstractSubscriptionResponse> store = SefCoreServiceResolver.getCloudAwareCluster().getMap(SmartConstants.SMFE_CORRELATION_STORE);
 	
 	
 	public static void put(String requestId, AbstractSubscriptionResponse response) {

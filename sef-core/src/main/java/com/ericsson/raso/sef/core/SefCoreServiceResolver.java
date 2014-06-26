@@ -64,7 +64,7 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 		String logMessage = "JVM Threads: " + jvmThreads;
 		if (jvmThreads <= maxThreadsForCurrentOs) {
 			if (localExecutor == null) {
-				localExecutor = new ThreadPoolExecutor(50, 100, 30000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(5));
+				localExecutor = new ThreadPoolExecutor(50, 400, 30000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(20));
 				logMessage += " creating new local executor...";
 			}
 			logMessage += " returning local executor...";
