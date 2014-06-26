@@ -43,18 +43,20 @@ public class WSSByPassInterceptor extends AbstractSoapInterceptor {
 
 	@Override
 	public void handleMessage(SoapMessage message) throws Fault {
-		for (Header header : message.getHeaders()) {
-			
-            if (header instanceof SoapHeader && header.getName().getLocalPart().equals("Security") && 
-            		(header.getName().getNamespaceURI().equals(WSConstants.WSSE_NS) || 
-            				header.getName().getNamespaceURI().equals(WSConstants.WSSE11_NS))) {
+		logger.debug("Handling message: " + message);
+        for (Header header : message.getHeaders()) {
+        	logger.debug("Handling header: " + header);
+           	if (header instanceof SoapHeader && header.getName().getLocalPart().equals("Security") && 
+            		((header.getName().getNamespaceURI().equals(WSConstants.WSSE_NS) || 
+            				header.getName().getNamespaceURI().equals(WSConstants.WSSE11_NS)))) {
             	
             	//processUsernameToken((SoapHeader)header);
             	
-            	System.out.println("Must understand!!!");
+            	logger.debug("Must understand!!! value: " + ((SoapHeader)header).isMustUnderstand());
             	if(((SoapHeader)header).isMustUnderstand()) {
             		//((SoapHeader)header).setMustUnderstand(false);
             		message.getHeaders().remove(header);
+            		logger.debug("After envelope change: " + message);
             	}
             }
             
