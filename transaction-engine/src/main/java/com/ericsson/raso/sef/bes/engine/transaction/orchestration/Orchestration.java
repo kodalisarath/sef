@@ -828,73 +828,86 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 	
 	private boolean isPhaseComplete(Phase phase) {
 		List<? extends Step> toCheck = null;
-		logger.debug("Checking if phase is complete. Phase: " + phase.name());
-		switch (phase) {
-			case TX_PHASE_CHARGING:
-				// this is impossible, since charging is handled synchronous execution... but hey!! what the hell?!
-				toCheck = this.charges;
-				break;
-			case TX_PHASE_PREP_FULFILLMENT:
-				toCheck = this.prepareFulfillment;
-				break;
-			case TX_PHASE_FULFILLMENT:
-				toCheck = this.fulfillment;
-				break;
-			case TX_PHASE_PERSISTENCE:
-				toCheck = this.persistence;
-				break;
-			case TX_PHASE_SCHEDULE:
-				toCheck = this.schedules;
-				break;
-		}
-		
-		
-		boolean isAllStepsComplete = false;
-		boolean anyFault = false;
-		
-		int completion = 0;
-		for (Object next: toCheck) {
-			Step step = null;
-			if (next instanceof Step) {
-				step = (Step) next;
-				
-				AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
-				Status executionStatus = this.sbExecutionStatus.get(step.stepCorrelator);
-				logger.debug("Checking " + step.getStepCorrelator() + "Step: " + step.toString() + 
+
+		Status phasingStatus = this.phasingProgress.get(phase);
+		logger.debug("Checking if phase is complete. Phase: " + phase.name() + " with current status: " + phasingStatus);
+		if (phasingStatus.name().startsWith("PROCESSING")) {
+			logger.debug("Current phase status: " + phasingStatus + "... will only check and promote in PROCESSING");
+
+
+			switch (phase) {
+				case TX_PHASE_CHARGING:
+					// this is impossible, since charging is handled synchronous execution... but hey!! what the hell?!
+					toCheck = this.charges;
+					break;
+				case TX_PHASE_PREP_FULFILLMENT:
+					toCheck = this.prepareFulfillment;
+					break;
+				case TX_PHASE_FULFILLMENT:
+					toCheck = this.fulfillment;
+					break;
+				case TX_PHASE_PERSISTENCE:
+					toCheck = this.persistence;
+					break;
+				case TX_PHASE_SCHEDULE:
+					toCheck = this.schedules;
+					break;
+			}
+
+
+			boolean isAllStepsComplete = false;
+			boolean anyFault = false;
+
+			int completion = 0;
+
+			for (Object next: toCheck) {
+				Step step = null;
+				if (next instanceof Step) {
+					step = (Step) next;
+
+					AbstractStepResult result = this.sbRequestResultMapper.get(step.getStepCorrelator());
+					Status executionStatus = this.sbExecutionStatus.get(step.stepCorrelator);
+					logger.debug("Checking " + step.getStepCorrelator() + "Step: " + step.toString() + 
 							", Result: " + result + 
 							", ExecutionStatus: " + executionStatus);
 
-				if (executionStatus != null && executionStatus.name().startsWith("DONE_")) {
-					completion++;
-					logger.debug("Step:" + step.stepCorrelator + " is complete with " + executionStatus);
-					if (executionStatus == Status.DONE_FAULT)
-						anyFault = true;
-				} //else {
-//					anyFault = true;
-//					step.setFault(result.getResultantFault());
-//					completion++;
-//					logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
-//				}
+					if (executionStatus != null && executionStatus.name().startsWith("DONE_")) {
+						completion++;
+						logger.debug("Step:" + step.stepCorrelator + " is complete with " + executionStatus);
+						if (executionStatus == Status.DONE_FAULT)
+							anyFault = true;
+					} //else {
+					//					anyFault = true;
+					//					step.setFault(result.getResultantFault());
+					//					completion++;
+					//					logger.debug("Step:" + step.stepCorrelator + " is complete with failure!!");
+					//				}
+				}
+			}
+
+			logger.info("Total Steps in this phase: " + toCheck.size() + "  & completion is: " + completion);
+
+			isAllStepsComplete = (toCheck.size() == completion);
+
+			if (!isAllStepsComplete) {
+				logger.debug("May be we wait for some more time for all to complete");
+				return false;
+			}
+
+			if (isAllStepsComplete && !anyFault) {
+				logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_SUCCESS.name());
+				this.phasingProgress.put(phase, Status.DONE_SUCCESS);
+			} else if (isAllStepsComplete && anyFault) {
+				logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_FAULT.name());
+				this.phasingProgress.put(phase, status.DONE_FAULT);
+			} else {
+				logger.debug("Seems like all steps are not completed yet???");
 			}
 		}
 		
-		logger.info("Total Steps in this phase: " + toCheck.size() + "  & completion is: " + completion);
-		
-		isAllStepsComplete = (toCheck.size() == completion);
-		
-		if (!isAllStepsComplete) {
-			logger.debug("May be we wait for some more time for all to complete");
+		if (phasingStatus == Status.WAITING) {
+			logger.debug("Additional check to avoid cleaing pending states (WAITING). Current Phase: " + phase);
 			return false;
-		}
-		
-		if (isAllStepsComplete && !anyFault) {
-			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_SUCCESS.name());
-			this.phasingProgress.put(phase, Status.DONE_SUCCESS);
-		} else if (isAllStepsComplete && anyFault) {
-			logger.debug("All steps complete. Moving: " + phase.name() + " -> Status: " + Status.DONE_FAULT.name());
-			this.phasingProgress.put(phase, status.DONE_FAULT);
-		} else {
-			logger.debug("Seems like all steps are not completed yet???");
 		}
 
 		return true;
