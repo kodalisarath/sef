@@ -65,9 +65,12 @@ public class CloudAwareClusterService implements CloudAwareCluster {
 	
 	public ISemaphore getSemaphore(String name) {
 		//ISemaphore controlSignal = instance.getSemaphore(name);
-		LocalSemaphore controlSignal = new LocalSemaphore(0);
-		controlSignal.setStore(this.localSignals);
-		this.localSignals.put(name, controlSignal);
+		LocalSemaphore controlSignal = (LocalSemaphore) this.localSignals.get(name);
+		if (controlSignal == null) {
+			controlSignal = new LocalSemaphore(0);
+			controlSignal.setStore(this.localSignals);
+			this.localSignals.put(name, controlSignal);
+		}
 		return controlSignal;
 	}
 	
