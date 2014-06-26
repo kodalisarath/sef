@@ -14,15 +14,16 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.ws.security.policy.SPConstants;
 import org.apache.ws.security.WSConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import com.ericsson.raso.sef.auth.Actor;
 import com.ericsson.raso.sef.auth.service.IUserStore;
-import com.ericsson.raso.sef.core.RequestContext;
-import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 
 public class WSSByPassInterceptor extends AbstractSoapInterceptor {
+	private static final Logger logger = LoggerFactory.getLogger(WSSByPassInterceptor.class);
 	
 	
 	 private static final Set<QName> HEADERS = new HashSet<QName>();
@@ -44,9 +45,11 @@ public class WSSByPassInterceptor extends AbstractSoapInterceptor {
 	public void handleMessage(SoapMessage message) throws Fault {
 		for (Header header : message.getHeaders()) {
 			
-            if (header instanceof SoapHeader && header.getName().getLocalPart().equals("Security") && (header.getName().getNamespaceURI().equals(WSConstants.WSSE_NS) 
-                    || header.getName().getNamespaceURI().equals(WSConstants.WSSE11_NS))) {
-            	processUsernameToken((SoapHeader)header);
+            if (header instanceof SoapHeader && header.getName().getLocalPart().equals("Security") && 
+            		(header.getName().getNamespaceURI().equals(WSConstants.WSSE_NS) || 
+            				header.getName().getNamespaceURI().equals(WSConstants.WSSE11_NS))) {
+            	
+            	//processUsernameToken((SoapHeader)header);
             	
             	System.out.println("Must understand!!!");
             	if(((SoapHeader)header).isMustUnderstand()) {
