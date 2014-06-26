@@ -152,16 +152,16 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				// the logic below must be checked in reverse order, so the dependency ordering will enforce right sequence
 				// proceed to scheduling...
 				// proceed to persistence...
-				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
-					logger.debug("Yes.. we will do persistence...");
-					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
-						this.status = Status.DONE_SUCCESS;
-						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
-					}	else {
-						this.status = Status.DONE_FAULT;
-						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
-					}
-				} 
+//				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
+//					logger.debug("Yes.. we will do persistence...");
+//					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
+//						this.status = Status.DONE_SUCCESS;
+//						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
+//					}	else {
+//						this.status = Status.DONE_FAULT;
+//						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
+//					}
+//				} 
 
 //				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
 //					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
@@ -176,10 +176,10 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 					logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
 					if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
-						this.processNotification();
-						this.promote2Schedule();
+//						this.processNotification();
+//						this.promote2Schedule();
 						//TODO: remove this when uncomment the above two tasks
-//						this.promote2Persist();
+						this.promote2Persist();
 						//this.status = Status.DONE_SUCCESS; 
 
 					} else {
