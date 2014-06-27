@@ -50,8 +50,9 @@ public class SmExternalNotificationTemplateCatalog implements ExternalNotificati
 	}
 
 	private void serialize() throws Exception {
-		String smHome = System.getenv("CONFIG_HOME");
-		FileSystemResource resource = new FileSystemResource(smHome + File.separator + "external-notifications.ccem");
+		String sefCatalogHome = System.getenv("SEF_CATALOG_HOME");
+		 
+		FileSystemResource resource = new FileSystemResource(sefCatalogHome + File.separator + "external-notifications.ccem");
 		if(!resource.exists()) {
 			resource.getFile().createNewFile();
 		}
@@ -65,14 +66,14 @@ public class SmExternalNotificationTemplateCatalog implements ExternalNotificati
 
 	@SuppressWarnings("unchecked")
 	private Map<String, ExternalNotifcationEvent> deserialize() throws Exception {
-		String smHome = System.getenv("CONFIG_HOME");
+		String smHome = System.getenv("SEF_CATALOG_HOME");
 		FileSystemResource resource = new FileSystemResource(smHome + File.separator + "external-notifications.ccem");
 		if(resource.exists())  {
 			ObjectInputStream stream = new ObjectInputStream(resource.getInputStream());
 			Map<String, ExternalNotifcationEvent> externalNotifications = (Map<String, ExternalNotifcationEvent>) stream.readObject();
 			stream.close();
 			return externalNotifications;
-		}
+		}  
 		return new HashMap<String, ExternalNotifcationEvent>();
 	}
 
