@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.fulfillment.commons;
 
+import org.apache.camel.CamelContext;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -28,6 +29,10 @@ public class FulfillmentServiceResolver implements ApplicationContextAware {
 	
 	public static IProfileRegistry getProfileRegistry() {
 		return context.getBean(IProfileRegistry.class);
+	}
+
+	public static CamelContext getCamelContext() {
+		return context.getBean("com.ericsson.raso.sef.fulfillmentEngine", CamelContext.class);
 	}
 	
 	
