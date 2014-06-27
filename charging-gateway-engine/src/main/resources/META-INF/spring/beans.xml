@@ -27,18 +27,33 @@
 
 	<bean id="sefScapChargingApi" class="com.ericsson.raso.sef.cg.engine.util.SefScapChargingApi"
 		init-method="start" destroy-method="stop" />
-	
+
 	<bean id="gson" class="org.apache.camel.component.gson.GsonDataFormat">
 		<!-- we want to unmarshal to ChargingInfo pojo -->
-		<property name="unmarshalType" value="com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo" />
+		<property name="unmarshalType"
+			value="com.ericsson.raso.sef.core.cg.diameter.ChargingInfo" />
 	</bean>
 
 	<cxf:cxfEndpoint id="subscriberResponse"
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
+			<!-- <entry key="address"
+				value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" /> -->
+				<entry key="address"
+				value="/services/ws/iSubscriberResponse" />
 		</cxf:properties>
 	</cxf:cxfEndpoint>
+	
+		<cxf:cxfEndpoint id="subscriptionResponse"
+		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse">
+
+		<cxf:properties>
+			<!-- <entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" /> -->
+			<entry key="address" value="/services/ws/iSubscriptionResponse" />
+		</cxf:properties>
+
+	</cxf:cxfEndpoint>
+	
 
 	<cxf:rsServer id="cgeServer" address="http://0.0.0.0:9090/charginggateway/"
 		serviceClass="com.ericsson.raso.sef.cg.engine.web.CgWeb" />
@@ -54,6 +69,8 @@
 			<camel:doTry>
 				<!-- <camel:bean ref="rcs" method="enter" /> -->
 				<camel:unmarshal ref="gson" />
+				<camel:log message="Enter-Charging-Gateway-Engine:${body}"
+					logName="com.ericsson.raso.sef.cg.engine.JsonPrint" />
 				<camel:bean ref="cdr" method="requestIn" />
 				<camel:bean
 					beanType="com.ericsson.raso.sef.cg.engine.processor.RequestEntryProcessor" />
@@ -77,25 +94,44 @@
 					<camel:bean ref="cdr" method="responseOut" />
 					<!-- <camel:bean ref="rcs" method="exit" /> -->
 					<camel:marshal ref="gson" />
+					<camel:log message="Leave-Charging-Gateway-Engine:${body}"
+						logName="com.ericsson.raso.sef.cg.engine.JsonPrint" />
 				</camel:doFinally>
 			</camel:doTry>
 		</route>
 
 		<route>
-			<from uri="cxf:bean:subscriberResponse"/>
+			<from uri="cxf:bean:subscriberResponse" />
 			<camel:doTry>
 				<camel:choice>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'readSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.cg.engine.util.ReadSubscriberProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.cg.engine.util.ReadSubscriberProcessor" />
+					</camel:when>
+				</camel:choice>
+				<camel:doFinally>
+					<!-- Add exception handler -->
+				</camel:doFinally>
+
+			</camel:doTry>
+		</route>
+
+		<route>
+			<from uri="cxf:bean:subscriptionResponse"/>
+			<camel:doTry>
+				<camel:choice>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
+						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.DiscoverOfferByFederatedIdResponseProcessor"/>
 					</camel:when>
 				</camel:choice>
 				<camel:doFinally>
 				<!-- Add exception handler -->
 				</camel:doFinally>
-
 			</camel:doTry>
 		</route>
+
 
 
 	</camelContext>
