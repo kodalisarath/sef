@@ -100,7 +100,7 @@ public class PasaServiceManager {
 		SubscriberInfo subscriberInfo = new SubscriberInfo();
 		String requestId = CgEngineContext.getSubscriberRequest().readSubscriber(UniqueIdGenerator.generateId(), subscriberId, metas);
 		SubscriberResponseStore.put(requestId, subscriberInfo);
-		semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
+		semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
@@ -110,7 +110,7 @@ public class PasaServiceManager {
 		semaphore.destroy();
 
 		LOGGER.info("Check if response received...");
-		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestCorrelator);
+		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0){
 			LOGGER.error("failed to get subscriber balances, cannot process further");
 			return false;
