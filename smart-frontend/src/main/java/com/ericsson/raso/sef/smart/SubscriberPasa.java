@@ -143,11 +143,16 @@ public class SubscriberPasa implements Serializable {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String relevantKey = format.format(new Date());
 
+		LOGGER.debug("Relevant Key for getTodayPasaAmount: " + relevantKey);
+		
+		LOGGER.debug("PasaAmount before pruning: " + this.pasaReceivedAmount);
 		this.pruneObsoleteData();
-
+		LOGGER.debug("PasaAmount after pruning: " + this.pasaReceivedAmount);
+		
 		// now get to do what you came here for...
 		Map<String, Integer> pasaToday = this.pasaReceivedAmount.get(relevantKey);
 		if (pasaToday == null) {
+			LOGGER.debug("Cannot find pasa amount today for relevantKey: " + relevantKey);
 			return 0;
 		}
 		
@@ -155,6 +160,7 @@ public class SubscriberPasa implements Serializable {
 		for (int value: pasaToday.values())
 			balance += value;
 		
+		LOGGER.debug("Calculated PASA Cumulative: "  + balance);
 		return balance;
 	}
 

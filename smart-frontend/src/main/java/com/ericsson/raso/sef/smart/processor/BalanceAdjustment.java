@@ -37,6 +37,8 @@ public class BalanceAdjustment implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(BalanceAdjustment.class);
 	private static final String READ_SUBSCRIBER_OFFER_INFO_OFFER = "READ_SUBSCRIBER_OFFER_INFO";
 	private Long FixedAmountOfUnits;
+	
+	
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		
