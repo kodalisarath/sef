@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.core;
 
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -11,7 +12,7 @@ public class LocalSemaphore extends Semaphore implements ISemaphore {
 	private static final long serialVersionUID = -9075446995903723065L;
 
 	private String name;
-	private TreeMap<String, ISemaphore> store;
+	private ConcurrentHashMap<String, ISemaphore> store;
 	
 	
 	public LocalSemaphore(String name) {
@@ -49,11 +50,11 @@ public class LocalSemaphore extends Semaphore implements ISemaphore {
 		this.store.remove(this.name);
 	}
 
-	public TreeMap<String, ISemaphore> getStore() {
+	public ConcurrentHashMap<String, ISemaphore> getStore() {
 		return store;
 	}
 
-	public void setStore(TreeMap<String, ISemaphore> store) {
+	public void setStore(ConcurrentHashMap<String, ISemaphore> store) {
 		this.store = store;
 	}
 
