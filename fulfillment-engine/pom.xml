@@ -50,8 +50,10 @@
 		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface,
 		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
 		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
-		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service
-    	
+		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service,
+    	javax.crypto,
+    	vasclient.wsdl,
+		vasclient.types,
 	</osgi-import-package>
 	</properties>
 
@@ -88,12 +90,12 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		
-		<dependency>
+		<!-- <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<build>
