@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
-import com.ericsson.raso.sef.core.db.model.SmSequence;
+import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 
 public interface ScheduleRequestService {
 
@@ -16,7 +16,7 @@ public interface ScheduleRequestService {
 
 	void upadteScheduledRequestStatus(ScheduledRequest request);
 
-	SmSequence scheduledRequestSequence(String rand);
+	ObsoleteCodeDbSequence scheduledRequestSequence(String rand);
 
 	void insertScheduledRequest(ScheduledRequest request);
 

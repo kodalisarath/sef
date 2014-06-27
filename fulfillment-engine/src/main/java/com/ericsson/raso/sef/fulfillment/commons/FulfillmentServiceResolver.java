@@ -5,6 +5,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import vasclient.wsdl.VASClientSEI;
+
 import com.ericsson.raso.sef.bes.prodcat.service.IServiceRegistry;
 import com.ericsson.raso.sef.fulfillment.profiles.IProfileRegistry;
 import com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse;
@@ -29,6 +31,10 @@ public class FulfillmentServiceResolver implements ApplicationContextAware {
 	
 	public static IProfileRegistry getProfileRegistry() {
 		return context.getBean(IProfileRegistry.class);
+	}
+
+	public static VASClientSEI getVASClient() {
+		return context.getBean(VASClientSEI.class);
 	}
 
 	public static CamelContext getCamelContext() {

@@ -49,12 +49,12 @@
 		<property name="mapperInterface" value="com.ericsson.raso.sef.core.db.mapper.SubscriberMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
-	<!-- <bean id="callingCircleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.CallingCircleMapper" />
+	<bean id="callingCircleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.smart.CallingCircleMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
-	<bean id="ticketMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<!-- <bean id="ticketMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.TicketMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>

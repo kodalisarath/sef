@@ -36,5 +36,4 @@ public interface SubscriberService {
 
 	List<Meta> getMetas(String nbCorrelator, String userId, List<String> metaKeys) throws PersistenceError;
 	
-	
 }

@@ -5,7 +5,7 @@ import java.util.Collection;
 import com.ericsson.raso.sef.core.db.mapper.ScheduledRequestMapper;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
-import com.ericsson.raso.sef.core.db.model.SmSequence;
+import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
 
 public class ScheduleRequestServiceImpl implements ScheduleRequestService {
@@ -39,7 +39,7 @@ public class ScheduleRequestServiceImpl implements ScheduleRequestService {
 	}
 
 	@Override
-	public SmSequence scheduledRequestSequence(String rand) {
+	public ObsoleteCodeDbSequence scheduledRequestSequence(String rand) {
 		return scheduledRequestMapper.scheduledRequestSequence(rand);
 	}
 

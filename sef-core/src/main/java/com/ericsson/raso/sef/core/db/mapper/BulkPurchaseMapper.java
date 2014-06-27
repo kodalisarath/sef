@@ -1,14 +1,14 @@
 package com.ericsson.raso.sef.core.db.mapper;
 
 import com.ericsson.raso.sef.core.db.model.BulkPurchase;
-import com.ericsson.raso.sef.core.db.model.SmSequence;
+import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 
 public interface BulkPurchaseMapper {
 	
 	void createBulkPurchase(BulkPurchase bulkPurchase);
 	
-	SmSequence purchaseSequence(String rand);
+	ObsoleteCodeDbSequence purchaseSequence(String rand);
 	
-	SmSequence commerceTrailSequence(String rand);
+	ObsoleteCodeDbSequence commerceTrailSequence(String rand);
 
 }

@@ -2,7 +2,6 @@ package com.ericsson.raso.sef.core;
 
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -13,12 +12,12 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.ericsson.raso.sef.auth.PrivilegeManager;
 import com.ericsson.raso.sef.auth.service.IPrivilegeManager;
 import com.ericsson.raso.sef.auth.service.IUserStore;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.raso.sef.core.db.service.UserManagementService;
+import com.ericsson.raso.sef.core.db.service.smart.CallingCircleService;
 import com.ericsson.raso.sef.watergate.IWatergate;
 
 public class SefCoreServiceResolver implements ApplicationContextAware {
@@ -48,8 +47,8 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 	}
 	
 	public static IPrivilegeManager getPrivilegeManagementService() {
-		//return SefCoreServiceResolver.context.getBean(IPrivilegeManager.class);
-		return new PrivilegeManager("Z:\\Common Share\\Projects\\raso-cac\\rasocac\\privilegeStore.zccm");
+		return SefCoreServiceResolver.context.getBean(IPrivilegeManager.class);
+		//return new PrivilegeManager("Z:\\Common Share\\Projects\\raso-cac\\rasocac\\privilegeStore.zccm");
 	}
 	
 	public static IUserStore getUserStore() {
@@ -106,7 +105,10 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 		return SefCoreServiceResolver.context.getBean(CloudAwareCluster.class);
 	}
 	
-	//TODO: Add other services - Logger, Request Context
+	//smart specific crap here
+	public static CallingCircleService getCallingCircleService() {
+		return SefCoreServiceResolver.context.getBean(CallingCircleService.class);
+	}
 	
 	
 }

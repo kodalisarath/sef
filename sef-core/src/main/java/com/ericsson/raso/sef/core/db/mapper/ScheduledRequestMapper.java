@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
-import com.ericsson.raso.sef.core.db.model.SmSequence;
+import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 
 public interface ScheduledRequestMapper {
 	
@@ -18,7 +18,7 @@ public interface ScheduledRequestMapper {
 		
 	void upadteScheduledRequestStatus(ScheduledRequest request);
 	
-	SmSequence scheduledRequestSequence(String rand);
+	ObsoleteCodeDbSequence scheduledRequestSequence(String rand);
 	
 	void insertScheduledRequest(ScheduledRequest request);
 	
