@@ -22,6 +22,13 @@
 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
 	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
 
+	<bean class="org.apache.activemq.camel.component.ActiveMQComponent"
+		id="activemq">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+		<property name="userName" value="admin" />
+		<property name="password" value="admin" />
+	</bean>
+	
 	<cxf:cxfEndpoint id="subscriberInterface"
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberRequest" bus="cxf">
 
@@ -86,6 +93,13 @@
 
 	<!-- <bean class="com.ericsson.sm.fulfillment.FulfillmentContext" /> -->
 	<!-- <bean id="requestIdProcessor" class="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor"/> -->
+
+	<camelContext id="com.ericsson.sm.smppgateway" xmlns="http://camel.apache.org/schema/spring">
+		<camel:route id="NotificationJmsRoute">
+			<camel:from uri="direct:jmspush" />
+			<camel:to uri="activemq:queue:notification" />
+		</camel:route>
+	</camelContext>
 
 	<camelContext id="com.ericsson.raso.sef.transactionEngine"
 		xmlns="http://camel.apache.org/schema/spring">

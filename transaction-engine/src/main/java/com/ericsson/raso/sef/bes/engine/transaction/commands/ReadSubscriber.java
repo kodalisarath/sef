@@ -72,7 +72,7 @@ public class ReadSubscriber extends AbstractTransaction {
 			// Fetch the subscriber from downstream through work flow
 			String readSubscriberWorkflowId = ((ReadSubscriberRequest) this.getRequest()).getMetas().get(Constants.READ_SUBSCRIBER.name());
 			if (readSubscriberWorkflowId != null) {
-				LOGGER.debug("somehow a workflow is also needed... wtf?!!!");
+				LOGGER.debug("somehow a workflow is also needed... !!!");
 				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 				Offer workflow = catalog.getOfferById(readSubscriberWorkflowId);
 
