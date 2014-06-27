@@ -26,6 +26,7 @@ public abstract class RequestIdGenerator implements Processor {
 			ctx.setRequestId(requestId);
 			RequestContextLocalStore.put(ctx);
 		}
+		arg0.getIn().setHeader("EDR_IDENTIFIER", requestId);
 	}
 	
 	/**
