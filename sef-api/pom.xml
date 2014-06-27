@@ -13,7 +13,10 @@
         com.ericsson.raso.sef.core,
 		com.ericsson.raso.sef.core.jaxws.*,
 		com.ericsson.raso.sef.core.config,
-		META-INF.sef-core
+		META-INF.sef-core,
+		javax.crypto,
+		javax.xml.namespace,
+		org.opensaml.ws,
 	  </osgi-import-packages>
       <osgi-export-package>com.ericsson.sef.bes.api.fulfillment,
 	    com.ericsson.sef.bes.api.entities,
@@ -28,7 +31,9 @@
 		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface,
 		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
 		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
-		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service
+		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service,
+		vasclient.wsdl,
+		vasclient.types
 	  </osgi-export-package>
    </properties>
    <dependencies>
