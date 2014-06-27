@@ -1,0 +1,76 @@
+<section id="callingCircleCfg-K10"
+		description="Caling Circle Configuration for K10">
+		<property key="id" value="K10" />
+		<property key="successEventId" value="100100362015" />
+		<property key="associatedPromo" value="Katok10Promo" />
+		<property key="openCloudRegistration" value="false" />
+		<property key="ucip" value="UPADTEOFFER:2019,PCODE:PK10" />
+		<property key="type" value="TWO_WAY" />
+		<property key="smRelationShip" value="100" />
+		<property key="msRelationShip" value="100" />
+</section>
+<section id="callingCircleCfg-K15"
+		description="Caling Circle Configuration for K15">
+		<property key="id" value="K15" />
+		<property key="successEventId" value="100100362016" />
+		<property key="associatedPromo" value="Katok15Promo" />
+		<property key="openCloudRegistration" value="false" />
+		<property key="ucip" value="UPADTEOFFER:2019,PCODE:PK15" />
+		<property key="type" value="TWO_WAY" />
+		<property key="smRelationShip" value="200" />
+		<property key="msRelationShip" value="201" />
+		<property key="mmRelationShip" value="202" />
+</section>	
+<section id="callingCircleCfg-K25"
+		description="Caling Circle Configuration for K25">
+		<property key="id" value="K25" />
+		<property key="successEventId" value="100100362017" />
+		<property key="associatedPromo" value="KatokAttTex25Promo" />
+		<property key="openCloudRegistration" value="false" />
+		<property key="ucip" value="REFILL:KF25,PCODE:PKT25" />
+		<property key="type" value="TWO_WAY" />
+		<property key="smRelationShip" value="300" />
+		<property key="msRelationShip" value="301" />
+</section>	
+<section id="callingCircleCfg-K35"
+		description="Caling Circle Configuration for K35">
+		<property key="id" value="K35" />
+		<property key="successEventId" value="100100362018" />
+		<property key="associatedPromo" value="KatokAttTex35Promo" />
+		<property key="openCloudRegistration" value="false" />
+		<property key="ucip" value="REFILL:KF35,PCODE:PKT35" />
+		<property key="type" value="TWO_WAY" />
+		<property key="smRelationShip" value="400" />
+		<property key="msRelationShip" value="401" />
+		<property key="mmRelationShip" value="402" />
+</section>
+<section id="dataSource" description="Configuration for Datasource" > 
+	  <property key="driverClasskey" value="oracle.jdbc.driver.OracleDriver" />
+	  <property key="url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=10.202.144.76)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.202.144.77)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_key=vltnt1.smart.com.ph)))" />
+	  <property key="userkey" value="tnt" />
+	  <property key="password" value="3r1c5s0n" />
+	  <property key="testWhileIdle" value="true"/>
+	  <property key="testOnReturn" value="false"/>
+	  <property key="validationQuery" value="select 1 from dual"/>
+	  <property key="validationQueryTimeout" value="30000"/>
+	  <property key="timeBetweenEvictionRunsMillis" value="5000"/>
+	  <property key="maxActive" value="100"/>
+	  <property key="maxIdle" value="80"/>
+	  <property key="minIdle" value="10"/>
+	  <property key="maxWait" value="10000"/>
+	  <property key="initialSize" value="10"/>
+	  <property key="removeAbandoned" value="true"/>
+	  <property key="removeAbandonedTimeout" value="60"/>
+	  <property key="logAbandoned" value="true"/>
+	  <property key="minEvictableIdleTimeMillis" value="30000"/>
+   </section>
+   <section description="Sef Notification Configuration" id="sefNotificationWorkflows">
+      <property key="activateSubscriberWsEndpointAddress" value="http://0.0.0.0:8080/activateSubscriber"/>
+      <property key="alkansyaWsEndpointAddress" value="http://0.0.0.0:8080/Alkansya"/>
+      <property key="callingCircleWsEndpointAddress" value="http://0.0.0.0:8080/callingCircle"/>
+      <property key="activeMqBrokerURL" value="tcp://localhost:61616"/>
+      <property key="activeMqUserName" value="admin"/>
+      <property key="activeMqUserPassword" value="admin"/>
+   </section>	
+   
+   
