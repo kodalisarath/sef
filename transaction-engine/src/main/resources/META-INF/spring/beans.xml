@@ -15,6 +15,14 @@
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	<import resource="classpath:META-INF/product-catalog/beans.xml" />
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
+	
+	<bean id="cfg" class="com.ericsson.raso.sef.core.config.ConfigService" />
+	<bean id="transactionEngineProperties"
+		class="com.ericsson.raso.sef.core.config.ComponentPropertiesBean">
+		<constructor-arg name="config" ref="cfg" />
+		<constructor-arg name="component" value="transactionEngine" />
+	</bean>
+	<context:property-placeholder properties-ref="transactionEngineProperties" />
 
 	<bean id="transactionManager" class="com.ericsson.raso.sef.bes.engine.transaction.TransactionManager" />
 	<bean id="serviceResolver" class="com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver" />
@@ -24,9 +32,9 @@
 
 	<bean class="org.apache.activemq.camel.component.ActiveMQComponent"
 		id="activemq">
-		<property name="brokerURL" value="tcp://localhost:61616" />
-		<property name="userName" value="admin" />
-		<property name="password" value="admin" />
+		<property name="brokerURL" value="${activeMqBrokerURL}"/>
+        <property name="userName" value="${activeMqUserName}"/>
+        <property name="password" value="${activeMqUserPassword}"/>
 	</bean>
 	
 	<cxf:cxfEndpoint id="subscriberInterface"
