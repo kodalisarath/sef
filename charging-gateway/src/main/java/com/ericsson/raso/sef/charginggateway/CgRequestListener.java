@@ -20,10 +20,10 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.SessionIdAvp;
 import com.ericsson.pps.diameter.rfcapi.base.message.ApplicationRequestListener;
 import com.ericsson.pps.diameter.rfcapi.base.message.DiameterAnswer;
 import com.ericsson.pps.diameter.rfcapi.base.message.DiameterRequest;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterErrorCode;
 import com.ericsson.raso.sef.core.PerformanceStatsLogger;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterErrorCode;
 
 public class CgRequestListener implements ApplicationRequestListener {
 

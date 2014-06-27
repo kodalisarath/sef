@@ -1,5 +1,7 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ericsson.sef</groupId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -11,11 +13,11 @@
 		<osgi-import-package>
 			org.springframework.*,
 			com.ericsson.sef.bes.api.entities,
-    		com.ericsson.sef.bes.api.subscription,
-    		com.ericsson.sef.bes.api.subscriber,
-    		com.ericsson.sef.bes.api.fulfillment, 
-    		com.ericsson.raso.sef.smart.*,
-    		com.ericsson.raso.sef.core.model,
+			com.ericsson.sef.bes.api.subscription,
+			com.ericsson.sef.bes.api.subscriber,
+			com.ericsson.sef.bes.api.fulfillment,
+			com.ericsson.raso.sef.smart.*,
+			com.ericsson.raso.sef.core.model,
 			com.ericsson.raso.sef.logging,
 			com.ericsson.raso.sef.core.jaxws,
 			org.apache.cxf.binding.soap,
@@ -51,21 +53,21 @@
 			org.springframework.aop,
 			org.springframework.aop.framework,
 			org.apache.cxf.interceptor,
-    		org.apache.cxf.bus.spring,
-    		org.eclipse.jetty.server.nio,
+			org.apache.cxf.bus.spring,
+			org.eclipse.jetty.server.nio,
 			org.aopalliance.aop,
 			com.ericsson.pps.diameter.dccapi,
- 			com.ericsson.pps.diameter.dccapi.avp,
- 			com.ericsson.pps.diameter.dccapi.command,
- 			com.ericsson.pps.diameter.scapv2,
- 			com.ericsson.pps.diameter.scapv2.avp,
- 			com.ericsson.pps.diameter.rfcapi.base,
- 			com.ericsson.pps.diameter.rfcapi.base.avp,
- 			com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes,
- 			com.ericsson.pps.diameter.rfcapi.base.message,
- 			com.ericsson.raso.sef.charginggateway.diameter,
- 			com.ericsson.pps.diameter.dccapi.avp.avpdatatypes,
- 			javax.ws.rs.core;version=2.0.0.m10,
+			com.ericsson.pps.diameter.dccapi.avp,
+			com.ericsson.pps.diameter.dccapi.command,
+			com.ericsson.pps.diameter.scapv2,
+			com.ericsson.pps.diameter.scapv2.avp,
+Rbe			com.ericsson.pps.diameter.rfcapi.base,
+			com.ericsson.pps.diameter.rfcapi.base.avp,
+			com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes,
+			com.ericsson.pps.diameter.rfcapi.base.message,
+			<!-- com.ericsson.raso.sef.charginggateway.diameter, -->
+			com.ericsson.pps.diameter.dccapi.avp.avpdatatypes,
+			javax.ws.rs.core;version=2.0.0.m10,
 			javax.ws.rs.client;version=2.0.0.m10,
 			javax.ws.rs.container;version=2.0.0.m10,
 			javax.ws.rs.ext;version=2.0.0.m10,
@@ -73,9 +75,9 @@
 			com.ericsson.raso.sef.client.air.command,
 			com.ericsson.raso.sef.client.air.request,
 			com.ericsson.raso.sef.client.air.response,
-    		com.ericsson.raso.sef.client.af.command,
+			com.ericsson.raso.sef.client.af.command,
 			com.ericsson.raso.sef.client.af.request,
-  			org.csapi.schema.parlayx.common.v2_1,
+			org.csapi.schema.parlayx.common.v2_1,
 			org.csapi.schema.parlayx.payment.amount_charging.v2_1.local,
 			org.csapi.schema.parlayx.payment.reserve_amount_charging.v2_1.local,
 			org.csapi.schema.parlayx.payment.v2_1,
@@ -84,12 +86,15 @@
 			org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
 			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
 			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service,
-			org.apache.camel.component.gson	  		
+			org.apache.camel.component.gson,
+			com.ericsson.raso.sef.core.cg.nsn.avp,
+			com.ericsson.raso.sef.core.cg.nsn.avp.mms,
+			com.ericsson.raso.sef.core.cg.nsn.avp.sms,
+			vasclient.wsdl,
+			vasclient.types,
+			com.ericsson.raso.sef.core.cg.diameter,
 		</osgi-import-package>
 		<osgi-export-package>
-			com.ericsson.raso.sef.cg.engine.nsn.avp,
-			com.ericsson.raso.sef.cg.engine.nsn.avp.sms,
-			com.ericsson.raso.sef.cg.engine.nsn.avp.mms
 		</osgi-export-package>
 		<osgi-dynamicimport-package>
 		</osgi-dynamicimport-package>
@@ -116,22 +121,22 @@
 			<artifactId>cs-air</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.ericsson.sef</groupId>
 			<artifactId>cs-af</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>javax.ws.rs</groupId>
-		    <artifactId>javax.ws.rs-api</artifactId>
-		    <version>2.0-m10</version>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.0-m10</version>
 		</dependency>
-		 <dependency>
-			  <groupId>org.apache.camel</groupId>
-			  <artifactId>camel-gson</artifactId>
-			  <version>2.10.0</version>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-gson</artifactId>
+			<version>2.10.0</version>
 		</dependency>
 	</dependencies>
 

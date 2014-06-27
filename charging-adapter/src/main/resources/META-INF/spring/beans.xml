@@ -45,11 +45,9 @@
 	<!-- <bean id="scapChargingClient" factory-bean="scapFactory" factory-method="create">
 		<constructor-arg type="java.lang.String" value="${scapClient}"/>
 	</bean> -->
-	
 	<!--  <alias name="requestContextService" alias="rcs" />-->
-	
 	<bean id="chargeAmountProcessor" class="com.ericsson.sef.chargingadapter.processor.ChargeAmountProcessor"/>
-	<bean id="smScapChargingApi" class="com.ericsson.sef.chargingadapter.util.SmScapChargingApi" init-method="start" destroy-method="stop"/>
+	<bean id="smScapChargingApi" class="com.ericsson.sef.chargingadapter.util.SefScapChargingApi" init-method="start" destroy-method="stop"/>
 	<bean id="subscriberService" class="com.ericsson.raso.sef.core.db.service.internal.SubscriberServiceImpl"/>
 	<camel:camelContext>
 		<camel:route id="amountChargingRoute">

@@ -184,14 +184,19 @@
 		<module>../cs-air</module>
 		<module>../sef-api</module>		
 		<module>../smart-frontend</module>
+		<module>../activation-scheduler</module>
 		<module>../transaction-engine</module>
 		<module>../transformation-engine</module>
 		<module>../fulfillment-engine</module>
 		<module>../smart-il-features</module>
 		<module>../charging-adapter-api</module>
 		<module>../sef-smpp-gateway</module>
-		<module>../charging-adapter</module>
+		<!-- <module>../charging-adapter</module> -->
 		<module>../charging-gateway</module>
 		<module>../charging-gateway-engine</module>
+		<module>../sef-notification-engine</module>
+		<module>../sef-notification-workflows</module>
+		
+		
 	</modules>
 </project>

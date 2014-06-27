@@ -10,6 +10,7 @@ import com.cloudhopper.smpp.impl.DefaultSmppSessionHandler;
 import com.cloudhopper.smpp.pdu.PduRequest;
 import com.cloudhopper.smpp.pdu.PduResponse;
 import com.cloudhopper.smpp.pdu.SubmitSm;
+import com.ericsson.raso.sef.core.smpp.SmppMessage;
 
 public class DefaultSessionHandler extends DefaultSmppSessionHandler {
 

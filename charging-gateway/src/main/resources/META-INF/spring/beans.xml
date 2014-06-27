@@ -37,7 +37,7 @@
 	
 	<bean id="gson" class="org.apache.camel.component.gson.GsonDataFormat">
 		<!-- we want to unmarshal to ChargingInfo pojo -->
-		<property name="unmarshalType" value="com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo" />
+		<property name="unmarshalType" value="com.ericsson.raso.sef.core.cg.diameter.ChargingInfo" />
 	</bean>
 
 	<camelContext id="com.ericsson.raso.sef.charginggateway"

@@ -1,5 +1,6 @@
 package com.ericsson.raso.sef.bes.engine.transaction;
 
+import org.apache.camel.CamelContext;
 import org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface.AmountCharging;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -57,6 +58,11 @@ public class ServiceResolver implements ApplicationContextAware {
 	public static ISubscriptionRequest getISubscriptionRequestClient() {
 		return context.getBean(ISubscriptionRequest.class);
 	}
+	
+	public static CamelContext getCamelContext() {
+		return context.getBean("com.ericsson.sm.smppgateway", CamelContext.class);
+	}
+	
 	//Method  to parse com.ericsson.sef.bes.api.entities.Subscriber object values to 
 		//com.ericsson.raso.sef.core.db.model.Subscriber
 		//called from the subscriber processor classes

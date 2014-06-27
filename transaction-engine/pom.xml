@@ -55,7 +55,13 @@
 		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface,
 		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
 		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
-		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service		
+		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service,		
+		org.apache.camel.builder,
+		org.apache.camel.model,
+		org.apache.activemq.camel.component,
+		vasclient.wsdl,
+		vasclient.types,
+		com.ericsson.sef.scheduler.command,
 		</osgi-import-package>
   </properties>
 
@@ -81,6 +87,37 @@
       		<version>3.8.1</version>
       		<scope>test</scope>
     	</dependency>
+	<dependency>
+			<groupId>com.ericsson.sef</groupId>
+			<artifactId>activation-scheduler</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+<dependency>
+			<groupId>com.googlecode.jsmpp</groupId>
+			<artifactId>jsmpp</artifactId>
+			<version>2.1.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cloudhopper</groupId>
+			<artifactId>ch-smpp</artifactId>
+			<version>5.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-camel</artifactId>
+			<version>5.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
   
   <build>

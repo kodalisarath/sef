@@ -16,14 +16,14 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.VendorIdAvp;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.ChargingSession;
-import com.ericsson.raso.sef.cg.engine.IpcCluster;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.PPIInformationAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.ServiceInfoAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.TransactionStatusAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.TransparentDataAvp;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.nsn.avp.PPIInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.ServiceInfoAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.TransactionStatusAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.TransparentDataAvp;
 
 public class GetTAStateProcessor implements Processor {
 	
@@ -54,7 +54,8 @@ public class GetTAStateProcessor implements Processor {
 		}
 		
 		if(session != null) {
-			long messageTimeout = CgEngineContext.getChargingApi().getDiameterConfig().getMessageTimeout();
+			//long messageTimeout = CgEngineContext.getChargingApi().getDiameterConfig().getMessageTimeout();
+			long messageTimeout = Long.parseLong(CgEngineContext.getConfig().getValue("scapClient", Constants.MESSAGETIMEOUT));
 			long sessionPeriod = System.currentTimeMillis() - session.getCreationTime();
 			if (sessionPeriod >= messageTimeout) {
 				session.setTransactionStatus(TransactionStatus.TIMEDOUT);

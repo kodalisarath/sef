@@ -63,13 +63,14 @@
  			com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes,
  			com.ericsson.pps.diameter.rfcapi.base.message,
  			com.ericsson.raso.sef.core.db.model,
- 			com.ericsson.raso.sef.cg.engine.nsn.avp,
-			com.ericsson.raso.sef.cg.engine.nsn.avp.sms,
-			com.ericsson.raso.sef.cg.engine.nsn.avp.mms,
-			org.apache.camel.component.gson
+ 			com.ericsson.raso.sef.core.cg.nsn.avp,
+			com.ericsson.raso.sef.core.cg.nsn.avp.mms,
+			com.ericsson.raso.sef.core.cg.nsn.avp.sms,
+			org.apache.camel.component.gson,
+			com.ericsson.raso.sef.core.cg.diameter,
 		</osgi-import-package>
 		<osgi-export-package>
-			com.ericsson.raso.sef.charginggateway.diameter
+		<!-- 	com.ericsson.raso.sef.charginggateway.diameter -->
 		</osgi-export-package>
 	</properties>
 

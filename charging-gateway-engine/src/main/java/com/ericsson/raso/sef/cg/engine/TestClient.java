@@ -19,13 +19,13 @@ import com.ericsson.pps.diameter.rfcapi.base.DiameterStack;
 import com.ericsson.pps.diameter.rfcapi.base.avp.Avp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.AvpDataException;
 import com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes.Time;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.MethodNameAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.PPIInformationAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.ServiceInfoAvp;
 import com.ericsson.raso.sef.cg.engine.util.ScapChargingApi;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterStackBuilder;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterStackBuilder.Stack;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterStackBuilder;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterStackBuilder.Stack;
+import com.ericsson.raso.sef.core.cg.nsn.avp.MethodNameAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.PPIInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.ServiceInfoAvp;
 
 
 public class TestClient {

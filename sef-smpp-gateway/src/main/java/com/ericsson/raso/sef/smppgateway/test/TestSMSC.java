@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.smpp.SmppMessage;
 import com.ericsson.raso.sef.smppgateway.GatewayContext;
-import com.ericsson.raso.sef.smppgateway.SmppMessage;
 
 public class TestSMSC {
 	

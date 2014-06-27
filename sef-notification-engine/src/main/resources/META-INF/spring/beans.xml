@@ -12,24 +12,27 @@
           http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<import resource="classpath:META-INF/sef-api/beans.xml"/>
 	<import resource="classpath:META-INF/sef-core/beans.xml"/>
-	<import resource="classpath:META-INF/product-catalog/beans.xml"/>
-	<!-- <import resource="classpath:META-INF/ca-client/beans.xml"/> -->
+	
+	<bean id="cfg" class="com.ericsson.raso.sef.core.config.ConfigService" />
+	<bean id="cgProperties"
+		class="com.ericsson.raso.sef.core.config.ComponentPropertiesBean">
+		<constructor-arg name="config" ref="cfg" />
+		<constructor-arg name="component" value="sefNotificationEngine" />
+	</bean>
+	<context:property-placeholder properties-ref="cgProperties" />
 	
 <!-- 	<bean id="smppClientFactory" class="com.ericsson.raso.sef.ne.core.smpp.internal.DefaultSmppClientFactory" /> -->
 	
-	<!-- <bean id="neContext" class="com.ericsson.sm.ne.NotificationEngineContext"/>
+	<bean id="neContext" class="com.ericsson.raso.sef.ne.NotificationEngineServiceResolver"/>
 
-	<bean id="neProperties" class="com.ericsson.sm.core.config.ComponentPropertiesBean">
-		<constructor-arg name="config" ref="cfg" />
-		<constructor-arg name="component" value="notification-engine" />
-	</bean>
-	<context:property-placeholder properties-ref="neProperties" /> -->
+	<bean id="externalNotificationTemplateCatalog" class="com.ericsson.raso.sef.ne.notification.internal.SmExternalNotificationTemplateCatalog"/>
 	
 	<bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemq">
-        <property name="brokerURL" value="tcp://localhost:61616"/>
-        <property name="userName" value="admin"/>
-        <property name="password" value="admin"/>
+        <property name="brokerURL" value="${activeMqBrokerURL}"/>
+        <property name="userName" value="${activeMqUserName}"/>
+        <property name="password" value="${activeMqUserPassword}"/>
     </bean>
     
    <!--     <broker id="broker" brokerName="myBroker" useShutdownHook="false" useJmx="true"
@@ -64,34 +67,49 @@
 		<!-- <constructor-arg ref="cfg"/> -->
 	</bean>
 	
-	<!-- <bean id="activateSubscriberClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
-		<property name="serviceClass" value="com.ericsson.sm.api.notification.NotificationWorkflowService"/>
-		<property name="address" value="#{cfg.soapEndpoint('activateSubscriberWs-client').address}"/>
-	</bean> -->
+	<!--bean id="activateSubscriberClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
+		<property name="serviceClass" value="com.ericsson.raso.sef.core.ne.NotificationWorkflowService"/>
+		<property name="address" value="http://localhost:8080/activateSubscriber"/>
+	</bean> 
 	
-	<!-- <bean id="activateSubscriberWorkflow" 
-		class="com.ericsson.sm.api.notification.NotificationWorkflowService" 
+	<bean id="activateSubscriberWorkflow" 
+		class="com.ericsson.raso.sef.core.ne.NotificationWorkflowService" 
 		factory-bean="activateSubscriberClientFactory"
 		factory-method="create"/>
 		
 	<bean id="alkansyaClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
-		<property name="serviceClass" value="com.ericsson.sm.api.notification.NotificationWorkflowService"/>
-		<property name="address" value="#{cfg.soapEndpoint('Alkansya-client').address}"/>
+		<property name="serviceClass" value="com.ericsson.raso.sef.core.ne.NotificationWorkflowService"/>
+		<property name="address" value="http://localhost:8080/Alkansya"/>
 	</bean>
 	
 	<bean id="alkansyaWorkflow" 
-		class="com.ericsson.sm.api.notification.NotificationWorkflowService" 
+		class="com.ericsson.raso.sef.core.ne.NotificationWorkflowService" 
 		factory-bean="alkansyaClientFactory"
 		factory-method="create"/>
 
 	<bean id="callingCircleClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean"> 
-		<property name="serviceClass" value="com.ericsson.sm.api.notification.NotificationWorkflowService"/>
-		<property name="address" value="#{cfg.soapEndpoint('callingCircleWs-client').address}"/>
+		<property name="serviceClass" value="com.ericsson.raso.sef.core.ne.NotificationWorkflowService"/>
+		<property name="address" value="http://localhost:8080/callingCircle"/>
 	</bean>
 	
 	<bean id="callingCircleWorkflow" 
-		class="com.ericsson.sm.api.notification.NotificationWorkflowService" 
+		class="com.ericsson.raso.sef.core.ne.NotificationWorkflowService" 
 		factory-bean="callingCircleClientFactory"
-		factory-method="create"/>
- -->	
+		factory-method="create"/-->
+	
+	<bean id="activateSubscriberWorkflow" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
+		<property name="serviceType" value="com.ericsson.raso.sef.core.ne.NotificationWorkflowService"/>
+		<property name="endpointId" value="activate-subscriber-workflow-ws"/>
+	</bean>
+	
+	<bean id="alkansyaWorkflow" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
+		<property name="serviceType" value="com.ericsson.raso.sef.core.ne.NotificationWorkflowService"/>
+		<property name="endpointId" value="alkansya-workflow-ws"/>
+	</bean>	
+	
+	<bean id="callingCircleWorkflow" class="com.ericsson.raso.sef.core.jaxws.SefJaxWsProxyFactoryBean">
+		<property name="serviceType" value="com.ericsson.raso.sef.core.ne.NotificationWorkflowService"/>
+		<property name="endpointId" value="calling-circle-workflow-ws"/>
+	</bean>		
+ 	
 </beans>

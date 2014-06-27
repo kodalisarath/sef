@@ -11,7 +11,7 @@ import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.ChargingSession;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
 
 public class ChargeAmountProcessor extends AbstractChargingProcessor {
 

@@ -9,9 +9,9 @@ import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.ChargingSession;
 import com.ericsson.raso.sef.cg.engine.IpcCluster;
-import com.ericsson.raso.sef.charginggateway.diameter.StaticRoute;
 import com.ericsson.raso.sef.core.FetchRequestContextTask;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.cg.diameter.StaticRoute;
 import com.ericsson.raso.sef.core.lb.LoadBalancerPool;
 import com.ericsson.raso.sef.core.lb.Member;
 

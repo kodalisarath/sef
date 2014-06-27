@@ -65,6 +65,7 @@ public class EntireReadUtil {
 		} else {
 			DateTimeParameter dateTimeParameter = new DateTimeParameter();
 			dateTimeParameter.setName(name);
+			  if ( value != null && !"null".equals(value))
 			dateTimeParameter.setValue(DateUtil.convertDateToUTCtime(value));
 			return dateTimeParameter;
 		}

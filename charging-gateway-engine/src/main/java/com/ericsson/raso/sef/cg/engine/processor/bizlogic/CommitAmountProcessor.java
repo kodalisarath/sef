@@ -20,11 +20,10 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.AvpDataException;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.ChargingSession;
-import com.ericsson.raso.sef.cg.engine.IpcCluster;
 import com.ericsson.raso.sef.cg.engine.Operation.Type;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
 
 public class CommitAmountProcessor extends AbstractChargingProcessor {
 

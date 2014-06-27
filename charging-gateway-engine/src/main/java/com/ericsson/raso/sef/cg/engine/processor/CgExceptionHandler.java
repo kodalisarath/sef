@@ -20,8 +20,8 @@ import com.ericsson.raso.sef.cg.engine.IpcCluster;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.ResponseCodeUtil;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
 
 public class CgExceptionHandler implements Processor {
 

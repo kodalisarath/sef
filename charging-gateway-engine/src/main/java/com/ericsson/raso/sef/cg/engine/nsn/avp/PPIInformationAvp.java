@@ -6,6 +6,14 @@ import java.util.List;
 import com.ericsson.pps.diameter.dccapi.avp.avpdatatypes.DccGrouped;
 import com.ericsson.pps.diameter.rfcapi.base.avp.Avp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.AvpDataException;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccessFrontendIdAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.ConsumerAccountIdAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.CurrencyAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.MerchantIdAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.MethodNameAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.ProductIdAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.PurposeAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.TransparentDataAvp;
 
 public class PPIInformationAvp extends DccGrouped {
 

@@ -89,7 +89,9 @@ public class ReadCustomerInfoCharge implements Processor {
          logger.info("Recieved a SubscriberInfo Object and it is not null");
 		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		 logger.info("Billing Metas: " + subscriberObj.getMetas());
+		 String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional(), subscriberObj.getSubscriber().getMetas()));
+		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 	}
 
 

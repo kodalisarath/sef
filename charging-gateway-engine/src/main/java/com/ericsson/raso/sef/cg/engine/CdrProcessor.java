@@ -9,9 +9,9 @@ import org.apache.camel.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterUtil;
 import com.ericsson.raso.sef.core.DateUtil;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterUtil;
 
 public class CdrProcessor {
 

@@ -25,7 +25,8 @@
 		com.ericsson.raso.sef.core.db.model,
 		META-INF.sef-core,
 		org.slf4j,
-		org.springframework.*
+		org.springframework.*,
+		javax.crypto
 		</osgi-import-package>
 		<osgi-export-package>
 		com.ericsson.raso.sef.bes.prodcat,

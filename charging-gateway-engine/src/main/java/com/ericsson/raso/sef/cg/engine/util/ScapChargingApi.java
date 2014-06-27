@@ -1,7 +1,7 @@
 package com.ericsson.raso.sef.cg.engine.util;
 
 import com.ericsson.pps.diameter.dccapi.command.Ccr;
-import com.ericsson.raso.sef.charginggateway.diameter.Diameter;
+import com.ericsson.raso.sef.core.cg.diameter.Diameter;
 import com.ericsson.raso.sef.core.lb.LoadBalancerPool;
 
 
@@ -17,7 +17,7 @@ public interface ScapChargingApi {
 	
 	Ccr createDummyCcr();
 	
-	Diameter getDiameterConfig();
+	//Diameter getDiameterConfig();
 	
 	LoadBalancerPool getLoadBalancerPool();
 	

@@ -30,7 +30,7 @@ public class ChargeAmountTask  {
 		
 		
 		AmountCharging amountCharging = NotificationEngineServiceResolver.getBean(AmountCharging.class);
-		
+		log.debug(String.format("Chariging msisdn %s %s %s", msisdn, chargeAmount.getCurrencyCode(), chargeAmount.getAmount()));
 		ChargingInformation chargingInformation = new ChargingInformation();
 		chargingInformation.setDescription(builder.toString());
 		chargingInformation.setAmount(new BigDecimal(chargeAmount.getAmount()));
@@ -42,6 +42,7 @@ public class ChargeAmountTask  {
 			log.error(e.getMessage(), e);
 			throw new SmException(e);
 		}
+		log.debug(String.format("Chariging msisdn done %s %s %s", msisdn, chargeAmount.getCurrencyCode(), chargeAmount.getAmount()));
 		return null;
 	}
 
