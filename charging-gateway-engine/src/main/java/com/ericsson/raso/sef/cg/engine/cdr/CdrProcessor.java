@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.cg.engine;
+package com.ericsson.raso.sef.cg.engine.cdr;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -15,7 +15,7 @@ import com.ericsson.raso.sef.core.cg.diameter.DiameterUtil;
 
 public class CdrProcessor {
 
-	private Logger log = LoggerFactory.getLogger("CG");
+	private Logger log = LoggerFactory.getLogger(CdrProcessor.class);
 
 	@Handler
 	public void requestIn(Exchange exchange) {
