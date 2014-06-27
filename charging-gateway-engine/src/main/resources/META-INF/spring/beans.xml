@@ -20,7 +20,7 @@
 	<bean id="ipcCluster" class="com.ericsson.raso.sef.cg.engine.IpcCluster">
 	</bean>
 
-	<bean id="cdr" class="com.ericsson.raso.sef.cg.engine.CdrProcessor" />
+	<bean id="cdr" class="com.ericsson.raso.sef.cg.engine.cdr.CdrProcessor" />
 
 	<alias name="gatekeeper" alias="gatekeeperProcessor" />
 	<!-- <alias name="requestContextService" alias="rcs" /> -->
