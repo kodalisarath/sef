@@ -9,11 +9,11 @@ import com.ericsson.raso.sef.cg.engine.CgConstants;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.Operation;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.MethodNameAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.PPIInformationAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.ServiceInfoAvp;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
 import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.nsn.avp.MethodNameAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.PPIInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.ServiceInfoAvp;
 
 public class RequestEntryProcessor implements Processor {
 	

@@ -1,24 +1,12 @@
 package com.ericsson.raso.sef.cg.engine.processor.bizlogic;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.client.air.command.GetBalanceAndDateCommand;
-import com.ericsson.raso.sef.client.air.request.GetBalanceAndDateRequest;
-import com.ericsson.raso.sef.client.air.response.DedicatedAccountInformation;
-import com.ericsson.raso.sef.client.air.response.GetBalanceAndDateResponse;
-import com.ericsson.raso.sef.core.DateUtil;
-import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.Task;
-import com.ericsson.raso.sef.core.db.model.Subscriber;
-import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
-import com.ericsson.raso.sef.core.db.service.PersistenceError;
-import com.ericsson.raso.sef.core.db.service.SubscriberService;
+import com.ericsson.raso.sef.smart.PasaServiceManager;
 
 public class PasaloadValidationTask implements Task<Void> {
 
@@ -26,16 +14,24 @@ public class PasaloadValidationTask implements Task<Void> {
 	public static final int AIRTIME_DA_ID = 1;
 	private String msisdn;
 	private long amountOfUnits;
+	private String handle;
 
-	public PasaloadValidationTask(String msisdn, long amountOfUnits) {
+	public PasaloadValidationTask(String msisdn, long amountOfUnits, String handle) {
 		this.msisdn = msisdn;
 		this.amountOfUnits = amountOfUnits;
+		this.handle = handle;
 	}
 
 	@Override
 	public Void execute() throws SmException {
-		log.debug("Enter PasaloadValidationTask.execute");
-		GetBalanceAndDateRequest request = new GetBalanceAndDateRequest();
+		log.debug("Enter PasaloadValidationTask.execute :msisdn: "+msisdn  +" ,handle: "+handle +" ,amountofUnits: "+amountOfUnits);
+		
+		boolean isPasaSendAllowed = PasaServiceManager.getInstance().isPasaSendAllowed(msisdn,handle, amountOfUnits );
+		log.debug("Enter PasaloadValidationTask.execute isPasaSendAllowed "+isPasaSendAllowed);
+		if(!isPasaSendAllowed)
+			throw new SmException(ResponseCode.SUBSCRIBER_INSUFFICIENT_BALANCE);
+		
+		/*GetBalanceAndDateRequest request = new GetBalanceAndDateRequest();
 		request.setSubscriberNumber(msisdn);
 
 		GetBalanceAndDateResponse response = new GetBalanceAndDateCommand(request).execute();
@@ -84,6 +80,6 @@ public class PasaloadValidationTask implements Task<Void> {
 			throw new SmException(com.ericsson.raso.sef.cg.engine.ResponseCode.SUBSCRIBER_INSUFFICIENT_BALANCE);
 		}
 		log.debug("End PasaloadValidationTask.execute");
-		return null;
+*/		return null;
 	}
 }

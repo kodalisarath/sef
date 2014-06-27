@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.pps.diameter.dccapi.DCCStack;
 import com.ericsson.pps.diameter.dccapi.command.Ccr;
 import com.ericsson.pps.diameter.rfcapi.base.DiameterConfig;
-import com.ericsson.raso.sef.charginggateway.diameter.Diameter;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterStackBuilder;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterStackBuilder.Stack;
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.cg.diameter.Diameter;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterStackBuilder;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterStackBuilder.Stack;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.lb.LoadBalancerPool;
 import com.ericsson.raso.sef.core.lb.Member;
@@ -112,8 +112,8 @@ public class SefScapChargingApi implements ScapChargingApi {
 		return staticRoutes;
 	}
 
-	public Diameter getDiameterConfig() {
+	/*public Diameter getDiameterConfig() {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 }

@@ -2,6 +2,8 @@ package com.ericsson.raso.sef.cg.engine.nsn.avp.sms;
 
 import com.ericsson.pps.diameter.dccapi.avp.avpdatatypes.DccGrouped;
 import com.ericsson.pps.diameter.rfcapi.base.avp.Avp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.sms.MMSInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.sms.SMSInformationAvp;
 
 public class ServiceInfoAvp extends DccGrouped {
 

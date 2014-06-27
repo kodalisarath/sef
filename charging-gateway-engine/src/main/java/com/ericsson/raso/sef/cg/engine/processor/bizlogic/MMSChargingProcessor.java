@@ -29,12 +29,12 @@ import com.ericsson.pps.diameter.scapv2.avp.TimeZoneAvp;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.mms.AdressAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.mms.MMSInformationAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.mms.PsInformationAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.mms.ServiceInfoAvp;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.nsn.avp.mms.AdressAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.mms.MMSInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.mms.PsInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.mms.ServiceInfoAvp;
 
 public class MMSChargingProcessor implements Processor {
 	
@@ -70,7 +70,7 @@ public class MMSChargingProcessor implements Processor {
 		Ccr scapCcr = CgEngineContext.getChargingApi().createScapCcr(sourceCcr.getSessionId(), request.getHostId());
 
 		scapCcr.setServiceContextId("SCAP_V.2.0@ericsson.com");
-		scapCcr.setServiceIdentifier(7002); 
+		scapCcr.setServiceIdentifier(7003); 
 		scapCcr.setCCRequestType(sourceCcr.getCCRequestType());
 		scapCcr.setCCRequestNumber(sourceCcr.getCCRequestNumber());
 		scapCcr.setEventTimestamp(sourceCcr.getEventTimestamp());

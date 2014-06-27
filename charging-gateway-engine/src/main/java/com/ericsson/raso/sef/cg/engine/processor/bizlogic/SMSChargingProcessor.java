@@ -8,6 +8,8 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sun.rmi.transport.proxy.CGIHandler;
+
 import com.ericsson.pps.diameter.dccapi.avp.CCRequestNumberAvp;
 import com.ericsson.pps.diameter.dccapi.avp.CCRequestTypeAvp;
 import com.ericsson.pps.diameter.dccapi.avp.GrantedServiceUnitAvp;
@@ -26,22 +28,22 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.OriginRealmAvp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.ResultCodeAvp;
 import com.ericsson.pps.diameter.scapv2.avp.SubscriptionIdLocationAvp;
 import com.ericsson.pps.diameter.scapv2.avp.TimeZoneAvp;
+import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.sms.AdressAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.sms.MMSInformationAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.sms.SMSInformationAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.sms.ServiceInfoAvp;
-import com.ericsson.raso.sef.cg.engine.util.SefScapChargingApi;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.nsn.avp.sms.AdressAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.sms.MMSInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.sms.SMSInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.sms.ServiceInfoAvp;
 
 
 public class SMSChargingProcessor implements Processor {
 	
 	protected Logger log = LoggerFactory.getLogger(this.getClass());
 
-	SefScapChargingApi sefScapChargingApi = null;
+	//SefScapChargingApi sefScapChargingApi = null;
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		log.debug(String.format("Enter SMSChargingProcessor.process. exchange is %s", exchange));
@@ -66,11 +68,11 @@ public class SMSChargingProcessor implements Processor {
 	protected Ccr toScapCcr(Ccr sourceCcr, ChargingRequest request) throws Exception {
 		log.debug(String.format("Enter SMSChargingProcessor.toScapCcr. sourceCcr is %s, request is %s", 
 				sourceCcr, request));
-		 sefScapChargingApi = new SefScapChargingApi();
-		Ccr scapCcr = sefScapChargingApi.createScapCcr(sourceCcr.getSessionId(), request.getHostId());
+	//	 sefScapChargingApi = new SefScapChargingApi();
+		Ccr scapCcr = CgEngineContext.getChargingApi().createScapCcr(sourceCcr.getSessionId(), request.getHostId());
 
 		scapCcr.setServiceContextId("SCAP_V.2.0@ericsson.com");
-		scapCcr.setServiceIdentifier(7002);
+		scapCcr.setServiceIdentifier(7004);
 		scapCcr.setCCRequestType(sourceCcr.getCCRequestType());
 		scapCcr.setCCRequestNumber(sourceCcr.getCCRequestNumber());
 		scapCcr.setEventTimestamp(sourceCcr.getEventTimestamp());

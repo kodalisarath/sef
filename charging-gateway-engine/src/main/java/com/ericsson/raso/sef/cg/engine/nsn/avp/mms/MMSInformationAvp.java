@@ -5,6 +5,7 @@ import com.ericsson.pps.diameter.dccapi.avp.ServiceParameterTypeAvp;
 import com.ericsson.pps.diameter.dccapi.avp.ServiceParameterValueAvp;
 import com.ericsson.pps.diameter.dccapi.avp.avpdatatypes.DccGrouped;
 import com.ericsson.pps.diameter.rfcapi.base.avp.Avp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.mms.AdressAvp;
 
 public class MMSInformationAvp extends DccGrouped {
 

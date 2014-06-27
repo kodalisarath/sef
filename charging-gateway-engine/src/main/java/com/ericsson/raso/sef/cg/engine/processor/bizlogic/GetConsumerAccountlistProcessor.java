@@ -26,20 +26,20 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.SessionIdAvp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.VendorIdAvp;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.AccountAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.ConsumerAccountIdAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.CurrencyAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.PPIInformationAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.ServiceInfoAvp;
-import com.ericsson.raso.sef.cg.engine.nsn.avp.TransparentDataAvp;
-import com.ericsson.raso.sef.charginggateway.diameter.ChargingInfo;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterErrorCode;
 import com.ericsson.raso.sef.client.air.command.GetBalanceAndDateCommand;
 import com.ericsson.raso.sef.client.air.request.GetBalanceAndDateRequest;
 import com.ericsson.raso.sef.client.air.response.DedicatedAccountInformation;
 import com.ericsson.raso.sef.client.air.response.GetBalanceAndDateResponse;
 import com.ericsson.raso.sef.client.air.response.OfferInformation;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterErrorCode;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.ConsumerAccountIdAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.CurrencyAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.PPIInformationAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.ServiceInfoAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.TransparentDataAvp;
 import com.ericsson.raso.sef.core.config.IConfig;
 
 public class GetConsumerAccountlistProcessor implements Processor {

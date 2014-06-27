@@ -2,6 +2,15 @@ package com.ericsson.raso.sef.cg.engine.nsn.avp;
 
 import com.ericsson.pps.diameter.dccapi.avp.avpdatatypes.DccGrouped;
 import com.ericsson.pps.diameter.rfcapi.base.avp.ResultCodeAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountApprovedAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountCurrentAuthorizedAmount;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountCurrentBalanceAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountExpiryDateAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountIdAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountLastBalanceModDate;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountOwnerIdAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.AccountTypeAvp;
+import com.ericsson.raso.sef.core.cg.nsn.avp.CurrencyAvp;
 
 public class AccountAvp extends DccGrouped {
 
