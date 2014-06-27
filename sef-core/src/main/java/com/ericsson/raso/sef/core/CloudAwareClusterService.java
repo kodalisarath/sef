@@ -3,6 +3,7 @@ package com.ericsson.raso.sef.core;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -22,7 +23,7 @@ public class CloudAwareClusterService implements CloudAwareCluster {
 	private static final String HZ_CONFIG = "HZ_CONFIG";
 	
 	private TreeMap<String, Map> localStore = new TreeMap<String, Map>(); 
-	private TreeMap<String, ISemaphore> localSignals = new TreeMap<String, ISemaphore>(); 
+	private ConcurrentHashMap<String, ISemaphore> localSignals = new ConcurrentHashMap<String, ISemaphore>(); 
 	
 	public CloudAwareClusterService() {
 		start();
