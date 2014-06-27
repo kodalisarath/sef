@@ -64,6 +64,7 @@ public class ReadSubscriber extends AbstractTransaction {
 			if (subscriber == null) {
 				this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(504, "Subscriber not found")));
 				this.sendResponse();
+				return false;
 			}
 
 			com.ericsson.sef.bes.api.entities.Subscriber result = TransactionServiceHelper.getApiEntity(subscriber);
@@ -153,11 +154,7 @@ public class ReadSubscriber extends AbstractTransaction {
 						FulfillmentStepResult stepResult = (FulfillmentStepResult) this.getResponse().getAtomicStepResults().get(step);
 						if (stepResult != null && stepResult.getFulfillmentResult() !=null) {
 							for (AtomicProduct atomicProduct : stepResult.getFulfillmentResult()) {
-								
-								if(atomicProduct !=null && atomicProduct.getMetas() !=null)
-								{
-									LOGGER.debug("Atomic product metas: " + atomicProduct.getMetas().toString());
-								}
+								LOGGER.debug("Atomic product metas: " + atomicProduct.getMetas());
 							}
 							products.addAll(TransactionServiceHelper.translateProducts(stepResult.getFulfillmentResult()));
 							// TODO: go back and refactor all the way from
