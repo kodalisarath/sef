@@ -5551,7 +5551,7 @@ public class BusinessConfigurationTool {
 			daReversal = new DedicatedAccountReversal();
 			daReversal.setDedicatedAccountInformationID(1);
 			daReversal.setAmountToReverse(1200);
-			daReversal.setMinutessToReverse(30);
+			daReversal.setMinutesToReverse(30);
 			daReversals.add(daReversal);
 
 			
@@ -5580,7 +5580,7 @@ public class BusinessConfigurationTool {
 			daReversal = new DedicatedAccountReversal();
 			daReversal.setDedicatedAccountInformationID(1);
 			daReversal.setAmountToReverse(300);
-			daReversal.setMinutessToReverse(10);
+			daReversal.setMinutesToReverse(10);
 			daReversals.add(daReversal);
 
 			
@@ -5609,7 +5609,7 @@ public class BusinessConfigurationTool {
 			daReversal = new DedicatedAccountReversal();
 			daReversal.setDedicatedAccountInformationID(1);
 			daReversal.setAmountToReverse(600);
-			daReversal.setMinutessToReverse(20);
+			daReversal.setMinutesToReverse(20);
 			daReversals.add(daReversal);
 
 			
