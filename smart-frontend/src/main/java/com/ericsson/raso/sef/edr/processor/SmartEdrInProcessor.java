@@ -84,7 +84,7 @@ public class SmartEdrInProcessor extends SmartEDRProcessor {
 			} catch (InterruptedException e) {
 
 			}*/
-			//log.info(printer.toString());
+			log.info(printer.toString());
 			//semaphore.release();
 
 		} catch (Exception e) {

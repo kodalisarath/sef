@@ -67,7 +67,8 @@ public class SmartEdrOutProcessor extends SmartEDRProcessor {
 			} catch (InterruptedException e) {
 
 			}
-*/			//log.info(printer.toString());
+*/		
+			log.info(printer.toString());
 			
 /*			semaphore.release();
 			semaphoreClean.release();
