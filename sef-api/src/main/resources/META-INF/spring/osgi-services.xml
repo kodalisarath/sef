@@ -14,5 +14,6 @@
 	<osgi:service ref="fulfillmentResponseClient" interface="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse" />
 	<osgi:service ref="fulfillmentRequestClient" interface="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest" />
 	<osgi:service ref="amountChargeClient" interface="org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface.AmountCharging" />
+	<osgi:service ref="vasClient" interface="vasclient.wsdl.VASClientSEI" />
 </beans>
 
