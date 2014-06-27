@@ -10,12 +10,12 @@ import org.springframework.context.SmartLifecycle;
 import com.ericsson.pps.diameter.dccapi.DCCStack;
 import com.ericsson.pps.diameter.rfcapi.base.DiameterConfig;
 import com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes.ApplicationId;
-import com.ericsson.raso.sef.charginggateway.diameter.Diameter;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterStackBuilder;
-import com.ericsson.raso.sef.charginggateway.diameter.Protocol;
-import com.ericsson.raso.sef.charginggateway.diameter.ProtocolType;
-import com.ericsson.raso.sef.charginggateway.diameter.DiameterStackBuilder.Stack;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.cg.diameter.Diameter;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterStackBuilder;
+import com.ericsson.raso.sef.core.cg.diameter.Protocol;
+import com.ericsson.raso.sef.core.cg.diameter.ProtocolType;
+import com.ericsson.raso.sef.core.cg.diameter.DiameterStackBuilder.Stack;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.lb.Member;
 
