@@ -37,10 +37,10 @@
 	<cxf:cxfEndpoint id="subscriberResponse"
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
 		<cxf:properties>
-			<!-- <entry key="address"
-				value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" /> -->
-				<entry key="address"
-				value="/services/ws/iSubscriberResponse" />
+			<entry key="address"
+				value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
+			<!-- 	<entry key="address"
+				value="/services/ws/iSubscriberResponse" /> -->
 		</cxf:properties>
 	</cxf:cxfEndpoint>
 	
@@ -48,8 +48,8 @@
 		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse">
 
 		<cxf:properties>
-			<!-- <entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" /> -->
-			<entry key="address" value="/services/ws/iSubscriptionResponse" />
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" />
+			<!-- <entry key="address" value="/services/ws/iSubscriptionResponse" /> -->
 		</cxf:properties>
 
 	</cxf:cxfEndpoint>
