@@ -129,7 +129,7 @@ public class Subscription extends Offer {
 			}
 		}
 		
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.EXPIRY.name()));
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.EXPIRY.name(), metas));
 		
 		// save states and history & ask to be saved in DB
 		this.subscriptionHistory.add(SubscriptionLifeCycleState.IN_EXPIRY, EXPIRY_TIMESTAMP);
@@ -260,7 +260,7 @@ public class Subscription extends Offer {
 		 * 1. Send Notification for each state of the Request Processing
 		 * 2. Transaction Engine must be able to use this task persistently across the entire process... 
 		 */
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.RENEWAL.name()));
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.RENEWAL.name(), metas));
 
 		// finally save this transaction to DB...
 		this.addSubscriptionHistory(SubscriptionLifeCycleState.IN_RENEWAL, RENEWAL_TIMESTAMP);
@@ -350,7 +350,7 @@ public class Subscription extends Offer {
 			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId, null));
 		}
 		
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.TERMINATE.name()));
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.TERMINATE.name(), metas));
 		
 		// save states and history & ask to be saved in DB
 		this.subscriptionHistory.add(SubscriptionLifeCycleState.IN_TERMINATION, TERMINATE_TIMESTAMP);

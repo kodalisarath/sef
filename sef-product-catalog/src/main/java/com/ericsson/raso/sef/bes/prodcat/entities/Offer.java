@@ -539,7 +539,7 @@ public class Offer implements Serializable {
 					//TODO: Logger - log the exception you were about to throw
 				}
 			}
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule));
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
 			context.remove(Constants.FUTURE_SCHEDULE);
 		}
 		
@@ -553,7 +553,7 @@ public class Offer implements Serializable {
 				} else { 
 					//TODO: Logger - log the exception you were about to throw
 				}
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule));
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
 			context.remove(Constants.FUTURE_SCHEDULE);
 		}		
 		// check for switch policies
@@ -566,7 +566,7 @@ public class Offer implements Serializable {
 				} else { 
 					//TODO: Logger - log the exception you were about to throw
 				}
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule));
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
 			context.remove(Constants.FUTURE_SCHEDULE);
 		}
 		
@@ -638,12 +638,12 @@ public class Offer implements Serializable {
 		
 		if (isTrialAllowed) {
 			// Make the scheduler call this offer at the end of trial period...
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.trialPeriod.getExpiryTimeInMillis()));
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.trialPeriod.getExpiryTimeInMillis(), metas));
 		} else {
 			if (this.isRecurrent) {
-				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis()));
+				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis(), metas));
 			} else {
-				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis()));
+				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis(), metas));
 			}
 		}
 		
@@ -652,7 +652,7 @@ public class Offer implements Serializable {
 		 * 1. Send Notification for each state of the Request Processing
 		 * 2. Transaction Engine must be able to use this task persistently across the entire process... 
 		 */
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.name, subscriberId, SubscriptionLifeCycleEvent.PURCHASE.name()));
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.name, subscriberId, SubscriptionLifeCycleEvent.PURCHASE.name(), metas));
 		
 		// finally save this transaction to DB...
 		if (this.isCommercial)
