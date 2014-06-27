@@ -57,8 +57,8 @@
 		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse">
 
 		<cxf:properties>
-			<!-- <entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" /> -->
-			<entry key="address" value="/services/ws/iSubscriptionResponse" />
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" />
+<!-- 			<entry key="address" value="/services/ws/iSubscriptionResponse" /> -->
 		</cxf:properties>
 
 	</cxf:cxfEndpoint>
@@ -68,8 +68,8 @@
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
 
 		<cxf:properties>
-			<!-- <entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" /> -->
-			<entry key="address" value="/services/ws/iSubscriberResponse" />
+			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
+			<!-- <entry key="address" value="/services/ws/iSubscriberResponse" /> -->
 		</cxf:properties>
 
 	</cxf:cxfEndpoint>
@@ -142,12 +142,12 @@
 				<camel:bean ref="requestIdGenerator"/>
 <!-- 				<camel:bean ref="gatekeeperProcessor" method="process"/> -->
 
-				<!--  <camel:wireTap uri="direct:EDRIn"  /> --> 
+				 <camel:wireTap uri="direct:EDRIn"  /> 
 				
 				<camel:bean ref="usecaseProcessor"/>
 
-			<!-- 	<camel:wireTap uri="direct:EDROut"  />
-				<camel:bean ref="dummyResponseProcessor"/> -->
+				<camel:wireTap uri="direct:EDROut"  />
+				<camel:bean ref="dummyResponseProcessor"/>
 				 
 				<camel:doCatch>
 					<camel:exception>java.lang.Exception</camel:exception>
@@ -156,8 +156,8 @@
 				
 				<camel:doFinally>
 				
-				<!-- <camel:wireTap uri="direct:EDRClean"  />
-					<camel:bean ref="dummyResponseProcessor"/> -->
+				<camel:wireTap uri="direct:EDRClean"  />
+					<camel:bean ref="dummyResponseProcessor"/>
 				
 				</camel:doFinally>
 			</camel:doTry>
