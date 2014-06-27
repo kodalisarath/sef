@@ -73,7 +73,7 @@
 	<bean id="requestIdProcessor"
 		class="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor" />
 
-	<camelContext id="com.ericsson.raso.sef.fulfillmentEngine">
+	<camelContext id="com.ericsson.raso.sef.fulfillmentEngine" 	xmlns="http://camel.apache.org/schema/spring">
 		<route>
 			<from uri="cxf:bean:fulfillmentEngine" />
 			<camel:bean

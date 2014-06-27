@@ -54,6 +54,7 @@
     	javax.crypto,
     	vasclient.wsdl,
 		vasclient.types,
+		org.apache.activemq.camel.component,
 	</osgi-import-package>
 	</properties>
 
