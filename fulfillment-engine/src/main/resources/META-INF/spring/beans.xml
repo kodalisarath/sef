@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:camel="http://camel.apache.org/schema/spring" 
-	xmlns:cxf="http://camel.apache.org/schema/cxf"
-	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
-       http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd">
+       http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	<import resource="classpath:META-INF/product-catalog/beans.xml" />
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
 
-	<bean id="fulfillmentContext" class="com.ericsson.raso.sef.fulfillment.commons.FulfillmentServiceResolver" />
+	<bean id="fulfillmentContext"
+		class="com.ericsson.raso.sef.fulfillment.commons.FulfillmentServiceResolver" />
 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
-	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
-	<bean id="profileRegistry" class="com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry" />
-	
+	<bean id="authenticationInterceptor"
+		class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
+	<bean id="profileRegistry"
+		class="com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry" />
+
 	<cxf:cxfEndpoint id="fulfillmentEngine"
-		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest" bus="cxf">
+		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentRequest"
+		bus="cxf">
 
 		<cxf:properties>
 			<entry key="address" value="http://0.0.0.0:8080/services/ws/fulfillment" />
@@ -36,34 +40,54 @@
 			<ref bean="loggingOutInterceptor" />
 		</cxf:outInterceptors>
 	</cxf:cxfEndpoint>
-	
+
+
+	<bean id="cfg" class="com.ericsson.raso.sef.core.config.ConfigService" />
+	<bean id="cgProperties"
+		class="com.ericsson.raso.sef.core.config.ComponentPropertiesBean">
+		<constructor-arg name="config" ref="cfg" />
+		<constructor-arg name="component" value="fullfilmentEngine" />
+	</bean>
+	<context:property-placeholder
+		properties-ref="cgProperties" />
+
+
+	<bean class="org.apache.activemq.camel.component.ActiveMQComponent"
+		id="activemq">
+		<property name="brokerURL" value="${activeMqBrokerURL}" />
+		<property name="userName" value="${activeMqUserName}" />
+		<property name="password" value="${activeMqUserPassword}" />
+	</bean>
 
 	<httpj:engine-factory>
 		<httpj:engine port="8080">
 			<httpj:connector>
 				<!-- <bean class="org.eclipse.jetty.server.nio.SelectChannelConnector"/> -->
 				<bean class="org.eclipse.jetty.server.nio.BlockingChannelConnector">
-					<property name="port" value="8080"/>
+					<property name="port" value="8080" />
 				</bean>
 			</httpj:connector>
 		</httpj:engine>
 	</httpj:engine-factory>
 
-	<bean id="requestIdProcessor" class="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor"/>
+	<bean id="requestIdProcessor"
+		class="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor" />
 
-	<camelContext id="com.ericsson.raso.sef.fulfillmentEngine"
-		xmlns="http://camel.apache.org/schema/spring">
+	<camelContext id="com.ericsson.raso.sef.fulfillmentEngine">
 		<route>
 			<from uri="cxf:bean:fulfillmentEngine" />
-			<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor" />
+			<camel:bean
+				beanType="com.ericsson.raso.sef.fulfillment.processors.FulfilmentRequestIdProcessor" />
 			<!-- Add request context fetch & publish local -->
 			<wireTap uri="direct:usecase" />
-			<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.ResponseProcessor" />
+			<camel:bean
+				beanType="com.ericsson.raso.sef.fulfillment.processors.ResponseProcessor" />
 		</route>
-		
+
 		<route>
 			<from uri="direct:usecase" />
-			<camel:bean beanType="com.ericsson.raso.sef.fulfillment.processors.UseCaseProcessor" />
+			<camel:bean
+				beanType="com.ericsson.raso.sef.fulfillment.processors.UseCaseProcessor" />
 		</route>
 	</camelContext>
 </beans>
