@@ -70,15 +70,18 @@ public abstract class AbstractChargingProcessor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
+log.debug("AbstractChargingProcessor process");
 		ChargingRequest request = (ChargingRequest) exchange.getIn().getBody();
-
+		log.debug("AbstractChargingProcessor ChargingRequest "+request);
 		Ccr sourceCcr = request.getSourceCcr();
+		log.debug("AbstractChargingProcessor sourceCcr "+sourceCcr);
 		Ccr scapCcr = toScapCcr(sourceCcr, request);
-
+		log.debug("AbstractChargingProcessor sourceCcr "+scapCcr);
 		preProcess(request, scapCcr);
 
 		long startTime = System.currentTimeMillis();
 		Cca cca = scapCcr.send();
+		log.debug("AbstractChargingProcessor cca "+cca);
 		PerformanceStatsLogger.log("CCN", System.currentTimeMillis()
 				- startTime);
 

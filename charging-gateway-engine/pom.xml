@@ -61,7 +61,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 			com.ericsson.pps.diameter.dccapi.command,
 			com.ericsson.pps.diameter.scapv2,
 			com.ericsson.pps.diameter.scapv2.avp,
-Rbe			com.ericsson.pps.diameter.rfcapi.base,
+			com.ericsson.pps.diameter.rfcapi.base,
 			com.ericsson.pps.diameter.rfcapi.base.avp,
 			com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes,
 			com.ericsson.pps.diameter.rfcapi.base.message,

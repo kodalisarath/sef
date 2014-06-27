@@ -57,7 +57,7 @@ public abstract class TransactionEngineHelper {
 			e.printStackTrace();
 			logger.debug("Exception while sleep     :" + e.getMessage());
 		}
-
+		semaphore.destroy();
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: "
 				+ correlationId);
 

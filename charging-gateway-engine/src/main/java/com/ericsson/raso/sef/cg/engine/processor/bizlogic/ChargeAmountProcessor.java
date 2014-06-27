@@ -32,6 +32,7 @@ public class ChargeAmountProcessor extends AbstractChargingProcessor {
 		logger.debug(String.format("Enter ChargeAmountProcessor.postProcess request is %s, response is %s, cca is %s", 
 				request, response, cca));
 		//IpcCluster cluster = CgEngineContext.getIpcCluster();
+		
 		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(response.getSessionId());
 		
 		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {

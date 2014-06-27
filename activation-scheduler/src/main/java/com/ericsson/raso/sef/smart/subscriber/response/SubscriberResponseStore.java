@@ -1,15 +1,15 @@
 package com.ericsson.raso.sef.smart.subscriber.response;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import com.ericsson.raso.sef.core.SefCoreServiceResolver;
-import com.ericsson.raso.sef.smart.subscription.response.HelperConstant;
 
 
 public class SubscriberResponseStore {
 
 	//private static Map<String, AbstractSubscriberResponse> store = new TreeMap<String, AbstractSubscriberResponse>();
-	private static Map<String, AbstractSubscriberResponse> store = SefCoreServiceResolver.getCloudAwareCluster().getMap(HelperConstant.SMFE_CORRELATION_STORE);
+	//private static Map<String, AbstractSubscriberResponse> store = SefCoreServiceResolver.getCloudAwareCluster().getMap(HelperConstant.SMFE_CORRELATION_STORE);
+	private static Map<String, AbstractSubscriberResponse> store = new HashMap<String, AbstractSubscriberResponse>();
+	
 	
 	public static void put(String requestId, AbstractSubscriberResponse response) {
 		store.put(requestId, response);
