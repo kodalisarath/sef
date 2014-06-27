@@ -48,10 +48,22 @@
 			org.aopalliance.aop,
 			org.slf4j,
 			javax.crypto,
-			javax.xml.namespace			
+			javax.xml.namespace,
+			 org.opensaml.ws,
+			 com.ericsson.pps.diameter.dccapi,
+ 			com.ericsson.pps.diameter.dccapi.avp,
+ 			com.ericsson.pps.diameter.dccapi.command,
+ 			com.ericsson.pps.diameter.dccapi.avp.avpdatatypes,
+ 			com.ericsson.pps.diameter.scapv2,
+ 			com.ericsson.pps.diameter.scapv2.avp,
+ 			com.ericsson.pps.diameter.rfcapi.base,
+ 			com.ericsson.pps.diameter.rfcapi.base.avp,
+ 			com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes,
+ 			com.ericsson.pps.diameter.rfcapi.base.message, 			
 		</osgi-import-packages>
 		<osgi-export-package>
 			com.ericsson.raso.sef.core,
+			com.ericsson.raso.sef.core.smpp,
 			com.ericsson.raso.sef.ruleengine,
 			com.ericsson.raso.sef.core.jaxws,
 			com.ericsson.raso.sef.core.camelprocessors,
@@ -63,6 +75,7 @@
 			com.ericsson.raso.sef.core.db,
 			com.ericsson.raso.sef.core.db.service,
 			com.ericsson.raso.sef.core.db.model,
+			com.ericsson.raso.sef.core.db.mapper,
 			com.ericsson.raso.sef.core.lb,
 			com.ericsson.raso.sef.diameter,
 			com.ericsson.raso.sef.core.db.service.internal,
@@ -70,6 +83,12 @@
 			wsdl,
 			com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1,
 			com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1,
+			com.ericsson.raso.sef.core.ne,
+			com.ericsson.raso.sef.core.scheduler,
+			com.ericsson.raso.sef.core.cg.nsn.avp,
+			com.ericsson.raso.sef.core.cg.nsn.avp.mms,
+			com.ericsson.raso.sef.core.cg.nsn.avp.sms,
+			com.ericsson.raso.sef.core.cg.diameter,
 		</osgi-export-package>
 	</properties>
 
@@ -120,13 +139,13 @@
 			<version>${cxf-version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxws</artifactId>
 			<version>${cxf-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http</artifactId>
@@ -197,7 +216,7 @@
 			<artifactId>spring-tx</artifactId>
 			<version>${spring-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
@@ -220,37 +239,56 @@
 			<artifactId>spring-core</artifactId>
 			<version>${spring-version}</version>
 		</dependency>
-<!-- Ericsson Charging SDK -->
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>dcc-api</artifactId>
-            <version>release</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>diameter-base-api</artifactId>
-            <version>release</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>high-level-api</artifactId>
-            <version>release</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>scap-v2-api</artifactId>
-            <version>release</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>utils</artifactId>
-            <version>release</version>
-        </dependency>
+		<!-- Ericsson Charging SDK -->
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>dcc-api</artifactId>
+			<version>release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>diameter-base-api</artifactId>
+			<version>release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>high-level-api</artifactId>
+			<version>release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>scap-v2-api</artifactId>
+			<version>release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>utils</artifactId>
+			<version>release</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.4</version>
 		</dependency>
+
+
+		<!-- Quartz Dependencies -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-jobs</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-oracle</artifactId>
+			<version>2.1.7</version>
+		</dependency>
+
 
 	</dependencies>
 
