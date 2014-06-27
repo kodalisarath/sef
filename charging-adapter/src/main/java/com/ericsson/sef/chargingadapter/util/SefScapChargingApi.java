@@ -20,7 +20,7 @@ import com.ericsson.sef.diameter.SmCoreUtil;
 import com.ericsson.sef.diameter.DiameterStackBuilder.Stack;
 
 
-public class SmScapChargingApi implements ScapChargingApi {
+public class SefScapChargingApi implements ScapChargingApi {
 
 	private DCCStack scapStack;
 	protected Logger log = LoggerFactory.getLogger(this.getClass());
