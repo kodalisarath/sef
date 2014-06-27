@@ -1,4 +1,4 @@
-package com.ericsson.raso.ne.core.smpp;
+package com.ericsson.raso.sef.ne.core.smpp;
 
 public interface SmppClient {
 	

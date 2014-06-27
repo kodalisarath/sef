@@ -3,7 +3,8 @@ package com.ericsson.raso.sef.ne;
 import java.util.List;
 
 import com.ericsson.raso.sef.core.Meta;
-import com.ericsson.raso.sef.ne.core.smpp.SmppMessage;
+import com.ericsson.raso.sef.core.smpp.SmppMessage;
+
 
 public interface SmsParser {
 

@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.ne.notification;
 
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
+import com.ericsson.raso.sef.core.ne.NotificationEvent;
 
 public class SubscriptionNotificationEvent extends NotificationEvent {
 
