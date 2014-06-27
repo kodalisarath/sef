@@ -1127,6 +1127,14 @@
 		<property key="activeMqUserPassword" value="admin" />
 	</section>
 
+
+<section description="Fulfilment Engine Queue Configuration" id="fullfilmentEngine">
+		<property key="activeMqBrokerURL" value="tcp://localhost:61616" />
+		<property key="activeMqUserName" value="admin" />
+		<property key="activeMqUserPassword" value="admin" />
+	</section>
+
+
 	<!--- Notification Engine -->
 	<section description="Sef Notification Engine Configuration"
 		id="sefNotificationEngine">
@@ -1134,6 +1142,7 @@
 		<property key="activeMqUserName" value="admin" />
 		<property key="activeMqUserPassword" value="admin" />
 	</section>
+
 	<section description="Activate Subscriber Workflow WS" id="activate-subscriber-workflow-ws">
 		<property key="address" value="http://0.0.0.0:8080/activateSubscriber" />
 		<property key="connectionTimeout" value="60000" />
@@ -1280,4 +1289,15 @@
       <property key="receiveTimeout" value="120000"/>
       <property key="connectionType" value="KEEP_ALIVE"/>
    </section>
+   
+   <!--- Transaction Engine -->
+	<section description="Sef Transaction Engine Configuration"
+		id="transactionEngine">
+		<property key="activeMqBrokerURL" value="tcp://localhost:61616" />
+		<property key="activeMqUserName" value="admin" />
+		<property key="activeMqUserPassword" value="admin" />
+	</section>
+	<!-- Transaction Engine -->
+	
+	
 </config>
