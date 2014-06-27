@@ -1,14 +1,17 @@
-package com.ericsson.raso.sef.smart.processor;
+package com.ericsson.raso.sef.edr.processor;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.RequestContext;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.DateUtil;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.BooleanElement;
@@ -43,17 +46,32 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 
 public abstract class SmartEDRProcessor implements Processor {
 
-	public static Logger log = LoggerFactory.getLogger("smartFE");
+	public static Logger log = LoggerFactory.getLogger(SmartEDRProcessor.class);
 	
-	public static final ThreadLocal<SmartEdr> edrLocal = new ThreadLocal<SmartEdr>() {}; //TODO: ThreadLocal will fail in the IL Rebuild Design!!!
+	//public static final ThreadLocal<SmartEdr> edrLocal = new ThreadLocal<SmartEdr>() {}; //TODO: ThreadLocal will fail in the IL Rebuild Design!!!
+	
+	public static final Map<String, SmartEdr> staticEdrMap = new HashMap<String, SmartEdr>(); 
     
     public static class SmartEdr {
-    	public SmartEdr() {
-    		transactionId = RequestContextLocalStore.get().getRequestId();
-    	}
+    /*	public SmartEdr() {
+    		//transactionId = RequestContextLocalStore.get().getRequestId();
+    	}*/
     	
-    	String transactionId;
+    	public void setTransactionId(String transactionId) {
+			this.transactionId = transactionId;
+		}
+
+		String transactionId;
     	String useCase;
+		public String getTransactionId() {
+			return transactionId;
+		}
+		public String getUseCase() {
+			return useCase;
+		}
+		public void setUseCase(String useCase) {
+			this.useCase = useCase;
+		}
     }
 
     protected Map<String, Object> fromParameters(List<Object> params) {
@@ -141,13 +159,15 @@ public abstract class SmartEDRProcessor implements Processor {
 	}
 	
 	
-	public static void printError(ErrorInfo errorInfo) {
+	public static void printError(ErrorInfo errorInfo,Exchange exchange) {
 		if(!log.isInfoEnabled()) return;
 		Printer printer = new Printer();
+		printer.setExchange(exchange);
 		printer.type = "Response";
 		printer.edrMap = new LinkedHashMap<String, Object>();
 		printer.edrMap.put("ErrorCode", errorInfo.getCode());
 		printer.edrMap.put("ErrorMessage",errorInfo.getText());
+		log.debug("Edr Printing ..Almost There...  HashMap TBD");
 		log.info(printer.toString());
 	}
 
@@ -218,10 +238,23 @@ public abstract class SmartEDRProcessor implements Processor {
 	public static class Printer {
 		String type;
 		Map<String, Object> edrMap = new LinkedHashMap<String, Object>();
+		
+		private Exchange exchange;
+		public void setExchange(Exchange exchange)
+		{
+			this.exchange = exchange;
+		}
 
 		@Override
 		public String toString() {
-			return "Type=" + type + ",TransactionId=" + edrLocal.get().transactionId +  ",UseCase=" + edrLocal.get().useCase + ",Timestamp="
+			
+			//String transactionId = RequestContextLocalStore.get().getRequestId();
+			//log.debug(String.valueOf(exchange.getIn().getHeader("EDR_IDENTIFIER")));
+			SmartEdr smartEdr = staticEdrMap.get((String)exchange.getIn().getHeader("EDR_IDENTIFIER"));
+			/*if(smartEdr == null){
+				log.debug("smartEdr is null");
+			}*/
+			return "Type=" + type + ",TransactionId=" +smartEdr.getTransactionId() +  ",UseCase=" + smartEdr.getUseCase() + ",Timestamp="
 					+ DateUtil.toEdrFormat(new Date()) + ",Component=smart-frontend,"
 					+ (edrMap.size() != 0 ? edrMap.toString() : "");
 		}

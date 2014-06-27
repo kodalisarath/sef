@@ -1,10 +1,13 @@
-package com.ericsson.raso.sef.smart.processor;
+package com.ericsson.raso.sef.edr.processor;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.camel.Exchange;
 
+import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
@@ -16,9 +19,11 @@ public class SmartEdrOutProcessor extends SmartEDRProcessor {
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		try {
+			//log.debug("Inside SmartEdrOutProcessor ..");
 			if(!log.isInfoEnabled()) return; 
 			CommandResponseData response = exchange.getIn().getBody(CommandResponseData.class);
 			Printer printer = new Printer();
+			printer.setExchange(exchange);
 			printer.edrMap = new LinkedHashMap<String, Object>();
 			printer.type = "Response";
 			
@@ -48,9 +53,30 @@ public class SmartEdrOutProcessor extends SmartEDRProcessor {
 					}
 				}
 			}
-			log.info(printer.toString());
+			/*ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore("EDR_PROC_"+exchange.getIn().getHeader("EDR_IDENTIFIER"));
+			ISemaphore semaphoreClean = SefCoreServiceResolver
+					.getCloudAwareCluster().getSemaphore(
+							"CLEAN_PROC_"
+									+ exchange.getIn().getHeader(
+											"EDR_IDENTIFIER"));
+
+			try {
+				semaphore.acquire();
+				semaphoreClean.init(0);
+				semaphoreClean.acquire();
+			} catch (InterruptedException e) {
+
+			}
+*/			//log.info(printer.toString());
+			
+/*			semaphore.release();
+			semaphoreClean.release();
+*/			
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		finally{
+			SmartEDRProcessor.staticEdrMap.remove(exchange.getOut().getHeader("EDR_IDENTIFIER"));			
 		}
 	}
 }

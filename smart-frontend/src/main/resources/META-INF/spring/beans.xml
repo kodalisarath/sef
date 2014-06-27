@@ -57,7 +57,8 @@
 		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" />
+			<!-- <entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" /> -->
+			<entry key="address" value="/services/ws/iSubscriptionResponse" />
 		</cxf:properties>
 
 	</cxf:cxfEndpoint>
@@ -67,7 +68,8 @@
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
+			<!-- <entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" /> -->
+			<entry key="address" value="/services/ws/iSubscriberResponse" />
 		</cxf:properties>
 
 	</cxf:cxfEndpoint>
@@ -101,7 +103,8 @@
     <bean id="dateUtil" class="com.ericsson.raso.sef.smart.processor.DateUtil"/>
 
     <bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
-
+	<bean id="dummyResponseProcessor" class="com.ericsson.raso.sef.smart.processor.DummyResponseProcessor" />
+	
     <bean id="entireDeleteSubscriber" class="com.ericsson.raso.sef.smart.processor.EntireDeleteSubscriber" />
     <bean id="entireRead" class="com.ericsson.raso.sef.smart.processor.EntireReadSubscriber" />
 
@@ -119,8 +122,9 @@
     <bean id="retrieveDeleteProcessor" class="com.ericsson.raso.sef.smart.processor.RetrieveDeleteProcessor" />
     <bean id="retrieveReadRPP" class="com.ericsson.raso.sef.smart.processor.RetrieveReadRPP" />
 
-    <!--<bean id="smartEdrIn" class="com.ericsson.raso.sef.smart.processor.SmartEdrInProcessor" />-->
-    <!--<bean id="smartEdrOut" class="com.ericsson.raso.sef.smart.processor.SmartEdrOutProcessor" />-->
+   	<bean id="smartInEdr" class="com.ericsson.raso.sef.edr.processor.SmartEdrInProcessor" />
+    <bean id="smartOutEdr" class="com.ericsson.raso.sef.edr.processor.SmartEdrOutProcessor" />
+    <bean id="smartCleanEdr" class="com.ericsson.raso.sef.edr.processor.SmartEdrCleanProcessor" />
 
     <bean id="subscribePackageItem" class="com.ericsson.raso.sef.smart.processor.SubscribePackageItem" />
     <bean id="unsubscribePackageItem" class="com.ericsson.raso.sef.smart.processor.UnsubscribePackageItem" />
@@ -137,13 +141,25 @@
 			<camel:doTry>
 				<camel:bean ref="requestIdGenerator"/>
 <!-- 				<camel:bean ref="gatekeeperProcessor" method="process"/> -->
-<!-- 				<camel:bean ref="smartInEdr"/> -->
+
+				<!--  <camel:wireTap uri="direct:EDRIn"  /> --> 
+				
 				<camel:bean ref="usecaseProcessor"/>
-<!-- 				<camel:bean ref="smartOutEdr"/> -->
+
+			<!-- 	<camel:wireTap uri="direct:EDROut"  />
+				<camel:bean ref="dummyResponseProcessor"/> -->
+				 
 				<camel:doCatch>
 					<camel:exception>java.lang.Exception</camel:exception>
 					<camel:bean beanType="com.ericsson.raso.sef.smart.SmartExceptionHandler" />
 				</camel:doCatch>
+				
+				<camel:doFinally>
+				
+				<!-- <camel:wireTap uri="direct:EDRClean"  />
+					<camel:bean ref="dummyResponseProcessor"/> -->
+				
+				</camel:doFinally>
 			</camel:doTry>
 		</route>
 
@@ -217,6 +233,22 @@
 
 			</camel:doTry>
 		</route>
+		
+		<camel:route id="wireTap_to_EDRIn">
+			<camel:from uri="direct:EDRIn"/>
+			<camel:to uri="bean:smartInEdr"/>
+		</camel:route>
+
+		<camel:route id="wireTap_to_EDROut">
+			<camel:from uri="direct:EDROut"/>
+			<camel:to uri="bean:smartOutEdr"/>
+		</camel:route>
+		
+		<camel:route id="wireTap_to_EDRClean">
+			<camel:from uri="direct:EDRClean"/>
+			<camel:to uri="bean:smartCleanEdr"/>
+		</camel:route>
+		
 	</camelContext>
 
 </beans>
