@@ -1108,8 +1108,11 @@ public class EntireReadUtil {
 	private static Tag getSmartTagging(Subscriber subscriber) {
 
 		Map<String, String> metaMap = subscriber.getMetas();
-		logger.debug("SUBSCRIBER TAGGING IN SMART FORMAT: "  + metaMap.get("Tagging"));
-		return Tag.getTagBySmartId(Integer.parseInt(metaMap.get("Tagging")));
+		String tagging = metaMap.get("Tagging");
+		if (tagging == null)
+			tagging = metaMap.get("c_TaggingStatus");
+		logger.debug("SUBSCRIBER TAGGING IN SMART FORMAT: "  + tagging);
+		return Tag.getTagBySmartId(Integer.parseInt(tagging));
 		
 	}
 
