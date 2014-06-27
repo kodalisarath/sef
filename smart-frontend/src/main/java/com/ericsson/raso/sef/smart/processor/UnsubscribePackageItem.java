@@ -132,7 +132,10 @@ public class UnsubscribePackageItem implements Processor {
 			}
 			else{
 				CommandResponseData cr = this.createResponse(true);
+				String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 				exchange.getOut().setBody(cr);
+				exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+			
 			}
 		}
 		else {
@@ -222,7 +225,9 @@ public class UnsubscribePackageItem implements Processor {
 					throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
 				} else{
 					CommandResponseData cr = this.createResponse(true);
+					String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 					exchange.getOut().setBody(cr);
+					exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 				}	
 			}
 			else {

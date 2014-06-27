@@ -61,7 +61,12 @@ public class RetrieveDeleteProcessor implements Processor {
 			}
 			//DummyProcessor.response(exchange);
 			CommandResponseData cr = this.createResponse(true);
+
+			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+			
 			exchange.getOut().setBody(cr);
+			
+			exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 			}
 	
 	private CommandResponseData createResponse(boolean isTransactional) throws SmException {

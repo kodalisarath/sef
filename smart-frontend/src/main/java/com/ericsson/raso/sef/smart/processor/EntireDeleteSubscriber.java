@@ -49,7 +49,9 @@ public class EntireDeleteSubscriber implements Processor{
 			}
 			logger.debug("Response received for delete.. now creating front end response");
 			//exchange.getOut().setBody(subscriberInfo);
+			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 			DummyProcessor.response(exchange);
+			exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 		} catch (Exception e) {
 			//logger.error("Error in the processor class:",e.getClass().getName(),e);
 		}

@@ -146,7 +146,12 @@ public class SubscribePackageItem implements Processor {
 					}
 					else{
 						 CommandResponseData cr = this.createResponse(true);
-					      exchange.getOut().setBody(cr);
+					    //  exchange.getOut().setBody(cr);
+					      
+					      String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+							exchange.getOut().setBody(cr);
+							exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+							
 					}
 			  }
 			  else {
@@ -233,7 +238,12 @@ public class SubscribePackageItem implements Processor {
 					}
 					else{
 						 CommandResponseData cr = this.createResponse(true);
-					      exchange.getOut().setBody(cr);
+					      
+						 String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+							exchange.getOut().setBody(cr);
+							exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+							
+						 //exchange.getOut().setBody(cr);
 					}	
 			}
 			else {

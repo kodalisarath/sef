@@ -57,7 +57,12 @@ public class VersionCreateOrWriteCustomer implements Processor {
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			
 		} 
-	         DummyProcessor.response(exchange);
+		 String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");
+		    
+		 DummyProcessor.response(exchange);
+	         
+	      exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+	 	
 		
 	}
 

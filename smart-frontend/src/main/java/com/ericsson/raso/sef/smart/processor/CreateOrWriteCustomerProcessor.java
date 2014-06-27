@@ -64,8 +64,9 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		//exchange.getOut().setBody(subscriberInfo);
 		
 		Thread.sleep(50); // bcos i am too fast??
-		
+		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");
 		DummyProcessor.response(exchange);		
+		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 	}
 
 	private SubscriberInfo createSubscriber(String requestId, Subscriber subscriber) {

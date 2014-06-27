@@ -50,7 +50,10 @@ public class EntireReadSubscriber implements Processor {
 		
 		logger.debug("contract state: " + subscriber.getContractState());
 		if (subscriber.getContractState().equals(ContractState.PREACTIVE.getName())) {
+		
+			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 			exchange.getOut().setBody(createPreactiveResponse(subscriber, request.isTransactional()));
+			exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 			return;
 		}
 		
@@ -66,7 +69,9 @@ public class EntireReadSubscriber implements Processor {
 		}
 
 		logger.debug("Manila: EntireRead Response is " + entireRead);
+		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 		exchange.getOut().setBody(createResponse(entireRead, request.isTransactional()));
+		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 
 	}
 

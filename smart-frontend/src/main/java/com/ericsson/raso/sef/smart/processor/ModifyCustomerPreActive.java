@@ -90,7 +90,11 @@ public class ModifyCustomerPreActive implements Processor {
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
 		CommandResponseData responseData = createResponse(true, newExpiry);
+		
+		
+		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 		exchange.getOut().setBody(responseData);
+		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 		//DummyProcessor.response(exchange);
 		//exchange.getOut().setBody(subscriberInfo);
 		

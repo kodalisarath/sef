@@ -89,7 +89,9 @@ OwningCustomerId
 			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			
 		}
+		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 		DummyProcessor.response(exchange);
+		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier); 
 		//exchange.getOut().setBody(subscriberInfo);
 	}
 

@@ -190,9 +190,11 @@ public class ModifyCustomerGrace implements Processor {
 								logger.debug("Response purchase received.. now creating front end response");
 
 								CommandResponseData responseData = createResponse(true, newExpiry);
+								
+								String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 								exchange.getOut().setBody(responseData);
 								
-								
+								exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 								
 								//SubscriberInfo subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerGrace);
 								

@@ -24,8 +24,9 @@ public class DummyProcessor implements Processor {
 		transactionResult.getOperationResult().add(operationResult);
 		
 		result.setTransactionResult(transactionResult);
-		
+		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 		exchange.getOut().setBody(responseData);
+		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 	}
 
 	@Override

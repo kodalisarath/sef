@@ -58,7 +58,10 @@ public class BucketRetrieveReadROP implements Processor {
 								+ " does not exist"));
 					}
 			CommandResponseData responseData = createResponse(bucketRetrieveReadROPRequest.getUsecase().getOperation(), bucketRetrieveReadROPRequest.getUsecase().getModifier(),bucketRetrieveReadROPRequest.isTransactional());
+			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");
 			exchange.getOut().setBody(responseData);
+			exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+			
 			
 		} catch (Exception e) {
 			logger.error("Error in processor class:",this.getClass().getName(),e);

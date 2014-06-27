@@ -157,7 +157,9 @@ public class CARecharge implements Processor {
 			logger.debug("Response purchase received.. now creating front end response");
 
 			CommandResponseData responseData = createResponse(rechargeRequest.isTransactional(), purchaseResponse);
+			String edrIdentifier = (String)arg0.getIn().getHeader("EDR_IDENTIFIER");
 			arg0.getOut().setBody(responseData);
+			arg0.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 
 		} catch (Exception e) {
 			logger.debug("In Excecption block");

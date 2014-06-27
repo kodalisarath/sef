@@ -60,7 +60,9 @@ public class BucketRetrieveReadRPP implements Processor {
 			
 			
 			CommandResponseData responseData = createResponse(bucketRetrieveReadRPPRequest.getUsecase().getOperation(), bucketRetrieveReadRPPRequest.getUsecase().getModifier(),bucketRetrieveReadRPPRequest.isTransactional());
+			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");
 			exchange.getOut().setBody(responseData);
+			exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 		} catch (Exception e) {
 			logger.error("Error in processor class:",this.getClass().getName(),e);
 		}

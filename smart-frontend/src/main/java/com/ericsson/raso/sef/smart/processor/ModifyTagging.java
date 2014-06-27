@@ -174,7 +174,10 @@ public class ModifyTagging implements Processor {
 		}
 		else{
 			 CommandResponseData cr = this.createResponse(true,request.getTagging());
-		      exchange.getOut().setBody(cr);
+			 String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");  
+			 exchange.getOut().setBody(cr);
+		      
+				exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 		}	
 }
 		

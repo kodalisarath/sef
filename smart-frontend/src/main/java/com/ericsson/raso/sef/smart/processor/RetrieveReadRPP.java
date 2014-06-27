@@ -39,8 +39,13 @@ public class RetrieveReadRPP implements Processor {
 		EntireRead entireRead = SmartServiceHelper.entireReadSubscriber(request
 				.getCustomerId());
 
+		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+		
 		exchange.getOut().setBody(
 				createResponse(entireRead, request.isTransactional()));
+		
+		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+		
 
 	}
 
