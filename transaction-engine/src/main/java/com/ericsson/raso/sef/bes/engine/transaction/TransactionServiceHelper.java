@@ -26,6 +26,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.UniqueIdGenerator;
 import com.ericsson.raso.sef.core.db.model.ContractState;
 import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
@@ -44,7 +45,7 @@ public abstract class TransactionServiceHelper {
 		if (subscriberStore == null)
 			throw new TransactionException("txe", new ResponseCode(11614, "Unable to fetch Subscriber Profile for further processing of the request!! Please check configuration"));
 		try {
-			return subscriberStore.getSubscriber("dynamic-task", subscriberId);
+			return subscriberStore.getSubscriber(UniqueIdGenerator.generateId(), subscriberId);
 		} catch (PersistenceError e) {
 			logger.error("Persistence Issue fetching subscriber: " + subscriberId + ", Cause: " + e.getMessage(), e);
 			throw new TransactionException("txe", new ResponseCode(11614, "Unable to fetch Subscriber Profile - Error on DB"));
