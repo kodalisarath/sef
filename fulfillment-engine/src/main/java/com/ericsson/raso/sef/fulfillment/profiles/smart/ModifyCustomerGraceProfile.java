@@ -55,32 +55,6 @@ public class ModifyCustomerGraceProfile extends BlockingFulfillment<Product> {
 		RefillCommand refillCommand = null;
 		
 		List<Product> returned = new ArrayList<Product>();
-//		try {
-//			LOGGER.debug("Starting GetOffers...");
-//			getOffersRequest = new GetOffersRequest();
-//			
-//			subscriberId = map.get("SUBSCRIBER_ID");
-//			if (subscriberId == null)
-//				throw new FulfillmentException("ffe", new ResponseCode(1002, "runtime parameter 'SUBSCRIBER_ID' missing in request!!"));
-//			getOffersRequest.setSubscriberNumber(subscriberId);
-//			getOffersRequest.setSubscriberNumberNAI(1);
-//			
-//			getOffersRequest.setOfferRequestedTypeFlag(this.offerRequestedTypeFlag);
-//			getOffersRequest.setOfferSelection(this.offerSelection);
-//			
-//			getOffersCommand = new GetOffersCommand(getOffersRequest);
-//			getOffersResponse = getOffersCommand.execute();
-//			LOGGER.error("GetOffers succesful...");
-//		} catch(SmException e) {
-//			LOGGER.error("Failed getOffers for:" + subscriberId);
-//			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage()));
-//		}
-//		
-//		// Sanity before proceeding....
-//		for (OfferInformation offerInfo: getOffersResponse.getOfferInformation()) {
-//			if (!(offerInfo.getOfferID() == 1  || offerInfo.getOfferID() == 2))
-//				throw new FulfillmentException("ffe", new ResponseCode(402, "Invalid subscriber life cycle state"));
-//		}
 		
 		
 		
