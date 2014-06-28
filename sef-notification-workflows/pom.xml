@@ -119,7 +119,8 @@
 			vasclient.wsdl,
 			vasclient.types,
 			com.ericsson.sef.scheduler.common,
-			com.ericsson.sef.scheduler.command
+			com.ericsson.sef.scheduler.command,
+			com.ericsson.raso.sef.core.db.model.smart,
 		</osgi-import-package>
 	</properties>
 

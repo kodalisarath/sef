@@ -1,20 +1,11 @@
 package com.ericsson.sef.scheduler.command;
 
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
-
-import org.quartz.JobDetail;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Command;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.CallingCircle;
-import com.ericsson.sef.scheduler.RemoveCallingCircleJob;
-import com.ericsson.sef.scheduler.SchedulerContext;
-import com.ericsson.sef.scheduler.SchedulerService;
+import com.ericsson.raso.sef.core.db.model.smart.CallingCircle;
 
 
 public class ScheduleRemoveCallingCircleCmd implements Command<Void> {
@@ -32,7 +23,7 @@ public class ScheduleRemoveCallingCircleCmd implements Command<Void> {
 
 	@Override
 	public Void execute() throws SmException {
-		SchedulerService scheduler = SchedulerContext.getSchedulerService();
+/*		SchedulerService scheduler = SchedulerContext.getSchedulerService();
 		JobDetail job = null;
 		Trigger trigger = null;
 		try {
@@ -53,8 +44,8 @@ public class ScheduleRemoveCallingCircleCmd implements Command<Void> {
 			} catch (Exception e1) {
 				throw new SmException(e);
 			}
-		}
-		return null;
+		}*/
+	return null;
 	}
 
 }

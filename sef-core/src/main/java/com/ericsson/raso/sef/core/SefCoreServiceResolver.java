@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContextAware;
 import com.ericsson.raso.sef.auth.service.IPrivilegeManager;
 import com.ericsson.raso.sef.auth.service.IUserStore;
 import com.ericsson.raso.sef.core.config.IConfig;
+import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.raso.sef.core.db.service.UserManagementService;
 import com.ericsson.raso.sef.core.db.service.smart.CallingCircleService;
@@ -53,6 +54,10 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 	
 	public static IUserStore getUserStore() {
 		return SefCoreServiceResolver.context.getBean(IUserStore.class);
+	}
+	
+	public static ScheduleRequestService getScheduleRequestService() {
+		return SefCoreServiceResolver.context.getBean(ScheduleRequestService.class);
 	}
 
 	public static ExecutorService getExecutorService(String name) {
