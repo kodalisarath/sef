@@ -91,6 +91,7 @@
 			com.ericsson.raso.sef.core.cg.nsn.avp.mms,
 			com.ericsson.raso.sef.core.cg.nsn.avp.sms,
 			com.ericsson.raso.sef.core.cg.diameter,
+			com.ericsson.raso.sef.core.db.model.smart,
 		</osgi-export-package>
 	</properties>
 
