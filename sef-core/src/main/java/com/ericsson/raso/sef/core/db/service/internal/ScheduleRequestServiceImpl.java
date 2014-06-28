@@ -58,4 +58,10 @@ public class ScheduleRequestServiceImpl implements ScheduleRequestService {
 	public String getJobId(String msisdn, String requestId) {
 		return scheduledRequestMapper.getJobId(msisdn, requestId);
 	}
+	
+	@Override
+	public String getJobIdByOfferId(String msisdn, String offerId,String lifeCycleEvent) {
+		return scheduledRequestMapper.getJobIdByOfferId(msisdn, offerId,lifeCycleEvent);
+	}
+	
 }
