@@ -52,13 +52,14 @@ public class SubscriberServiceImpl implements SubscriberService{
 			logger.error("The 'msisdn' provided was empty!!");
 			throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The 'msisdn' provided was empty!!"));
 		}
-		String msisdn = null;
-		try {
-			msisdn = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber)));
-		} catch (FrameworkException e) {
-			logger.error("null","Could not prepare entity for persistence. Cause: Encrypting Identities",e);
-			throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt Subscriber identities!!"), e);
-		}
+		String msisdn = subscriber;
+//		String msisdn = null;
+//		try {
+//			msisdn = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber)));
+//		} catch (FrameworkException e) {
+//			logger.error("null","Could not prepare entity for persistence. Cause: Encrypting Identities",e);
+//			throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt Subscriber identities!!"), e);
+//		}
 		try {
 			countSubscriber = subscriberMapper.isSubscriberExists(msisdn);
 			
@@ -110,24 +111,24 @@ public class SubscriberServiceImpl implements SubscriberService{
 		}
 
 		// Perform encryption of identities...
-		try {
-			subscriber.setAccountId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getAccountId()))));
-			subscriber.setContractId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getContractId()))));
-			subscriber.setCustomerId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getCustomerId()))));
-			subscriber.setEmail(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getEmail()))));
-			subscriber.setImeiSv(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getImeiSv()))));
-			subscriber.setImsi(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getImsi()))));
-			subscriber.setMsisdn(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
-			subscriber.setPaymentParent(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentParent()))));
-			subscriber.setPaymentResponsible(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentResponsible()))));
-			subscriber.setPin(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPin()))));
-			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
-			subscriber.setContractState(ContractState.PREACTIVE);
-
-		} catch (FrameworkException e) {
-			logger.error(nbCorrelator,"Could not prepare entity for persistence. Cause: Encrypting Identities",e);
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt Subscriber identities!!"), e);
-		}
+//		try {
+//			subscriber.setAccountId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getAccountId()))));
+//			subscriber.setContractId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getContractId()))));
+//			subscriber.setCustomerId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getCustomerId()))));
+//			subscriber.setEmail(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getEmail()))));
+//			subscriber.setImeiSv(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getImeiSv()))));
+//			subscriber.setImsi(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getImsi()))));
+//			subscriber.setMsisdn(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
+//			subscriber.setPaymentParent(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentParent()))));
+//			subscriber.setPaymentResponsible(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPaymentResponsible()))));
+//			subscriber.setPin(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getPin()))));
+//			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
+//			subscriber.setContractState(ContractState.PREACTIVE);
+//
+//		} catch (FrameworkException e) {
+//			logger.error(nbCorrelator,"Could not prepare entity for persistence. Cause: Encrypting Identities",e);
+//			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt Subscriber identities!!"), e);
+//		}
 		try {
 			logger.debug("Crossing fingers... About to insert subscriber:"+ subscriber);
 				subscriberMapper.createSubscriber(subscriber);
@@ -189,16 +190,19 @@ public class SubscriberServiceImpl implements SubscriberService{
 		Subscriber subscriberDB=null;
 		Collection<SubscriberMeta> metas = null;
 		try {
-			subscriberDB=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
-			metas = subscriberMapper.getSubscriberMetas(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
+//			subscriberDB=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
+//			metas = subscriberMapper.getSubscriberMetas(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getMsisdn()))));
+
+			subscriberDB=subscriberMapper.getSubscriber(subscriber.getMsisdn());
+			metas = subscriberMapper.getSubscriberMetas(subscriber.getMsisdn());
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get Subscriber !!"), e);
 		}
-		catch(FrameworkException e1){
-			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. in updating subscriber Cause: Encrypting msisdn",e1);
-			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
-		}
+//		catch(FrameworkException e1){
+//			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. in updating subscriber Cause: Encrypting msisdn",e1);
+//			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
+//		}
 		if(subscriberDB != null){
 			List<Meta> metasFromDB = convertToMetaList(metas);
 			for(Meta meta: subscriber.getMetas()) {
@@ -226,17 +230,17 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if (subscriber == null)
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The subscriber entity provided was null!!"));
 		try {
-			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
+//			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
 			subscriber.setContractState(ContractState.READY_TO_DELETE);
 			subscriberMapper.changeContractStatus(subscriber);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to delete subscriber meta with the provided userid"), e);
 		}
-		catch(FrameworkException e1){
-			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. in updating subscriber Cause: Encrypting msisdn",e1);
-			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
-		}
+//		catch(FrameworkException e1){
+//			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. in updating subscriber Cause: Encrypting msisdn",e1);
+//			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
+//		}
 		return true;
 	}
 	
@@ -246,17 +250,17 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if (subscriber == null)
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The subscriber entity provided was null!!"));
 		try {
-			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
+//			subscriber.setUserId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(subscriber.getUserId()))));
 			subscriber.setContractState(ContractState.DUNNING);
 			subscriberMapper.changeContractStatus(subscriber);
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to delete subscriber meta with the provided userid"), e);
 		}
-		catch(FrameworkException e1){
-			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. in updating subscriber Cause: Encrypting msisdn",e1);
-			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
-		}
+//		catch(FrameworkException e1){
+//			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. in updating subscriber Cause: Encrypting msisdn",e1);
+//			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e1);
+//		}
 		return true;
 	}
 
@@ -290,14 +294,15 @@ public class SubscriberServiceImpl implements SubscriberService{
      }
      Subscriber subscriber=null;
      try {
-    	try {
+//    	try {
     		logger.debug("Parameter msisdn"+msisdn);
-    		logger.debug("Parameter msisdn after encryption"+ new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
-			subscriber=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
-		} catch (FrameworkException e) {
-			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. Cause: Encrypting msisdn",e);
-			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e);
-		}
+ //   		logger.debug("Parameter msisdn after encryption"+ new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
+//			subscriber=subscriberMapper.getSubscriber(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(msisdn))));
+			subscriber=subscriberMapper.getSubscriber(msisdn);
+//		} catch (FrameworkException e) {
+//			logger.error(nbCorrelator,"Could not prepare msisdn for persistence. Cause: Encrypting msisdn",e);
+//			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e);
+//		}
     	if(subscriber != null){
     		Collection<SubscriberMeta> metas= subscriberMapper.getSubscriberMetas(subscriber.getMsisdn());
     		List<Meta> metaList=convertToMetaList(metas);
@@ -320,19 +325,19 @@ public class SubscriberServiceImpl implements SubscriberService{
 	}
 	
 
-private Subscriber getSubscriber(String msisdn) throws PersistenceError{
-	if(msisdn == null)
-		throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The msisdn entity provided was null!!"));
-	Subscriber readSubscriber=null;
-	try {
-		readSubscriber=subscriberMapper.getSubscriber(msisdn);
-	} catch (PersistenceException e) {
-		logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
-		throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber with the provided msisdn in getSubscriber"), e);
+	private Subscriber getSubscriber(String msisdn) throws PersistenceError{
+		if(msisdn == null)
+			throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The msisdn entity provided was null!!"));
+		Subscriber readSubscriber=null;
+		try {
+			readSubscriber=subscriberMapper.getSubscriber(msisdn);
+		} catch (PersistenceException e) {
+			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
+			throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber with the provided msisdn in getSubscriber"), e);
+		}
+		return readSubscriber;
+
 	}
-	return readSubscriber;
-	
-}
 	@Override
 	public boolean createMetas(String nbCorrelator, String userId,
 			Collection<Meta> metas) throws PersistenceError {
@@ -355,7 +360,8 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 		Collection<SubscriberMeta> metas=new ArrayList<SubscriberMeta>();
 		List<Meta> metaList=new ArrayList<Meta>();
 		try {
-			metas= (List<SubscriberMeta>) subscriberMapper.getSubscriberMetas(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
+//			metas= (List<SubscriberMeta>) subscriberMapper.getSubscriberMetas(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
+			metas= (List<SubscriberMeta>) subscriberMapper.getSubscriberMetas(userId);
 			if(! metas.isEmpty()){
 			 metaList=convertToMetaList(metas);
 			}
@@ -363,9 +369,9 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 		} catch (PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(null, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get subscriber metas with the  provided userid in getSubscriber"), e);
-		} catch (FrameworkException e) {
-			logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting msisdn",e);
-			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e);
+//		} catch (FrameworkException e) {
+//			logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting msisdn",e);
+//			throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt msisdn identities!!"), e);
 		}
 		return metaList;
 	}
@@ -391,12 +397,12 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 		if(meta.getKey() != null && meta.getValue() != null){
 			susbscriberMeta.setKey(meta.getKey());
 			susbscriberMeta.setValue(meta.getValue());
-			try {
-				susbscriberMeta.setSubscriberId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
-			} catch (FrameworkException e) {
-				logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting userid",e);
-				throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt userid identities!!"), e);
-			}
+//			try {
+//				susbscriberMeta.setSubscriberId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
+//			} catch (FrameworkException e) {
+//				logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting userid",e);
+//				throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt userid identities!!"), e);
+//			}
 			subscriberMapper.insertSubscriberMeta(susbscriberMeta);
 		}
 		
@@ -418,12 +424,12 @@ private Subscriber getSubscriber(String msisdn) throws PersistenceError{
 				susbscriberMeta.setKey(meta.getKey());
 				susbscriberMeta.setValue(meta.getValue());
 				logger.debug(meta.getKey() + " " + meta.getValue() + "ANOTHER SK");
-				try {
-					susbscriberMeta.setSubscriberId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
-				} catch (FrameworkException e) {
-					logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting userid",e);
-					throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt userid identities!!"), e);
-				}
+//				try {
+//					susbscriberMeta.setSubscriberId(new String(org.apache.commons.codec.binary.Base64.encodeBase64(encryptor.encrypt(userId))));
+//				} catch (FrameworkException e) {
+//					logger.error(nbCorrelator,"Could not prepare userid for querying in updating subscriber Cause: Encrypting userid",e);
+//					throw new PersistenceError(nbCorrelator, this.getClass().getCanonicalName(),new ResponseCode(InfrastructureError,"Failed to encrypt userid identities!!"), e);
+//				}
 				subscriberMapper.updateSubscriberMeta(susbscriberMeta);
 			}
 		} catch (PersistenceException e) {
