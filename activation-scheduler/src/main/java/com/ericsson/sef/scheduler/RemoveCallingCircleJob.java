@@ -31,7 +31,7 @@ public class RemoveCallingCircleJob implements Job {
 				" Job Details  : " + jobDataMap.toString());
 		
 		try {
-			NotificationWorkflowService service = SchedulerContext.getCallingCircleWorkflow();
+		/*	NotificationWorkflowService service = SchedulerContext.getCallingCircleWorkflow();
 			Long callingCircleId = jobDataMap.getLong(ScheduleRemoveCallingCircleCmd.CALLING_CIRCLE_ID);
 			
 			
@@ -43,7 +43,7 @@ public class RemoveCallingCircleJob implements Job {
 			String eventId = SchedulerContext.getBean(IConfig.class).getValue("activationScheduler", "eventId");
 
 			service.processWorkflow(null, eventId, list);
-
+*/
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}
