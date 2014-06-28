@@ -1,5 +1,6 @@
 package com.ericsson.sef.scheduler.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
+import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
@@ -29,25 +31,16 @@ public abstract class TransactionEngineHelper {
 			throws SmException {
 
 		logger.debug("Entering TransactionEngineHelper.....getSubscriberInfo ");
-		// String requestId = RequestContextLocalStore.get().getRequestId();
 		String requestId = UniqueIdGenerator.generateId();
 		logger.debug("Generated TransactionEngineHelper Request ID..... "
 				+ requestId);
 		SubscriberInfo subscriberInfo = new SubscriberInfo();
-
-		/*
-		 * List<Meta> metas = new ArrayList<Meta>(); Meta meta = new Meta();
-		 * meta.setKey("READ_SUBSCRIBER");
-		 * meta.setValue("PARTIAL_READ_SUBSCRIBER"); metas.add(meta);
-		 */logger.debug("Entering SchedulerServiceHelper.....");
-
+		logger.debug("Entering SchedulerServiceHelper.....");
 		ISubscriberRequest subscriberRequest = SchedulerContext
 				.getBean(ISubscriberRequest.class);
-
 		String correlationId = subscriberRequest.readSubscriber(requestId,
 				msisdn, null);
 		SubscriberResponseStore.put(correlationId, subscriberInfo);
-
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
 				.getSemaphore(requestId);
 		try {
@@ -67,9 +60,9 @@ public abstract class TransactionEngineHelper {
 		return subscriberInfo;
 	}
 
-	public static PurchaseResponse purchase(String offerId, String subscriberId,
-			List<Meta> metas) throws SmException {
-		
+	public static PurchaseResponse purchase(String offerId,
+			String subscriberId, List<Meta> metas) throws SmException {
+
 		logger.debug("Entering TransactionEngineHelper.....purchase ");
 		ISubscriptionRequest iSubscriptionRequest = SchedulerContext
 				.getSubscriptionRequest();
@@ -106,15 +99,15 @@ public abstract class TransactionEngineHelper {
 		return purchaseResponse;
 
 	}
-	
-	
+
 	public static SubscriptionEventResponse renew(String subscriptionId,
 			List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....renew ");
 		ISubscriptionRequest iSubscriptionRequest = SchedulerContext
 				.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
-		String resultId = iSubscriptionRequest.renew(requestId, subscriptionId, true, metas);
+		String resultId = iSubscriptionRequest.renew(requestId, subscriptionId,
+				true, metas);
 		SubscriptionEventResponse subscriptionEventResponse = null;
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
@@ -136,7 +129,8 @@ public abstract class TransactionEngineHelper {
 		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore
 				.remove(requestId);
 
-		logger.debug("SubscriptionEventResponse recieved here is " + subscriptionEventResponse);
+		logger.debug("SubscriptionEventResponse recieved here is "
+				+ subscriptionEventResponse);
 		if (subscriptionEventResponse == null) {
 			logger.debug("No response arrived???");
 			throw new SmException(ErrorCode.internalServerError);
@@ -146,14 +140,14 @@ public abstract class TransactionEngineHelper {
 
 	}
 
-	
 	public static SubscriptionEventResponse expiry(String subscriptionId,
 			List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....expiry ");
 		ISubscriptionRequest iSubscriptionRequest = SchedulerContext
 				.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
-		String resultId = iSubscriptionRequest.expiry(requestId, subscriptionId, true, metas);
+		String resultId = iSubscriptionRequest.expiry(requestId,
+				subscriptionId, true, metas);
 		SubscriptionEventResponse subscriptionEventResponse = null;
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
@@ -175,7 +169,8 @@ public abstract class TransactionEngineHelper {
 		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore
 				.remove(requestId);
 
-		logger.debug("SubscriptionEventResponse recieved here is " + subscriptionEventResponse);
+		logger.debug("SubscriptionEventResponse recieved here is "
+				+ subscriptionEventResponse);
 		if (subscriptionEventResponse == null) {
 			logger.debug("No response arrived???");
 			throw new SmException(ErrorCode.internalServerError);
@@ -185,4 +180,70 @@ public abstract class TransactionEngineHelper {
 
 	}
 
+
+
+	public static SubscriptionEventResponse terminate(String subscriptionId,
+			List<Meta> metas) throws SmException {
+		logger.debug("Entering TransactionEngineHelper.....terminate ");
+		ISubscriptionRequest iSubscriptionRequest = SchedulerContext
+				.getSubscriptionRequest();
+		String requestId = UniqueIdGenerator.generateId();
+		String resultId = iSubscriptionRequest.terminate(requestId,
+				subscriptionId, true, metas);
+		SubscriptionEventResponse subscriptionEventResponse = null;
+		logger.debug("Got past event class....");
+		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
+				.getSemaphore(requestId);
+
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			logger.debug("Exception while sleep     :" + e.getMessage());
+		}
+		semaphore.destroy();
+
+		logger.debug("Awake from sleep.. going to check response in store with id: "
+				+ resultId);
+
+		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore
+				.remove(requestId);
+
+		logger.debug("SubscriptionEventResponse recieved here is "
+				+ subscriptionEventResponse);
+		if (subscriptionEventResponse == null) {
+			logger.debug("No response arrived???");
+			throw new SmException(ErrorCode.internalServerError);
+		}
+
+		return subscriptionEventResponse;
+
+	}
+	public static List<Meta> convertScheduledReqMetasToAPIMetas(
+			List<ScheduledRequestMeta> scheduledRequestMetaList) {
+		List<Meta> apiMetaList = new ArrayList<Meta>();
+		Meta meta = null;
+		for (ScheduledRequestMeta scheduledRequestMeta : scheduledRequestMetaList) {
+			meta = new Meta();
+			meta.setKey(scheduledRequestMeta.getKey());
+			meta.setValue(scheduledRequestMeta.getValue());
+			apiMetaList.add(meta);
+		}
+		return apiMetaList;
+	}
+
+	public static List<ScheduledRequestMeta> convertAPIMetasToScheduledReqMetas(
+			List<Meta> apiMetaList) {
+		List<ScheduledRequestMeta> scedhuledReqMetaList = new ArrayList<ScheduledRequestMeta>();
+		ScheduledRequestMeta scheduledRequestMeta = null;
+		for (Meta meta : apiMetaList) {
+			scheduledRequestMeta = new ScheduledRequestMeta();
+			scheduledRequestMeta.setKey(meta.getKey());
+			scheduledRequestMeta.setValue(meta.getValue());
+			scedhuledReqMetaList.add(scheduledRequestMeta);
+		}
+		return scedhuledReqMetaList;
+	}
 }
