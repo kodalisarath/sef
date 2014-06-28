@@ -39,7 +39,7 @@ public class TimerOfferReversal implements Serializable {
 		return hoursToReverse / 3600000;
 	}
 
-	public void setHoursToReverse(Integer minutessToReverse) {
+	public void setHoursToReverse(Integer hoursToReverse) {
 		this.hoursToReverse = hoursToReverse * 3600000;
 	}
 	
@@ -49,7 +49,7 @@ public class TimerOfferReversal implements Serializable {
 	}
 
 	public void setMinutessToReverse(Integer minutesToReverse) {
-		this.hoursToReverse = hoursToReverse * 60000;
+		this.hoursToReverse = minutesToReverse * 60000;
 	}
 	
 	

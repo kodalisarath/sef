@@ -38,7 +38,7 @@ public class DedicatedAccountReversal implements Serializable {
 		return hoursToReverse / 60000;
 	}
 
-	public void setMinutesToReverse(Integer minutesToReverse) {
+	public void setMinutesToReverse(Integer hoursToReverse) {
 		this.hoursToReverse = hoursToReverse * 60000;
 	}
 	
