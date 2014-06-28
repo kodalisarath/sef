@@ -66,21 +66,21 @@
 
 	<update id="upadteScheduledRequestStatus" parameterType="ScheduledRequest">
 		update scheduled_request
-		set status = #{status}
+		set status=#{status}
 		where resourceId=#{resourceId}
 		and msisdn=#{msisdn}
 		 <if test="id != 0">
-		    AND id = #{id}
+		    AND id=#{id}
 		 </if>
 		 <if test="jobId != null">
-		    AND jobid = #{jobId}
+		    AND jobid=#{jobId}
 		 </if>
 	</update>
 	
 	<select id="getScheduledRequestByJobId" resultMap="ScheduledRequestResult" parameterType="String">
 		select s.id , s.userid, s.msisdn, s.jobid , s.requestid , s.offerid , s.purchaseid , s.lifecycle_event , s.created , s.updated , s.status , s.resourceId
 		from scheduled_request s
-		where s.jobid = #{jobId}
+		where s.jobid=#{jobId}
 	</select>
 	
 	<select id="findIdenticalRequests" resultMap="ScheduledRequestResult" parameterType="ScheduledRequest">
@@ -88,10 +88,10 @@
 		from scheduled_request s
 		where s.status = #{status}
 		<if test="msisdn != null">
-		    AND msisdn = #{msisdn}
+		    AND msisdn=#{msisdn}
 		 </if>
 		 <if test="resourceId != null">
-		    AND resourceId = #{resourceId}
+		    AND resourceId=#{resourceId}
 		 </if>
 		 <if test="created != null and expiryTime != null">
 		    AND expiryTime between #{created jdbcType=TIMESTAMP} and #{expiryTime jdbcType=TIMESTAMP} 
@@ -108,14 +108,14 @@
 	<select id="getJobId" resultType="String" parameterType="map">
 		select s.jobid
 		from scheduled_request s
-		where s.msisdn = #{msisdn} and
+		where s.msisdn=#{msisdn} and
 		s.requestid=#{requestId}
 	</select>
 	
 	<select id="getJobIdByOfferId" resultType="String" parameterType="map">
 		select s.jobid
 		from scheduled_request s
-		where s.msisdn = #{msisdn} and
+		where s.msisdn=#{msisdn} and
 		s.offerId=#{offerId}
 		and s.lifeCycleEvent=#{lifeCycleEvent}
 	</select>

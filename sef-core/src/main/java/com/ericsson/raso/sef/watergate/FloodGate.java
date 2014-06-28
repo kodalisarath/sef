@@ -39,6 +39,7 @@ public class FloodGate {
 	}
 	
 	public boolean isAllowed() {
+		logger.error("Ingress time: Current watermark: " + this.gatedThreshold.intValue());
 		if (this.gatedThreshold.intValue() < this.highWaterMark) {
 			this.gatedThreshold.incrementAndGet();
 			return true;
@@ -47,6 +48,7 @@ public class FloodGate {
 	}
 	
 	public void exgress() {
+		logger.error("Exgress time: Current watermark: " + this.gatedThreshold.intValue());
 		this.gatedThreshold.decrementAndGet();
 	}
 
