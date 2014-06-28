@@ -26,14 +26,14 @@
 <!-- 	<bean id="licenseInterceptor" class="com.ericsson.raso.sef.auth.integration.LicenseThrottleInterceptor" /> -->
 		<!-- hdr -->
 <!-- 		<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" /> -->
-		<bean id="authenticationInterceptor"  class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor">
-			<!-- <constructor-arg>
-				<map>
-					<entry key="action" value="UsernameToken" />
-					<entry key="passwordType" value="PasswordText" />
-				</map>
-			</constructor-arg> -->
-		</bean>
+<!-- 		<bean id="authenticationInterceptor"  class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor"> -->
+<!-- 			<!-- <constructor-arg> -->
+<!-- 				<map> -->
+<!-- 					<entry key="action" value="UsernameToken" /> -->
+<!-- 					<entry key="passwordType" value="PasswordText" /> -->
+<!-- 				</map> -->
+<!-- 			</constructor-arg> --> -->
+<!-- 		</bean> -->
 
 	<cxf:cxfEndpoint id="smartInterface"
 	  serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface"
