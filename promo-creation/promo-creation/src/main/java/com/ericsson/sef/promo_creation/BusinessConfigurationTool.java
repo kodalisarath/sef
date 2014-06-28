@@ -9,6 +9,7 @@ import com.ericsson.raso.sef.bes.prodcat.OfferManager;
 import com.ericsson.raso.sef.bes.prodcat.SecureSerializationHelper;
 import com.ericsson.raso.sef.bes.prodcat.ServiceRegistry;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
+import com.ericsson.raso.sef.bes.prodcat.entities.CommitUntilNDays;
 import com.ericsson.raso.sef.bes.prodcat.entities.DaysTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.InfiniteTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.NoTermination;
@@ -17,6 +18,7 @@ import com.ericsson.raso.sef.bes.prodcat.entities.Price;
 import com.ericsson.raso.sef.bes.prodcat.entities.Resource;
 import com.ericsson.raso.sef.bes.prodcat.entities.Service;
 import com.ericsson.raso.sef.bes.prodcat.entities.State;
+import com.ericsson.raso.sef.bes.prodcat.entities.TerminateAfterNDays;
 import com.ericsson.raso.sef.bes.prodcat.entities.UnlimitedQuota;
 import com.ericsson.raso.sef.bes.prodcat.entities.smart.SmartSimplePricingPolicy;
 import com.ericsson.raso.sef.client.air.request.OfferSelection;
@@ -1623,16 +1625,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
-			System.out.println("Offer, Resource & Profile - Predefined, Araw Araw Refill...");
-			resource = this.createRefill("ArawArawText20", "1044", 1, "2000", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("RB281");
-			bizConfig = this.getSimpleBcWorkflow("ArawArawText20", "Araw-Araw Text 20", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("PantawidLoad1Bucket", "1045", 1, "100", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -1658,34 +1650,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("UnliText2All300", "UnliText2All 300", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
-
-			System.out.println("Offer, Resource & Profile - Predefined, Araw Araw Refill...");
-			resource = this.createRefill("ArawArawLoad30", "1049", 1, "3000", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("GR028");
-			bizConfig = this.getSimpleBcWorkflow("ArawArawLoad30", "Araw-Araw Load 30", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-
-			System.out.println("Offer, Resource & Profile - Predefined, Araw Araw Refill...");
-			resource = this.createRefill("ArawArawLoad60", "1050", 1, "6000", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("GR029");
-			bizConfig = this.getSimpleBcWorkflow("ArawArawLoad60", "Araw-Araw Load 60", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-
-			System.out.println("Offer, Resource & Profile - Predefined, Araw Araw Refill...");
-			resource = this.createRefill("iCHamp", "1051", 1, "0", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("CMP01");
-			bizConfig = this.getSimpleBcWorkflow("iCHamp", "iCHamp", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("RegionalCombo10", "1052", 1, "1000", CurrencyCode.PHP);
@@ -2055,7 +2019,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("IDDol25", "3015", 1, "2500", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2063,7 +2026,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("IDDol25", "IDDol 25", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("IDDol40", "3016", 1, "4000", CurrencyCode.PHP);
@@ -2073,7 +2035,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("IDDol100", "3017", 1, "10000", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2081,7 +2042,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("IDDol100", "IDDol 100", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("IDDSale", "3018", 1, "0", CurrencyCode.PHP);
@@ -2091,7 +2051,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("Unlisurf50", "5001", 1, "5000", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2099,7 +2058,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("Unlisurf50", "Unlisurf 50", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("TNTPaidSampler", "5005", 1, "100", CurrencyCode.PHP);
@@ -2109,8 +2067,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("AlwaysOn10", "5006", 1, "1000", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2118,7 +2074,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn10", "Always On 10", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("AlwaysOn20", "5007", 1, "2000", CurrencyCode.PHP);
@@ -2128,7 +2083,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("AlwaysOn30", "5008", 1, "3000", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2136,7 +2090,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn30", "Always On 30 ", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("AlwaysOn99", "5009", 1, "9900", CurrencyCode.PHP);
@@ -2146,7 +2099,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("AlwaysOn199", "5010", 1, "19900", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2154,7 +2106,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn199", "Always On 199", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("AlwaysOn299", "5011", 1, "29900", CurrencyCode.PHP);
@@ -2164,7 +2115,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("AlwaysOn499", "5012", 1, "49900", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2172,7 +2122,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn499", "Always On 499 ", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("AlwaysOn995", "5013", 1, "99500", CurrencyCode.PHP);
@@ -2182,7 +2131,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("Facebook10Panther", "5014", 1, "1000", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2190,7 +2138,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("Facebook10Panther", "Facebook 10 Panther", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("Yahoo15Panther", "5015", 1, "1500", CurrencyCode.PHP);
@@ -2200,7 +2147,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberryDaily50", "5016", 1, "5000", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2208,7 +2154,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("BlackberryDaily50", "Blackberry Daily 50", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberryWeekly300", "5017", 1, "30000", CurrencyCode.PHP);
@@ -2218,7 +2163,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberryMonthly599", "5018", 1, "59900", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2226,7 +2170,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("BlackberryMonthly599", "Blackberry Monthly 599", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberryLiteEmailDaily35", "5019", 1, "3500", CurrencyCode.PHP);
@@ -2236,7 +2179,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberryLiteEmailMonthly299", "5020", 1, "29900", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2244,7 +2186,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("BlackberryLiteEmailMonthly299", "Blackberry Lite Email Monthly 299", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberrySocialDaily35", "5021", 1, "3500", CurrencyCode.PHP);
@@ -2254,7 +2195,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberrySocialMonthly299", "5022", 1, "29900", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2263,7 +2203,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberryMessengerMonthly99", "5024", 1, "9900", CurrencyCode.PHP);
 			handles = new ArrayList<String>();
@@ -2271,7 +2210,6 @@ public class BusinessConfigurationTool {
 			bizConfig = this.getSimpleBcWorkflow("BlackberryMessengerMonthly99", "Blackberry Messenger Monthly 99", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
 			resource = this.createRefill("BlackberryMonthly599Microwarehouse", "5025", 1, "59900", CurrencyCode.PHP);
@@ -3255,7 +3193,6 @@ public class BusinessConfigurationTool {
 			toReversal.setHoursToReverse(360);
 			toReversals.add(toReversal);
 
-			
 			resource = this.createSmartReversalRefill("RevEconomy30", daReversals, toReversals);
 			handles = new ArrayList<String>();
             handles.add("RevA");
@@ -3276,8 +3213,7 @@ public class BusinessConfigurationTool {
 			daReversal.setHoursToReverse(360);
 			daReversals.add(daReversal);
 
-			
-			
+				
 			toReversals = new ArrayList<TimerOfferReversal>();
 
 			toReversal = new TimerOfferReversal();
@@ -3393,8 +3329,7 @@ public class BusinessConfigurationTool {
 			daReversal.setHoursToReverse(24);
 			daReversals.add(daReversal);
 
-			
-			
+				
 			toReversals = new ArrayList<TimerOfferReversal>();
 
 			toReversal = new TimerOfferReversal();
@@ -3499,7 +3434,6 @@ public class BusinessConfigurationTool {
 			toReversal.setHoursToReverse(720);
 			toReversals.add(toReversal);
 
-			
 			resource = this.createSmartReversalRefill("RevPasaloadP100", daReversals, toReversals);
 			handles = new ArrayList<String>();
             handles.add("Rev1H");
@@ -4149,7 +4083,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Alkansya Load Reversal...");
-			List<DedicatedAccountReversal> aReversals = new ArrayList<DedicatedAccountReversal>();
+			daReversals = new ArrayList<DedicatedAccountReversal>();
 
 			daReversal = new DedicatedAccountReversal();
 			daReversal.setDedicatedAccountInformationID(1);
@@ -4157,8 +4091,7 @@ public class BusinessConfigurationTool {
 			daReversal.setHoursToReverse(1080);
 			daReversals.add(daReversal);
 
-			
-			
+						
 			toReversals = new ArrayList<TimerOfferReversal>();
 
 			toReversal = new TimerOfferReversal();
@@ -4254,7 +4187,6 @@ public class BusinessConfigurationTool {
 			toReversal.setHoursToReverse(72);
 			toReversals.add(toReversal);
 
-			
 			resource = this.createSmartReversalRefill("RevPasariliP2.50", daReversals, toReversals);
 			handles = new ArrayList<String>();
             handles.add("RevALK05");
@@ -5722,7 +5654,7 @@ public class BusinessConfigurationTool {
 			System.out.println("Offer, Resource & Profile - VAS Refill Reversal...");
 			daReversals = new ArrayList<DedicatedAccountReversal>();
 
-			DedicatedAccountReversal aReversal = new DedicatedAccountReversal();
+			daReversal = new DedicatedAccountReversal();
 			daReversal.setDedicatedAccountInformationID(52);
 			daReversal.setAmountToReverse(2000);
 			daReversal.setHoursToReverse(24);
@@ -6439,7 +6371,7 @@ public class BusinessConfigurationTool {
 	
 			//===================================== Balance Adjustment Starts ===========================
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("OnPeakAccountID", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("OnPeakAccountID");
 			bizConfig = this.getSimpleBcWorkflow("OnPeakAccountID", "On Peak Account", handles, resource);
@@ -6447,7 +6379,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 			
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("RwdMocTri", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("RwdMocTri");
 			bizConfig = this.getSimpleBcWorkflow("RwdMocTri", "RwdMocTri", handles, resource);
@@ -6455,7 +6387,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketMocOn", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketMocOn");
 			bizConfig = this.getSimpleBcWorkflow("BucketMocOn", "BucketMocOn", handles, resource);
@@ -6463,7 +6395,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketMocSun", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketMocSun");
 			bizConfig = this.getSimpleBcWorkflow("BucketMocSun", "BucketMocSun", handles, resource);
@@ -6471,7 +6403,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketMocTri", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketMocTri");
 			bizConfig = this.getSimpleBcWorkflow("BucketMocTri", "BucketMocTri", handles, resource);
@@ -6479,7 +6411,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketMocGbl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketMocGbl");
 			bizConfig = this.getSimpleBcWorkflow("BucketMocGbl", "BucketMocGbl", handles, resource);
@@ -6487,7 +6419,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketMocGblInt", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketMocGblInt");
 			bizConfig = this.getSimpleBcWorkflow("BucketMocGblInt", "BucketMocGblInt", handles, resource);
@@ -6495,7 +6427,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketMocInt", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketMocInt");
 			bizConfig = this.getSimpleBcWorkflow("BucketMocInt", "BucketMocInt", handles, resource);
@@ -6503,7 +6435,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketRoamMoc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketRoamMoc");
 			bizConfig = this.getSimpleBcWorkflow("BucketRoamMoc", "BucketRoamMoc", handles, resource);
@@ -6511,7 +6443,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketIntlS3Moc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketIntlS3Moc");
 			bizConfig = this.getSimpleBcWorkflow("BucketIntlS3Moc", "BucketIntlS3Moc", handles, resource);
@@ -6519,7 +6451,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("CallAllBucketMoc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("CallAllBucketMoc");
 			bizConfig = this.getSimpleBcWorkflow("CallAllBucketMoc", "CallAllBucketMoc", handles, resource);
@@ -6527,7 +6459,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketTokMoc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketTokMoc");
 			bizConfig = this.getSimpleBcWorkflow("BucketTokMoc", "BucketTokMoc", handles, resource);
@@ -6535,7 +6467,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketArawMoc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketArawMoc");
 			bizConfig = this.getSimpleBcWorkflow("BucketArawMoc", "BucketArawMoc", handles, resource);
@@ -6543,7 +6475,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketTkTpdMoc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketTkTpdMoc");
 			bizConfig = this.getSimpleBcWorkflow("BucketTkTpdMoc", "BucketTkTpdMoc", handles, resource);
@@ -6551,7 +6483,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketMocTriCc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketMocTriCc");
 			bizConfig = this.getSimpleBcWorkflow("BucketMocTriCc", "BucketMocTriCc", handles, resource);
@@ -6559,7 +6491,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("RwdSmsGbl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("RwdSmsGbl");
 			bizConfig = this.getSimpleBcWorkflow("RwdSmsGbl", "RwdSmsGbl", handles, resource);
@@ -6567,7 +6499,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketSmsOn", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketSmsOn");
 			bizConfig = this.getSimpleBcWorkflow("BucketSmsOn", "BucketSmsOn", handles, resource);
@@ -6575,7 +6507,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketSmsTri", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketSmsTri");
 			bizConfig = this.getSimpleBcWorkflow("BucketSmsTri", "BucketSmsTri", handles, resource);
@@ -6583,7 +6515,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketSmsGbl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketSmsGbl");
 			bizConfig = this.getSimpleBcWorkflow("BucketSmsGbl", "BucketSmsGbl", handles, resource);
@@ -6591,7 +6523,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketSmsInt", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketSmsInt");
 			bizConfig = this.getSimpleBcWorkflow("BucketSmsInt", "BucketSmsInt", handles, resource);
@@ -6599,7 +6531,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketSmsRoam", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketSmsRoam");
 			bizConfig = this.getSimpleBcWorkflow("BucketSmsRoam", "BucketSmsRoam", handles, resource);
@@ -6607,7 +6539,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketIntlS4Sms", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketIntlS4Sms");
 			bizConfig = this.getSimpleBcWorkflow("BucketIntlS4Sms", "BucketIntlS4Sms", handles, resource);
@@ -6615,7 +6547,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketTkTpdSms", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketTkTpdSms");
 			bizConfig = this.getSimpleBcWorkflow("BucketTkTpdSms", "BucketTkTpdSms", handles, resource);
@@ -6623,7 +6555,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketKamusTxtSms", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketKamusTxtSms");
 			bizConfig = this.getSimpleBcWorkflow("BucketKamusTxtSms", "BucketKamusTxtSms", handles, resource);
@@ -6631,7 +6563,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("DailyCapSms", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("DailyCapSms");
 			bizConfig = this.getSimpleBcWorkflow("DailyCapSms", "DailyCapSms", handles, resource);
@@ -6639,7 +6571,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("AllTxtBcktSmsGbl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("AllTxtBcktSmsGbl");
 			bizConfig = this.getSimpleBcWorkflow("AllTxtBcktSmsGbl", "AllTxtBcktSmsGbl", handles, resource);
@@ -6647,7 +6579,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("ConsWalletAcc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("ConsWalletAcc");
 			bizConfig = this.getSimpleBcWorkflow("ConsWalletAcc", "ConsWalletAcc", handles, resource);
@@ -6655,7 +6587,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketIntlS1Cbo", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketIntlS1Cbo");
 			bizConfig = this.getSimpleBcWorkflow("BucketIntlS1Cbo", "BucketIntlS1Cbo", handles, resource);
@@ -6663,7 +6595,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketIntlS2Cbo", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketIntlS2Cbo");
 			bizConfig = this.getSimpleBcWorkflow("BucketIntlS2Cbo", "BucketIntlS2Cbo", handles, resource);
@@ -6671,7 +6603,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketIntlCombo", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketIntlCombo");
 			bizConfig = this.getSimpleBcWorkflow("BucketIntlCombo", "BucketIntlCombo", handles, resource);
@@ -6679,7 +6611,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("FlexiBckAcc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("FlexiBckAcc");
 			bizConfig = this.getSimpleBcWorkflow("FlexiBckAcc", "FlexiBckAcc", handles, resource);
@@ -6687,7 +6619,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("DataVolFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("DataVolFbc");
 			bizConfig = this.getSimpleBcWorkflow("DataVolFbc", "DataVolFbc", handles, resource);
@@ -6695,7 +6627,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("DataMinFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("DataMinFbc");
 			bizConfig = this.getSimpleBcWorkflow("DataMinFbc", "DataMinFbc", handles, resource);
@@ -6703,7 +6635,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("DataArawFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("DataArawFbc");
 			bizConfig = this.getSimpleBcWorkflow("DataArawFbc", "DataArawFbc", handles, resource);
@@ -6711,7 +6643,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("RwdVolDataFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("RwdVolDataFbc");
 			bizConfig = this.getSimpleBcWorkflow("RwdVolDataFbc", "RwdVolDataFbc", handles, resource);
@@ -6719,7 +6651,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("ComDataFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("ComDataFbc");
 			bizConfig = this.getSimpleBcWorkflow("ComDataFbc", "ComDataFbc", handles, resource);
@@ -6727,7 +6659,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("EmailDataFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("EmailDataFbc");
 			bizConfig = this.getSimpleBcWorkflow("EmailDataFbc", "EmailDataFbc", handles, resource);
@@ -6735,7 +6667,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("GamesDataFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("GamesDataFbc");
 			bizConfig = this.getSimpleBcWorkflow("GamesDataFbc", "GamesDataFbc", handles, resource);
@@ -6743,7 +6675,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("IMDataFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("IMDataFbc");
 			bizConfig = this.getSimpleBcWorkflow("IMDataFbc", "IMDataFbc", handles, resource);
@@ -6751,7 +6683,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("AudioStreamFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("AudioStreamFbc");
 			bizConfig = this.getSimpleBcWorkflow("AudioStreamFbc", "AudioStreamFbc", handles, resource);
@@ -6759,7 +6691,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("VideoDataFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("VideoDataFbc");
 			bizConfig = this.getSimpleBcWorkflow("VideoDataFbc", "VideoDataFbc", handles, resource);
@@ -6767,7 +6699,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("SnsDataFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("SnsDataFbc");
 			bizConfig = this.getSimpleBcWorkflow("SnsDataFbc", "SnsDataFbc", handles, resource);
@@ -6775,7 +6707,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("SnsData2Fbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("SnsData2Fbc");
 			bizConfig = this.getSimpleBcWorkflow("SnsData2Fbc", "SnsData2Fbc", handles, resource);
@@ -6783,7 +6715,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("1030DataFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("1030DataFbc");
 			bizConfig = this.getSimpleBcWorkflow("1030DataFbc", "1030DataFbc", handles, resource);
@@ -6791,7 +6723,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("1030AutoFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("1030AutoFbc");
 			bizConfig = this.getSimpleBcWorkflow("1030AutoFbc", "1030AutoFbc", handles, resource);
@@ -6799,7 +6731,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BucketIM6VolFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BucketIM6VolFbc");
 			bizConfig = this.getSimpleBcWorkflow("BucketIM6VolFbc", "BucketIM6VolFbc", handles, resource);
@@ -6807,7 +6739,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnivWalletAcc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnivWalletAcc");
 			bizConfig = this.getSimpleBcWorkflow("UnivWalletAcc", "UnivWalletAcc", handles, resource);
@@ -6815,7 +6747,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliMocOnCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliMocOnCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliMocOnCtl", "UnliMocOnCtl", handles, resource);
@@ -6823,7 +6755,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliMocTriCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliMocTriCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliMocTriCtl", "UnliMocTriCtl", handles, resource);
@@ -6831,7 +6763,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliMocGblCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliMocGblCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliMocGblCtl", "UnliMocGblCtl", handles, resource);
@@ -6839,7 +6771,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("Katok10", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("Katok10");
 			bizConfig = this.getSimpleBcWorkflow("Katok10", "Katok10", handles, resource);
@@ -6847,7 +6779,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("Katok15", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("Katok15");
 			bizConfig = this.getSimpleBcWorkflow("Katok15", "Katok15", handles, resource);
@@ -6855,7 +6787,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("KatokAtTex25", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("KatokAtTex25");
 			bizConfig = this.getSimpleBcWorkflow("KatokAtTex25", "KatokAtTex25", handles, resource);
@@ -6863,7 +6795,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("KatokAtTex35", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("KatokAtTex35");
 			bizConfig = this.getSimpleBcWorkflow("KatokAtTex35", "KatokAtTex35", handles, resource);
@@ -6871,7 +6803,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("KatokSubGrace", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("KatokSubGrace");
 			bizConfig = this.getSimpleBcWorkflow("KatokSubGrace", "KatokSubGrace", handles, resource);
@@ -6879,7 +6811,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliSmsOnCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliSmsOnCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliSmsOnCtl", "UnliSmsOnCtl", handles, resource);
@@ -6887,7 +6819,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliSmsTriCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliSmsTriCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliSmsTriCtl", "UnliSmsTriCtl", handles, resource);
@@ -6895,7 +6827,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliSmsGblCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliSmsGblCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliSmsGblCtl", "UnliSmsGblCtl", handles, resource);
@@ -6903,7 +6835,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliAccessSmsCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliAccessSmsCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliAccessSmsCtl", "UnliAccessSmsCtl", handles, resource);
@@ -6911,7 +6843,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("SnsDataFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("SnsDataFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("SnsDataFbcCtl", "SnsDataFbcCtl", handles, resource);
@@ -6919,7 +6851,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("IMDataFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("IMDataFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("IMDataFbcCtl", "IMDataFbcCtl", handles, resource);
@@ -6927,7 +6859,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("ComDataFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("ComDataFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("ComDataFbcCtl", "ComDataFbcCtl", handles, resource);
@@ -6935,7 +6867,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("EmailDataFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("EmailDataFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("EmailDataFbcCtl", "EmailDataFbcCtl", handles, resource);
@@ -6943,7 +6875,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("GamesDataFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("GamesDataFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("GamesDataFbcCtl", "GamesDataFbcCtl", handles, resource);
@@ -6951,7 +6883,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("AudioStreamFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("AudioStreamFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("AudioStreamFbcCtl", "AudioStreamFbcCtl", handles, resource);
@@ -6959,7 +6891,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("VideoDataFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("VideoDataFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("VideoDataFbcCtl", "VideoDataFbcCtl", handles, resource);
@@ -6967,7 +6899,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("LTEUnliSurfFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("LTEUnliSurfFbc");
 			bizConfig = this.getSimpleBcWorkflow("LTEUnliSurfFbc", "LTEUnliSurfFbc", handles, resource);
@@ -6975,7 +6907,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliSurfFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliSurfFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliSurfFbcCtl", "UnliSurfFbcCtl", handles, resource);
@@ -6983,7 +6915,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliSurfFbcCtlRen", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliSurfFbcCtlRen");
 			bizConfig = this.getSimpleBcWorkflow("UnliSurfFbcCtlRen", "UnliSurfFbcCtlRen", handles, resource);
@@ -6991,7 +6923,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliThroFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliThroFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliThroFbcCtl", "UnliThroFbcCtl", handles, resource);
@@ -6999,7 +6931,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BrwsThroFbc", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BrwsThroFbc");
 			bizConfig = this.getSimpleBcWorkflow("BrwsThroFbc", "BrwsThroFbc", handles, resource);
@@ -7007,7 +6939,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("BBDataFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("BBDataFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("BBDataFbcCtl", "BBDataFbcCtl", handles, resource);
@@ -7015,7 +6947,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("RoamFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("RoamFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("RoamFbcCtl", "RoamFbcCtl", handles, resource);
@@ -7023,7 +6955,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliKonekFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliKonekFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliKonekFbcCtl", "UnliKonekFbcCtl", handles, resource);
@@ -7031,7 +6963,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("SnsData2FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("SnsData2FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("SnsData2FbcCtl", "SnsData2FbcCtl", handles, resource);
@@ -7039,7 +6971,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("IMData2FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("IMData2FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("IMData2FbcCtl", "IMData2FbcCtl", handles, resource);
@@ -7047,7 +6979,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliNxbFbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliNxbFbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliNxbFbcCtl", "UnliNxbFbcCtl", handles, resource);
@@ -7055,7 +6987,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliEmail1FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliEmail1FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliEmail1FbcCtl", "UnliEmail1FbcCtl", handles, resource);
@@ -7063,7 +6995,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliIM2FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliIM2FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliIM2FbcCtl", "UnliIM2FbcCtl", handles, resource);
@@ -7071,7 +7003,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliPhoto1FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliPhoto1FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliPhoto1FbcCtl", "UnliPhoto1FbcCtl", handles, resource);
@@ -7079,7 +7011,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliSns1FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliSns1FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliSns1FbcCtl", "UnliSns1FbcCtl", handles, resource);
@@ -7087,7 +7019,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliBoost1FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliBoost1FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliBoost1FbcCtl", "UnliBoost1FbcCtl", handles, resource);
@@ -7095,7 +7027,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliIM1FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliIM1FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliIM1FbcCtl", "UnliIM1FbcCtl", handles, resource);
@@ -7103,7 +7035,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliBrws1FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliBrws1FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliBrws1FbcCtl", "UnliBrws1FbcCtl", handles, resource);
@@ -7111,69 +7043,212 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Balance Adjustment...");
-			resource = this.createSmartBalanceAdjustmentProfile("BalanceAdjustment", 1, 1);
+			resource = this.createSmartBalanceAdjustmentProfile("UnliSns2FbcCtl", 1, 1);
 			handles = new ArrayList<String>();
 			handles.add("UnliSns2FbcCtl");
 			bizConfig = this.getSimpleBcWorkflow("UnliSns2FbcCtl", "UnliSns2FbcCtl", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
+			//===================================== Balance Adjustment Ends ===========================
 			
-			//===================================== Balance Adjustment Starts ===========================			
+			//===================================== Araw Araw Begin===========================
 			
-			resource = new Service("Araw Araw");
-			resource.setDescription("Refill Profile");
+
+/*			System.out.println("Offer, Resource & Profile - Predefined, Araw Araw Refill...");
+			resource = this.createRefill("ArawArawText20", "1044", 1, "2000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("RB281");
+			bizConfig = this.getSimpleBcWorkflow("ArawArawText20", "Araw-Araw Text 20", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Predefined, Araw Araw Refill...");
+			resource = this.createRefill("ArawArawLoad30", "1049", 1, "3000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("GR028");
+			bizConfig = this.getSimpleBcWorkflow("ArawArawLoad30", "Araw-Araw Load 30", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Predefined, Araw Araw Refill...");
+			resource = this.createRefill("ArawArawLoad60", "1050", 1, "6000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("GR029");
+			bizConfig = this.getSimpleBcWorkflow("ArawArawLoad60", "Araw-Araw Load 60", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+			System.out.println("Offer, Resource & Profile - Predefined, Araw Araw Refill...");
+			resource = this.createRefill("iCHamp", "1051", 1, "0", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("CMP01");
+			bizConfig = this.getSimpleBcWorkflow("iCHamp", "iCHamp", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+*/
+		
+			resource = new Service("iCHamp");
+			resource.setDescription("Araw Araw iChamp Refill Profile");
 			resource.setConsumable(true);
 			resource.setDiscoverable(true);
 			resource.setExternallyConsumed(true);
 			resource.setConsumptionUnitName("PHP");
 
-			RefillProfile fulfillmentProfile = new RefillProfile("Refill Profile");
-			fulfillmentProfile.setRefillProfileId("L001");
+			RefillProfile fulfillmentProfile = new RefillProfile("iCHamp");
+			fulfillmentProfile.setRefillProfileId("1051");
 			fulfillmentProfile.setRefillType(1);
 			fulfillmentProfile.setTransactionAmount("0");
 			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
-			fulfillmentProfile.setPurchaseAmount("20000");
-			fulfillmentProfile.setRenewalAmount("2000");
+			fulfillmentProfile.setPurchaseAmount("1");
+			fulfillmentProfile.setRenewalAmount("9999");
 			
 
 			resource.addFulfillmentProfile(fulfillmentProfile.getName());
 			profileRegistry.createProfile(fulfillmentProfile);
 			
-			handles = new ArrayList<String>();
-			handles.add("A1");
-			
-			Offer templatedOffer = new Offer("ArawAraw20");
-			templatedOffer.setDescription("Araw Araw - Daily 20");
-			templatedOffer.setAutoTermination(new NoTermination());
-			templatedOffer.setRenewalPeriod(new InfiniteTime());
+			Offer templatedOffer = new Offer("iCHamp");
+			templatedOffer.setDescription("iCHamp Araw Araw Offer");
+			templatedOffer.setAutoTermination(new TerminateAfterNDays(7));
+			templatedOffer.setMinimumCommitment(new CommitUntilNDays(7));
+			templatedOffer.setRenewalPeriod(new DaysTime(1));
 			templatedOffer.setOfferState(State.TESTING);
 			templatedOffer.setOfferState(State.PUBLISHED);
 			templatedOffer.setRecurrent(true);
-			templatedOffer.setRenewalPeriod(new DaysTime(7));
-			templatedOffer.setTrialPeriod(null);
 			templatedOffer.setCommercial(false);
+			templatedOffer.addExternalHandle("CMP01");
 
-			for (String handle: handles)
-				templatedOffer.addExternalHandle(handle);
-
-			AtomicProduct product = new AtomicProduct("ArawAraw20");
+			AtomicProduct product = new AtomicProduct("iCHamp");
 			product.setQuota(new UnlimitedQuota());
 			product.setResource(resource);
-			product.setValidity(new DaysTime(7));
+			product.setValidity(new DaysTime(1));
 
 			templatedOffer.addProduct(product); 
 			offerManager.createOffer(templatedOffer);
 			serviceRegistry.createResource(resource);
-				
+
+			resource = new Service("ArawArawText20");
+			resource.setDescription("Araw Araw Load 20 Refill Profile");
+			resource.setConsumable(true);
+			resource.setDiscoverable(true);
+			resource.setExternallyConsumed(true);
+			resource.setConsumptionUnitName("PHP");
+
+			fulfillmentProfile = new RefillProfile("ArawArawText20");
+			fulfillmentProfile.setRefillProfileId("1044");
+			fulfillmentProfile.setRefillType(1);
+			fulfillmentProfile.setTransactionAmount("0");
+			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile.setPurchaseAmount("1");
+			fulfillmentProfile.setRenewalAmount("9999");
 			
+
+			resource.addFulfillmentProfile(fulfillmentProfile.getName());
+			profileRegistry.createProfile(fulfillmentProfile);
+			
+			templatedOffer = new Offer("ArawArawText20");
+			templatedOffer.setDescription("Araw Araw Load 20 Offer");
+			templatedOffer.setAutoTermination(new TerminateAfterNDays(5));
+			templatedOffer.setMinimumCommitment(new CommitUntilNDays(5));
+			templatedOffer.setRenewalPeriod(new DaysTime(1));
+			templatedOffer.setOfferState(State.TESTING);
+			templatedOffer.setOfferState(State.PUBLISHED);
+			templatedOffer.setRecurrent(true);
+			templatedOffer.setCommercial(false);
+			templatedOffer.addExternalHandle("RB281");
+
+			product = new AtomicProduct("ArawArawText20");
+			product.setQuota(new UnlimitedQuota());
+			product.setResource(resource);
+			product.setValidity(new DaysTime(1));
+
+			templatedOffer.addProduct(product); 
+			offerManager.createOffer(templatedOffer);
+			serviceRegistry.createResource(resource);
+						
+			resource = new Service("ArawArawLoad30");
+			resource.setDescription("Araw Araw Load 30 Refill Profile");
+			resource.setConsumable(true);
+			resource.setDiscoverable(true);
+			resource.setExternallyConsumed(true);
+			resource.setConsumptionUnitName("PHP");
+
+			fulfillmentProfile = new RefillProfile("ArawArawLoad30");
+			fulfillmentProfile.setRefillProfileId("1049");
+			fulfillmentProfile.setRefillType(1);
+			fulfillmentProfile.setTransactionAmount("0");
+			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile.setPurchaseAmount("1");
+			fulfillmentProfile.setRenewalAmount("9999");
+			
+
+			resource.addFulfillmentProfile(fulfillmentProfile.getName());
+			profileRegistry.createProfile(fulfillmentProfile);
+			
+			templatedOffer = new Offer("ArawArawLoad30");
+			templatedOffer.setDescription("Araw Araw Load 30 Offer");
+			templatedOffer.setAutoTermination(new TerminateAfterNDays(3));
+			templatedOffer.setMinimumCommitment(new CommitUntilNDays(3));
+			templatedOffer.setRenewalPeriod(new DaysTime(1));
+			templatedOffer.setOfferState(State.TESTING);
+			templatedOffer.setOfferState(State.PUBLISHED);
+			templatedOffer.setRecurrent(true);
+			templatedOffer.setCommercial(false);
+			templatedOffer.addExternalHandle("GR028");
+
+			product = new AtomicProduct("ArawArawLoad30");
+			product.setQuota(new UnlimitedQuota());
+			product.setResource(resource);
+			product.setValidity(new DaysTime(1));
+
+			templatedOffer.addProduct(product); 
+			offerManager.createOffer(templatedOffer);
+			serviceRegistry.createResource(resource);
+						
+
+			resource = new Service("ArawArawLoad60");
+			resource.setDescription("Araw Araw Load 60 Refill Profile");
+			resource.setConsumable(true);
+			resource.setDiscoverable(true);
+			resource.setExternallyConsumed(true);
+			resource.setConsumptionUnitName("PHP");
+
+			fulfillmentProfile = new RefillProfile("ArawArawLoad60");
+			fulfillmentProfile.setRefillProfileId("1050");
+			fulfillmentProfile.setRefillType(1);
+			fulfillmentProfile.setTransactionAmount("0");
+			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile.setPurchaseAmount("1");
+			fulfillmentProfile.setRenewalAmount("9999");
+			
+
+			resource.addFulfillmentProfile(fulfillmentProfile.getName());
+			profileRegistry.createProfile(fulfillmentProfile);
+			
+			templatedOffer = new Offer("ArawArawLoad60");
+			templatedOffer.setDescription("Araw Araw Load 60 Offer");
+			templatedOffer.setAutoTermination(new TerminateAfterNDays(7));
+			templatedOffer.setMinimumCommitment(new CommitUntilNDays(7));
+			templatedOffer.setRenewalPeriod(new DaysTime(1));
+			templatedOffer.setOfferState(State.TESTING);
+			templatedOffer.setOfferState(State.PUBLISHED);
+			templatedOffer.setRecurrent(true);
+			templatedOffer.setCommercial(false);
+			templatedOffer.addExternalHandle("GR029");
+
+			product = new AtomicProduct("ArawArawLoad60");
+			product.setQuota(new UnlimitedQuota());
+			product.setResource(resource);
+			product.setValidity(new DaysTime(1));
+
+			templatedOffer.addProduct(product); 
+			offerManager.createOffer(templatedOffer);
+			serviceRegistry.createResource(resource);
+						
 
 		//TODO: insert new bizconfig here...
 			System.out.println("Offer, Resources & Profiles - DONE!!\n");
-			
-			
-			
-			
+						
 			
 		} catch (CatalogException e) {
 			System.out.println("Failed creating BizConfig. Cause: " + e.getMessage());
@@ -7517,7 +7592,7 @@ public class BusinessConfigurationTool {
 	public Resource createSmartFlexiRefillProfile(String name) throws CatalogException {
 
 		Resource resource = new Service(name);
-		resource.setDescription("Balance Adjustment Profile");
+		resource.setDescription("Smart Flexible Refill Profile");
 		resource.setConsumable(true);
 		resource.setDiscoverable(true);
 		resource.setExternallyConsumed(true);
