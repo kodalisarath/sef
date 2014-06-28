@@ -19,6 +19,7 @@ import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.UniqueIdGenerator;
 import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
@@ -56,22 +57,6 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 		
 		
 		// get account details
-//		LOGGER.info("Preparing the transaction with get account details");
-//		GetAccountDetailsRequest accountDetailsRequest = new GetAccountDetailsRequest();
-//		accountDetailsRequest.setSubscriberNumber(msisdn);
-//		accountDetailsRequest.setSubscriberNumberNAI(1);
-//		
-//		GetAccountDetailsCommand accountDetailsCommand = new GetAccountDetailsCommand(accountDetailsRequest);
-//		GetAccountDetailsResponse accountDetailsResponse = null;
-//		try {
-//			accountDetailsResponse = accountDetailsCommand.execute();
-//		} catch (SmException e) {
-//			LOGGER.debug("Failed Get Account Details. Code: " + e.getStatusCode().getCode() + e.getStatusCode().getMessage());
-//			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getMessage()));	
-//		}
-		
-		// extract needed info
-//	 	List<com.ericsson.raso.sef.client.air.response.ServiceOffering> existingServiceOfferings = accountDetailsResponse.getServiceOfferings();
 	 	
 		
 	 	List<String> metaKeys = new ArrayList<String>();
@@ -79,7 +64,7 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 	 	List<Meta> metas;
 		try {
 			SubscriberService subscriberService = SefCoreServiceResolver.getSusbcriberStore();
-		 	metas = subscriberService.getMetas("dynamic-task", msisdn, metaKeys);
+		 	metas = subscriberService.getMetas(UniqueIdGenerator.generateId(), msisdn, metaKeys);
 		} catch (PersistenceError e) {
 			LOGGER.debug("Failed Get Account Details. Code: " + e.getStatusCode().getCode() + e.getStatusCode().getMessage());
 			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getMessage()));	
@@ -156,7 +141,6 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "UnsubscribePackageItemProfile [serviceClassAction=" + serviceClassAction + ", serviceOfferings=" + serviceOfferings + "]";
 	}
 }
