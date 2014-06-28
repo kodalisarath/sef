@@ -20,11 +20,11 @@ import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.Period;
-import com.ericsson.raso.sef.core.db.mapper.ScheduledRequestMapper;
+import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
-import com.ericsson.raso.sef.core.db.model.SmSequence;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
+import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.HelperConstant;
@@ -34,6 +34,7 @@ import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.scheduler.OfferRenewalJob;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
+import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 //import com.ericsson.sm.core.Command;
 //import com.ericsson.sm.core.Meta;
 //import com.ericsson.sm.core.Period;
@@ -77,14 +78,14 @@ public class PurchaseRenewalCommand implements Command<Void> {
 			 * SchedulerContext.getUserProfileService(); final String userId =
 			 * userProfileService.getUserId(msisdn);
 			 */
-
+			log.debug("Calling PurchaseRenewalCommand.....");
 			//
 			Subscriber subscriber = null;
 			try {
 				String requestId = RequestContextLocalStore.get().getRequestId();
 			//	List<Meta> metaList = new ArrayList<Meta>();
 			//	metaList.add(new Meta("READ_SUBSCRIBER", "ENTIRE_READ_SUBSCRIBER"));
-				SubscriberInfo subscriberInfo = readEntireSubscriberInfo(requestId, msisdn, null);
+				SubscriberInfo subscriberInfo = TransactionEngineHelper.getSubscriberInfo(msisdn);
 
 				log.debug("subscriberInfo returned is " + subscriberInfo);
 				subscriber = subscriberInfo.getSubscriber();
@@ -95,8 +96,9 @@ public class PurchaseRenewalCommand implements Command<Void> {
 				throw new RuntimeException(e1);
 			}
 			//
-			final ScheduledRequestMapper mapper = SchedulerContext.getScheduledRequestMapper();
-			SmSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
+			log.debug("invoking ScheduledRequestMapper...");
+			final ScheduleRequestService mapper = SefCoreServiceResolver.getScheduleRequestService();
+			ObsoleteCodeDbSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
 			final long id = sequence.getSeq();
 			final ScheduledRequest request = new ScheduledRequest();
 			request.setCreated(new DateTime());
