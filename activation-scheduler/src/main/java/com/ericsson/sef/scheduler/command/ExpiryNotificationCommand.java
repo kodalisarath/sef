@@ -27,7 +27,7 @@ import com.ericsson.raso.sef.core.db.mapper.ScheduledRequestMapper;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus;
-import com.ericsson.raso.sef.core.db.model.SmSequence;
+import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.ne.Language;
 import com.ericsson.raso.sef.core.ne.NotificationMessage;
@@ -212,7 +212,7 @@ public class ExpiryNotificationCommand implements Command<Void> {
 				}
 
 			final ScheduledRequestMapper mapper = SchedulerContext.getScheduledRequestMapper();
-			SmSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
+			ObsoleteCodeDbSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
 			final long id = sequence.getSeq();
 			final ScheduledRequest request = new ScheduledRequest();
 			request.setCreated(new DateTime());
