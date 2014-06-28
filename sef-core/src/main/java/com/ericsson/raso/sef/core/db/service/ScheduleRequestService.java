@@ -23,5 +23,7 @@ public interface ScheduleRequestService {
 	void insertScheduledRequestMeta(ScheduledRequestMeta meta);
 
 	String getJobId(String msisdn, String requestId);
+	
+	String getJobIdByOfferId(String msisdn, String offerId,String lifeCycleEvent);
 
 }
