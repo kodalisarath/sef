@@ -417,7 +417,7 @@ public final class CallingCircleProfile extends RefillProfile {
 	private void sendSorryMessage(String eventName, String subscriberId) {
 		SmppMessage message = new SmppMessage();
 		message.setDestinationMsisdn(subscriberId);
-		message.setMessageBody(event + "," + "x:X");
+		message.setMessageBody(eventName + "," + "x:X");
 		FulfillmentServiceResolver.getCamelContext().createProducerTemplate().sendBody("activemq:queue:notification", message);
 
 	}

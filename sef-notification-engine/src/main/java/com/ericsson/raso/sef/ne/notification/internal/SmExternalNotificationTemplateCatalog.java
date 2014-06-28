@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 
 import com.ericsson.raso.sef.core.SmException;
@@ -17,6 +19,7 @@ import com.ericsson.raso.sef.ne.NotificationEngineServiceResolver;
 
 
 public class SmExternalNotificationTemplateCatalog implements ExternalNotificationTemplateCatalog {
+	private static final Logger logger = LoggerFactory.getLogger(SmExternalNotificationTemplateCatalog.class);
 
 	private Map<String, ExternalNotifcationEvent> map = new HashMap<String, ExternalNotifcationEvent>();
 
@@ -71,6 +74,7 @@ public class SmExternalNotificationTemplateCatalog implements ExternalNotificati
 		if(resource.exists())  {
 			ObjectInputStream stream = new ObjectInputStream(resource.getInputStream());
 			Map<String, ExternalNotifcationEvent> externalNotifications = (Map<String, ExternalNotifcationEvent>) stream.readObject();
+			logger.debug("Notification Catalog loaded from ccm: " + externalNotifications);
 			stream.close();
 			return externalNotifications;
 		}  
@@ -86,4 +90,7 @@ public class SmExternalNotificationTemplateCatalog implements ExternalNotificati
 			throw new SmException(e);
 		}
 	}
+
+	
+	
 }
