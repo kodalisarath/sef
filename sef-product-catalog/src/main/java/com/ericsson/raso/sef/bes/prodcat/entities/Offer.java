@@ -283,6 +283,11 @@ public class Offer implements Serializable {
 		} else {
 			try {
 				subscription = new FetchSubscription(subscriptionId).execute();
+				
+				//TODO: this is a temporary fix until subcription entity model is available....
+				if (subscription == null) {
+					subscription = new Subscription(this);
+				}
 				metas.put(Constants.SUBSCRIPTION_ENTITY.name(), subscription);
 			} catch (FrameworkException e) {
 				if (e instanceof CatalogException)
