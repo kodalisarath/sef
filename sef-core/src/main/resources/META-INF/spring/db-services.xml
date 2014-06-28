@@ -50,7 +50,7 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 	<bean id="callingCircleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.smart.CallingCircleMapper" />
+		<property name="mapperInterface" value="com.ericsson.raso.sef.core.db.mapper.smart.CallingCircleMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
