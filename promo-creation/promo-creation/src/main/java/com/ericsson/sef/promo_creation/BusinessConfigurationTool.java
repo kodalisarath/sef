@@ -11,6 +11,7 @@ import com.ericsson.raso.sef.bes.prodcat.ServiceRegistry;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.CommitUntilNDays;
 import com.ericsson.raso.sef.bes.prodcat.entities.DaysTime;
+import com.ericsson.raso.sef.bes.prodcat.entities.HoursTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.InfiniteTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.NoTermination;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
@@ -7127,14 +7128,14 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(templatedOffer);
 			serviceRegistry.createResource(resource);
 
-			resource = new Service("ArawArawText20");
-			resource.setDescription("Araw Araw Load 20 Refill Profile");
+			resource = new Service("mAraw");
+			resource.setDescription("mAraw Refill Profile");
 			resource.setConsumable(true);
 			resource.setDiscoverable(true);
 			resource.setExternallyConsumed(true);
 			resource.setConsumptionUnitName("PHP");
 
-			fulfillmentProfile = new RefillProfile("ArawArawText20");
+			fulfillmentProfile = new RefillProfile("mAraw");
 			fulfillmentProfile.setRefillProfileId("1044");
 			fulfillmentProfile.setRefillType(1);
 			fulfillmentProfile.setTransactionAmount("0");
@@ -7146,18 +7147,18 @@ public class BusinessConfigurationTool {
 			resource.addFulfillmentProfile(fulfillmentProfile.getName());
 			profileRegistry.createProfile(fulfillmentProfile);
 			
-			templatedOffer = new Offer("ArawArawText20");
-			templatedOffer.setDescription("Araw Araw Load 20 Offer");
+			templatedOffer = new Offer("mAraw");
+			templatedOffer.setDescription("mAraw Offer");
 			templatedOffer.setAutoTermination(new TerminateAfterNDays(5));
 			templatedOffer.setMinimumCommitment(new CommitUntilNDays(5));
-			templatedOffer.setRenewalPeriod(new DaysTime(1));
+			templatedOffer.setRenewalPeriod(new HoursTime((byte)1));
 			templatedOffer.setOfferState(State.TESTING);
 			templatedOffer.setOfferState(State.PUBLISHED);
 			templatedOffer.setRecurrent(true);
 			templatedOffer.setCommercial(false);
 			templatedOffer.addExternalHandle("RB281");
 
-			product = new AtomicProduct("ArawArawText20");
+			product = new AtomicProduct("mAraw");
 			product.setQuota(new UnlimitedQuota());
 			product.setResource(resource);
 			product.setValidity(new DaysTime(1));
@@ -7172,6 +7173,53 @@ public class BusinessConfigurationTool {
 			resource.setDiscoverable(true);
 			resource.setExternallyConsumed(true);
 			resource.setConsumptionUnitName("PHP");
+
+			
+//			resource = new Service("ArawArawText20");
+//			resource.setDescription("Araw Araw Load 20 Refill Profile");
+//			resource.setConsumable(true);
+//			resource.setDiscoverable(true);
+//			resource.setExternallyConsumed(true);
+//			resource.setConsumptionUnitName("PHP");
+//
+//			fulfillmentProfile = new RefillProfile("ArawArawText20");
+//			fulfillmentProfile.setRefillProfileId("1044");
+//			fulfillmentProfile.setRefillType(1);
+//			fulfillmentProfile.setTransactionAmount("0");
+//			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
+//			fulfillmentProfile.setPurchaseAmount("1");
+//			fulfillmentProfile.setRenewalAmount("9999");
+//			
+//
+//			resource.addFulfillmentProfile(fulfillmentProfile.getName());
+//			profileRegistry.createProfile(fulfillmentProfile);
+//			
+//			templatedOffer = new Offer("ArawArawText20");
+//			templatedOffer.setDescription("Araw Araw Load 20 Offer");
+//			templatedOffer.setAutoTermination(new TerminateAfterNDays(5));
+//			templatedOffer.setMinimumCommitment(new CommitUntilNDays(5));
+//			templatedOffer.setRenewalPeriod(new DaysTime(1));
+//			templatedOffer.setOfferState(State.TESTING);
+//			templatedOffer.setOfferState(State.PUBLISHED);
+//			templatedOffer.setRecurrent(true);
+//			templatedOffer.setCommercial(false);
+//			templatedOffer.addExternalHandle("RB281");
+//
+//			product = new AtomicProduct("ArawArawText20");
+//			product.setQuota(new UnlimitedQuota());
+//			product.setResource(resource);
+//			product.setValidity(new DaysTime(1));
+//
+//			templatedOffer.addProduct(product); 
+//			offerManager.createOffer(templatedOffer);
+//			serviceRegistry.createResource(resource);
+//						
+//			resource = new Service("ArawArawLoad30");
+//			resource.setDescription("Araw Araw Load 30 Refill Profile");
+//			resource.setConsumable(true);
+//			resource.setDiscoverable(true);
+//			resource.setExternallyConsumed(true);
+//			resource.setConsumptionUnitName("PHP");
 
 			fulfillmentProfile = new RefillProfile("ArawArawLoad30");
 			fulfillmentProfile.setRefillProfileId("1049");

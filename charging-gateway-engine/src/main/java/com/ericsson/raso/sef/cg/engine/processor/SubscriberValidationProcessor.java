@@ -14,8 +14,6 @@ import com.ericsson.raso.sef.cg.engine.Operation;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.common.CGEngineServiceHelper;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.smart.ErrorCode;
-import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 
 public class SubscriberValidationProcessor implements Processor {

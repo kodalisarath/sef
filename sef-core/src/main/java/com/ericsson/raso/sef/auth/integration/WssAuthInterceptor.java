@@ -17,6 +17,7 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 	private static final HashMap<String, String> credentials = new HashMap<String, String>();
 
 	public WssAuthInterceptor() {
+
 		credentials.put("esatnar", "pass");
 		credentials.put("smturm01soapp", "smturm01@3R!");
 
