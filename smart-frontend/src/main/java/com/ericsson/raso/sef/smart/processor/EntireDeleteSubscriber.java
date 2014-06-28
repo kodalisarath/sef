@@ -20,6 +20,7 @@ import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.EntireDeleteRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
@@ -50,6 +51,11 @@ public class EntireDeleteSubscriber implements Processor{
 			logger.debug("Response received for delete.. now creating front end response");
 			//exchange.getOut().setBody(subscriberInfo);
 			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+			
+			
+			logger.error("FloodGate acknowledging exgress...");
+			FloodGate.getInstance().exgress();
+			
 			DummyProcessor.response(exchange);
 			exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 		} catch (Exception e) {

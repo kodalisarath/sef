@@ -18,6 +18,7 @@ import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.CreateOrWriteServiceAccessKeyRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
@@ -36,19 +37,23 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
 
 		String requestId = RequestContextLocalStore.get().getRequestId();
-		
+
 		SubscriberInfo subscriberInfo = updateSubscriber(requestId,request.getCustomerId(), metas,Constants.CreateOrWriteServiceAccessKey);
 		// exchange.getOut().setBody(subscriberInfo);
-	if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
-		
-		throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
-		
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0) {
+
+			throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
+
+		}
+		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+
+		logger.error("FloodGate acknowledging exgress...");
+		FloodGate.getInstance().exgress();
+
+		DummyProcessor.response(exchange);
+		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 	}
-	String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
-	DummyProcessor.response(exchange);
-	exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
-	}
-	
+
 	private SubscriberInfo updateSubscriber(String requestId,
 			String customer_id, List<Meta> metas,String useCase) throws SmException {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
@@ -70,7 +75,7 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		logger.info("Check if response received for update subscriber");
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
 				.remove(requestId);
-		
+
 		return subscriberInfo;
 	}
 

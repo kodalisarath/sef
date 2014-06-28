@@ -11,6 +11,7 @@ import com.ericsson.raso.sef.smart.commons.SmartServiceHelper;
 import com.ericsson.raso.sef.smart.commons.read.EntireRead;
 import com.ericsson.raso.sef.smart.commons.read.Rpp;
 import com.ericsson.raso.sef.smart.usecase.RetrieveReadRPPRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.OperationResult;
@@ -40,6 +41,9 @@ public class RetrieveReadRPP implements Processor {
 				.getCustomerId());
 
 		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+		
+		log.error("FloodGate acknowledging exgress...");
+		FloodGate.getInstance().exgress();
 		
 		exchange.getOut().setBody(
 				createResponse(entireRead, request.isTransactional()));

@@ -21,6 +21,7 @@ import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.ModifyCustomerPreActiveRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
@@ -85,10 +86,16 @@ public class ModifyCustomerPreActive implements Processor {
 			if(subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0){
 				throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 			}
+			
 		}
 		else{
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
+		
+		
+		logger.error("FloodGate acknowledging exgress...");
+		FloodGate.getInstance().exgress();
+		
 		CommandResponseData responseData = createResponse(true, newExpiry);
 		
 		

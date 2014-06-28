@@ -19,6 +19,7 @@ import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.CreateOrWriteRopRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
@@ -90,6 +91,11 @@ OwningCustomerId
 			
 		}
 		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+		
+		
+		logger.error("FloodGate acknowledging exgress...");
+		FloodGate.getInstance().exgress();
+		
 		DummyProcessor.response(exchange);
 		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier); 
 		//exchange.getOut().setBody(subscriberInfo);

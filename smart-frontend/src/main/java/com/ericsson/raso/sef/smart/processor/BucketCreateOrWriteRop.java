@@ -18,6 +18,7 @@ import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.BucketCreateOrWriteRopRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
@@ -47,6 +48,9 @@ public class BucketCreateOrWriteRop implements Processor {
 		throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(),subscriberInfo.getStatus().getDescription()));
 			
 		}
+		
+		logger.error("FloodGate acknowledging exgress...");
+		FloodGate.getInstance().exgress();
 		DummyProcessor.response(exchange);
 	}
 

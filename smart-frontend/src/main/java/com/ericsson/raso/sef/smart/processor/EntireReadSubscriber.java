@@ -25,6 +25,7 @@ import com.ericsson.raso.sef.smart.commons.read.Rpp;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.EntireReadRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
@@ -70,6 +71,11 @@ public class EntireReadSubscriber implements Processor {
 
 		logger.debug("Manila: EntireRead Response is " + entireRead);
 		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+		
+		logger.error("FloodGate acknowledging exgress...");
+		FloodGate.getInstance().exgress();
+		
+		
 		exchange.getOut().setBody(createResponse(entireRead, request.isTransactional()));
 		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 

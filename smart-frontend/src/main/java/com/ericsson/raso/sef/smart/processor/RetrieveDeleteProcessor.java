@@ -23,6 +23,7 @@ import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.usecase.RetrieveDeleteRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
@@ -63,6 +64,9 @@ public class RetrieveDeleteProcessor implements Processor {
 			CommandResponseData cr = this.createResponse(true);
 
 			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+			
+			logger.error("FloodGate acknowledging exgress...");
+			FloodGate.getInstance().exgress();
 			
 			exchange.getOut().setBody(cr);
 			
