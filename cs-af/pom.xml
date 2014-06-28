@@ -1,27 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.ericsson.sef</groupId>
-  <artifactId>cs-af</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+	<groupId>com.ericsson.sef</groupId>
+	<artifactId>cs-af</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 
-  <name>cs-af</name>
-  <url>http://maven.apache.org</url>
+	<name>cs-af</name>
+	<url>http://maven.apache.org</url>
 
-  <packaging>bundle</packaging>
+	<packaging>bundle</packaging>
 
 	<properties>
 		<osgi-import-package>
-		org.springframework.*,
-		com.ericsson.raso.sef.core,
-		com.ericsson.raso.sef.core.camelprocessors,
-		com.ericsson.raso.sef.auth.*,
-		com.ericsson.raso.sef.core.config,
-		com.ericsson.raso.sef.logging,
-		com.ericsson.raso.sef.core.lb,
-		org.slf4j,
-		META-INF.sef-core
+			org.springframework.*,
+			com.ericsson.raso.sef.core,
+			com.ericsson.raso.sef.core.camelprocessors,
+			com.ericsson.raso.sef.auth.*,
+			com.ericsson.raso.sef.core.config,
+			com.ericsson.raso.sef.logging,
+			com.ericsson.raso.sef.core.lb,
+			org.slf4j,
+			META-INF.sef-core
 		</osgi-import-package>
 		<osgi-export-package>
 			com.ericsson.raso.sef.client.af.command,
@@ -39,7 +39,7 @@
 
 	<build>
 		<plugins>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -53,6 +53,7 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
+				<version>2.4.0</version>
 				<configuration>
 					<instructions>
 						<Import-Package>${osgi-import-package}</Import-Package>
