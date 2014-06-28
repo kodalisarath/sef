@@ -26,6 +26,7 @@ import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.ModifyTaggingRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
@@ -173,6 +174,9 @@ public class ModifyTagging implements Processor {
 			throw new SmException(ErrorCode.internalServerError);
 		}
 		else{
+			logger.error("FloodGate acknowledging exgress...");
+			FloodGate.getInstance().exgress();
+			
 			 CommandResponseData cr = this.createResponse(true,request.getTagging());
 			 String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");  
 			 exchange.getOut().setBody(cr);

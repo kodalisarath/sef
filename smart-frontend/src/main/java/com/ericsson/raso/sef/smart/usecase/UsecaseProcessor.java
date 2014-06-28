@@ -5,6 +5,9 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandRequestData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
 
@@ -14,6 +17,13 @@ public class UsecaseProcessor implements Processor {
 	
 	@Override
 	public void process(Exchange exchange) throws Exception {
+		
+		logger.debug("SMFE Gated Control Service - authorizing traffic ingress");
+		if (!FloodGate.getInstance().isAllowed()) {
+			logger.error("Flood Gate rejected - high Water Mark breach");
+			throw ExceptionUtil.toSmException(ErrorCode.trafficLimitViolation);
+		}
+		
 		
 		logger.debug("Entering SMFE frontend request received");
 		CommandRequestData commandRequestData = exchange.getIn().getBody(CommandRequestData.class);

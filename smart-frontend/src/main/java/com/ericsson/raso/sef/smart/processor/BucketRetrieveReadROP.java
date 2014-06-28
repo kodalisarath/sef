@@ -17,6 +17,7 @@ import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.BucketRetrieveReadROPRequest;
 import com.ericsson.raso.sef.smart.usecase.Usecase;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
@@ -29,7 +30,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.TransactionResult;
 public class BucketRetrieveReadROP implements Processor {
 	private static final Logger logger = LoggerFactory
 			.getLogger(BucketRetrieveReadROP.class);
-	
+
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		try {
@@ -38,7 +39,7 @@ public class BucketRetrieveReadROP implements Processor {
 			BucketRetrieveReadROPRequest bucketRetrieveReadROPRequest = (BucketRetrieveReadROPRequest) exchange
 					.getIn().getBody();
 			logger.debug("Got it!");
-			
+
 			// functional service logic to be ported here [Porting work]
 			List<Meta> metas = new ArrayList<Meta>();
 			metas.add(new Meta("command", bucketRetrieveReadROPRequest.getCommand()));
@@ -46,30 +47,35 @@ public class BucketRetrieveReadROP implements Processor {
 			Usecase smartUsecase = bucketRetrieveReadROPRequest.getUsecase();
 			String operationName = smartUsecase.getOperation();
 			String operationModifier = smartUsecase.getModifier();
-			
+
 			String requestId = RequestContextLocalStore.get().getRequestId();
 			SubscriberInfo subscriberinfo = readSubscriber(requestId, bucketRetrieveReadROPRequest.getCustomerId(),metas);
 			// need error code response for EntireReadSubscriber
-					if(subscriberinfo == null) {
-						/*throw new SmException(new ResponseCode(-111,
+			if(subscriberinfo == null) {
+				/*throw new SmException(new ResponseCode(-111,
 								"13423#EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + readRequest.getCustomerId()
 										+ " does not exist"));*/
-						throw new SmException(new ResponseCode(504, "13423#Bucket Retrieve Read ROP Entity - Customer with primary key Keyname:PK,CustomerId: " + bucketRetrieveReadROPRequest.getCustomerId()
-								+ " does not exist"));
-					}
+				throw new SmException(new ResponseCode(504, "13423#Bucket Retrieve Read ROP Entity - Customer with primary key Keyname:PK,CustomerId: " + bucketRetrieveReadROPRequest.getCustomerId()
+						+ " does not exist"));
+			}
+
+
+			logger.error("FloodGate acknowledging exgress...");
+			FloodGate.getInstance().exgress();
+
 			CommandResponseData responseData = createResponse(bucketRetrieveReadROPRequest.getUsecase().getOperation(), bucketRetrieveReadROPRequest.getUsecase().getModifier(),bucketRetrieveReadROPRequest.isTransactional());
 			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");
 			exchange.getOut().setBody(responseData);
 			exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
-			
-			
+
+
 		} catch (Exception e) {
 			logger.error("Error in processor class:",this.getClass().getName(),e);
 		}
-		
-				
+
+
 	}
-	
+
 	private SubscriberInfo readSubscriber(String requestId, String customerId, List<Meta> metas) {
 		logger.info("Invoking bucket retrieve read rop subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
@@ -78,10 +84,10 @@ public class BucketRetrieveReadROP implements Processor {
 		iSubscriberRequest.readSubscriber(requestId, customerId, metas);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
-		semaphore.init(0);
-		semaphore.acquire();
+			semaphore.init(0);
+			semaphore.acquire();
 		} catch(InterruptedException e) {
-			
+
 		}
 		semaphore.destroy();
 		logger.info("Check if response received for Read subscriber");
@@ -108,8 +114,8 @@ public class BucketRetrieveReadROP implements Processor {
 		} else {
 			result.setOperationResult(operationResult);
 		}
-			
+
 		return responseData;
 	}
-	
+
 }

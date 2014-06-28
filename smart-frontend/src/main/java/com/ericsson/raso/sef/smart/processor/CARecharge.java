@@ -32,6 +32,7 @@ import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.RechargeRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
@@ -156,6 +157,9 @@ public class CARecharge implements Processor {
 
 			logger.debug("Response purchase received.. now creating front end response");
 
+			logger.error("FloodGate acknowledging exgress...");
+			FloodGate.getInstance().exgress();
+			
 			CommandResponseData responseData = createResponse(rechargeRequest.isTransactional(), purchaseResponse);
 			String edrIdentifier = (String)arg0.getIn().getHeader("EDR_IDENTIFIER");
 			arg0.getOut().setBody(responseData);

@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.Constants;
 import com.ericsson.raso.sef.bes.prodcat.ServiceResolver;
@@ -22,6 +25,8 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.ChargingMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscriber;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FulfillmentMode;
+import com.ericsson.raso.sef.bes.prodcat.tasks.Future;
+import com.ericsson.raso.sef.bes.prodcat.tasks.FutureMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Notification;
 import com.ericsson.raso.sef.bes.prodcat.tasks.NotificationMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
@@ -42,6 +47,7 @@ import com.ericsson.raso.sef.core.db.model.Subscriber;
  */
 public class Subscription extends Offer {
 	private static final long serialVersionUID = 218826816576313417L;
+	private static final Logger logger = LoggerFactory.getLogger(Subscription.class);
 	
 	private String subscriberId = null;
 	private String subscriptionId = null;
@@ -74,17 +80,17 @@ public class Subscription extends Offer {
 		this.setWhiteListedUsers(offer.getWhiteListedUsers());
 		
 		try {
-		this.setRenewalPeriod(offer.getRenewalPeriod());
-		this.setTrialPeriod(offer.getTrialPeriod());
+			this.setRenewalPeriod(offer.getRenewalPeriod());
+			this.setTrialPeriod(offer.getTrialPeriod());
 		} catch (CatalogException e) {
-			//TODO: Logger - just have to ignore these
+			logger.info("failed setting renewal period and trial period when creating subscription for offer: " + offer.getName());
 		}
 		
 	}
 	
 	protected List<TransactionTask> subscriptionQuery(String subscriberId, boolean override, Map<String, Object> metas) {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
-		
+		logger.debug("Going to prepare query tasks for subsriberId: " + subscriberId + ", subcription");
 		for (AtomicProduct product: this.getProvisionedProducts()) {
 			tasks.add(new Fulfillment(FulfillmentMode.QUERY, product, subscriberId, null));
 		}
@@ -109,27 +115,29 @@ public class Subscription extends Offer {
 			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId, null));
 		}
 
+		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.EXPIRY.name(), metas));
 				
 		// now, pack all tasks related to exit event...
 		if (this.getExit() != null) {
 			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
 			Offer exitOffer = catalog.getOfferById(this.getExit());
 			if (exitOffer == null) {
-				//TODO: Logger - explain whey the expiry did not switch the user to new offer when exit is defined.  "Exit Offer was defined for expiry, but the relevant offer: " + this.exitOfferId + " was not found in the Catalog"
+				logger.info("Exit Offer was defined for expiry, but the relevant offer: " + this.getExit() + " was not found in the Catalog");
 			}
 			
 			if (exitOffer.getOfferState() != State.PUBLISHED) {
-				//TODO: Logger - explain whey the expiry did not switch the user to new offer when exit is defined. "Exit Offer was defined for expiry, but the relevant offer: " + this.exitOfferId + " is not in PUBLISHED state now"
-			}
-			
-			try {
-				tasks.addAll(exitOffer.purchase(subscriberId, false, metas));
-			} catch (CatalogException e) {
-				//TODO: Logger - capture the error message and allow expiry deprovisioning to happen
+				logger.info("Exit Offer was defined for expiry, but the relevant offer: " + this.getExit() + " is not in PUBLISHED state now");
+				
+			} else {
+
+				try {
+					tasks.addAll(exitOffer.purchase(subscriberId, false, metas));
+				} catch (CatalogException e) {
+					logger.error("Unable to get exit offer provisioning prepared for: " + this.getExit());
+				}
 			}
 		}
 		
-		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.EXPIRY.name(), metas));
 		
 		// save states and history & ask to be saved in DB
 		this.subscriptionHistory.add(SubscriptionLifeCycleState.IN_EXPIRY, EXPIRY_TIMESTAMP);
@@ -149,35 +157,11 @@ public class Subscription extends Offer {
 		Map<String, Object> context = RequestContextLocalStore.get().getInProcess();
 		
 		if (this.getOfferState() != State.PUBLISHED) {
-			// current subscribed offer is not renewable
-			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-			if (this.getExit() == null) {
-				// there is no exit offer defined... so try to subscribe to later revision of this offer....
-				Offer latestVersion = catalog.getOfferById(this.getName());
-				if (latestVersion == null || latestVersion.getOfferState() != State.PUBLISHED) {
-					// the latest version does not exist or in invalid state too.
-					//TODO: Logger 
-					/*"Subscription: " + this.subscriptionId + " on subscriber: " + subscriberId + 
-							" is being renewed. Offer State is no longer active (" + this.getOfferState() + 
-							"). Exit Offer is not defined and latest version:" + this.getVersion() + " is not in active state either!!"); */
-					tasks.addAll(this.expiry(subscriberId, true, metas));
-				} else {
-					// the latest version is available and hence the current subscription will switch to newer offer version...
-					tasks.addAll(this.expiry(subscriberId, true, metas));
-					tasks.addAll(latestVersion.purchase(subscriberId, true, metas));
-				}
-			} else {
-				// exit offer available....
-				Offer exitOffer = catalog.getOfferById(this.getExit());
-				if (exitOffer == null || exitOffer.getOfferState() != State.PUBLISHED) {
-					// the exit offer does not exist or is in invalid state...
-					//TODO: Logger
-					/*Subscription: " + this.subscriptionId + " on subscriber: " + subscriberId + 
-							" is being renewed. Offer State is no longer active (" + this.getOfferState() + 
-							"). Exit Offer is is not in active state either!!"); */
-				}
-			}
-		}
+			// current subscribed offer is not renewable anymore
+			logger.info("This offer is not available for RENEWAAL anymore... Converting to expiry...");
+			tasks.addAll(this.expiry(subscriberId, true, metas));
+			return tasks;
+		} 
 
 		// current subscribed offer is renewable...
 		long RENEWAL_TIMESTAMP = System.currentTimeMillis();
@@ -255,6 +239,9 @@ public class Subscription extends Offer {
 			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, cloned, subscriberId, null));
 		} 
 	
+		this.setActivatedTimeNow();
+		tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, this.subscriptionId, subscriberId, this.getRenewalPeriod().getExpiryTimeInMillis(), metas));
+		
 		//----------- Notification Tasks
 		/*
 		 * 1. Send Notification for each state of the Request Processing

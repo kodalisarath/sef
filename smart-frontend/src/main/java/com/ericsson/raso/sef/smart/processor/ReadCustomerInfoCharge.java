@@ -24,6 +24,7 @@ import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.usecase.ReadCustomerInfoChargeRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
@@ -90,6 +91,10 @@ public class ReadCustomerInfoCharge implements Processor {
 		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		 logger.info("Billing Metas: " + subscriberObj.getMetas());
 		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+		
+		logger.error("FloodGate acknowledging exgress...");
+		FloodGate.getInstance().exgress();
+		
 		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional(), subscriberObj.getSubscriber().getMetas()));
 		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 	}

@@ -27,6 +27,7 @@ import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.usecase.SubscribePackageItemRequest;
+import com.ericsson.raso.sef.watergate.FloodGate;
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
@@ -66,109 +67,111 @@ public class SubscribePackageItem implements Processor {
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
-		
-		 metaSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
-	     metaSubscriber.add(new Meta("READ_SUBSCRIBER","PARTIAL_READ_SUBSCRIBER"));
-	     
-	     
-	     
-	     
-	     logger.info("Collected SOAP parameters");
-	     logger.info("Going for DB check and AIR call");
-	     logger.info("Before read subscriber call");
-        
-	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metaSubscriber);
-	     
-	     logger.info("subscriber call done");
-		 
-	     if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
-				logger.debug("Inside the if condition for status check");
-				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-			 }
-          logger.info("Recieved a SubscriberInfo Object and it is not null");
-			 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 
-			 IConfig config = SefCoreServiceResolver.getConfigService();
-			 String activeStatusCS = subscriberObj.getSubscriber().getMetas().get("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG");
-			 logger.debug("TRY 1 "+ activeStatusCS);
-		     String packagefromDB = subscriberObj.getSubscriber().getMetas().get("Package");
-		     logger.debug("PACKAGE FROM DB "+ packagefromDB);
-		     if (packagefromDB == null || packagefromDB.equalsIgnoreCase("")){
-		    	 packagefromDB = subscriberObj.getSubscriber().getMetas().get("package");
-			     logger.debug("PACKAGE FROM DB "+ packagefromDB);
-		     }
-		    
-		     String requestedWelcomePackSC = config.getValue("GLOBAL_welcomePackMapping", request.getPackaze());
-		     logger.debug("REQUESTED WELCOME PACK SC "+ requestedWelcomePackSC);
-		     int usecase=0;
-		     logger.info("Failfast if pre-active and package subscribed to different from initial welcome pack");
-		     if (activeStatusCS.equalsIgnoreCase("false"))
-		     {
-		    	 if (packagefromDB.equalsIgnoreCase("initialSC")) {
-		    		 usecase=1;
-		    	 }
-		    	 else {
-		    		 throw new SmException(ErrorCode.invalidParameterValue);
-		    	 }
-		     }
-		     
-		 logger.info("check pre-active valid case");			
-		  if(usecase==1) {
-			  if(isWelcomePack(request.getPackaze())) {
-				  metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
-				  metas.add(new Meta("ServiceClass",requestedWelcomePackSC));
-				  String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
-				  SubscriberInfo response = new SubscriberInfo();
-			      logger.debug("Got past event class....SK");
-				  SubscriberResponseStore.put(resultId, response);
-				  logger.debug("Got past event class....YEAH");
-				  ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
-					
-					try {
+		metaSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
+		metaSubscriber.add(new Meta("READ_SUBSCRIBER","PARTIAL_READ_SUBSCRIBER"));
+
+
+
+
+		logger.info("Collected SOAP parameters");
+		logger.info("Going for DB check and AIR call");
+		logger.info("Before read subscriber call");
+
+		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metaSubscriber);
+
+		logger.info("subscriber call done");
+
+		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
+			logger.debug("Inside the if condition for status check");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		}
+		logger.info("Recieved a SubscriberInfo Object and it is not null");
+		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
+
+		IConfig config = SefCoreServiceResolver.getConfigService();
+		String activeStatusCS = subscriberObj.getSubscriber().getMetas().get("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG");
+		logger.debug("TRY 1 "+ activeStatusCS);
+		String packagefromDB = subscriberObj.getSubscriber().getMetas().get("Package");
+		logger.debug("PACKAGE FROM DB "+ packagefromDB);
+		if (packagefromDB == null || packagefromDB.equalsIgnoreCase("")){
+			packagefromDB = subscriberObj.getSubscriber().getMetas().get("package");
+			logger.debug("PACKAGE FROM DB "+ packagefromDB);
+		}
+
+		String requestedWelcomePackSC = config.getValue("GLOBAL_welcomePackMapping", request.getPackaze());
+		logger.debug("REQUESTED WELCOME PACK SC "+ requestedWelcomePackSC);
+		int usecase=0;
+		logger.info("Failfast if pre-active and package subscribed to different from initial welcome pack");
+		if (activeStatusCS.equalsIgnoreCase("false"))
+		{
+			if (packagefromDB.equalsIgnoreCase("initialSC")) {
+				usecase=1;
+			}
+			else {
+				throw new SmException(ErrorCode.invalidParameterValue);
+			}
+		}
+
+		logger.info("check pre-active valid case");			
+		if(usecase==1) {
+			if(isWelcomePack(request.getPackaze())) {
+				metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
+				metas.add(new Meta("ServiceClass",requestedWelcomePackSC));
+				String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
+				SubscriberInfo response = new SubscriberInfo();
+				logger.debug("Got past event class....SK");
+				SubscriberResponseStore.put(resultId, response);
+				logger.debug("Got past event class....YEAH");
+				ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+
+				try {
 					semaphore.init(0);
 					semaphore.acquire();
-					} catch(InterruptedException e) {
-						e.printStackTrace();
-						logger.debug("Exception while sleep     :"+e.getMessage());
-					}
-					semaphore.destroy();
-					
-					
-					logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
-					
-					//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-					SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
-					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
-					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-					if(purchaseResponse.getStatus() != null && purchaseResponse.getStatus().getCode() >0) {
-						logger.debug("No response arrived???");
-						throw new SmException(ErrorCode.internalServerError);
-					}
-					else{
-						 CommandResponseData cr = this.createResponse(true);
-					    //  exchange.getOut().setBody(cr);
-					      
-					      String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
-							exchange.getOut().setBody(cr);
-							exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
-							
-					}
-			  }
-			  else {
-				  throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
-			  }
-			
-		  
-		  
-		  }
+				} catch(InterruptedException e) {
+					e.printStackTrace();
+					logger.debug("Exception while sleep     :"+e.getMessage());
+				}
+				semaphore.destroy();
+
+
+				logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
+
+				//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+				SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
+				//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+				logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+				if(purchaseResponse.getStatus() != null && purchaseResponse.getStatus().getCode() >0) {
+					logger.debug("No response arrived???");
+					throw new SmException(ErrorCode.internalServerError);
+				}
+				else{
+					CommandResponseData cr = this.createResponse(true);
+					//  exchange.getOut().setBody(cr);
+					logger.error("FloodGate acknowledging exgress...");
+					FloodGate.getInstance().exgress();
+
+					String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+					exchange.getOut().setBody(cr);
+					exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+
+				}
+			}
 			else {
+				throw ExceptionUtil.toSmException(ErrorCode.invalidEventName);
+			}
+
+
+
+		}
+		else {
 			Subscriber subscriber = subscriberObj.getSubscriber();
 			if (subscriber == null) {
 				logger.error("Unable to fetch the subscriber entity out");
 				throw ExceptionUtil.toSmException(ErrorCode.technicalError);
 			}
 			logger.info("SK GET METAS BALANCE " + subscriber.getMetas());
-		    logger.info("check grace and recycle metas as subscriber is not pre-active");
+			logger.info("check grace and recycle metas as subscriber is not pre-active");
 			Map<String, String> subscriberMetas = subscriber.getMetas();
 			OfferInfo oInfo = null;
 			Map<String, OfferInfo> subscriberOffers = new HashMap<String, SubscribePackageItem.OfferInfo>(); 
@@ -179,7 +182,7 @@ public class SubscribePackageItem implements Processor {
 				if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
 					logger.debug("FLEXI:: OFFER_ID...." + subscriberMetas.get(key));
 					String offerForm = subscriberMetas.get(key);
-					
+
 					String offerParts[] = offerForm.split(",");
 					String offerId = offerParts[0];
 					String start = offerParts[1];
@@ -188,7 +191,7 @@ public class SubscribePackageItem implements Processor {
 					String expiry = offerParts[3];
 					if (expiry.equals("null"))
 						expiry = offerParts[4];
-					
+
 					oInfo = new OfferInfo(offerId, Long.parseLong(expiry), Long.parseLong(start), null, null); 
 					subscriberOffers.put(offerId, oInfo);
 					logger.debug("FLEXI:: OFFER_INFO: " + oInfo);
@@ -206,51 +209,54 @@ public class SubscribePackageItem implements Processor {
 			if (NotRecycle==false)  {
 				ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 				String correlationId = subscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
-			        PurchaseResponse response = new PurchaseResponse();
-					logger.debug("Got past event class in subscription for grace and active....");
-					RequestCorrelationStore.put(correlationId, response);
-					ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(correlationId);
-					
-					try {
+				PurchaseResponse response = new PurchaseResponse();
+				logger.debug("Got past event class in subscription for grace and active....");
+				RequestCorrelationStore.put(correlationId, response);
+				ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(correlationId);
+
+				try {
 					semaphore.init(0);
 					semaphore.acquire();
-					} catch(InterruptedException e) {
-						e.printStackTrace();
-						logger.debug("Exception while sleep     :"+e.getMessage());
-					}
-					semaphore.destroy();
+				} catch(InterruptedException e) {
+					e.printStackTrace();
+					logger.debug("Exception while sleep     :"+e.getMessage());
+				}
+				semaphore.destroy();
+
+
+				logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
+
+				// PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
+				PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
+				//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
+				logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
+				if(purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0) {
+					logger.debug("No response arrived???");
+					throw new SmException(ErrorCode.internalServerError);
+				}
+				else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 )
+				{
+					logger.debug("");
+					throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
+				}
+				else{
+					CommandResponseData cr = this.createResponse(true);
+
+					logger.error("FloodGate acknowledging exgress...");
+					FloodGate.getInstance().exgress();
 					
-					
-					logger.debug("Awake from sleep.. going to check response in store with id: " +  correlationId);
-					
-					// PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-					PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(correlationId);
-					//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
-					logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
-					if(purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0) {
-						logger.debug("No response arrived???");
-						throw new SmException(ErrorCode.internalServerError);
-					}
-					else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 )
-					{
-							logger.debug("");
-							throw ExceptionUtil.toSmException(new ResponseCode(purchaseResponse.getFault().getCode(), purchaseResponse.getFault().getDescription()));
-					}
-					else{
-						 CommandResponseData cr = this.createResponse(true);
-					      
-						 String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
-							exchange.getOut().setBody(cr);
-							exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
-							
-						 //exchange.getOut().setBody(cr);
-					}	
+					String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+					exchange.getOut().setBody(cr);
+					exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+
+					//exchange.getOut().setBody(cr);
+				}	
 			}
 			else {
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 			}
-			}
-			     
+		}
+
 	}
 
 
@@ -261,7 +267,7 @@ public class SubscribePackageItem implements Processor {
 		else return false;
 
 	}
-	
+
 
 
 	private SubscriberInfo readSubscriber(String requestId, String subscriberId, List<Meta> metas){
@@ -311,7 +317,7 @@ public class SubscribePackageItem implements Processor {
 		operation.setModifier("PackageItem");
 		operationResult.getOperation().add(operation);
 		ParameterList parameterList = new ParameterList();
-		
+
 		if(isTransactional) {
 			TransactionResult transactionResult = new TransactionResult();
 			result.setTransactionResult(transactionResult);
@@ -319,19 +325,19 @@ public class SubscribePackageItem implements Processor {
 		} else {
 			result.setOperationResult(operationResult);
 		}
-		
+
 		return responseData;
 	}
-	
+
 	class OfferInfo {
 		private String offerID;
 		private long offerExpiry;
 		private long offerStart;
 		private String daID;
 		private String walletName;
-		
+
 		public OfferInfo() {}
-		
+
 		public OfferInfo(String offerID, long offerExpiry, long offerStart, String daID, String walletName) {
 			super();
 			this.offerID = offerID;
@@ -346,9 +352,9 @@ public class SubscribePackageItem implements Processor {
 		public String toString() {
 			return "OfferInfo [offerID=" + offerID + ", offerExpiry=" + offerExpiry + ", daID=" + daID + ", walletName=" + walletName + "]";
 		}
-		
-		
+
+
 	}
-	
+
 
 }

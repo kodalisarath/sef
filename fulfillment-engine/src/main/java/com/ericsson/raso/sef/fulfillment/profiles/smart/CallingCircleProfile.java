@@ -445,7 +445,7 @@ public final class CallingCircleProfile extends RefillProfile {
 		for (String member: members) {
 			SmppMessage message = new SmppMessage();
 			message.setDestinationMsisdn(member);
-			message.setMessageBody(this.welcomeMessageEventId + ",circle-numbers:" + circleNumbers + ",promo" + this.associatedPromo);
+			message.setMessageBody(this.welcomeMessageEventId + ",circle-numbers:" + circleNumbers + ",promo:" + this.associatedPromo);
 			FulfillmentServiceResolver.getCamelContext().createProducerTemplate().sendBody("activemq:queue:notification", message);
 		}
 	}
