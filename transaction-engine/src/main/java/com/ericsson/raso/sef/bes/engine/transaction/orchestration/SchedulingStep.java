@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Future;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.sef.scheduler.command.PurchaseCommand;
+import com.ericsson.sef.scheduler.command.CancelSubscriptionLifeCycleCommand;
+import com.ericsson.sef.scheduler.command.SubscriptionLifeCycleCommand;
 
 public class SchedulingStep extends Step<SchedulingStepResult> {
 	private static final long serialVersionUID = 6645187522590773212L;
@@ -32,12 +33,11 @@ public class SchedulingStep extends Step<SchedulingStepResult> {
 		case SCHEDULE:
 
 			try {
-
-				new PurchaseCommand(future.getMode().name(), future.getEvent()
-						.name(), future.getOfferId(), future.getSubscriberId(),
+				new SubscriptionLifeCycleCommand(future.getEvent().name(),
+						future.getOfferId(), future.getSubscriberId(),
 						future.getMetas(), future.getSchedule()).execute();
 				return new SchedulingStepResult(null, true);
-		
+
 			} catch (SmException e) {
 				LOGGER.error(e.getMessage(), e);
 				return new SchedulingStepResult(new StepExecutionException(
@@ -45,6 +45,19 @@ public class SchedulingStep extends Step<SchedulingStepResult> {
 			}
 
 		case CANCEL:
+
+			try {
+				new CancelSubscriptionLifeCycleCommand(
+						future.getEvent().name(), future.getOfferId(),
+						future.getSubscriberId()).execute();
+				return new SchedulingStepResult(null, true);
+
+			} catch (SmException e) {
+				LOGGER.error(e.getMessage(), e);
+				return new SchedulingStepResult(new StepExecutionException(
+						e.getMessage(), e), false);
+			}
+
 		}
 		return new SchedulingStepResult(null, false);
 	}
