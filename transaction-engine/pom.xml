@@ -1,77 +1,77 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.ericsson.sef</groupId>
-  <artifactId>transaction-engine</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+	<groupId>com.ericsson.sef</groupId>
+	<artifactId>transaction-engine</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>bundle</packaging>
 
-  <name>transaction-engine</name>
-  <url>http://maven.apache.org</url>
+	<name>transaction-engine</name>
+	<url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <osgi-import-package>
-    	org.springframework.*,
-    	com.ericsson.raso.sef.bes.engine.transaction,
-    	com.ericsson.raso.sef.bes.engine.transaction.processor,
-    	com.ericsson.sef.bes.api.subscription,
-    	com.ericsson.sef.bes.api.entities,
-		com.ericsson.raso.sef.core,
-		com.ericsson.raso.sef.core.jaxws,
-		com.ericsson.raso.sef.auth.*,
-		com.ericsson.raso.sef.core.config,
-		com.ericsson.raso.sef.core.db.model,
-		com.ericsson.raso.sef.core.db.service,
-		com.ericsson.raso.sef.logging,
-		com.ericsson.raso.sef.bes.prodcat,
-		com.ericsson.raso.sef.bes.prodcat.service,
-		com.ericsson.raso.sef.bes.prodcat.entities,
-		com.ericsson.raso.sef.bes.prodcat.tasks,
-		com.ericsson.sef.bes.api.subscriber,
-		com.ericsson.sef.bes.api.fulfillment,
-		org.springframework.aop,
-		org.springframework.aop.framework,
-		org.aopalliance.aop,	
-		oracle.jdbc.driver,
-		org.apache.cxf.bus.spring,
-		org.eclipse.jetty.server.nio,
-		org.apache.camel,
-		org.apache.cxf.interceptor,
-		org.xml.sax,
-		org.w3c.dom,
-		org.apache.cxf.*,	
-		javax.xml,
-		META-INF.sef-core,
-		META-INF.product-catalog,
-		META-INF.sef-api,
-		org.slf4j,
-		org.csapi.schema.parlayx.common.v2_1,
-		org.csapi.schema.parlayx.payment.amount_charging.v2_1.local,
-		org.csapi.schema.parlayx.payment.reserve_amount_charging.v2_1.local,
-		org.csapi.schema.parlayx.payment.v2_1,
-		org.csapi.wsdl.parlayx.common.v2_0.faults,
-		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface,
-		org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
-		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
-		org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service,		
-		org.apache.camel.builder,
-		org.apache.camel.model,
-		org.apache.activemq.camel.component,
-		vasclient.wsdl,
-		vasclient.types,
-		com.ericsson.sef.scheduler.command,
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<osgi-import-package>
+			org.springframework.*,
+			com.ericsson.raso.sef.bes.engine.transaction,
+			com.ericsson.raso.sef.bes.engine.transaction.processor,
+			com.ericsson.sef.bes.api.subscription,
+			com.ericsson.sef.bes.api.entities,
+			com.ericsson.raso.sef.core,
+			com.ericsson.raso.sef.core.jaxws,
+			com.ericsson.raso.sef.auth.*,
+			com.ericsson.raso.sef.core.config,
+			com.ericsson.raso.sef.core.db.model,
+			com.ericsson.raso.sef.core.db.service,
+			com.ericsson.raso.sef.logging,
+			com.ericsson.raso.sef.bes.prodcat,
+			com.ericsson.raso.sef.bes.prodcat.service,
+			com.ericsson.raso.sef.bes.prodcat.entities,
+			com.ericsson.raso.sef.bes.prodcat.tasks,
+			com.ericsson.sef.bes.api.subscriber,
+			com.ericsson.sef.bes.api.fulfillment,
+			org.springframework.aop,
+			org.springframework.aop.framework,
+			org.aopalliance.aop,
+			oracle.jdbc.driver,
+			org.apache.cxf.bus.spring,
+			org.eclipse.jetty.server.nio,
+			org.apache.camel,
+			org.apache.cxf.interceptor,
+			org.xml.sax,
+			org.w3c.dom,
+			org.apache.cxf.*,
+			javax.xml,
+			META-INF.sef-core,
+			META-INF.product-catalog,
+			META-INF.sef-api,
+			org.slf4j,
+			org.csapi.schema.parlayx.common.v2_1,
+			org.csapi.schema.parlayx.payment.amount_charging.v2_1.local,
+			org.csapi.schema.parlayx.payment.reserve_amount_charging.v2_1.local,
+			org.csapi.schema.parlayx.payment.v2_1,
+			org.csapi.wsdl.parlayx.common.v2_0.faults,
+			org.csapi.wsdl.parlayx.payment.amount_charging.v2_1._interface,
+			org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
+			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
+			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service,
+			org.apache.camel.builder,
+			org.apache.camel.model,
+			org.apache.activemq.camel.component,
+			vasclient.wsdl,
+			vasclient.types,
+			com.ericsson.sef.scheduler.command,
 		</osgi-import-package>
-  </properties>
+	</properties>
 
-  <dependencies>
-  		<dependency>
+	<dependencies>
+		<dependency>
 			<groupId>com.ericsson.sef</groupId>
 			<artifactId>sef-product-catalog</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-  		<dependency>
+		<dependency>
 			<groupId>com.ericsson.sef</groupId>
 			<artifactId>sef-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
@@ -81,18 +81,19 @@
 			<artifactId>sef-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-    	<dependency>
-      		<groupId>junit</groupId>
-      		<artifactId>junit</artifactId>
-      		<version>3.8.1</version>
-      		<scope>test</scope>
-    	</dependency>
-	<dependency>
-			<groupId>com.ericsson.sef</groupId>
-			<artifactId>activation-scheduler</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
 		</dependency>
-<dependency>
+		<dependency>
+			<groupId>com.ericsson.sef</groupId>
+			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>activation-scheduler</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.googlecode.jsmpp</groupId>
 			<artifactId>jsmpp</artifactId>
 			<version>2.1.0-RELEASE</version>
@@ -118,9 +119,9 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-  </dependencies>
-  
-  <build>
+	</dependencies>
+
+	<build>
 		<defaultGoal>install</defaultGoal>
 		<plugins>
 			<plugin>
@@ -136,6 +137,8 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
+				<version>2.4.0</version>
+
 				<configuration>
 					<instructions>
 						<Import-Package>${osgi-import-package}</Import-Package>

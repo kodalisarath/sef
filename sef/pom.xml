@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.ericsson</groupId>
-  <artifactId>sef</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
+	<groupId>com.ericsson</groupId>
+	<artifactId>sef</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-  <name>Smart SEF</name>
-  <url>http://maven.apache.org</url>
-  
+	<name>Smart SEF</name>
+	<url>http://maven.apache.org</url>
 
- <properties>
+
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<wss4j.version>1.5.6</wss4j.version>
 		<hazelcast.version>3.2.3</hazelcast.version>
@@ -34,13 +34,13 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${log4j-version}</version>
 		</dependency>
-		
+
 		<dependency>
-    		<groupId>org.apache.logging.log4j</groupId>
-    		<artifactId>log4j-slf4j-impl</artifactId>
-    		<version>2.0-rc1</version>
-  		</dependency>
-		
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.0-rc1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.snmp4j</groupId>
 			<artifactId>snmp4j</artifactId>
@@ -51,14 +51,14 @@
 			<artifactId>camel-core</artifactId>
 			<version>${camel-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-spring</artifactId>
 			<version>${camel-version}</version>
 		</dependency>
-        
-        <dependency>
+
+		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 			<version>${cxf-version}</version>
@@ -87,8 +87,8 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-bindings-soap</artifactId>
 			<version>${cxf-version}</version>
-		</dependency>    
-            
+		</dependency>
+
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
@@ -106,69 +106,79 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
 			<version>11.2.0.4</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-dbcp</artifactId>
-            <version>7.0.50</version>
-         </dependency>
-		
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>7.0.50</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-mybatis</artifactId>
 			<version>${mybatis-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis-spring</artifactId>
 			<version>${mybatis-spring-version}</version>
 		</dependency>
-<!-- Ericsson Charging SDK -->
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>dcc-api</artifactId>
-            <version>release</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>diameter-base-api</artifactId>
-            <version>release</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>high-level-api</artifactId>
-            <version>release</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>scap-v2-api</artifactId>
-            <version>release</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ericsson.pps.diameter</groupId>
-            <artifactId>utils</artifactId>
-            <version>release</version>
-        </dependency>
+		<!-- Ericsson Charging SDK -->
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>dcc-api</artifactId>
+			<version>release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>diameter-base-api</artifactId>
+			<version>release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>high-level-api</artifactId>
+			<version>release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>scap-v2-api</artifactId>
+			<version>release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ericsson.pps.diameter</groupId>
+			<artifactId>utils</artifactId>
+			<version>release</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.4</version>
-		</dependency>        		
+		</dependency>
 	</dependencies>
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
+				<version>2.4.0</version>
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
@@ -182,21 +192,21 @@
 		<module>../sef-product-catalog</module>
 		<module>../cs-af</module>
 		<module>../cs-air</module>
-		<module>../sef-api</module>		
+		<module>../sef-api</module>
 		<module>../smart-frontend</module>
 		<module>../activation-scheduler</module>
 		<module>../transaction-engine</module>
 		<module>../transformation-engine</module>
 		<module>../fulfillment-engine</module>
 		<module>../smart-il-features</module>
-		<module>../charging-adapter-api</module>
+		<!-- <module>../charging-adapter-api</module> -->
 		<module>../sef-smpp-gateway</module>
 		<module>../charging-adapter</module>
 		<module>../charging-gateway</module>
 		<module>../charging-gateway-engine</module>
 		<module>../sef-notification-engine</module>
 		<module>../sef-notification-workflows</module>
-		
-		
+
+
 	</modules>
 </project>
