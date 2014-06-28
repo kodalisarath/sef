@@ -37,6 +37,13 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		super(name);
 	}
 	
+	@Override
+	public List<Product> prepare(Product e, java.util.Map<String, String> map) throws FulfillmentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 
 
 	@Override
@@ -96,23 +103,17 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	}
 
 
+	
+
 	@Override
-	public List<Product> prepare(Product e, Map<String, String> map) {
-		LOGGER.debug("Preparing.......");
+	public List<Product> query(Product e, Map<String, String> map) throws FulfillmentException {
 		List<Product> products = new ArrayList<Product>();
 		return products;
 	}
 
 
 	@Override
-	public List<Product> query(Product e, Map<String, String> map) {
-		List<Product> products = new ArrayList<Product>();
-		return products;
-	}
-
-
-	@Override
-	public List<Product> revert(Product e, Map<String, String> map) {
+	public List<Product> revert(Product e, Map<String, String> map) throws FulfillmentException {
 		List<Product> products = new ArrayList<Product>();
 		return products;
 	}
@@ -265,6 +266,8 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	}
 
 
+
+	
 
 
 
