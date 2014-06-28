@@ -27,12 +27,12 @@
 		<!-- hdr -->
 <!-- 		<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" /> -->
 		<bean id="authenticationInterceptor"  class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor">
-			<constructor-arg>
+			<!-- <constructor-arg>
 				<map>
 					<entry key="action" value="UsernameToken" />
 					<entry key="passwordType" value="PasswordText" />
 				</map>
-			</constructor-arg>
+			</constructor-arg> -->
 		</bean>
 
 	<cxf:cxfEndpoint id="smartInterface"
@@ -49,6 +49,7 @@
 			<entry key="address"
 				value="http://0.0.0.0:9882/services/TisService" />
 				<entry key="dataFormat" value="POJO" />
+				<entry key="ws-security.validate.token" value="false" />
 		</cxf:properties>
 		<cxf:inInterceptors>
 <!-- 			<ref bean="loggingInInterceptor" /> -->
