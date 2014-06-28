@@ -14,9 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ericsson.raso.sef.notification.workflows.CallingCircleEdrProcessor;
-import com.ericsson.raso.sef.notification.workflows.NotificationContext;
-import com.ericsson.raso.sef.notification.workflows.promo.Promo;
 import com.ericsson.raso.sef.client.air.command.RefillCommand;
 import com.ericsson.raso.sef.client.air.command.UpdateAccumulatorCommand;
 import com.ericsson.raso.sef.client.air.command.UpdateFaFListCommand;
@@ -27,18 +24,17 @@ import com.ericsson.raso.sef.client.air.request.RefillRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateAccumulatorRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateFaFListRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateOfferRequest;
-import com.ericsson.raso.sef.core.ResponseCode;
-import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.mapper.CallingCircleMapper;
 import com.ericsson.raso.sef.core.db.mapper.PurchaseMapper;
-import com.ericsson.raso.sef.core.db.model.CallingCircle;
+import com.ericsson.raso.sef.core.db.mapper.smart.CallingCircleMapper;
 import com.ericsson.raso.sef.core.db.model.CallingCircleRelation;
 import com.ericsson.raso.sef.core.db.model.Purchase;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
-import com.ericsson.raso.sef.core.db.service.CallingCircleDBService;
+import com.ericsson.raso.sef.core.db.model.smart.CallingCircle;
+import com.ericsson.raso.sef.notification.workflows.CallingCircleEdrProcessor;
+import com.ericsson.raso.sef.notification.workflows.NotificationContext;
+import com.ericsson.raso.sef.notification.workflows.promo.Promo;
 import com.ericsson.sef.scheduler.command.ScheduleRemoveCallingCircleCmd;
-import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class SmCallingCircleService implements CallingCircleService {
 
@@ -103,7 +99,7 @@ public class SmCallingCircleService implements CallingCircleService {
 		CallingCircleMapper callingCircleMapper = NotificationContext.getBean(CallingCircleMapper.class);
 		CallingCircleEdrProcessor circleEdrProcessor = new CallingCircleEdrProcessor();
 		CallingCircle callingCircle = new CallingCircle();
-		callingCircle.setId(circleId);
+		/*callingCircle.setId(circleId);
 		try {
 			Collection<CallingCircle> identicalCircles = callingCircleMapper.findIdenticalCircles(callingCircle);
 			if (identicalCircles.iterator().hasNext()) {
@@ -112,8 +108,8 @@ public class SmCallingCircleService implements CallingCircleService {
 				if (callingCircle != null) {
 					Integer indicator = CallingCircleUtil.getIndicator(callingCircle.getiLProductId(), callingCircle.getRelationship());
 					if (indicator != null) {
-						Subscriber apartySubscriber = CallingCircleUtil.getSubscriberByUserId(callingCircle.getAparty());
-						Subscriber bpartySubscriber = CallingCircleUtil.getSubscriberByUserId(callingCircle.getBparty());
+						Subscriber apartySubscriber = CallingCircleUtil.getSubscriberByUserId(callingCircle.getMemberA());
+						Subscriber bpartySubscriber = CallingCircleUtil.getSubscriberByUserId(callingCircle.getMemberB());
 
 						callingCircle.setApartyMsisdn(apartySubscriber.getMsisdn());
 						callingCircle.setBpartyMsisdn(bpartySubscriber.getMsisdn());
@@ -137,7 +133,7 @@ public class SmCallingCircleService implements CallingCircleService {
 					callingCircle.getiLProductId(), "FAILED", e.getMessage()));
 			throw e;
 		}
-	}
+*/	}
 
 	private Collection<CallingCircle> createOneWayCircle(String productId, Subscriber apartySubscriber, Subscriber bpartySubscriber, Purchase purchase) throws SmException {
 		CallingCircle callingCircle = createCaliingCircleObj(productId, apartySubscriber, bpartySubscriber, purchase, CallingCircleRelation.SPONSER_MEMBER);
@@ -172,7 +168,7 @@ public class SmCallingCircleService implements CallingCircleService {
 
 	private CallingCircle createCaliingCircleObj(String productId, Subscriber aparty, Subscriber bparty, Purchase purchase, CallingCircleRelation relation) {
 		CallingCircle callingCircle = new CallingCircle();
-		callingCircle.setAparty(aparty.getUserId());
+		/*callingCircle.setAparty(aparty.getUserId());
 		callingCircle.setBparty(bparty.getUserId());
 		callingCircle.setCreationTime(new DateTime());
 		callingCircle.setiLProductId(productId);
@@ -180,7 +176,7 @@ public class SmCallingCircleService implements CallingCircleService {
 		callingCircle.setExpiryTime(purchase.getExpiryTime());
 		callingCircle.setRelationship(relation);
 		callingCircle.setApartyMsisdn(aparty.getMsisdn());
-		callingCircle.setBpartyMsisdn(bparty.getMsisdn());
+		callingCircle.setBpartyMsisdn(bparty.getMsisdn());*/
 		return callingCircle;
 	}
 
@@ -193,7 +189,7 @@ public class SmCallingCircleService implements CallingCircleService {
 		callingCircles.add(createCaliingCircleObj(productId, bpartySubscriber, apartySubscriber, purchase, CallingCircleRelation.MEMBER_SPONSER));
 
 		CallingCircle smcircle = new CallingCircle();
-		smcircle.setAparty(apartySubscriber.getUserId());
+		/*smcircle.setAparty(apartySubscriber.getUserId());
 		smcircle.setiLProductId(productId);
 		smcircle.setRelationship(CallingCircleRelation.SPONSER_MEMBER);
 
@@ -237,7 +233,7 @@ public class SmCallingCircleService implements CallingCircleService {
 			refill(bpartySubscriber.getMsisdn(), ucipStr);
 		}
 
-		return callingCircles;
+*/		return callingCircles;
 	}
 
 	private void createCircles(CallingCircle... callingCircles) throws SmException {
@@ -245,7 +241,7 @@ public class SmCallingCircleService implements CallingCircleService {
 
 		if (callingCircles == null || callingCircles.length == 0)
 			return;
-
+/*
 		List<UpdateFaFListRequest> fafList = new ArrayList<UpdateFaFListRequest>();
 		for (CallingCircle callingCircle : callingCircles) {
 			if (callingCircle.getId() == 0) {
@@ -269,7 +265,7 @@ public class SmCallingCircleService implements CallingCircleService {
 			ScheduleRemoveCallingCircleCmd scheduleRemoveCallingCircleCmd = new ScheduleRemoveCallingCircleCmd(callingCircle);
 			scheduleRemoveCallingCircleCmd.execute();
 		}
-		updateFnfIndicator(fafList);
+		updateFnfIndicator(fafList);*/
 	}
 
 	public UpdateFaFListRequest createupdateFnfRequest(String subscriber, FafInformation fafInformation, boolean isDel) throws SmException {

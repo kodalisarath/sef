@@ -3,19 +3,19 @@ package com.ericsson.raso.sef.notification.workflows.callingcircle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.notification.workflows.CallingCircleEdr;
-import com.ericsson.raso.sef.notification.workflows.ErrorCode;
-import com.ericsson.raso.sef.notification.workflows.promo.CallingCircleType;
-import com.ericsson.raso.sef.notification.workflows.promo.Promo;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.config.Section;
-import com.ericsson.raso.sef.core.db.model.CallingCircle;
 import com.ericsson.raso.sef.core.db.model.CallingCircleRelation;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
+import com.ericsson.raso.sef.core.db.model.smart.CallingCircle;
 import com.ericsson.raso.sef.core.db.service.PersistenceError;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
+import com.ericsson.raso.sef.notification.workflows.CallingCircleEdr;
+import com.ericsson.raso.sef.notification.workflows.ErrorCode;
+import com.ericsson.raso.sef.notification.workflows.promo.CallingCircleType;
+import com.ericsson.raso.sef.notification.workflows.promo.Promo;
 
 public class CallingCircleUtil {
 	private static Logger log = LoggerFactory.getLogger(CallingCircleUtil.class);
@@ -102,13 +102,13 @@ public class CallingCircleUtil {
 
 	public static  CallingCircleEdr getCallingCircleEdr(CallingCircle callingCircle,String status) throws SmException {
 		CallingCircleEdr callingCircleEdr = new CallingCircleEdr();
-		callingCircleEdr.setCalledParty(callingCircle.getBpartyMsisdn());
-		callingCircleEdr.setCallingParty(callingCircle.getApartyMsisdn());
-		callingCircleEdr.setPromoName(callingCircle.getiLProductId());
+		//callingCircleEdr.setCalledParty(callingCircle.getBpartyMsisdn());
+		//callingCircleEdr.setCallingParty(callingCircle.getApartyMsisdn());
+		//callingCircleEdr.setPromoName(callingCircle.getiLProductId());
 		callingCircleEdr.setStatus(status);
-		callingCircleEdr.setExpiry(callingCircle.getExpiryTime().toDate());
+		//callingCircleEdr.setExpiry(callingCircle.getExpiryTime().toDate());
 		callingCircleEdr.setRelationship(callingCircle.getRelationship());
-		callingCircleEdr.setFaFIndicatorValue(CallingCircleUtil.getIndicator(callingCircle.getiLProductId(),callingCircle.getRelationship()));
+		//callingCircleEdr.setFaFIndicatorValue(CallingCircleUtil.getIndicator(callingCircle.getiLProductId(),callingCircle.getRelationship()));
 		return callingCircleEdr;
 	}
 	

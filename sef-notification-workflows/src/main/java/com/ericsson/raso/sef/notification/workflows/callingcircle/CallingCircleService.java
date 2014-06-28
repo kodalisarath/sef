@@ -3,7 +3,7 @@ package com.ericsson.raso.sef.notification.workflows.callingcircle;
 import java.util.Collection;
 
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.CallingCircle;
+import com.ericsson.raso.sef.core.db.model.smart.CallingCircle;
 
 /**
  * No long required, will call TransactionEngine Helper to do the job
