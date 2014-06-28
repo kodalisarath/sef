@@ -14,6 +14,8 @@ import com.ericsson.raso.sef.cg.engine.Operation;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.common.CGEngineServiceHelper;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 
 public class SubscriberValidationProcessor implements Processor {
@@ -49,12 +51,8 @@ public class SubscriberValidationProcessor implements Processor {
 		}
 		
 		log.debug("SubscriberInfo in charging gateway engine: "+subscriberInfo  +" & msisdn: "+msisdn);
-		if ( subscriberInfo != null){
-			log.debug(String.format("subscirberInfo.getLocalState = %s, subscirberInfo.getLocalState =%s", subscriberInfo.getLocalState(), subscriberInfo.isLocked()));
-		}
-		else
-		{
-			log.error("Exception in ChargingGatewayEngine.SubscriberValidationProcessor subscriberInfo is null");
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0){
+			log.debug("Inside the if condition for status check");
 			throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);
 		}
 		  
