@@ -29,7 +29,7 @@ public class SubscriberValidationProcessor implements Processor {
 		String messageId = (String)exchange.getIn().getHeader(CgConstants.messageId);
 		String msisdn = request.getMsisdn();
 		
-		log.info("Start validating subsciber for message Id "+messageId + " msisdn is :"+ msisdn);
+		log.info("	Start validating subsciber for message Id "+messageId + " msisdn is :"+ msisdn);
 		
 		if ( msisdn == null || msisdn.length() == 0){
 			log.error("MSISND is null, can not perform validation. throw exception ");
@@ -102,7 +102,7 @@ public class SubscriberValidationProcessor implements Processor {
 	    	 throw new SmException(ResponseCode.SUBSCRIBER_PREACTIVE_NOT_ALLOWED);
 	     }
 		
-		Map<String, String> subscriberMetas = subscriberInfo.getMetas();
+		Map<String, String> subscriberMetas = subscriberInfo.getSubscriber().getMetas();
 		
 		OfferInfo oInfo = null;
 		Map<String, OfferInfo> subscriberOffers = new HashMap<String, SubscriberValidationProcessor.OfferInfo>(); 
