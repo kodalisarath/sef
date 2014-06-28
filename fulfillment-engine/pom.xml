@@ -55,8 +55,7 @@
     	vasclient.wsdl,
 		vasclient.types,
 		org.apache.activemq.camel.component,
-		com.ericsson.raso.sef.core.db.model.smart,
-	</osgi-import-package>
+		</osgi-import-package>
 	</properties>
 
 	<dependencies>
