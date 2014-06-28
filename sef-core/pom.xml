@@ -60,7 +60,8 @@
  			com.ericsson.pps.diameter.rfcapi.base,
  			com.ericsson.pps.diameter.rfcapi.base.avp,
  			com.ericsson.pps.diameter.rfcapi.base.avp.avpdatatypes,
- 			com.ericsson.pps.diameter.rfcapi.base.message, 			
+ 			com.ericsson.pps.diameter.rfcapi.base.message,
+ 			com.ericsson.raso.sef.core.db.model.smart, 			
 		</osgi-import-packages>
 		<osgi-export-package>
 			com.ericsson.raso.sef.core,
