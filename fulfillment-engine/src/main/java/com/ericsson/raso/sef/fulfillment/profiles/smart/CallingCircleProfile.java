@@ -717,6 +717,210 @@ public final class CallingCircleProfile extends BlockingFulfillment<Product> {
 	
 	
 
+	public SubscriptionLifeCycleEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(SubscriptionLifeCycleEvent event) {
+		this.event = event;
+	}
+
+	public String getFafIndicatorSponsorMember() {
+		return fafIndicatorSponsorMember;
+	}
+
+	public void setFafIndicatorSponsorMember(String fafIndicatorSponsorMember) {
+		this.fafIndicatorSponsorMember = fafIndicatorSponsorMember;
+	}
+
+	public String getFafIndicatorMemberSponsor() {
+		return fafIndicatorMemberSponsor;
+	}
+
+	public void setFafIndicatorMemberSponsor(String fafIndicatorMemberSponsor) {
+		this.fafIndicatorMemberSponsor = fafIndicatorMemberSponsor;
+	}
+
+	public String getFafIndicatorMemberMember() {
+		return fafIndicatorMemberMember;
+	}
+
+	public void setFafIndicatorMemberMember(String fafIndicatorMemberMember) {
+		this.fafIndicatorMemberMember = fafIndicatorMemberMember;
+	}
+
+	public Integer getFafAccumulatorId() {
+		return fafAccumulatorId;
+	}
+
+	public void setFafAccumulatorId(Integer fafAccumulatorId) {
+		this.fafAccumulatorId = fafAccumulatorId;
+	}
+
+	public String getSubscriberId() {
+		return subscriberId;
+	}
+
+	public void setSubscriberId(String subscriberId) {
+		this.subscriberId = subscriberId;
+	}
+
+	public String getProdcatOffer() {
+		return prodcatOffer;
+	}
+
+	public void setProdcatOffer(String prodcatOffer) {
+		this.prodcatOffer = prodcatOffer;
+	}
+
+	public String getMemberB() {
+		return memberB;
+	}
+
+	public void setMemberB(String memberB) {
+		this.memberB = memberB;
+	}
+
+	public Integer getMaxMembers() {
+		return maxMembers;
+	}
+
+	public void setMaxMembers(Integer maxMembers) {
+		this.maxMembers = maxMembers;
+	}
+
+	public String getAssociatedPromo() {
+		return associatedPromo;
+	}
+
+	public void setAssociatedPromo(String associatedPromo) {
+		this.associatedPromo = associatedPromo;
+	}
+
+	public String getWelcomeMessageEventId() {
+		return welcomeMessageEventId;
+	}
+
+	public void setWelcomeMessageEventId(String welcomeMessageEventId) {
+		this.welcomeMessageEventId = welcomeMessageEventId;
+	}
+
+	public String getA_PartyMemberThresholdBreachMessageEventId() {
+		return A_PartyMemberThresholdBreachMessageEventId;
+	}
+
+	public void setA_PartyMemberThresholdBreachMessageEventId(String a_PartyMemberThresholdBreachMessageEventId) {
+		A_PartyMemberThresholdBreachMessageEventId = a_PartyMemberThresholdBreachMessageEventId;
+	}
+
+	public String getNewMemberAddedEventId() {
+		return NewMemberAddedEventId;
+	}
+
+	public void setNewMemberAddedEventId(String newMemberAddedEventId) {
+		NewMemberAddedEventId = newMemberAddedEventId;
+	}
+
+	public Integer getCallingCircleCsOfferID() {
+		return callingCircleCsOfferID;
+	}
+
+	public void setCallingCircleCsOfferID(Integer callingCircleCsOfferID) {
+		this.callingCircleCsOfferID = callingCircleCsOfferID;
+	}
+
+	public String getFreebieType() {
+		return freebieType;
+	}
+
+	public void setFreebieType(String freebieType) {
+		this.freebieType = freebieType;
+	}
+
+	public Integer getFreebieOfferId() {
+		return freebieOfferId;
+	}
+
+	public void setFreebieOfferId(Integer freebieOfferId) {
+		this.freebieOfferId = freebieOfferId;
+	}
+
+	public Integer getFreebieOfferType() {
+		return freebieOfferType;
+	}
+
+	public void setFreebieOfferType(Integer freebieOfferType) {
+		this.freebieOfferType = freebieOfferType;
+	}
+
+	public Long getFreebieOfferValidity() {
+		return freebieOfferValidity;
+	}
+
+	public void setFreebieOfferValidity(Long freebieOfferValidity) {
+		this.freebieOfferValidity = freebieOfferValidity;
+	}
+
+	public String getFreebieRefillID() {
+		return freebieRefillID;
+	}
+
+	public void setFreebieRefillID(String freebieRefillID) {
+		this.freebieRefillID = freebieRefillID;
+	}
+
+	public String getFreebiePlanCode() {
+		return freebiePlanCode;
+	}
+
+	public void setFreebiePlanCode(String freebiePlanCode) {
+		this.freebiePlanCode = freebiePlanCode;
+	}
+
+	public Integer getFreebieRefillType() {
+		return freebieRefillType;
+	}
+
+	public void setFreebieRefillType(Integer freebieRefillType) {
+		this.freebieRefillType = freebieRefillType;
+	}
+
+	public String getFreebieTransactionAmount() {
+		return freebieTransactionAmount;
+	}
+
+	public void setFreebieTransactionAmount(String freebieTransactionAmount) {
+		this.freebieTransactionAmount = freebieTransactionAmount;
+	}
+
+	public CurrencyCode getFreebieTransactionCurrency() {
+		return freebieTransactionCurrency;
+	}
+
+	public void setFreebieTransactionCurrency(CurrencyCode freebieTransactionCurrency) {
+		this.freebieTransactionCurrency = freebieTransactionCurrency;
+	}
+
+	public String getFreebieRenewalAmount() {
+		return freebieRenewalAmount;
+	}
+
+	public void setFreebieRenewalAmount(String freebieRenewalAmount) {
+		this.freebieRenewalAmount = freebieRenewalAmount;
+	}
+
+	public String getFreebiePurchaseAmount() {
+		return freebiePurchaseAmount;
+	}
+
+	public void setFreebiePurchaseAmount(String freebiePurchaseAmount) {
+		this.freebiePurchaseAmount = freebiePurchaseAmount;
+	}
+
+	public void setCallingCircleExpiry(long callingCircleExpiry) {
+		this.callingCircleExpiry = callingCircleExpiry;
+	}
+
 	private boolean readSubscriber(String customerId, Map<String, String> metas) {
 		try {
 			memberBMetas.put("msisdn", customerId);
