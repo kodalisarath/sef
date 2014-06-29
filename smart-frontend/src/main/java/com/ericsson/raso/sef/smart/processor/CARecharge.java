@@ -657,6 +657,11 @@ public class CARecharge implements Processor {
 		Map<String, OfferInfo> afterOfferEntries = new HashMap<String, CARecharge.OfferInfo>();
 		Map<String, DaInfo> afterDaEntries = new HashMap<String, CARecharge.DaInfo>();
 
+		if (response == null || response.getBillingMetas() == null) {
+			logger.debug("probably backed error got slipped without mapping...");
+			throw ExceptionUtil.toSmException(ErrorCode.operationInvalid);
+		}
+		
 		for (Meta meta : response.getBillingMetas()) {
 			logger.debug("PREDEFINED::Next Meta: " + meta.getKey());
 			if (meta.getKey().equals("ACC_BEFORE_SERVICE_FEE_EXPIRY_DATE"))
