@@ -831,12 +831,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			if(oNext instanceof Step) {
 				Step step = (Step) oNext;
 				results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+				logger.debug("Adding " + step.stepCorrelator + " with FulfillmentResult: " + this.sbRequestResultMapper.get(step.getStepCorrelator()));
 			} else if(oNext instanceof SequentialExecution) {
 				SequentialExecution seqSteps = (SequentialExecution) oNext; 
 				Iterator it1 = seqSteps.iterator();
 				while(it1.hasNext()) {
 					Step step = (Step) it1.next();
 					results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+					logger.debug("Adding " + step.stepCorrelator + " with FulfillmentResult: " + this.sbRequestResultMapper.get(step.getStepCorrelator()));
 				}
 					
 			}
@@ -931,8 +933,11 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					if (executionStatus != null && executionStatus.name().startsWith("DONE_")) {
 						completion++;
 						logger.debug("Step:" + step.stepCorrelator + " is complete with " + executionStatus);
-						if (executionStatus == Status.DONE_FAULT)
+						if (executionStatus == Status.DONE_FAULT) {
 							anyFault = true;
+							step.setFault(result.getResultantFault());
+						}
+							
 					} //else {
 					//					anyFault = true;
 					//					step.setFault(result.getResultantFault());
