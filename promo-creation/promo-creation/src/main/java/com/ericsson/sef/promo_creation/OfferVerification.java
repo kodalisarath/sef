@@ -163,6 +163,7 @@ public class OfferVerification {
 		} catch (FrameworkException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			bw.write(e + "\n");
 		}
 		
 		bw.close();

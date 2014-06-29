@@ -195,7 +195,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 								if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
 									this.currentPhase = this.currentPhase.getNextPhase();
 									this.phasingProgress.put(currentPhase, Status.PROCESSING);
-									this.promote2Schedule();
+									//this.promote2Schedule();
 									this.promote2Persist();
 									//this.processNotification();
 
