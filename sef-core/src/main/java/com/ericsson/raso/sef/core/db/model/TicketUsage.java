@@ -1,15 +1,15 @@
 package com.ericsson.raso.sef.core.db.model;
 
-import java.util.List;
+import java.util.Date;
 
-import org.joda.time.DateTime;
+
 
 public class TicketUsage {
 
 	private String eventId;
 	private String ticketId;
 	private String descriptionEn;
-	private DateTime created;
+	private Date created;
 	private long consumedUnits;
 
 	public String getEventId() {
@@ -36,11 +36,11 @@ public class TicketUsage {
 		this.descriptionEn = descriptionEn;
 	}
 
-	public DateTime getCreated() {
+	public Date getCreated() {
 		return created;
 	}
 
-	public void setCreated(DateTime created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 

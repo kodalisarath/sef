@@ -1,4 +1,4 @@
-package com.ericsson.sef.scheduler;
+/*package com.ericsson.sef.scheduler;
 
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +47,7 @@ public class ExpiryNotificationJob implements Job {
 			throw new RuntimeException("ExpiryNotification job is not set to scheduled for the given executing job with job ID: " + jobId);
 		}
 		
-		/*UserProfileService userProfileService = SchedulerContext.getUserProfileService();
+		UserProfileService userProfileService = SchedulerContext.getUserProfileService();
 		try {
 				throw new RuntimeException("User with user ID 			if(!userProfileService.userProfileExist("userID:" + scheduledRequest.getUserId())) {
 does not exist anymore: " + scheduledRequest.getUserId());
@@ -55,7 +55,7 @@ does not exist anymore: " + scheduledRequest.getUserId());
 		} catch (WSException_Exception e1) {
 			throw new RuntimeException(e1);
 		}
-		*/
+		
 		///Start ReadSubscriber ///
 //		try{
 //		String requestId = RequestContextLocalStore.get().getRequestId();
@@ -135,3 +135,4 @@ does not exist anymore: " + scheduledRequest.getUserId());
 	}
 	
 }
+*/

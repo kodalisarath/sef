@@ -1,4 +1,4 @@
-/*package com.ericsson.sef.scheduler.common;
+package com.ericsson.sef.scheduler.common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
+import com.ericsson.raso.sef.smart.ErrorCode;
+import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
@@ -18,8 +20,6 @@ import com.ericsson.raso.sef.smart.subscription.response.SubscriptionEventRespon
 import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
-import com.ericsson.sef.scheduler.ErrorCode;
-import com.ericsson.sef.scheduler.SchedulerContext;
 import com.hazelcast.core.ISemaphore;
 
 public abstract class TransactionEngineHelper {
@@ -36,7 +36,7 @@ public abstract class TransactionEngineHelper {
 				+ requestId);
 		SubscriberInfo subscriberInfo = new SubscriberInfo();
 		logger.debug("Entering SchedulerServiceHelper.....");
-		ISubscriberRequest subscriberRequest = SchedulerContext
+		ISubscriberRequest subscriberRequest = SmartServiceResolver
 				.getBean(ISubscriberRequest.class);
 		String correlationId = subscriberRequest.readSubscriber(requestId,
 				msisdn, null);
@@ -64,8 +64,7 @@ public abstract class TransactionEngineHelper {
 			String subscriberId, List<Meta> metas) throws SmException {
 
 		logger.debug("Entering TransactionEngineHelper.....purchase ");
-		ISubscriptionRequest iSubscriptionRequest = SchedulerContext
-				.getSubscriptionRequest();
+		ISubscriptionRequest iSubscriptionRequest =  SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
 		String resultId = iSubscriptionRequest.purchase(requestId, offerId,
 				subscriberId, true, metas);
@@ -103,8 +102,7 @@ public abstract class TransactionEngineHelper {
 	public static SubscriptionEventResponse renew(String subscriptionId,
 			List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....renew ");
-		ISubscriptionRequest iSubscriptionRequest = SchedulerContext
-				.getSubscriptionRequest();
+		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
 		String resultId = iSubscriptionRequest.renew(requestId, subscriptionId,
 				true, metas);
@@ -143,8 +141,7 @@ public abstract class TransactionEngineHelper {
 	public static SubscriptionEventResponse expiry(String subscriptionId,
 			List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....expiry ");
-		ISubscriptionRequest iSubscriptionRequest = SchedulerContext
-				.getSubscriptionRequest();
+		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
 		String resultId = iSubscriptionRequest.expiry(requestId,
 				subscriptionId, true, metas);
@@ -185,8 +182,7 @@ public abstract class TransactionEngineHelper {
 	public static SubscriptionEventResponse terminate(String subscriptionId,
 			List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....terminate ");
-		ISubscriptionRequest iSubscriptionRequest = SchedulerContext
-				.getSubscriptionRequest();
+		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
 		String resultId = iSubscriptionRequest.terminate(requestId,
 				subscriptionId, true, metas);
@@ -247,4 +243,3 @@ public abstract class TransactionEngineHelper {
 		return scedhuledReqMetaList;
 	}
 }
-*/

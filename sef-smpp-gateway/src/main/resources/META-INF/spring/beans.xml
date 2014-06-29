@@ -54,10 +54,11 @@
 			<camel:to uri="activemq:queue:notification"/>
 		</camel:route>
 		
-		<!-- route>
-	 		<from uri="file:/home/installs/testnotif?delay=1000"/>
-			<camel:bean beanType="com.ericsson.sm.smppgateway.test.TestSMSC" />
-		</route-->
+		<route>
+	 		<!--from uri="file:/opt/installs/testnotif?delay=1000"/-->
+	 		<camel:from uri="activemq:queue:testNotification"/>
+			<camel:bean beanType="com.ericsson.raso.sef.smppgateway.test.TestSMSC" />
+		</route>
 		
 	</camelContext>
 	

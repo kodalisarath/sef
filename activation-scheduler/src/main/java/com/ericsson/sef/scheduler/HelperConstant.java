@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.smart.subscription.response;
+package com.ericsson.sef.scheduler;
 
 public interface HelperConstant {
 

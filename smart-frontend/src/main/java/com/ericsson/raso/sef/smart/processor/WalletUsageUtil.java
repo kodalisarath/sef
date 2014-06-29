@@ -1,14 +1,16 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
+
+
 
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.config.Property;
 import com.ericsson.raso.sef.core.config.Section;
-import com.ericsson.raso.sef.smart.commons.SmartConstants;
 
 public class WalletUsageUtil {
 
@@ -26,12 +28,12 @@ public class WalletUsageUtil {
 			String endWindow = config.getValue("Global_usageTimingsEndWindow",
 					usageWindowName);
 
-			DateTime start = toDate(startWindow);
-			DateTime end = toDate(endWindow);
+			Date start = toDate(startWindow);
+			Date end = toDate(endWindow);
 
-			DateTime current = new DateTime();
+			Calendar current = Calendar.getInstance();
 
-			if (current.isAfter(start) && current.isBefore(end)) {
+			if (current.after(start) && current.before(end)) {
 				selectedWindowName = usageWindowName;
 				break;
 			}
@@ -60,7 +62,7 @@ public class WalletUsageUtil {
 
 		
 		
-	private static DateTime toDate(String windowTime) {
+	private static Date toDate(String windowTime) {
 		windowTime = windowTime.replace("TODAY-", "");
 		boolean tomorrow = false;
 		if (windowTime.contains("TOMORROW")) {
@@ -68,14 +70,15 @@ public class WalletUsageUtil {
 			tomorrow = true;
 		}
 		String[] time = windowTime.split(":");
-		DateTime dateTime = new DateTime();
-		int dayOfMonth = tomorrow ? dateTime.getDayOfMonth() + 1 : dateTime
-				.getDayOfMonth();
-		return new DateTime(dateTime.getYear(), dateTime.getMonthOfYear(),
+		Date dateTime= new Date();
+		Calendar cal = Calendar.getInstance();
+		int dayOfMonth = tomorrow ? cal.get(Calendar.MONTH) + 1 : cal.get(Calendar.DAY_OF_MONTH);
+				
+		return new Date(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 				dayOfMonth, Integer.valueOf(time[0]), Integer.valueOf(time[1]));
 	}
 
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		String startWindow = "TODAY-00:00";
 		String endWindow = "TODAY-23:00";
 
@@ -89,5 +92,5 @@ public class WalletUsageUtil {
 		}
 
 	}
-
+*/
 }

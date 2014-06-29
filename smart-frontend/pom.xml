@@ -59,6 +59,7 @@
 		wsdl,
 		com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1,
 		com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1,
+		com.ericsson.sef.scheduler.common,
 		</osgi-export-package>
   </properties>
 

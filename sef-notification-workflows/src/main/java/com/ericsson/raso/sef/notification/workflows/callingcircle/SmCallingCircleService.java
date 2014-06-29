@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +32,6 @@ import com.ericsson.raso.sef.core.db.model.smart.CallingCircle;
 import com.ericsson.raso.sef.notification.workflows.CallingCircleEdrProcessor;
 import com.ericsson.raso.sef.notification.workflows.NotificationContext;
 import com.ericsson.raso.sef.notification.workflows.promo.Promo;
-import com.ericsson.sef.scheduler.command.ScheduleRemoveCallingCircleCmd;
 
 public class SmCallingCircleService implements CallingCircleService {
 
@@ -157,7 +154,7 @@ public class SmCallingCircleService implements CallingCircleService {
 			Iterator<Purchase> iterator = userPurchase.iterator();
 			purchase = iterator.next();
 			for (Purchase userpurchase : userPurchase) {
-				if (userpurchase.getExpiryTime().isAfter(purchase.getExpiryTime())) {
+				if ((userpurchase.getExpiryTime().getTime()) > (purchase.getExpiryTime().getTime())) {
 					purchase = userpurchase;
 				}
 			}
@@ -332,7 +329,7 @@ public class SmCallingCircleService implements CallingCircleService {
 		offerRequest.setSubscriberNumber(bparty);
 		offerRequest.setOfferID(Integer.parseInt(ucipStr[0].split(":")[1]));
 		offerRequest.setOfferType(2);
-		offerRequest.setExpiryDateTime(new Date(purchase.getExpiryTime().getMillis()));
+		offerRequest.setExpiryDateTime(new Date(purchase.getExpiryTime().getTime()));
 		UpdateOfferCommand updateOfferCommand = new UpdateOfferCommand(offerRequest);
 		updateOfferCommand.execute();
 	}

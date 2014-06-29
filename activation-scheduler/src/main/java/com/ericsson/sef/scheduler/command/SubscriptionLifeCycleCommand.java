@@ -4,11 +4,11 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
-import com.ericsson.raso.sef.smart.subscription.response.HelperConstant;
+import com.ericsson.sef.scheduler.HelperConstant;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
 import com.ericsson.sef.scheduler.SubscriptionLifeCycleJob;
@@ -58,7 +58,7 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			ObsoleteCodeDbSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
 			final long id = sequence.getSeq();
 			final ScheduledRequest request = new ScheduledRequest();
-			request.setCreated(new DateTime());
+			request.setCreated(new Date());
 			request.setId(id);
 			if ("NEW_PURCHASE".equals(event))
 				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.NEW_PURCHASE);
@@ -73,7 +73,7 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			request.setMsisdn(subscriberId);
 			request.setUserId(subscriberId);
 			request.setOfferId(offerId);
-			DateTime scheduleTime = new DateTime(schedule);
+			Date scheduleTime = new Date(schedule);
 			request.setScheduleTime(scheduleTime);
 			
 			log.debug("Preparing for Quartz...");
@@ -86,7 +86,7 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			JobDetail job = newJob(SubscriptionLifeCycleJob.class).withIdentity(jobId).build();
 			Trigger trigger = newTrigger()
 					.withIdentity(event + '-' + String.valueOf(id))
-						.startAt(scheduleTime.toDate())
+						.startAt(scheduleTime)
 							.withSchedule(simpleSchedule().withIntervalInMilliseconds(schedule).withRepeatCount(0)).build();
 			log.debug("See whats in this trigger: " + trigger);
 			
