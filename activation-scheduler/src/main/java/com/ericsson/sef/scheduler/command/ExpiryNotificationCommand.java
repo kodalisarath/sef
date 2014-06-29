@@ -1,4 +1,4 @@
-package com.ericsson.sef.scheduler.command;
+/*package com.ericsson.sef.scheduler.command;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -20,28 +20,25 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.Command;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
-import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.Period;
 import com.ericsson.raso.sef.core.db.mapper.ScheduledRequestMapper;
+import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus;
-import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.ne.Language;
 import com.ericsson.raso.sef.core.ne.NotificationMessage;
 import com.ericsson.raso.sef.core.ne.StringUtils;
 import com.ericsson.raso.sef.core.ne.SubscriptionNotificationEvent;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
-import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
-import com.ericsson.raso.sef.smart.subscription.response.HelperConstant;
 import com.ericsson.sef.bes.api.entities.Subscriber;
-import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.scheduler.ExpiryNotificationJob;
+import com.ericsson.sef.scheduler.HelperConstant;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
-/*import com.ericsson.sm.api.subscriber.Subscriber;
+import com.ericsson.sm.api.subscriber.Subscriber;
 import com.ericsson.sm.api.subscriber.SubscriberManagement;
 import com.ericsson.sm.api.subscriber.WSException;
 import com.ericsson.sm.core.Command;
@@ -58,8 +55,7 @@ import com.ericsson.sm.core.db.model.ScheduledRequestStatus;
 import com.ericsson.sm.core.db.model.SmSequence;
 import com.ericsson.sm.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.sm.core.notification.NotificationMessage;
-import com.ericsson.sm.core.notification.SubscriptionNotificationEvent;*/
-import com.hazelcast.core.ISemaphore;
+import com.ericsson.sm.core.notification.SubscriptionNotificationEvent;
 
 public class ExpiryNotificationCommand implements Command<Void> {
 
@@ -83,9 +79,9 @@ public class ExpiryNotificationCommand implements Command<Void> {
 	@Override
 	public Void execute() throws SmException {
 		try {
-			/*SubscriberManagement subscriberManagement = SchedulerContext.getSubscriberManagement();
+			SubscriberManagement subscriberManagement = SchedulerContext.getSubscriberManagement();
 			Subscriber subscriber = subscriberManagement.getSubscriberProfile(msisdn, null);
-*/			
+			
 			Subscriber subscriber = null;
 			try{
 				String requestId = RequestContextLocalStore.get().getRequestId();
@@ -191,8 +187,8 @@ public class ExpiryNotificationCommand implements Command<Void> {
 	private void scheduleEvent(Date scheduleTime, final List<String> messages, SubscriptionLifeCycleEvent event)
 			throws SmException {
 		try {
-			/*UserProfileService userProfileService = SchedulerContext.getUserProfileService();
-			final String userId = userProfileService.getUserId(msisdn);*/
+			UserProfileService userProfileService = SchedulerContext.getUserProfileService();
+			final String userId = userProfileService.getUserId(msisdn);
 			
 			Subscriber subscriber = null;
 			try{
@@ -255,24 +251,5 @@ public class ExpiryNotificationCommand implements Command<Void> {
 		List<String> messages = new ArrayList<String>();
 	}
 	
-	private  SubscriberInfo readEntireSubscriberInfo(String requestId,
-			String subscriberId, List<com.ericsson.sef.bes.api.entities.Meta> metas) {
-		//ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		ISubscriberRequest iSubscriberRequest = SchedulerContext.getBean(ISubscriberRequest.class);
-		SubscriberInfo subInfo = new SubscriberInfo();
-		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.readSubscriber(requestId, subscriberId, metas);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
-		try {
-			semaphore.init(0);
-			semaphore.acquire();
-		} catch (InterruptedException e) {
-		}
-		log.info("Check if response received for read subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.remove(requestId);
-		return subscriberInfo;
-
-	}
 }
+*/

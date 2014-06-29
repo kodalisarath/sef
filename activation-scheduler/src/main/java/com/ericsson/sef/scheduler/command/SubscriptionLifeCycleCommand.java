@@ -22,7 +22,7 @@ import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
-import com.ericsson.raso.sef.smart.subscription.response.HelperConstant;
+import com.ericsson.sef.scheduler.HelperConstant;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
 import com.ericsson.sef.scheduler.SubscriptionLifeCycleJob;

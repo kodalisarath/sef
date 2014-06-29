@@ -1,4 +1,4 @@
-package com.ericsson.sef.scheduler.command;
+/*package com.ericsson.sef.scheduler.command;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -129,3 +129,4 @@ public class PurchaseCommand implements Command<Void> {
 		return null;
 	}
 }
+*/

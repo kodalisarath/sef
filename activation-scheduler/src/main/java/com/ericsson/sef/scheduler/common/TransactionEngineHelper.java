@@ -1,4 +1,4 @@
-package com.ericsson.sef.scheduler.common;
+/*package com.ericsson.sef.scheduler.common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -247,3 +247,4 @@ public abstract class TransactionEngineHelper {
 		return scedhuledReqMetaList;
 	}
 }
+*/
