@@ -22,12 +22,12 @@ public class SchedulingStep extends Step<SchedulingStepResult> {
 	public SchedulingStepResult execute() {
 		Future future = (Future) getExecutionInputs();
 
-		String requestId = RequestContextLocalStore.get().getRequestId();
-		if (requestId == null) {
-			LOGGER.error("Request Identifier is not set.");
-			return new SchedulingStepResult(new StepExecutionException(
-					"No requestId assigned."), false);
-		}
+//		String requestId = RequestContextLocalStore.get().getRequestId();
+//		if (requestId == null) {
+//			LOGGER.error("Request Identifier is not set.");
+//			return new SchedulingStepResult(new StepExecutionException(
+//					"No requestId assigned."), false);
+//		}
 
 		switch (future.getMode()) {
 		case SCHEDULE:

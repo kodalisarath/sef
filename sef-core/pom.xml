@@ -95,7 +95,7 @@
 			com.ericsson.raso.sef.core.cg.diameter,
 			com.ericsson.raso.sef.core.db.model.smart,
 			com.ericsson.raso.sef.core.db.service.smart,
-			
+			com.ericsson.raso.sef.watergate
 		</osgi-export-package>
 	</properties>
 

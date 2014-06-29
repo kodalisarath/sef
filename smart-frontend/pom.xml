@@ -52,7 +52,8 @@
 		vasclient.wsdl,
 		vasclient.types,
 		javax.xml.datatype,
-		javax.security.auth	
+		javax.security.auth,
+		com.ericsson.raso.sef.watergate
 		</osgi-import-packages>
 		<osgi-export-package>
 		wsdl,
