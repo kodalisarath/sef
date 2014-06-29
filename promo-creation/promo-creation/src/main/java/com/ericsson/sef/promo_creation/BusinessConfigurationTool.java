@@ -40,6 +40,7 @@ import com.ericsson.raso.sef.fulfillment.profiles.ReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.RefillProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.UpdateServiceClassProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.UpdateSubscriberSegmentationProfile;
+import com.ericsson.raso.sef.fulfillment.profiles.smart.CallingCircleProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.CreateSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.DedicatedAccountReversal;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.DeleteSubscriberProfile;
@@ -1470,42 +1471,6 @@ public class BusinessConfigurationTool {
 			handles.add("UF170");
 			handles.add("TUAS2");
 			bizConfig = this.getSimpleBcWorkflow("UnliSingkoRegional", "Unli Singko Regional", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-
-			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
-			resource = this.createRefill("KaTokatTex25", "KT25", 1, "2500", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("RB506");
-			bizConfig = this.getSimpleBcWorkflow("KaTokatTex25", "KaTok-at-Tex 25", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-
-			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle...");
-			resource = this.createRefill("KaTokatTex35", "KT35", 1, "3500", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("RB507");
-			bizConfig = this.getSimpleBcWorkflow("KaTokatTex35", "KaTok-at-Tex 35", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-
-			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
-			resource = this.createRefill("KaTOK10", "K10", 1, "1000", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("RB318");
-			bizConfig = this.getSimpleBcWorkflow("KaTOK10", "KaTOK 10", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
-
-			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
-			resource = this.createRefill("KaTOK15", "K15", 1, "1500", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("RB319");
-			bizConfig = this.getSimpleBcWorkflow("KaTOK15", "KaTOK 15", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
@@ -7053,6 +7018,99 @@ public class BusinessConfigurationTool {
 
 			//===================================== Balance Adjustment Ends ===========================
 			
+			//===================================== Calling Circle Begins ===========================
+			
+/*			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
+			resource = this.createRefill("KaTokatTex25", "KT25", 1, "2500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("RB506");
+			bizConfig = this.getSimpleBcWorkflow("KaTokatTex25", "KaTok-at-Tex 25", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+
+			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle...");
+			resource = this.createRefill("KaTokatTex35", "KT35", 1, "3500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("RB507");
+			bizConfig = this.getSimpleBcWorkflow("KaTokatTex35", "KaTok-at-Tex 35", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+
+			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
+			resource = this.createRefill("KaTOK10", "K10", 1, "1000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("RB318");
+			bizConfig = this.getSimpleBcWorkflow("KaTOK10", "KaTOK 10", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+
+			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
+			resource = this.createRefill("KaTOK15", "K15", 1, "1500", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("RB319");
+			bizConfig = this.getSimpleBcWorkflow("KaTOK15", "KaTOK 15", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
+*/
+/*
+			resource = new Service("KaTOK15");
+			resource.setDescription("KaTOK15 Calling Circle Profile");
+			resource.setConsumable(true);
+			resource.setDiscoverable(true);
+			resource.setExternallyConsumed(true);
+			resource.setConsumptionUnitName("PHP");
+
+			CallingCircleProfile fulfillmentProfile = new CallingCircleProfile("KaTOK15");
+			fulfillmentProfile.setFafIndicatorSponsorMember("200");
+			fulfillmentProfile.setFafIndicatorMemberSponsor("201");
+			fulfillmentProfile.setFafIndicatorMemberMember("202");
+			fulfillmentProfile.setFafAccumulatorId((201));
+			fulfillmentProfile.setProdcatOffer("PK15");
+			fulfillmentProfile.setMaxMembers(1);
+			fulfillmentProfile.setAssociatedPromo("Katok15Promo");
+			fulfillmentProfile.set
+			
+			fulfillmentProfile.setRefillType(1);
+			fulfillmentProfile.setTransactionAmount("0");
+			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile.setPurchaseAmount("1");
+			fulfillmentProfile.setRenewalAmount("9999");
+			
+
+			resource.addFulfillmentProfile(fulfillmentProfile.getName());
+			profileRegistry.createProfile(fulfillmentProfile);
+			
+			Offer templatedOffer = new Offer("iCHamp");
+			templatedOffer.setDescription("iCHamp Araw Araw Offer");
+			templatedOffer.setAutoTermination(new TerminateAfterNDays(7));
+			templatedOffer.setMinimumCommitment(new CommitUntilNDays(7));
+			templatedOffer.setRenewalPeriod(new DaysTime(1));
+			templatedOffer.setOfferState(State.TESTING);
+			templatedOffer.setOfferState(State.PUBLISHED);
+			templatedOffer.setRecurrent(true);
+			templatedOffer.setCommercial(false);
+			templatedOffer.addExternalHandle("CMP01");
+
+			AtomicProduct product = new AtomicProduct("iCHamp");
+			product.setQuota(new UnlimitedQuota());
+			product.setResource(resource);
+			product.setValidity(new DaysTime(1));
+
+			templatedOffer.addProduct(product); 
+			offerManager.createOffer(templatedOffer);
+			serviceRegistry.createResource(resource);
+
+
+			
+			
+*/			
+			//===================================== Calling Circle Ends ===========================
+			
+			
 			//===================================== Araw Araw Begin===========================
 			
 
@@ -7140,8 +7198,8 @@ public class BusinessConfigurationTool {
 			fulfillmentProfile.setRefillType(1);
 			fulfillmentProfile.setTransactionAmount("0");
 			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
-			fulfillmentProfile.setPurchaseAmount("1");
-			fulfillmentProfile.setRenewalAmount("9999");
+			fulfillmentProfile.setPurchaseAmount("100");
+			fulfillmentProfile.setRenewalAmount("999900");
 			
 
 			resource.addFulfillmentProfile(fulfillmentProfile.getName());

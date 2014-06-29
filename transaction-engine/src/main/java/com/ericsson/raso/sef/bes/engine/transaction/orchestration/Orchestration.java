@@ -152,22 +152,23 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				case PROCESSING:
 					// the logic below must be checked in reverse order, so the dependency ordering will enforce right sequence
 					switch(this.currentPhase) {
-						case TX_PHASE_PERSISTENCE:
-							this.phasingProgress.put(currentPhase, Status.DONE_SUCCESS);
-							this.promote2Persist();
-							this.currentPhase = this.currentPhase.getNextPhase();
-							this.phasingProgress.put(currentPhase, Status.PROCESSING);
-							break;
-						case TX_PHASE_SCHEDULE:
-							//TODO: this logic has to fixed when testing scheduler...
-							this.phasingProgress.put(currentPhase, Status.DONE_SUCCESS);
-							//TODO: call schedule step here...
-							//this.promote2Schedule();
-							//this.processNotification();
-							this.currentPhase = this.currentPhase.getNextPhase();
-							this.phasingProgress.put(currentPhase, Status.PROCESSING);
-							break;
+						case TX_PHASE_PREP_FULFILLMENT:
 
+							if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
+								logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
+								if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) { 
+									this.currentPhase = this.currentPhase.getNextPhase();
+									this.phasingProgress.put(currentPhase, Status.PROCESSING);
+									this.promote2Fulfill();
+								}
+								else {
+									this.status = Status.DONE_FAULT;
+									this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
+								}
+								logger.debug("Seems to have completed PREP_FULFILLMENT. State: " + this.printPhasingProgress());
+							} 
+							break;
+						
 							//				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
 							//					logger.debug("Yes.. we will do persistence...");
 							//					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
@@ -194,7 +195,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 								if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
 									this.currentPhase = this.currentPhase.getNextPhase();
 									this.phasingProgress.put(currentPhase, Status.PROCESSING);
-									//this.promote2Schedule();
+									this.promote2Schedule();
 									this.promote2Persist();
 									//this.processNotification();
 
@@ -217,22 +218,22 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 								}
 							} 
 							break;
-						case TX_PHASE_PREP_FULFILLMENT:
-
-							if (this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.PROCESSING) {
-								logger.debug("Verifying " + Phase.TX_PHASE_PREP_FULFILLMENT.name());
-								if (this.isPhaseComplete(Phase.TX_PHASE_PREP_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_PREP_FULFILLMENT) == Status.DONE_SUCCESS) { 
-									this.currentPhase = this.currentPhase.getNextPhase();
-									this.phasingProgress.put(currentPhase, Status.PROCESSING);
-									this.promote2Fulfill();
-								}
-								else {
-									this.status = Status.DONE_FAULT;
-									this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
-								}
-								logger.debug("Seems to have completed PREP_FULFILLMENT. State: " + this.printPhasingProgress());
-							} 
+						case TX_PHASE_SCHEDULE:
+							//TODO: this logic has to fixed when testing scheduler...
+							this.phasingProgress.put(currentPhase, Status.DONE_SUCCESS);
+							//TODO: call schedule step here...
+							//this.promote2Schedule();
+							//this.processNotification();
+							this.currentPhase = this.currentPhase.getNextPhase();
+							this.phasingProgress.put(currentPhase, Status.PROCESSING);
 							break;
+						case TX_PHASE_PERSISTENCE:
+							this.phasingProgress.put(currentPhase, Status.DONE_SUCCESS);
+							this.promote2Persist();
+							this.currentPhase = this.currentPhase.getNextPhase();
+							this.phasingProgress.put(currentPhase, Status.PROCESSING);
+							break;
+						
 					}
 				case DONE_FAILED:
 					//nothing to do here... most promotion methods would have preempted this piece of code and hence need not be triggered by external events...
