@@ -1,6 +1,10 @@
 package com.ericsson.raso.sef.core.db.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
+
+
+
+
 
 public class Purchase {
 
@@ -9,7 +13,7 @@ public class Purchase {
 
 	private String recurrentPurchaseId;
 	private CurrencyCode currencyCode;
-	private DateTime purchaseCreated;
+	private Date purchaseCreated;
 	private PurchaseState purchaseState;
 	private String chargedUserId;
 	private PurchaseType purchaseType;
@@ -21,7 +25,7 @@ public class Purchase {
 	private boolean recurrence;
 	private String recurrentProductId;
 	private boolean gift;
-	private DateTime expiryTime;
+	private Date expiryTime;
 
 	public String getEventId() {
 		return eventId;
@@ -39,7 +43,7 @@ public class Purchase {
 		return currencyCode;
 	}
 
-	public DateTime getPurchaseCreated() {
+	public Date getPurchaseCreated() {
 		return purchaseCreated;
 	}
 
@@ -99,7 +103,7 @@ public class Purchase {
 		this.currencyCode = currencyCode;
 	}
 
-	public void setPurchaseCreated(DateTime purchaseCreated) {
+	public void setPurchaseCreated(Date purchaseCreated) {
 		this.purchaseCreated = purchaseCreated;
 	}
 
@@ -151,11 +155,11 @@ public class Purchase {
 		this.gift = gift;
 	}
 
-	public DateTime getExpiryTime() {
+	public Date getExpiryTime() {
 		return expiryTime;
 	}
 
-	public void setExpiryTime(DateTime expiryTime) {
+	public void setExpiryTime(Date expiryTime) {
 		this.expiryTime = expiryTime;
 	}
 }

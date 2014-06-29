@@ -1,12 +1,14 @@
 package com.ericsson.raso.sef.core.db.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
+
+
 
 public class CommerceTrail {
 
 	private String eventId; //unique Key
 	private String userId;  //unique Key
-	private DateTime eventTimestamp;
+	private Date eventTimestamp;
 	private EventType eventType;
 
 	public String getEventId() {
@@ -17,11 +19,11 @@ public class CommerceTrail {
 		this.eventId = eventId;
 	}
 
-	public DateTime getEventTimestamp() {
+	public Date getEventTimestamp() {
 		return eventTimestamp;
 	}
 
-	public void setEventTimestamp(DateTime eventTimestamp) {
+	public void setEventTimestamp(Date eventTimestamp) {
 		this.eventTimestamp = eventTimestamp;
 	}
 

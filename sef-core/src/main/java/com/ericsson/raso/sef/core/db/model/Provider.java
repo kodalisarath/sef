@@ -1,26 +1,26 @@
 package com.ericsson.raso.sef.core.db.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 public class Provider {
 
 	private String providerId;
 	private String partnerName;
 	private String password;
-	private DateTime createdTime;
-	private DateTime lastModified;
+	private Date createdTime;
+	private Date lastModified;
 	private String state;
 	private String status;
 	private Integer loginCount;
-	private DateTime passwordModified;
+	private Date passwordModified;
 
 	
 
-	public DateTime getPasswordModified() {
+	public Date getPasswordModified() {
 		return passwordModified;
 	}
 
-	public void setPasswordModified(DateTime passwordModified) {
+	public void setPasswordModified(Date passwordModified) {
 		this.passwordModified = passwordModified;
 	}
 
@@ -64,19 +64,19 @@ public class Provider {
 		this.password = password;
 	}
 
-	public DateTime getCreatedTime() {
+	public Date getCreatedTime() {
 		return createdTime;
 	}
 
-	public void setCreatedTime(DateTime createdTime) {
+	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
 
-	public DateTime getLastModified() {
+	public Date getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(DateTime lastModified) {
+	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
 	}
 

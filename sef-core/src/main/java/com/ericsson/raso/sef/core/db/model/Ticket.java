@@ -1,6 +1,8 @@
 package com.ericsson.raso.sef.core.db.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
+
+
 
 public class Ticket {
 
@@ -12,7 +14,7 @@ public class Ticket {
 	private String descriptionEn;
 	private TicketState state;
 	private String resourceType;
-	private DateTime expiry;
+	private Date expiry;
 	private String productId;
 
 	public String getTicketId() {
@@ -63,11 +65,11 @@ public class Ticket {
 		this.state = state;
 	}
 
-	public DateTime getExpiry() {
+	public Date getExpiry() {
 		return expiry;
 	}
 
-	public void setExpiry(DateTime expiry) {
+	public void setExpiry(Date expiry) {
 		this.expiry = expiry;
 	}
 

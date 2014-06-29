@@ -1,9 +1,10 @@
 package com.ericsson.raso.sef.core.db.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
+
 
 public class ScheduledRequest {
 
@@ -16,11 +17,11 @@ public class ScheduledRequest {
 	private String resourceId;
 	private String purchaseId;
 	private SubscriptionLifeCycleEvent lifeCycleEvent;
-	private DateTime created;
-	private DateTime updated;
-	private DateTime recurrentTime;
-	private DateTime expiryTime;
-	private DateTime scheduleTime;
+	private Date created;
+	private Date updated;
+	private Date recurrentTime;
+	private Date expiryTime;
+	private Date scheduleTime;
 	private ScheduledRequestStatus status;
 	
 	private List<ScheduledRequestMeta> requestMetas = new ArrayList<ScheduledRequestMeta>();
@@ -29,19 +30,19 @@ public class ScheduledRequest {
 		return id;
 	}
 	
-	public DateTime getRecurrentTime() {
+	public Date getRecurrentTime() {
 		return recurrentTime;
 	}
 
-	public DateTime getExpiryTime() {
+	public Date getExpiryTime() {
 		return expiryTime;
 	}
 
-	public void setRecurrentTime(DateTime recurrentTime) {
+	public void setRecurrentTime(Date recurrentTime) {
 		this.recurrentTime = recurrentTime;
 	}
 
-	public void setExpiryTime(DateTime expiryTime) {
+	public void setExpiryTime(Date expiryTime) {
 		this.expiryTime = expiryTime;
 	}
 
@@ -97,11 +98,11 @@ public class ScheduledRequest {
 		this.lifeCycleEvent = lifeCycleEvent;
 	}
 
-	public DateTime getCreated() {
+	public Date getCreated() {
 		return created;
 	}
 
-	public void setCreated(DateTime created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 
@@ -129,11 +130,11 @@ public class ScheduledRequest {
 		this.resourceId = resourceId;
 	}
 
-	public DateTime getScheduleTime() {
+	public Date getScheduleTime() {
 		return scheduleTime;
 	}
 
-	public void setScheduleTime(DateTime scheduleTime) {
+	public void setScheduleTime(Date scheduleTime) {
 		this.scheduleTime = scheduleTime;
 	}
 
@@ -145,11 +146,11 @@ public class ScheduledRequest {
 		this.status = status;
 	}
 
-	public DateTime getUpdated() {
+	public Date getUpdated() {
 		return updated;
 	}
 
-	public void setUpdated(DateTime updated) {
+	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
 }
