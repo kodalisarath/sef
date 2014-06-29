@@ -79,16 +79,16 @@ public class UpdateSubscriber extends AbstractTransaction {
 							LOGGER.debug("Printing the metas in the loop "+meta.getKey()+" "+meta.getValue()+""+subscriberEntity.getMsisdn());
 							if (subscriberEntity.getMetas().contains(meta)) {
 								try {																																									
-									subscriberStore.updateMeta(this.getRequestId(),
-											subscriberEntity.getMsisdn(), meta);
+									//subscriberStore.updateMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
+									subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 								} catch (PersistenceError e) {
 									LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
 								}
 							} else {
 								try {
 									LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
-									subscriberStore.createMeta(this.getRequestId(),
-											subscriberEntity.getMsisdn(), meta);
+									subscriberStore.createMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+									//subscriberStore.createMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
 								} catch (PersistenceError e) {
 									LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
 								}
