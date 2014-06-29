@@ -153,4 +153,17 @@ public class ScheduledRequest {
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
+
+	@Override
+	public String toString() {
+		return "ScheduledRequest [id=" + id + ", userId=" + userId
+				+ ", msisdn=" + msisdn + ", jobId=" + jobId + ", requestId="
+				+ requestId + ", offerId=" + offerId + ", resourceId="
+				+ resourceId + ", purchaseId=" + purchaseId
+				+ ", lifeCycleEvent=" + lifeCycleEvent + ", created=" + created
+				+ ", updated=" + updated + ", recurrentTime=" + recurrentTime
+				+ ", expiryTime=" + expiryTime + ", scheduleTime="
+				+ scheduleTime + ", status=" + status + ", requestMetas="
+				+ requestMetas + "]";
+	}
 }

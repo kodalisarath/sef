@@ -6,6 +6,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
@@ -18,12 +19,23 @@ public class SubscriptionLifeCycleJob implements Job {
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
 		String jobId = context.getJobDetail().getKey().getName();
-		log.info("PurchaseJob executing job with job ID : " + jobId
+		log.info("SubscriptionLifeCycleJob executing job with job ID(Modified Logs Details  : " + jobId
 				+ " Job details : "
 				+ context.getJobDetail().getJobDataMap().toString());
-		ScheduledRequest scheduledRequest = SchedulerContext
-				.getScheduledRequestMapper().getScheduledRequestByJobId(jobId);
+		
+		log.info("About to fetch from ScheduledRequestMapper ");
+		
+		ScheduledRequest scheduledRequest =null;
+		try
+		{
+		 scheduledRequest =SefCoreServiceResolver.getScheduleRequestService().getScheduledRequestByJobId(jobId);
 
+		}
+		catch(Exception e)
+		{
+			log.error("Exception while fetching the job details "+e);
+		}
+		log.debug("scheduledRequest "+scheduledRequest);
 		
 		if (scheduledRequest == null) {
 			log.error("Job is null for the given executing job with job ID:  "
@@ -32,11 +44,15 @@ public class SubscriptionLifeCycleJob implements Job {
 					"Job is null for the given executing job with job ID: "
 							+ jobId + " Scheduled Job cannot Execute ");
 		}
-
 		try {
 
+			log.debug("LifeCycle Name is "+scheduledRequest.getLifeCycleEvent().name() + " ,Offer id: "+scheduledRequest.getOfferId() +" ,MSISDN: "+scheduledRequest.getMsisdn() +" ,Metas: "+scheduledRequest.getRequestMetas());
+			
+			
 			switch (scheduledRequest.getLifeCycleEvent().name()) {
 
+			
+			
 			case "PURCHASE":
 				TransactionEngineHelper
 						.purchase(
