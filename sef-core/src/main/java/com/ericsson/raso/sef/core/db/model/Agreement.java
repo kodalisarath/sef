@@ -2,8 +2,8 @@ package com.ericsson.raso.sef.core.db.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
-import org.joda.time.DateTime;
 
 public class Agreement {
 
@@ -11,8 +11,8 @@ public class Agreement {
 	private String providerId;
 	private String agreementName;
 	private String agreementType;
-	private DateTime createdTime;
-	private DateTime lastModified;
+	private Date createdTime;
+	private Date lastModified;
 	private String state;
 	
 	Collection<AgreementMeta> agreementMetas;
@@ -41,16 +41,16 @@ public class Agreement {
 	public void setAgreementType(String agreementType) {
 		this.agreementType = agreementType;
 	}
-	public DateTime getCreatedTime() {
+	public Date getCreatedTime() {
 		return createdTime;
 	}
-	public void setCreatedTime(DateTime createdTime) {
+	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
-	public DateTime getLastModified() {
+	public Date getLastModified() {
 		return lastModified;
 	}
-	public void setLastModified(DateTime lastModified) {
+	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
 	}
 	public String getState() {

@@ -2,10 +2,10 @@ package com.ericsson.raso.sef.core.db.service.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ericsson.raso.sef.core.db.mapper.AgreementMapper;
@@ -33,8 +33,8 @@ public class UserManagemetServiceImpl implements UserManagementService {
 	@Override
 	@Transactional
 	public void insertProvider(Provider provider) {
-		provider.setPasswordModified(new DateTime());
-		provider.setCreatedTime(new DateTime());
+		provider.setPasswordModified(new Date());
+		provider.setCreatedTime(new Date());
 		provider.setLoginCount(0);
 		provider.setStatus("open");
 		provider.setState("0");

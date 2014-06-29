@@ -19,7 +19,7 @@
 		<camel-version>2.10.0</camel-version>
 		<mybatis-version>3.1.1</mybatis-version>
 		<mybatis-spring-version>1.2.2</mybatis-spring-version>
-		<joda-time-version>2.3</joda-time-version>
+		
 		<spring-version>3.2.9.RELEASE</spring-version>
 		<osgi-dynamic-packages>
 			org.apache.tomcat.dbcp.*
@@ -51,7 +51,7 @@
 			javax.crypto,
 			javax.xml.namespace,
 			 org.opensaml.ws,
-			 org.joda.time;version=2.3.0,
+			 
 			 com.ericsson.pps.diameter.dccapi,
  			com.ericsson.pps.diameter.dccapi.avp,
  			com.ericsson.pps.diameter.dccapi.command,
