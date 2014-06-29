@@ -58,9 +58,6 @@ public class EntireReadSubscriber implements Processor {
 			return;
 		}
 		
-		
-		
-		
 		logger.debug("Manila: About to Call entireReadSubscriber ");
 		EntireRead entireRead = SmartServiceHelper.entireReadSubscriber(request.getCustomerId());
 

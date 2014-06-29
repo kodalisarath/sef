@@ -153,10 +153,6 @@ public class ModifyCustomerGrace implements Processor {
 
 				metas.add(new Meta("GraceEndDate", metaStoreFormat.format(newExpiryDate)));
 				logger.debug("There is a new GraceEndDate entered and adding days to it now "+ newExpiry);
-				//							}
-				//							else{
-				//								logger.debug("date is not found");
-				//							}
 				String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
 				SubscriberInfo response = new SubscriberInfo();
 				logger.debug("Got past event class....SK");
@@ -176,9 +172,6 @@ public class ModifyCustomerGrace implements Processor {
 
 				logger.debug("Awake from sleep.. going to check response in store with id: " +  resultId);
 
-				//PurchaseResponse purchaseResponse = (PurchaseResponse) SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.SMFE_TXE_CORRELLATOR);
-				//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
-				//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 				SubscriberInfo purchaseResponse = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 				logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 

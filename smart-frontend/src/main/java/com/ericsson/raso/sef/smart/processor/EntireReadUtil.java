@@ -346,8 +346,7 @@ public class EntireReadUtil {
 		}
 
 		if (ropRead.getGraceEndDate() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"GraceEndDate", ropRead.getGraceEndDate()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("GraceEndDate", ropRead.getGraceEndDate()));
 		}
 
 		if (ropRead.getS_CRMTitle() != null) {
@@ -1158,29 +1157,36 @@ public class EntireReadUtil {
 		Set<String> keySet = metaMap.keySet();
 		String key = null;
 
-		logger.debug("Manila Inside getGraceEndDate");
-		for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
-			key = i.next();
-			String value = null;
+		String graceEndDate = metaMap.get("GraceEndDate");
 
-			logger.debug("Manila getGraceEndDate Key is " + key);
+		if (graceEndDate == null) {
+			logger.debug("Manila Inside getGraceEndDate");
+			for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
+				key = i.next();
+				String value = null;
 
-			if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO)) {
-				value = metaMap.get(key);
+				logger.debug("Checking for grace offer... Key is " + key);
 
-				logger.debug("Manila getGraceEndDate Key Matched is " + key
-						+ " Value is " + value);
-				StringTokenizer str = new StringTokenizer(value, ",");
-				String offerId = str.nextToken();
-				String startDate = str.nextToken();
-				String startDateTime = str.nextToken();
-				String expiryDate = str.nextToken();
-				String expiryDateTime = str.nextToken();
+				if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO)) {
+					value = metaMap.get(key);
 
-				if ("1001".equals(offerId)) {
-					return expiryDateTime;
+					logger.debug("Manila getGraceEndDate Key Matched is " + key
+							+ " Value is " + value);
+					StringTokenizer str = new StringTokenizer(value, ",");
+					String offerId = str.nextToken();
+					String startDate = str.nextToken();
+					String startDateTime = str.nextToken();
+					String expiryDate = str.nextToken();
+					String expiryDateTime = str.nextToken();
+
+					if ("1".equals(offerId)) {
+						graceEndDate = expiryDateTime;
+						long dateMillis = Long.parseLong(graceEndDate);
+						
+						SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
+						return metaStoreFormat.format(new Date(dateMillis));
+					}
 				}
-
 			}
 		}
 

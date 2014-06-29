@@ -62,6 +62,7 @@ public final class CallingCircleProfile extends RefillProfile {
 	private String welcomeMessageEventId;
 	private String A_PartyMemberThresholdBreachMessageEventId;
 	private String NewMemberAddedEventId;
+	private String B_PartyInvalidStateEventId;
 	
 	private Integer callingCircleCsOfferID;
 
@@ -131,7 +132,7 @@ public final class CallingCircleProfile extends RefillProfile {
 		// Step 3: Check for B-Number status
 		if (!breakFlow && !this.checkAllowedContractState(this.memberB)) {
 			logger.debug("User not allowed to enter Calling Circle Membership");
-			this.sendSorryMessage(NotificationMessageEvent.B_PartyInvalidState.getEventName(), this.subscriberId);
+			this.sendSorryMessage(this.B_PartyInvalidStateEventId, this.subscriberId);
 			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "B-party in invalid state");
 			breakFlow = true;
@@ -997,7 +998,7 @@ public final class CallingCircleProfile extends RefillProfile {
 
 	enum NotificationMessageEvent {
 		B_PartyUnknown ("800120130000"),
-		B_PartyInvalidState ("800120120000"),
+		//B_PartyInvalidState ("800120120000"),
 		//A_PartyMemberThresholdBreach (""), -- moved to BC since its unique to each CallingCircle Pack
 		//NewMemberAdded (),-- moved to BC since its unique to each CallingCircle Pack
 		UpdateFafFailed ("800120130000");

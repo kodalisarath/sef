@@ -64,7 +64,13 @@ public class CreateSubscriberProfile extends BlockingFulfillment<Product> {
 		
 		//TODO: After the requisite Router implementation, move this to smfe and cleanup....
 		LOGGER.debug("Fetching the sdpId from Router");
-		Value route = RangeRouter.getInstance().getRoute("SMART_router", Long.parseLong(map.get("SUBSCRIBER_ID")));
+		Value route = null;
+		try {
+			route = RangeRouter.getInstance().getRoute("SMART_router", Long.parseLong(map.get("SUBSCRIBER_ID")));
+		} catch (IllegalStateException e1) {
+			LOGGER.error("Seems like unknown range for installed subscriber. Better stop now!!");
+			throw new FulfillmentException("ffe", new ResponseCode(4011, "Target SDP identification not configured. Check Router!!"), e1);
+		}
 		String sdpId = null;
 		String siteName = null;
 		
