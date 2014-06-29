@@ -7086,6 +7086,9 @@ public class BusinessConfigurationTool {
 			fulfillmentProfile.setFreebieRenewalAmount("1");
 			fulfillmentProfile.setFreebiePurchaseAmount("1");
 			
+			resource.addFulfillmentProfile(fulfillmentProfile.getName());
+			profileRegistry.createProfile(fulfillmentProfile);
+			
 			Offer templatedOffer = new Offer("KaTOK10");
 			templatedOffer.setDescription("KaTOK10 Calling Circle Offer");
 			
@@ -7096,7 +7099,7 @@ public class BusinessConfigurationTool {
 			templatedOffer.setRecurrent(false);
 			templatedOffer.setCommercial(false);
 			templatedOffer.addExternalHandle("RB318");
-			templatedOffer.addExternalHandle("PK10");
+			templatedOffer.addExternalHandle("K10");
 
 			AtomicProduct product = new AtomicProduct("KaTOK10");
 			product.setQuota(new UnlimitedQuota());
