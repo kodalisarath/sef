@@ -83,12 +83,12 @@
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.CommerceTrailMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
-	
+	 -->
 	<bean id="scheduledRequestMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.ScheduledRequestMapper" />
+		<property name="mapperInterface" value="com.ericsson.raso.sef.core.db.mapper.ScheduledRequestMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
- -->
+
  
  	<bean id="subscriberService" class="com.ericsson.raso.sef.core.db.service.internal.SubscriberServiceImpl">
  		<property name="subscriberMapper" ref="subscriberMapper"/> 
@@ -97,9 +97,9 @@
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.RoleManagerMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
-	
+ 	 -->
 	<bean id="scheduleRequestService"
 		class="com.ericsson.raso.sef.core.db.service.internal.ScheduleRequestServiceImpl">
 		<property name="scheduledRequestMapper" ref="scheduledRequestMapper" />
-	</bean> -->
+	</bean>
 </beans>
