@@ -22,13 +22,10 @@ import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
-import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 import com.ericsson.raso.sef.smart.subscription.response.HelperConstant;
-import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
 import com.ericsson.sef.scheduler.SubscriptionLifeCycleJob;
-import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class SubscriptionLifeCycleCommand implements Command<Void> {
 
