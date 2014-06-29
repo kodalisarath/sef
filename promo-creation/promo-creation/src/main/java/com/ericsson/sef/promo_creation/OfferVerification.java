@@ -21,7 +21,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class OfferVerification {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, NoSuchFieldException, SecurityException {
 		
 		BufferedWriter bw = null;
 		File outfile = new File("C:\\Temp\\offerVerification.txt");

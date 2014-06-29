@@ -258,7 +258,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("AlkansyaLoad150", "AL01", 1, "15000", CurrencyCode.PHP);
+			resource = this.createRefill("AlkansyaLoad150", "AL01", 1, "15000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("WL4");
 			bizConfig = this.getSimpleBcWorkflow("AlkansyaLoad150", "Alkansya Load Wallet Load 150", handles, resource);
@@ -7440,7 +7440,7 @@ public class BusinessConfigurationTool {
 //		return templatedOffer;
 //	}
 
-	public Resource createRefill(String name, String refillProfileId, Integer refillType, String transactionAmount, CurrencyCode transactionCurrency) throws CatalogException {
+	public Resource createRefill(String name, String refillProfileId, Integer refillType, String transactionAmount, CurrencyCode transactionCurrency, String renewalAmount, String purchaseAmount) throws CatalogException {
 
 		Resource resource = new Service(name);
 		resource.setDescription("Refill Profile");
@@ -7454,6 +7454,8 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setRefillType(refillType);
 		fulfillmentProfile.setTransactionAmount(transactionAmount);
 		fulfillmentProfile.setTransactionCurrency(transactionCurrency);
+		fulfillmentProfile.setRenewalAmount(renewalAmount);
+		fulfillmentProfile.setPurchaseAmount(purchaseAmount);
 		
 
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
