@@ -242,7 +242,7 @@ public class BusinessConfigurationTool {
 			System.out.println("CREATING COMMERCIAL OFFERS NOW.....\n======================.....\n\n");
 		
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("AlkansyaLoad100", "AL01", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("AlkansyaLoad100", "AL01", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("WL3");
 			bizConfig = this.getSimpleBcWorkflow("AlkansyaLoad100", "Alkansya Load Wallet Load 100", handles, resource);
@@ -250,7 +250,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("AlkansyaLoad15", "AL01", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("AlkansyaLoad15", "AL01", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK01");
 			bizConfig = this.getSimpleBcWorkflow("AlkansyaLoad15", "Alkansya Load Wallet Load 15", handles, resource);
@@ -266,7 +266,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("AlkansyaLoad30", "AL01", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("AlkansyaLoad30", "AL01", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("WL1");
 			bizConfig = this.getSimpleBcWorkflow("AlkansyaLoad30", "Alkansya Load Wallet Load 30", handles, resource);
@@ -275,7 +275,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("AlkansyaLoad300", "AL01", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("AlkansyaLoad300", "AL01", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("WL5");
 			bizConfig = this.getSimpleBcWorkflow("AlkansyaLoad300", "Alkansya Load Wallet Load 300", handles, resource);
@@ -284,7 +284,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("AlkansyaLoad50", "AL01", 1, "5000", CurrencyCode.PHP);
+			resource = this.createRefill("AlkansyaLoad50", "AL01", 1, "5000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("WL2");
 			bizConfig = this.getSimpleBcWorkflow("AlkansyaLoad50", "Alkansya Load Wallet Load 50", handles, resource);
@@ -293,7 +293,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("AlkansyaLoad500", "AL01", 1, "50000", CurrencyCode.PHP);
+			resource = this.createRefill("AlkansyaLoad500", "AL01", 1, "50000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("WL6");
 			bizConfig = this.getSimpleBcWorkflow("AlkansyaLoad500", "Alkansya Load Wallet Load 500", handles, resource);
@@ -302,7 +302,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("Ipon", "AL01", 1, "1", CurrencyCode.PHP);
+			resource = this.createRefill("Ipon", "AL01", 1, "1", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("FD1");
 			bizConfig = this.getSimpleBcWorkflow("Ipon", "Convert Whole Uload Balance To AirTime", handles, resource);
@@ -311,7 +311,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("P5FirstPullAlkansyaMenu", "AL01", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("P5FirstPullAlkansyaMenu", "AL01", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("YTN11");
 			bizConfig = this.getSimpleBcWorkflow("P5FirstPullAlkansyaMenu", "P5 Credit for First Pull of Alkansya menu", handles, resource);
@@ -320,7 +320,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Ask For Load...");
-			resource = this.createRefill("AskforLoadP5", "ASL1", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("AskforLoadP5", "ASL1", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("5");
 			bizConfig = this.getSimpleBcWorkflow("AskforLoadP5", "Ask-for-Load P5", handles, resource);
@@ -329,7 +329,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, CTC Load...");
-			resource = this.createRefill("TicketLoad10", "CTC1", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("TicketLoad10", "CTC1", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("10");
 			bizConfig = this.getSimpleBcWorkflow("TicketLoad10", "TicketLoad 10", handles, resource);
@@ -338,7 +338,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, CTC Load...");
-			resource = this.createRefill("TicketLoad15", "CTC1", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("TicketLoad15", "CTC1", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("15");
 			bizConfig = this.getSimpleBcWorkflow("TicketLoad15", "TicketLoad 15", handles, resource);
@@ -347,7 +347,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, CTC Load...");
-			resource = this.createRefill("TicketLoad30", "CTC1", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("TicketLoad30", "CTC1", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("30");
 			bizConfig = this.getSimpleBcWorkflow("TicketLoad30", "TicketLoad 30", handles, resource);
@@ -356,7 +356,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, CTC Load...");
-			resource = this.createRefill("CTCLoad100", "CTC1", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("CTCLoad100", "CTC1", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("100");
 			bizConfig = this.getSimpleBcWorkflow("CTCLoad100", "CTC Load 100", handles, resource);
@@ -365,7 +365,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, CTC Load...");
-			resource = this.createRefill("CTCLoad1000", "CTC1", 1, "100000", CurrencyCode.PHP);
+			resource = this.createRefill("CTCLoad1000", "CTC1", 1, "100000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("1000");
 			bizConfig = this.getSimpleBcWorkflow("CTCLoad1000", "CTC Load 1000", handles, resource);
@@ -374,7 +374,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, CTC Load...");
-			resource = this.createRefill("CTCLoad300", "CTC1", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("CTCLoad300", "CTC1", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("300");
 			bizConfig = this.getSimpleBcWorkflow("CTCLoad300", "CTC Load 300", handles, resource);
@@ -383,7 +383,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, CTC Load...");
-			resource = this.createRefill("CTCLoad500", "CTC1", 1, "50000", CurrencyCode.PHP);
+			resource = this.createRefill("CTCLoad500", "CTC1", 1, "50000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("500");
 			bizConfig = this.getSimpleBcWorkflow("CTCLoad500", "CTC Load 500", handles, resource);
@@ -392,7 +392,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Corporate Quick Load...");
-			resource = this.createRefill("CorporateQuickLoad100", "CQ01", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("CorporateQuickLoad100", "CQ01", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("B1");
 			bizConfig = this.getSimpleBcWorkflow("CorporateQuickLoad100", "Corporate Quick Load 100", handles, resource);
@@ -401,7 +401,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Corporate Quick Load...");
-			resource = this.createRefill("CorporateQuickLoad1000", "CQ01", 1, "100000", CurrencyCode.PHP);
+			resource = this.createRefill("CorporateQuickLoad1000", "CQ01", 1, "100000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("X8");
 			bizConfig = this.getSimpleBcWorkflow("CorporateQuickLoad1000", "Corporate Quick Load 1000", handles, resource);
@@ -410,7 +410,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Corporate Quick Load...");
-			resource = this.createRefill("CorporateQuickLoad200", "CQ01", 1, "20000", CurrencyCode.PHP);
+			resource = this.createRefill("CorporateQuickLoad200", "CQ01", 1, "20000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("XA");
 			bizConfig = this.getSimpleBcWorkflow("CorporateQuickLoad200", "Corporate Quick Load 200", handles, resource);
@@ -419,7 +419,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Corporate Quick Load...");
-			resource = this.createRefill("CorporateQuickLoad300", "CQ01", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("CorporateQuickLoad300", "CQ01", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("X6");
 			bizConfig = this.getSimpleBcWorkflow("CorporateQuickLoad300", "Corporate Quick Load 300", handles, resource);
@@ -428,7 +428,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Corporate Quick Load...");
-			resource = this.createRefill("CorporateQuickLoad500", "CQ01", 1, "50000", CurrencyCode.PHP);
+			resource = this.createRefill("CorporateQuickLoad500", "CQ01", 1, "50000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("X7");
 			bizConfig = this.getSimpleBcWorkflow("CorporateQuickLoad500", "Corporate Quick Load 500", handles, resource);
@@ -437,7 +437,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("Economy30", "L001", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("Economy30", "L001", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("A");
 			handles.add("T1");
@@ -448,7 +448,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("Economy30SM", "L001", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("Economy30SM", "L001", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SM12");
 			bizConfig = this.getSimpleBcWorkflow("Economy30SM", "Economy 30 Smart Money", handles, resource);
@@ -457,7 +457,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Emergency Load...");
-			resource = this.createRefill("EmergencyLoadSMS", "EL01", 1, "400", CurrencyCode.PHP);
+			resource = this.createRefill("EmergencyLoadSMS", "EL01", 1, "400", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("PBB");
 			bizConfig = this.getSimpleBcWorkflow("EmergencyLoadSMS", "Emergency Load SMS", handles, resource);
@@ -466,7 +466,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Emergency Load...");
-			resource = this.createRefill("EmergencyLoadSMSAllNetSMS", "EL01", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("EmergencyLoadSMSAllNetSMS", "EL01", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("PBB3");
 			bizConfig = this.getSimpleBcWorkflow("EmergencyLoadSMSAllNetSMS", "Emergency Load SMS - All Net SMS", handles, resource);
@@ -475,7 +475,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Emergency Load...");
-			resource = this.createRefill("EmergencyLoadVoice", "EL01", 1, "650", CurrencyCode.PHP);
+			resource = this.createRefill("EmergencyLoadVoice", "EL01", 1, "650", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("CBBV1");
 			bizConfig = this.getSimpleBcWorkflow("EmergencyLoadVoice", "Emergency Load Voice", handles, resource);
@@ -484,7 +484,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("Extra115", "L001", 1, "11500", CurrencyCode.PHP);
+			resource = this.createRefill("Extra115", "L001", 1, "11500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("C");
 			handles.add("T3");
@@ -494,7 +494,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP10", "PL01", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP10", "PL01", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("10");
 			handles.add("O3");
@@ -505,7 +505,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP100", "PL01", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP100", "PL01", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("1H");
 			handles.add("1O");
@@ -516,7 +516,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP15", "PL01", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP15", "PL01", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("15");
 			handles.add("O4");
@@ -527,7 +527,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP2", "PL01", 1, "200", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP2", "PL01", 1, "200", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("2");
 			handles.add("O1");
@@ -538,7 +538,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP20", "PL01", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP20", "PL01", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("20");
 			handles.add("O5");
@@ -549,7 +549,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP200", "PL01", 1, "20000", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP200", "PL01", 1, "20000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("2H");
 			handles.add("2O");
@@ -560,7 +560,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP30", "PL01", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP30", "PL01", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("30");
 			handles.add("O7");
@@ -571,7 +571,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP35", "PL01", 1, "100", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP35", "PL01", 1, "100", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("35T");
 			handles.add("O8");
@@ -582,7 +582,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP5", "PL01", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP5", "PL01", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("5");
 			handles.add("O2");
@@ -593,7 +593,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Pasaload Refill...");
-			resource = this.createRefill("PasaloadP60", "PL01", 1, "6000", CurrencyCode.PHP);
+			resource = this.createRefill("PasaloadP60", "PL01", 1, "6000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("60");
 			handles.add("O9");
@@ -604,7 +604,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP1", "AL01", 1, "100", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP1", "AL01", 1, "100", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK07");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP1", "PasariliAlkansya InstantText P1", handles, resource);
@@ -613,7 +613,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP2", "AL01", 1, "200", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP2", "AL01", 1, "200", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK08");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP2", "PasariliAlkansya InstantText P2", handles, resource);
@@ -622,7 +622,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP3", "AL01", 1, "300", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP3", "AL01", 1, "300", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK09");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP3", "PasariliAlkansya InstantText P3", handles, resource);
@@ -631,7 +631,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP4", "AL01", 1, "400", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP4", "AL01", 1, "400", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK10");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP4", "PasariliAlkansya InstantText P4", handles, resource);
@@ -640,7 +640,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP5", "AL01", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP5", "AL01", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK11");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP5", "PasariliAlkansya InstantText P5", handles, resource);
@@ -649,7 +649,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP6", "AL01", 1, "600", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP6", "AL01", 1, "600", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK12");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP6", "PasariliAlkansya InstantText P6", handles, resource);
@@ -658,7 +658,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP7", "AL01", 1, "700", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP7", "AL01", 1, "700", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK13");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP7", "PasariliAlkansya InstantText P7", handles, resource);
@@ -667,7 +667,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP8", "AL01", 1, "800", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP8", "AL01", 1, "800", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK14");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP8", "PasariliAlkansya InstantText P8", handles, resource);
@@ -676,7 +676,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliAlkansyaInstantTextP9", "AL01", 1, "900", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliAlkansyaInstantTextP9", "AL01", 1, "900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK15");
 			bizConfig = this.getSimpleBcWorkflow("PasariliAlkansyaInstantTextP9", "PasariliAlkansya InstantText P9", handles, resource);
@@ -685,7 +685,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP1", "AL01", 1, "100", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP1", "AL01", 1, "100", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK02");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP1", "Pasarili P1", handles, resource);
@@ -694,7 +694,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP1.50", "AL01", 1, "150", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP1.50", "AL01", 1, "150", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK03");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP1.50", "Pasarili P1.50", handles, resource);
@@ -703,7 +703,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP10", "AL01", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP10", "AL01", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("GL10");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP10", "Pasarili P10", handles, resource);
@@ -712,7 +712,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP100", "AL01", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP100", "AL01", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T20");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP100", "Pasarili P100", handles, resource);
@@ -721,7 +721,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP115", "AL01", 1, "11500", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP115", "AL01", 1, "11500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T3");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP115", "Pasarili P115", handles, resource);
@@ -730,7 +730,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP15", "AL01", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP15", "AL01", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T17");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP15", "Pasarili P15", handles, resource);
@@ -739,7 +739,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP2", "AL01", 1, "200", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP2", "AL01", 1, "200", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK04");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP2", "Pasarili P2", handles, resource);
@@ -748,7 +748,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP2.50", "AL01", 1, "250", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP2.50", "AL01", 1, "250", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK05");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP2.50", "Pasarili P2.50", handles, resource);
@@ -757,7 +757,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP200", "AL01", 1, "20000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP200", "AL01", 1, "20000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T7");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP200", "Pasarili P200", handles, resource);
@@ -766,7 +766,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP3", "AL01", 1, "300", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP3", "AL01", 1, "300", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK06");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP3", "Pasarili P3", handles, resource);
@@ -775,7 +775,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP30", "AL01", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP30", "AL01", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T1");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP30", "Pasarili P30", handles, resource);
@@ -784,7 +784,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP300", "AL01", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP300", "AL01", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T4");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP300", "Pasarili P300", handles, resource);
@@ -794,7 +794,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP500", "AL01", 1, "50000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP500", "AL01", 1, "50000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T5");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP500", "Pasarili P500", handles, resource);
@@ -803,7 +803,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliP60", "AL01", 1, "6000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliP60", "AL01", 1, "6000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T2");
 			bizConfig = this.getSimpleBcWorkflow("PasariliP60", "Pasarili P60", handles, resource);
@@ -812,7 +812,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliPatok10", "AL01", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliPatok10", "AL01", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK18");
 			bizConfig = this.getSimpleBcWorkflow("PasariliPatok10", "Pasarili Patok10", handles, resource);
@@ -821,7 +821,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliUnliTxt10", "AL01", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliUnliTxt10", "AL01", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK17");
 			bizConfig = this.getSimpleBcWorkflow("PasariliUnliTxt10", "Pasarili UnliTxt10", handles, resource);
@@ -830,7 +830,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliUnliTxt5", "AL01", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliUnliTxt5", "AL01", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ALK16");
 			bizConfig = this.getSimpleBcWorkflow("PasariliUnliTxt5", "Pasarili UnliTxt5", handles, resource);
@@ -839,7 +839,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliUpsize20", "AL01", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliUpsize20", "AL01", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T13");
 			bizConfig = this.getSimpleBcWorkflow("PasariliUpsize20", "Pasarili Upsize20", handles, resource);
@@ -848,7 +848,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Alkansya Load...");
-			resource = this.createRefill("PasariliUpsize35", "AL01", 1, "3500", CurrencyCode.PHP);
+			resource = this.createRefill("PasariliUpsize35", "AL01", 1, "3500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("T11");
 			bizConfig = this.getSimpleBcWorkflow("PasariliUpsize35", "Pasarili Upsize35", handles, resource);
@@ -857,7 +857,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Presyong Pinoy Load...");
-			resource = this.createRefill("PresyongPinoyLoad115", "PP01", 1, "11500", CurrencyCode.PHP);
+			resource = this.createRefill("PresyongPinoyLoad115", "PP01", 1, "11500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BR002");
 			bizConfig = this.getSimpleBcWorkflow("PresyongPinoyLoad115", "Presyong Pinoy Load 115", handles, resource);
@@ -866,7 +866,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Presyong Pinoy Load...");
-			resource = this.createRefill("PresyongPinoyLoad30", "PP01", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("PresyongPinoyLoad30", "PP01", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BR007");
 			bizConfig = this.getSimpleBcWorkflow("PresyongPinoyLoad30", "Presyong Pinoy Load 30", handles, resource);
@@ -875,7 +875,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Presyong Pinoy Load...");
-			resource = this.createRefill("PresyongPinoyLoad60", "PP01", 1, "6000", CurrencyCode.PHP);
+			resource = this.createRefill("PresyongPinoyLoad60", "PP01", 1, "6000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BR008");
 			bizConfig = this.getSimpleBcWorkflow("PresyongPinoyLoad60", "Presyong Pinoy Load 60", handles, resource);
@@ -884,7 +884,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Presyong Pinoy Load...");
-			resource = this.createRefill("PresyongPinoyLoad100", "PP01", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("PresyongPinoyLoad100", "PP01", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BR001");
 			bizConfig = this.getSimpleBcWorkflow("PresyongPinoyLoad100", "Presyong Pinoy Load 100", handles, resource);
@@ -893,7 +893,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Presyong Pinoy Load...");
-			resource = this.createRefill("PresyongPinoyLoad1000", "PP01", 1, "100000", CurrencyCode.PHP);
+			resource = this.createRefill("PresyongPinoyLoad1000", "PP01", 1, "100000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BR006");
 			bizConfig = this.getSimpleBcWorkflow("PresyongPinoyLoad1000", "Presyong Pinoy Load 1000", handles, resource);
@@ -902,7 +902,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Presyong Pinoy Load...");
-			resource = this.createRefill("PresyongPinoyLoad200", "PP01", 1, "20000", CurrencyCode.PHP);
+			resource = this.createRefill("PresyongPinoyLoad200", "PP01", 1, "20000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BR003");
 			bizConfig = this.getSimpleBcWorkflow("PresyongPinoyLoad200", "Presyong Pinoy Load 200", handles, resource);
@@ -911,7 +911,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Presyong Pinoy Load...");
-			resource = this.createRefill("PresyongPinoyLoad300", "PP01", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("PresyongPinoyLoad300", "PP01", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BR004");
 			bizConfig = this.getSimpleBcWorkflow("PresyongPinoyLoad300", "Presyong Pinoy Load 300", handles, resource);
@@ -920,7 +920,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Presyong Pinoy Load...");
-			resource = this.createRefill("PresyongPinoyLoad500", "PP01", 1, "50000", CurrencyCode.PHP);
+			resource = this.createRefill("PresyongPinoyLoad500", "PP01", 1, "50000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BR005");
 			bizConfig = this.getSimpleBcWorkflow("PresyongPinoyLoad500", "Presyong Pinoy Load 500", handles, resource);
@@ -929,7 +929,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("Regular60", "L001", 1, "6000", CurrencyCode.PHP);
+			resource = this.createRefill("Regular60", "L001", 1, "6000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("B");
 			handles.add("T2");
@@ -939,7 +939,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("RegularLoadP10", "L001", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("RegularLoadP10", "L001", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("TPW04");
 			handles.add("Plan10");
@@ -949,7 +949,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad100", "L001", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad100", "L001", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("X2");
 			handles.add("T20");
@@ -960,7 +960,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad100SM", "L001", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad100SM", "L001", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SM14");
 			bizConfig = this.getSimpleBcWorkflow("SMARTLoad100SM", "SMARTLoad 100 Smart Money", handles, resource);
@@ -969,7 +969,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad1000", "L001", 1, "100000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad1000", "L001", 1, "100000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("F");
 			handles.add("T6");
@@ -980,7 +980,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad1000SM", "L001", 1, "100000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad1000SM", "L001", 1, "100000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SM18");
 			bizConfig = this.getSimpleBcWorkflow("SMARTLoad1000SM", "SMARTLoad 1000 Smart Money", handles, resource);
@@ -989,7 +989,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad15", "L001", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad15", "L001", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("U");
 			handles.add("T17");
@@ -1000,7 +1000,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad15SM", "L001", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad15SM", "L001", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SM11");
 			bizConfig = this.getSimpleBcWorkflow("SMARTLoad15SM", "SMARTLoad 15 Smart Money", handles, resource);
@@ -1009,7 +1009,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad20", "L001", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad20", "L001", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BD5");
 			handles.add("T10");
@@ -1019,7 +1019,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad200", "L001", 1, "20000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad200", "L001", 1, "20000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("G");
 			handles.add("T7");
@@ -1030,7 +1030,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad200SM", "L001", 1, "20000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad200SM", "L001", 1, "20000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SM15");
 			bizConfig = this.getSimpleBcWorkflow("SMARTLoad200SM", "SMARTLoad 200 Smart Money", handles, resource);
@@ -1039,7 +1039,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad250", "L001", 1, "25000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad250", "L001", 1, "25000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RA001");
 			bizConfig = this.getSimpleBcWorkflow("SMARTLoad250", "SMARTLoad 250", handles, resource);
@@ -1048,7 +1048,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad300", "L001", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad300", "L001", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("D");
 			handles.add("T4");
@@ -1059,7 +1059,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad300SM", "L001", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad300SM", "L001", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SM16");
 			bizConfig = this.getSimpleBcWorkflow("SMARTLoad300SM", "SMARTLoad 300 Smart Money", handles, resource);
@@ -1068,7 +1068,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad50", "L001", 1, "5000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad50", "L001", 1, "5000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("X1");
 			handles.add("T19");
@@ -1080,7 +1080,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad50SM", "L001", 1, "5000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad50SM", "L001", 1, "5000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SM13");
 			bizConfig = this.getSimpleBcWorkflow("SMARTLoad50SM", "SMARTLoad 50 Smart Money", handles, resource);
@@ -1089,7 +1089,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad500", "L001", 1, "50000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad500", "L001", 1, "50000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("E");
 			handles.add("T5");
@@ -1100,7 +1100,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Regular Refill...");
-			resource = this.createRefill("SMARTLoad500SM", "L001", 1, "50000", CurrencyCode.PHP);
+			resource = this.createRefill("SMARTLoad500SM", "L001", 1, "50000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SM17");
 			bizConfig = this.getSimpleBcWorkflow("SMARTLoad500SM", "SMARTLoad 500 Smart Money", handles, resource);
@@ -1109,7 +1109,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, TakaTak Refill...");
-			resource = this.createRefill("Takatak12", "TK01", 1, "1200", CurrencyCode.PHP);
+			resource = this.createRefill("Takatak12", "TK01", 1, "1200", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("TK3");
 			bizConfig = this.getSimpleBcWorkflow("Takatak12", "Takatak 12", handles, resource);
@@ -1118,7 +1118,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, TakaTak Refill...");
-			resource = this.createRefill("Takatak3", "TK01", 1, "300", CurrencyCode.PHP);
+			resource = this.createRefill("Takatak3", "TK01", 1, "300", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("TK1");
 			bizConfig = this.getSimpleBcWorkflow("Takatak3", "Takatak 3", handles, resource);
@@ -1127,7 +1127,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, TakaTak Refill...");
-			resource = this.createRefill("Takatak6", "TK01", 1, "600", CurrencyCode.PHP);
+			resource = this.createRefill("Takatak6", "TK01", 1, "600", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("TK2");
 			bizConfig = this.getSimpleBcWorkflow("Takatak6", "Takatak 6", handles, resource);
@@ -1136,7 +1136,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, VAS Refill...");
-			resource = this.createRefill("EloadPromo5000", "VS01", 1, "500000", CurrencyCode.PHP);
+			resource = this.createRefill("EloadPromo5000", "VS01", 1, "500000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ELP01");
 			bizConfig = this.getSimpleBcWorkflow("EloadPromo5000", "Eload Promo 5000", handles, resource);
@@ -1145,7 +1145,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, VAS Refill...");
-			resource = this.createRefill("EloadPromo10000", "VS01", 1, "1000000", CurrencyCode.PHP);
+			resource = this.createRefill("EloadPromo10000", "VS01", 1, "1000000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ELP02");
 			bizConfig = this.getSimpleBcWorkflow("EloadPromo10000", "Eload Promo 10000", handles, resource);
@@ -1155,7 +1155,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, VAS Refill...");
-			resource = this.createRefill("KPR01", "VS01", 1, "300", CurrencyCode.PHP);
+			resource = this.createRefill("KPR01", "VS01", 1, "300", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("KPR01");
 			bizConfig = this.getSimpleBcWorkflow("KPR01", "KaPartner Rewards 300 on-net SMS", handles, resource);
@@ -1164,7 +1164,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, VAS Refill...");
-			resource = this.createRefill("DBP01", "VS01", 1, "100", CurrencyCode.PHP);
+			resource = this.createRefill("DBP01", "VS01", 1, "100", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("DBP01");
 			bizConfig = this.getSimpleBcWorkflow("DBP01", "DB Buliding and Profiling Program 20 Onnet SMS", handles, resource);
@@ -1173,7 +1173,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, VAS Refill...");
-			resource = this.createRefill("UNI01", "VS01", 1, "2500", CurrencyCode.PHP);
+			resource = this.createRefill("UNI01", "VS01", 1, "2500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UNI01");
 			bizConfig = this.getSimpleBcWorkflow("UNI01", "Unilever Reward 25 On Net SMS", handles, resource);
@@ -1182,7 +1182,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, VAS Refill...");
-			resource = this.createRefill("KPR11", "VS01", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("KPR11", "VS01", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("KPR11");
 			bizConfig = this.getSimpleBcWorkflow("KPR11", "KaPartner Rewards Gaan All-In-One 15", handles, resource);
@@ -1191,7 +1191,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, VAS Refill...");
-			resource = this.createRefill("KPR12", "VS01", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("KPR12", "VS01", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("KPR12");
 			bizConfig = this.getSimpleBcWorkflow("KPR12", "KaPartner Rewards Gaan Text 10", handles, resource);
@@ -1200,7 +1200,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, VAS Refill...");
-			resource = this.createRefill("IOSMSJapan", "VS01", 1, "200", CurrencyCode.PHP);
+			resource = this.createRefill("IOSMSJapan", "VS01", 1, "200", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("I");
 			bizConfig = this.getSimpleBcWorkflow("IOSMSJapan", "IOSMS Japan", handles, resource);
@@ -1209,7 +1209,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt2All15Regional", "1001", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt2All15Regional", "1001", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB328");
 			handles.add("PWIL3");
@@ -1219,7 +1219,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanUnliTxtPlus15", "1002", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("GaanUnliTxtPlus15", "1002", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB410");
 			handles.add("GTX15");
@@ -1229,7 +1229,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanUnliTxtPlus20", "1003", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("GaanUnliTxtPlus20", "1003", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB46");
 			handles.add("GT20T");
@@ -1239,7 +1239,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanUnliTxtPlus30", "1004", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("GaanUnliTxtPlus30", "1004", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB47");
 			handles.add("GT30T");
@@ -1249,7 +1249,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTalkPlus20", "1005", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTalkPlus20", "1005", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UCT17");
 			handles.add("UP20");
@@ -1259,7 +1259,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTalkPlus100", "1006", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTalkPlus100", "1006", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UCT4");
 			handles.add("T22");
@@ -1269,7 +1269,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTextExtra30", "1007", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTextExtra30", "1007", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB510");
 			handles.add("PJST1");
@@ -1279,7 +1279,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanTxt10", "1008", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("GaanTxt10", "1008", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB60");
 			handles.add("Q");
@@ -1289,7 +1289,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanTxt20", "1009", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("GaanTxt20", "1009", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB323");
 			handles.add("X5");
@@ -1299,7 +1299,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt10", "1010", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt10", "1010", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UF57");
 			bizConfig = this.getSimpleBcWorkflow("UnliTxt10", "UnliTxt 10", handles, resource);
@@ -1308,7 +1308,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt150", "1011", 1, "15000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt150", "1011", 1, "15000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UF137");
 			handles.add("PWIL1");
@@ -1318,7 +1318,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt51hr", "1012", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt51hr", "1012", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UF58");
 			bizConfig = this.getSimpleBcWorkflow("UnliTxt51hr", "UnliTxt5 1 hr", handles, resource);
@@ -1327,7 +1327,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt2All20", "1013", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt2All20", "1013", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB511");
 			handles.add("PJST2");
@@ -1337,7 +1337,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt15Regional", "1014", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt15Regional", "1014", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UF166");
 			handles.add("UPK05");
@@ -1347,7 +1347,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt5for12hrsRegional", "1015", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt5for12hrsRegional", "1015", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UF165");
 			handles.add("UPK04");
@@ -1357,7 +1357,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt20Regional", "1016", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt20Regional", "1016", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UF235");
 			handles.add("UNL20");
@@ -1367,7 +1367,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AllText10", "1017", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("AllText10", "1017", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("J");
 			bizConfig = this.getSimpleBcWorkflow("AllText10", "All Text 10", handles, resource);
@@ -1376,7 +1376,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("PaTokOTex10", "1019", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("PaTokOTex10", "1019", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB95");
 			handles.add("FMX1");
@@ -1386,7 +1386,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("PaTokOTex15", "1020", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("PaTokOTex15", "1020", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB460");
 			handles.add("PTT15");
@@ -1396,7 +1396,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("PaTokOTex20", "1021", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("PaTokOTex20", "1021", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB96");
 			handles.add("FMX2");
@@ -1406,7 +1406,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("PaTokOTex30", "1022", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("PaTokOTex30", "1022", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB97");
 			handles.add("FMX3");
@@ -1416,7 +1416,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxtAll_UnliTropaCall20", "1023", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxtAll_UnliTropaCall20", "1023", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB531");
 			handles.add("CSW01");
@@ -1426,7 +1426,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanUnliTxtPlus15Regional", "1024", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("GaanUnliTxtPlus15Regional", "1024", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB537");
 			handles.add("GAU15");
@@ -1436,7 +1436,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("SangkatuTex15", "1025", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("SangkatuTex15", "1025", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB288");
 			handles.add("SNGK1");
@@ -1446,7 +1446,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("SangkatuTex30", "1026", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("SangkatuTex30", "1026", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB289");
 			handles.add("SNGK2");
@@ -1456,7 +1456,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliCombo10Regional", "1027", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliCombo10Regional", "1027", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UCT37");
 			handles.add("TUAS3");
@@ -1466,7 +1466,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliSingkoRegional", "1028", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("UnliSingkoRegional", "1028", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UF170");
 			handles.add("TUAS2");
@@ -1476,7 +1476,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("KaTokUNLISMSforMember", "KF25", 1, "0", CurrencyCode.PHP);
+			resource = this.createRefill("KaTokUNLISMSforMember", "KF25", 1, "0", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("GR007");
 			bizConfig = this.getSimpleBcWorkflow("KaTokUNLISMSforMember", "KaTok-at-Tex25 KaTok-at-Tex35 UNLI SMS for Member", handles, resource);
@@ -1485,7 +1485,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BonggaTxt5", "1033", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("BonggaTxt5", "1033", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB270");
 			handles.add("TPW01");
@@ -1495,7 +1495,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxtPlus10", "1034", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxtPlus10", "1034", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB271");
 			handles.add("TPW02");
@@ -1505,7 +1505,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanAllInOne15", "1035", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("GaanAllInOne15", "1035", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB461");
 			handles.add("GAO15");
@@ -1515,7 +1515,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanAllInOne20", "1036", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("GaanAllInOne20", "1036", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB462");
 			handles.add("GAO20");
@@ -1525,7 +1525,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanAllInOne15Regional", "1037", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("GaanAllInOne15Regional", "1037", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB526");
 			handles.add("GAM15");
@@ -1535,7 +1535,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanAllInOne20Regional", "1038", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("GaanAllInOne20Regional", "1038", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB527");
 			handles.add("GAM20");
@@ -1545,7 +1545,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("SangkatuTok15", "1039", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("SangkatuTok15", "1039", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB338");
 			handles.add("SNGK4");
@@ -1555,7 +1555,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("SangkatuTok30", "1040", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("SangkatuTok30", "1040", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB339");
 			handles.add("SNGK5");
@@ -1565,7 +1565,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("Txt2All5", "1041", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("Txt2All5", "1041", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB325");
 			handles.add("OUT05");
@@ -1575,7 +1575,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TokTok15", "1042", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("TokTok15", "1042", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB603");
 			bizConfig = this.getSimpleBcWorkflow("TokTok15", "TokTok 15", handles, resource);
@@ -1584,7 +1584,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TokTok10", "1043", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("TokTok10", "1043", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB602");
 			bizConfig = this.getSimpleBcWorkflow("TokTok10", "TokTok 10", handles, resource);
@@ -1592,7 +1592,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("PantawidLoad1Bucket", "1045", 1, "100", CurrencyCode.PHP);
+			resource = this.createRefill("PantawidLoad1Bucket", "1045", 1, "100", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB501");
 			bizConfig = this.getSimpleBcWorkflow("PantawidLoad1Bucket", "Pantawid Load 1 Bucket", handles, resource);
@@ -1601,7 +1601,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliTxt2AllPlus10", "1046", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliTxt2AllPlus10", "1046", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB536");
 			bizConfig = this.getSimpleBcWorkflow("UnliTxt2AllPlus10", "UnliTxt2All Plus 10", handles, resource);
@@ -1610,7 +1610,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliText2All300", "1047", 1, "20000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliText2All300", "1047", 1, "20000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB339");
 			bizConfig = this.getSimpleBcWorkflow("UnliText2All300", "UnliText2All 300", handles, resource);
@@ -1618,7 +1618,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("RegionalCombo10", "1052", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("RegionalCombo10", "1052", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB549");
 			handles.add("SHP10");
@@ -1628,7 +1628,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliAllText10Regional", "1053", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliAllText10Regional", "1053", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB550");
 			handles.add("TXA10");
@@ -1638,7 +1638,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnlitextTrioCombo10", "1055", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("UnlitextTrioCombo10", "1055", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZTN03");
 			handles.add("YTN40");
@@ -1648,7 +1648,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnlitextTrioCombo15", "1056", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("UnlitextTrioCombo15", "1056", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZTN04");
 			handles.add("YTN41");
@@ -1658,7 +1658,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnlitextTrioCombo20", "1057", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("UnlitextTrioCombo20", "1057", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZTN05");
 			handles.add("YTN42");
@@ -1668,7 +1668,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnlitextTrioCombo30", "1058", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("UnlitextTrioCombo30", "1058", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZTN06");
 			handles.add("YTN43");
@@ -1678,7 +1678,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("EnhancedGA15Regional", "1059", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("EnhancedGA15Regional", "1059", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZTN07");
 			handles.add("YTN44");
@@ -1688,7 +1688,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("EnhancedGA20Regional", "1060", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("EnhancedGA20Regional", "1060", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZTN08");
 			handles.add("YTN45");
@@ -1698,7 +1698,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TokenGaanAllInOne55SMS", "1061", 1, "5500", CurrencyCode.PHP);
+			resource = this.createRefill("TokenGaanAllInOne55SMS", "1061", 1, "5500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB529");
 			bizConfig = this.getSimpleBcWorkflow("TokenGaanAllInOne55SMS", "Token - Gaan All-In-One 55 - SMS", handles, resource);
@@ -1707,7 +1707,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TokenGaanAllInOne55Voice", "1062", 1, "5500", CurrencyCode.PHP);
+			resource = this.createRefill("TokenGaanAllInOne55Voice", "1062", 1, "5500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB530");
 			bizConfig = this.getSimpleBcWorkflow("TokenGaanAllInOne55Voice", "Token - Gaan All-In-One 55 - Voice", handles, resource);
@@ -1716,7 +1716,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TokenGaanUnliTxtPlus55Voice", "1063", 1, "5500", CurrencyCode.PHP);
+			resource = this.createRefill("TokenGaanUnliTxtPlus55Voice", "1063", 1, "5500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB583");
 			bizConfig = this.getSimpleBcWorkflow("TokenGaanUnliTxtPlus55Voice", "Token - Gaan UnliTxtPlus55 - Voice", handles, resource);
@@ -1725,7 +1725,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanAllInOne30", "1064", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("GaanAllInOne30", "1064", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB457");
 			handles.add("GA30");
@@ -1738,7 +1738,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanAllInOne55", "1065", 1, "5500", CurrencyCode.PHP);
+			resource = this.createRefill("GaanAllInOne55", "1065", 1, "5500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB458");
 			handles.add("GA55");
@@ -1750,7 +1750,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("GaanAllInOne99", "1066", 1, "9900", CurrencyCode.PHP);
+			resource = this.createRefill("GaanAllInOne99", "1066", 1, "9900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB459");
 			handles.add("GA99");
@@ -1762,7 +1762,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("Trinet300", "1067", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("Trinet300", "1067", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("GR027");
 			bizConfig = this.getSimpleBcWorkflow("Trinet300", "Trinet 300", handles, resource);
@@ -1771,7 +1771,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("EnhancedAllText20", "1018", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("EnhancedAllText20", "1018", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("K");
 			handles.add("SM10");
@@ -1782,7 +1782,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("PantawidLoad1BucketEload", "1070", 1, "100", CurrencyCode.PHP);
+			resource = this.createRefill("PantawidLoad1BucketEload", "1070", 1, "100", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RPL01");
 			bizConfig = this.getSimpleBcWorkflow("PantawidLoad1BucketEload", "Pantawid Load 1 Bucket Eload", handles, resource);
@@ -1791,7 +1791,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("ProjectMagneto_UNLITRIO20PLUS", "1071", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("ProjectMagneto_UNLITRIO20PLUS", "1071", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZTN13");
 			handles.add("YTN46");
@@ -1801,7 +1801,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("ProjectSurprise_UnliTexttoAll10", "1072", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("ProjectSurprise_UnliTexttoAll10", "1072", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZTN14");
 			bizConfig = this.getSimpleBcWorkflow("ProjectSurprise_UnliTexttoAll10", "Project Surprise_Unli Text to All 10", handles, resource);
@@ -1810,7 +1810,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("ProjectTrio_UnliCombo10", "1073", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("ProjectTrio_UnliCombo10", "1073", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UCT37");
 			handles.add("TUAS3");
@@ -1820,7 +1820,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("ProjectTrio_UnliSingko", "1074", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("ProjectTrio_UnliSingko", "1074", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("UF170");
 			handles.add("TUAS2");
@@ -1830,7 +1830,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("ProjectTrio_Call_and_Text10", "1075", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("ProjectTrio_Call_and_Text10", "1075", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("YBU48");
 			bizConfig = this.getSimpleBcWorkflow("ProjectTrio_Call_and_Text10", "Project Trio_Call_and_Text 10", handles, resource);
@@ -1839,7 +1839,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("ProjectTrio_UnliTxt2All10", "1076", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("ProjectTrio_UnliTxt2All10", "1076", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("YBU49");
 			bizConfig = this.getSimpleBcWorkflow("ProjectTrio_UnliTxt2All10", "Project Trio_UnliTxt2All10", handles, resource);
@@ -1848,7 +1848,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("KamusText20", "3001", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("KamusText20", "3001", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB353");
 			bizConfig = this.getSimpleBcWorkflow("KamusText20", "KamusText 20", handles, resource);
@@ -1857,7 +1857,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("FlexiCallTextAbroad30", "3002", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("FlexiCallTextAbroad30", "3002", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB354");
 			bizConfig = this.getSimpleBcWorkflow("FlexiCallTextAbroad30", "Flexi Call Text Abroad 30", handles, resource);
@@ -1866,7 +1866,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("FlexiCallTextAbroad50", "3003", 1, "5000", CurrencyCode.PHP);
+			resource = this.createRefill("FlexiCallTextAbroad50", "3003", 1, "5000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB355");
 			bizConfig = this.getSimpleBcWorkflow("FlexiCallTextAbroad50", "Flexi Call Text Abroad 50", handles, resource);
@@ -1875,7 +1875,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TalkALot300", "3004", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("TalkALot300", "3004", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB352");
 			bizConfig = this.getSimpleBcWorkflow("TalkALot300", "Talk-A-Lot 300", handles, resource);
@@ -1884,7 +1884,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TextALot35", "3005", 1, "3500", CurrencyCode.PHP);
+			resource = this.createRefill("TextALot35", "3005", 1, "3500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB350");
 			bizConfig = this.getSimpleBcWorkflow("TextALot35", "Text-A-Lot 35", handles, resource);
@@ -1893,7 +1893,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TextALot60", "3006", 1, "6000", CurrencyCode.PHP);
+			resource = this.createRefill("TextALot60", "3006", 1, "6000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB351");
 			bizConfig = this.getSimpleBcWorkflow("TextALot60", "Text-A-Lot 60", handles, resource);
@@ -1902,7 +1902,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TextTipid100", "3007", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("TextTipid100", "3007", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB313");
 			bizConfig = this.getSimpleBcWorkflow("TextTipid100", "TextTipid 100", handles, resource);
@@ -1911,7 +1911,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TextTipid150", "3008", 1, "15000", CurrencyCode.PHP);
+			resource = this.createRefill("TextTipid150", "3008", 1, "15000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB314");
 			bizConfig = this.getSimpleBcWorkflow("TextTipid150", "TextTipid 150", handles, resource);
@@ -1920,7 +1920,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TextTipid200", "3009", 1, "20000", CurrencyCode.PHP);
+			resource = this.createRefill("TextTipid200", "3009", 1, "20000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB315");
 			bizConfig = this.getSimpleBcWorkflow("TextTipid200", "TextTipid 200", handles, resource);
@@ -1929,7 +1929,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TextTipid300", "3010", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("TextTipid300", "3010", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB316");
 			bizConfig = this.getSimpleBcWorkflow("TextTipid300", "TextTipid 300", handles, resource);
@@ -1938,7 +1938,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliSurf500", "3011", 1, "50000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliSurf500", "3011", 1, "50000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB374");
 			handles.add("SB375");
@@ -1958,7 +1958,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TalkTipid100", "3012", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("TalkTipid100", "3012", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB341");
 			handles.add("SB345");
@@ -1968,7 +1968,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TalkTipid300", "3013", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("TalkTipid300", "3013", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB342");
 			handles.add("SB346");
@@ -1978,7 +1978,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("IDDol20", "3014", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("IDDol20", "3014", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB541");
 			bizConfig = this.getSimpleBcWorkflow("IDDol20", "IDDol 20", handles, resource);
@@ -1986,7 +1986,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("IDDol25", "3015", 1, "2500", CurrencyCode.PHP);
+			resource = this.createRefill("IDDol25", "3015", 1, "2500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB542");
 			bizConfig = this.getSimpleBcWorkflow("IDDol25", "IDDol 25", handles, resource);
@@ -1994,7 +1994,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("IDDol40", "3016", 1, "4000", CurrencyCode.PHP);
+			resource = this.createRefill("IDDol40", "3016", 1, "4000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB543");
 			bizConfig = this.getSimpleBcWorkflow("IDDol40", "IDDol 40", handles, resource);
@@ -2002,7 +2002,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("IDDol100", "3017", 1, "10000", CurrencyCode.PHP);
+			resource = this.createRefill("IDDol100", "3017", 1, "10000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB544");
 			bizConfig = this.getSimpleBcWorkflow("IDDol100", "IDDol 100", handles, resource);
@@ -2010,7 +2010,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("IDDSale", "3018", 1, "0", CurrencyCode.PHP);
+			resource = this.createRefill("IDDSale", "3018", 1, "0", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU16");
 			bizConfig = this.getSimpleBcWorkflow("IDDSale", "IDD Sale", handles, resource);
@@ -2018,7 +2018,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("Unlisurf50", "5001", 1, "5000", CurrencyCode.PHP);
+			resource = this.createRefill("Unlisurf50", "5001", 1, "5000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB80");
 			bizConfig = this.getSimpleBcWorkflow("Unlisurf50", "Unlisurf 50", handles, resource);
@@ -2026,7 +2026,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("TNTPaidSampler", "5005", 1, "100", CurrencyCode.PHP);
+			resource = this.createRefill("TNTPaidSampler", "5005", 1, "100", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB606");
 			bizConfig = this.getSimpleBcWorkflow("TNTPaidSampler", "TNT Paid Sampler", handles, resource);
@@ -2034,7 +2034,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AlwaysOn10", "5006", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("AlwaysOn10", "5006", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB397");
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn10", "Always On 10", handles, resource);
@@ -2042,7 +2042,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AlwaysOn20", "5007", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("AlwaysOn20", "5007", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB521");
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn20", "Always On 20", handles, resource);
@@ -2050,7 +2050,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AlwaysOn30", "5008", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("AlwaysOn30", "5008", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB522");
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn30", "Always On 30 ", handles, resource);
@@ -2058,7 +2058,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AlwaysOn99", "5009", 1, "9900", CurrencyCode.PHP);
+			resource = this.createRefill("AlwaysOn99", "5009", 1, "9900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB497");
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn99", "Always On 99", handles, resource);
@@ -2066,7 +2066,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AlwaysOn199", "5010", 1, "19900", CurrencyCode.PHP);
+			resource = this.createRefill("AlwaysOn199", "5010", 1, "19900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB580");
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn199", "Always On 199", handles, resource);
@@ -2074,7 +2074,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AlwaysOn299", "5011", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("AlwaysOn299", "5011", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB581");
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn299", "Always On 299 ", handles, resource);
@@ -2082,7 +2082,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AlwaysOn499", "5012", 1, "49900", CurrencyCode.PHP);
+			resource = this.createRefill("AlwaysOn499", "5012", 1, "49900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB525");
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn499", "Always On 499 ", handles, resource);
@@ -2090,7 +2090,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("AlwaysOn995", "5013", 1, "99500", CurrencyCode.PHP);
+			resource = this.createRefill("AlwaysOn995", "5013", 1, "99500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB404");
 			bizConfig = this.getSimpleBcWorkflow("AlwaysOn995", "Always On 995 ", handles, resource);
@@ -2098,7 +2098,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("Facebook10Panther", "5014", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("Facebook10Panther", "5014", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("GW698");
 			bizConfig = this.getSimpleBcWorkflow("Facebook10Panther", "Facebook 10 Panther", handles, resource);
@@ -2106,7 +2106,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("Yahoo15Panther", "5015", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("Yahoo15Panther", "5015", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("GW719");
 			bizConfig = this.getSimpleBcWorkflow("Yahoo15Panther", "Yahoo 15 Panther", handles, resource);
@@ -2114,7 +2114,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberryDaily50", "5016", 1, "5000", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberryDaily50", "5016", 1, "5000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB65");
 			bizConfig = this.getSimpleBcWorkflow("BlackberryDaily50", "Blackberry Daily 50", handles, resource);
@@ -2122,7 +2122,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberryWeekly300", "5017", 1, "30000", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberryWeekly300", "5017", 1, "30000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB66");
 			bizConfig = this.getSimpleBcWorkflow("BlackberryWeekly300", "Blackberry Weekly 300", handles, resource);
@@ -2130,7 +2130,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberryMonthly599", "5018", 1, "59900", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberryMonthly599", "5018", 1, "59900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB108");
 			bizConfig = this.getSimpleBcWorkflow("BlackberryMonthly599", "Blackberry Monthly 599", handles, resource);
@@ -2138,7 +2138,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberryLiteEmailDaily35", "5019", 1, "3500", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberryLiteEmailDaily35", "5019", 1, "3500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB259");
 			bizConfig = this.getSimpleBcWorkflow("BlackberryLiteEmailDaily35", "Blackberry Lite Email Daily 35", handles, resource);
@@ -2146,7 +2146,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberryLiteEmailMonthly299", "5020", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberryLiteEmailMonthly299", "5020", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB258");
 			bizConfig = this.getSimpleBcWorkflow("BlackberryLiteEmailMonthly299", "Blackberry Lite Email Monthly 299", handles, resource);
@@ -2154,7 +2154,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberrySocialDaily35", "5021", 1, "3500", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberrySocialDaily35", "5021", 1, "3500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB257");
 			bizConfig = this.getSimpleBcWorkflow("BlackberrySocialDaily35", "Blackberry Social Daily 35", handles, resource);
@@ -2162,7 +2162,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberrySocialMonthly299", "5022", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberrySocialMonthly299", "5022", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB256");
 			bizConfig = this.getSimpleBcWorkflow("BlackberrySocialMonthly299", "Blackberry Social Monthly 299", handles, resource);
@@ -2170,7 +2170,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberryMessengerMonthly99", "5024", 1, "9900", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberryMessengerMonthly99", "5024", 1, "9900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB560");
 			bizConfig = this.getSimpleBcWorkflow("BlackberryMessengerMonthly99", "Blackberry Messenger Monthly 99", handles, resource);
@@ -2178,7 +2178,7 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberryMonthly599Microwarehouse", "5025", 1, "59900", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberryMonthly599Microwarehouse", "5025", 1, "59900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BBP1");
 			handles.add("BB1200F");
@@ -2188,7 +2188,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberryLiteEmailMonthly299Microwarehouse", "5026", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberryLiteEmailMonthly299Microwarehouse", "5026", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BBP3");
 			handles.add("BB650L");
@@ -2198,7 +2198,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BlackberrySocialMonthly299Microwarehouse", "5027", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("BlackberrySocialMonthly299Microwarehouse", "5027", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("BBP2");
 			handles.add("BBS650S");
@@ -2208,7 +2208,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("SnapperDaily10", "5028", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("SnapperDaily10", "5028", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB457");
 			handles.add("SB460");
@@ -2218,7 +2218,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("P1TNTMicrosachetFB", "5029", 1, "100", CurrencyCode.PHP);
+			resource = this.createRefill("P1TNTMicrosachetFB", "5029", 1, "100", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB604");
 			bizConfig = this.getSimpleBcWorkflow("P1TNTMicrosachetFB", "P1 TNT Microsachet FB", handles, resource);
@@ -2227,7 +2227,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("P5TNTMicrosachetFB", "5030", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("P5TNTMicrosachetFB", "5030", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB605");
 			bizConfig = this.getSimpleBcWorkflow("P5TNTMicrosachetFB", "P5 TNT Microsachet FB", handles, resource);
@@ -2236,7 +2236,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("OperaSurf15", "5031", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("OperaSurf15", "5031", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB597");
 			bizConfig = this.getSimpleBcWorkflow("OperaSurf15", "OperaSurf 15", handles, resource);
@@ -2245,7 +2245,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("OperaSurf60", "5032", 1, "6000", CurrencyCode.PHP);
+			resource = this.createRefill("OperaSurf60", "5032", 1, "6000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("SB598");
 			bizConfig = this.getSimpleBcWorkflow("OperaSurf60", "OperaSurf 60", handles, resource);
@@ -2254,7 +2254,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("EmailPackage5", "5036", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("EmailPackage5", "5036", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU17");
 			bizConfig = this.getSimpleBcWorkflow("EmailPackage5", "Email Package 5", handles, resource);
@@ -2263,7 +2263,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("EmailPackage10", "5037", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("EmailPackage10", "5037", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU18");
 			bizConfig = this.getSimpleBcWorkflow("EmailPackage10", "Email Package 10", handles, resource);
@@ -2272,7 +2272,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("ChatPackage5", "5038", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("ChatPackage5", "5038", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU19");
 			bizConfig = this.getSimpleBcWorkflow("ChatPackage5", "Chat Package 5", handles, resource);
@@ -2281,7 +2281,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("ChatPackage10", "5039", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("ChatPackage10", "5039", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU20");
 			bizConfig = this.getSimpleBcWorkflow("ChatPackage10", "Chat Package 10", handles, resource);
@@ -2290,7 +2290,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("PhotoPackage10", "5040", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("PhotoPackage10", "5040", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU21");
 			bizConfig = this.getSimpleBcWorkflow("PhotoPackage10", "Photo Package 10", handles, resource);
@@ -2299,7 +2299,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("PhotoPackage20", "5041", 1, "2000", CurrencyCode.PHP);
+			resource = this.createRefill("PhotoPackage20", "5041", 1, "2000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU22");
 			bizConfig = this.getSimpleBcWorkflow("PhotoPackage20", "Photo Package 20", handles, resource);
@@ -2308,7 +2308,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("SocialPackage", "5042", 1, "0", CurrencyCode.PHP);
+			resource = this.createRefill("SocialPackage", "5042", 1, "0", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("YBU23");
 			bizConfig = this.getSimpleBcWorkflow("SocialPackage", "Social Package", handles, resource);
@@ -2317,7 +2317,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliPackage15", "5043", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("UnliPackage15", "5043", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU24");
 			bizConfig = this.getSimpleBcWorkflow("UnliPackage15", "Unli Package 15", handles, resource);
@@ -2326,7 +2326,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliPackage30", "5044", 1, "3000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliPackage30", "5044", 1, "3000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU25");
 			bizConfig = this.getSimpleBcWorkflow("UnliPackage30", "Unli Package 30", handles, resource);
@@ -2335,7 +2335,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("SpeedBoost", "5045", 1, "500", CurrencyCode.PHP);
+			resource = this.createRefill("SpeedBoost", "5045", 1, "500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU26");
 			bizConfig = this.getSimpleBcWorkflow("SpeedBoost", "Speed Boost", handles, resource);
@@ -2344,7 +2344,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliOperaMini7Days", "5033", 1, "8000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliOperaMini7Days", "5033", 1, "8000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("DA003");
 			bizConfig = this.getSimpleBcWorkflow("UnliOperaMini7Days", "Unli Opera Mini 7 Days", handles, resource);
@@ -2353,7 +2353,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliOperaMini15Days", "5034", 1, "16000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliOperaMini15Days", "5034", 1, "16000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("DA004");
 			bizConfig = this.getSimpleBcWorkflow("UnliOperaMini15Days", "Unli Opera Mini 15 Days", handles, resource);
@@ -2362,7 +2362,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliOperaMini30Days", "5035", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("UnliOperaMini30Days", "5035", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("DA005");
 			bizConfig = this.getSimpleBcWorkflow("UnliOperaMini30Days", "Unli Opera Mini 30 Days", handles, resource);
@@ -2371,7 +2371,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliNokiaXpress1Day", "5049", 1, "1500", CurrencyCode.PHP);
+			resource = this.createRefill("UnliNokiaXpress1Day", "5049", 1, "1500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU07");
 			bizConfig = this.getSimpleBcWorkflow("UnliNokiaXpress1Day", "Unli Nokia Xpress 1 Day", handles, resource);
@@ -2380,7 +2380,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliNokiaXpress7Days", "5050", 1, "8000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliNokiaXpress7Days", "5050", 1, "8000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU08");
 			bizConfig = this.getSimpleBcWorkflow("UnliNokiaXpress7Days", "Unli Nokia Xpress 7 Days", handles, resource);
@@ -2389,7 +2389,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliNokiaXpress15Days", "5051", 1, "16000", CurrencyCode.PHP);
+			resource = this.createRefill("UnliNokiaXpress15Days", "5051", 1, "16000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU09");
 			bizConfig = this.getSimpleBcWorkflow("UnliNokiaXpress15Days", "Unli Nokia Xpress 15 Days", handles, resource);
@@ -2398,7 +2398,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("UnliNokiaXpress30Days", "5052", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("UnliNokiaXpress30Days", "5052", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU10");
 			bizConfig = this.getSimpleBcWorkflow("UnliNokiaXpress30Days", "Unli Nokia Xpress 30 Days", handles, resource);
@@ -2407,7 +2407,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("Unlisurf299", "5002", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("Unlisurf299", "5002", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU12");
 			bizConfig = this.getSimpleBcWorkflow("Unlisurf299", "Unlisurf 299", handles, resource);
@@ -2416,7 +2416,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("Unlisurf999", "5003", 1, "99900", CurrencyCode.PHP);
+			resource = this.createRefill("Unlisurf999", "5003", 1, "99900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU13");
 			bizConfig = this.getSimpleBcWorkflow("Unlisurf999", "Unlisurf 999", handles, resource);
@@ -2425,7 +2425,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("BBMP10", "5023", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("BBMP10", "5023", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU04");
 			bizConfig = this.getSimpleBcWorkflow("BBMP10", "BBM P10", handles, resource);
@@ -2434,7 +2434,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("MessagingUnliCHATALL299", "5056", 1, "29900", CurrencyCode.PHP);
+			resource = this.createRefill("MessagingUnliCHATALL299", "5056", 1, "29900", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("ZBU11");
 			bizConfig = this.getSimpleBcWorkflow("MessagingUnliCHATALL299", "Messaging Unli CHATALL299", handles, resource);
@@ -2443,7 +2443,7 @@ public class BusinessConfigurationTool {
 
 
 			System.out.println("Offer, Resource & Profile - Predefined, Promo Refill...");
-			resource = this.createRefill("LoyalistaGaanText10BatchCrediting", "B001", 1, "1000", CurrencyCode.PHP);
+			resource = this.createRefill("LoyalistaGaanText10BatchCrediting", "B001", 1, "1000", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("GTX10");
 			bizConfig = this.getSimpleBcWorkflow("LoyalistaGaanText10BatchCrediting", "Loyalista Gaan Text 10 Batch Crediting", handles, resource);
@@ -7021,7 +7021,7 @@ public class BusinessConfigurationTool {
 			//===================================== Calling Circle Begins ===========================
 			
 /*			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
-			resource = this.createRefill("KaTokatTex25", "KT25", 1, "2500", CurrencyCode.PHP);
+			resource = this.createRefill("KaTokatTex25", "KT25", 1, "2500", CurrencyCode.PHP, "1", "1");
 			handles = new ArrayList<String>();
 			handles.add("RB506");
 			bizConfig = this.getSimpleBcWorkflow("KaTokatTex25", "KaTok-at-Tex 25", handles, resource);
