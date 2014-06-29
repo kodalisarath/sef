@@ -7038,14 +7038,6 @@ public class BusinessConfigurationTool {
 			serviceRegistry.createResource(resource);
 
 
-			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
-			resource = this.createRefill("KaTOK10", "K10", 1, "1000", CurrencyCode.PHP);
-			handles = new ArrayList<String>();
-			handles.add("RB318");
-			bizConfig = this.getSimpleBcWorkflow("KaTOK10", "KaTOK 10", handles, resource);
-			offerManager.createOffer(bizConfig);
-			serviceRegistry.createResource(resource);
-
 
 			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
 			resource = this.createRefill("KaTOK15", "K15", 1, "1500", CurrencyCode.PHP);
@@ -7055,59 +7047,67 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
+			System.out.println("Offer, Resource & Profile - Predefined, Calling Circle Refill...");
+			resource = this.createRefill("KaTOK10", "K10", 1, "1000", CurrencyCode.PHP);
+			handles = new ArrayList<String>();
+			handles.add("RB318");
+			bizConfig = this.getSimpleBcWorkflow("KaTOK10", "KaTOK 10", handles, resource);
+			offerManager.createOffer(bizConfig);
+			serviceRegistry.createResource(resource);
+
 */
-/*
-			resource = new Service("KaTOK15");
-			resource.setDescription("KaTOK15 Calling Circle Profile");
+
+			resource = new Service("KaTOK10");
+			resource.setDescription("KaTOK10 Calling Circle Profile");
 			resource.setConsumable(true);
 			resource.setDiscoverable(true);
 			resource.setExternallyConsumed(true);
 			resource.setConsumptionUnitName("PHP");
 
-			CallingCircleProfile fulfillmentProfile = new CallingCircleProfile("KaTOK15");
-			fulfillmentProfile.setFafIndicatorSponsorMember("200");
-			fulfillmentProfile.setFafIndicatorMemberSponsor("201");
-			fulfillmentProfile.setFafIndicatorMemberMember("202");
+			CallingCircleProfile fulfillmentProfile = new CallingCircleProfile("KaTOK10");
+			fulfillmentProfile.setFafIndicatorSponsorMember("100");
+			fulfillmentProfile.setFafIndicatorMemberSponsor("101");
+			fulfillmentProfile.setFafIndicatorMemberMember("999");
 			fulfillmentProfile.setFafAccumulatorId((201));
-			fulfillmentProfile.setProdcatOffer("PK15");
+			fulfillmentProfile.setProdcatOffer("PK10");
 			fulfillmentProfile.setMaxMembers(1);
-			fulfillmentProfile.setAssociatedPromo("Katok15Promo");
-			fulfillmentProfile.set
+			fulfillmentProfile.setAssociatedPromo("Katok10Promo");
+			fulfillmentProfile.setWelcomeMessageEventId("90109999000");
+			fulfillmentProfile.setA_PartyMemberThresholdBreachMessageEventId("90111519011");
 			
-			fulfillmentProfile.setRefillType(1);
-			fulfillmentProfile.setTransactionAmount("0");
-			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
-			fulfillmentProfile.setPurchaseAmount("1");
-			fulfillmentProfile.setRenewalAmount("9999");
+			fulfillmentProfile.setCallingCircleCsOfferID(2015);
+			fulfillmentProfile.setFreebieType("OFFER");
+			fulfillmentProfile.setFreebieOfferId(2019);
+			fulfillmentProfile.setFreebieOfferType(2);
+			fulfillmentProfile.setFreebieOfferValidity((long) (1));
+			fulfillmentProfile.setFreebiePlanCode("PK10");
+			fulfillmentProfile.setFreebieTransactionAmount("1");
+			fulfillmentProfile.setFreebieTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile.setFreebieRenewalAmount("1");
+			fulfillmentProfile.setFreebiePurchaseAmount("1");
 			
-
-			resource.addFulfillmentProfile(fulfillmentProfile.getName());
-			profileRegistry.createProfile(fulfillmentProfile);
+			Offer templatedOffer = new Offer("KaTOK10");
+			templatedOffer.setDescription("KaTOK10 Calling Circle Offer");
 			
-			Offer templatedOffer = new Offer("iCHamp");
-			templatedOffer.setDescription("iCHamp Araw Araw Offer");
-			templatedOffer.setAutoTermination(new TerminateAfterNDays(7));
-			templatedOffer.setMinimumCommitment(new CommitUntilNDays(7));
-			templatedOffer.setRenewalPeriod(new DaysTime(1));
+			templatedOffer.setAutoTermination(new NoTermination());
+			templatedOffer.setRenewalPeriod(new InfiniteTime());
 			templatedOffer.setOfferState(State.TESTING);
 			templatedOffer.setOfferState(State.PUBLISHED);
-			templatedOffer.setRecurrent(true);
+			templatedOffer.setRecurrent(false);
 			templatedOffer.setCommercial(false);
-			templatedOffer.addExternalHandle("CMP01");
+			templatedOffer.addExternalHandle("RB318");
+			templatedOffer.addExternalHandle("PK10");
 
-			AtomicProduct product = new AtomicProduct("iCHamp");
+			AtomicProduct product = new AtomicProduct("KaTOK10");
 			product.setQuota(new UnlimitedQuota());
 			product.setResource(resource);
-			product.setValidity(new DaysTime(1));
+			product.setValidity(new InfiniteTime());
 
 			templatedOffer.addProduct(product); 
 			offerManager.createOffer(templatedOffer);
 			serviceRegistry.createResource(resource);
 
-
-			
-			
-*/			
+	
 			//===================================== Calling Circle Ends ===========================
 			
 			
@@ -7154,19 +7154,19 @@ public class BusinessConfigurationTool {
 			resource.setExternallyConsumed(true);
 			resource.setConsumptionUnitName("PHP");
 
-			RefillProfile fulfillmentProfile = new RefillProfile("iCHamp");
-			fulfillmentProfile.setRefillProfileId("1051");
-			fulfillmentProfile.setRefillType(1);
-			fulfillmentProfile.setTransactionAmount("0");
-			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
-			fulfillmentProfile.setPurchaseAmount("1");
-			fulfillmentProfile.setRenewalAmount("9999");
+			RefillProfile fulfillmentProfile1 = new RefillProfile("iCHamp");
+			fulfillmentProfile1.setRefillProfileId("1051");
+			fulfillmentProfile1.setRefillType(1);
+			fulfillmentProfile1.setTransactionAmount("0");
+			fulfillmentProfile1.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile1.setPurchaseAmount("1");
+			fulfillmentProfile1.setRenewalAmount("9999");
 			
 
-			resource.addFulfillmentProfile(fulfillmentProfile.getName());
-			profileRegistry.createProfile(fulfillmentProfile);
+			resource.addFulfillmentProfile(fulfillmentProfile1.getName());
+			profileRegistry.createProfile(fulfillmentProfile1);
 			
-			Offer templatedOffer = new Offer("iCHamp");
+			templatedOffer = new Offer("iCHamp");
 			templatedOffer.setDescription("iCHamp Araw Araw Offer");
 			templatedOffer.setAutoTermination(new TerminateAfterNDays(7));
 			templatedOffer.setMinimumCommitment(new CommitUntilNDays(7));
@@ -7177,7 +7177,7 @@ public class BusinessConfigurationTool {
 			templatedOffer.setCommercial(false);
 			templatedOffer.addExternalHandle("CMP01");
 
-			AtomicProduct product = new AtomicProduct("iCHamp");
+			product = new AtomicProduct("iCHamp");
 			product.setQuota(new UnlimitedQuota());
 			product.setResource(resource);
 			product.setValidity(new DaysTime(1));
@@ -7186,6 +7186,7 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(templatedOffer);
 			serviceRegistry.createResource(resource);
 
+			System.out.println("maraw offer Refill...");
 			resource = new Service("mAraw");
 			resource.setDescription("mAraw Refill Profile");
 			resource.setConsumable(true);
@@ -7193,17 +7194,17 @@ public class BusinessConfigurationTool {
 			resource.setExternallyConsumed(true);
 			resource.setConsumptionUnitName("PHP");
 
-			fulfillmentProfile = new RefillProfile("mAraw");
-			fulfillmentProfile.setRefillProfileId("1044");
-			fulfillmentProfile.setRefillType(1);
-			fulfillmentProfile.setTransactionAmount("0");
-			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
-			fulfillmentProfile.setPurchaseAmount("100");
-			fulfillmentProfile.setRenewalAmount("999900");
+			fulfillmentProfile1 = new RefillProfile("mAraw");
+			fulfillmentProfile1.setRefillProfileId("1044");
+			fulfillmentProfile1.setRefillType(1);
+			fulfillmentProfile1.setTransactionAmount("0");
+			fulfillmentProfile1.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile1.setPurchaseAmount("100");
+			fulfillmentProfile1.setRenewalAmount("999900");
 			
 
-			resource.addFulfillmentProfile(fulfillmentProfile.getName());
-			profileRegistry.createProfile(fulfillmentProfile);
+			resource.addFulfillmentProfile(fulfillmentProfile1.getName());
+			profileRegistry.createProfile(fulfillmentProfile1);
 			
 			templatedOffer = new Offer("mAraw");
 			templatedOffer.setDescription("mAraw Offer");
@@ -7279,17 +7280,17 @@ public class BusinessConfigurationTool {
 //			resource.setExternallyConsumed(true);
 //			resource.setConsumptionUnitName("PHP");
 
-			fulfillmentProfile = new RefillProfile("ArawArawLoad30");
-			fulfillmentProfile.setRefillProfileId("1049");
-			fulfillmentProfile.setRefillType(1);
-			fulfillmentProfile.setTransactionAmount("0");
-			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
-			fulfillmentProfile.setPurchaseAmount("1");
-			fulfillmentProfile.setRenewalAmount("9999");
+			fulfillmentProfile1 = new RefillProfile("ArawArawLoad30");
+			fulfillmentProfile1.setRefillProfileId("1049");
+			fulfillmentProfile1.setRefillType(1);
+			fulfillmentProfile1.setTransactionAmount("0");
+			fulfillmentProfile1.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile1.setPurchaseAmount("1");
+			fulfillmentProfile1.setRenewalAmount("9999");
 			
 
-			resource.addFulfillmentProfile(fulfillmentProfile.getName());
-			profileRegistry.createProfile(fulfillmentProfile);
+			resource.addFulfillmentProfile(fulfillmentProfile1.getName());
+			profileRegistry.createProfile(fulfillmentProfile1);
 			
 			templatedOffer = new Offer("ArawArawLoad30");
 			templatedOffer.setDescription("Araw Araw Load 30 Offer");
@@ -7319,17 +7320,17 @@ public class BusinessConfigurationTool {
 			resource.setExternallyConsumed(true);
 			resource.setConsumptionUnitName("PHP");
 
-			fulfillmentProfile = new RefillProfile("ArawArawLoad60");
-			fulfillmentProfile.setRefillProfileId("1050");
-			fulfillmentProfile.setRefillType(1);
-			fulfillmentProfile.setTransactionAmount("0");
-			fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
-			fulfillmentProfile.setPurchaseAmount("1");
-			fulfillmentProfile.setRenewalAmount("9999");
+			fulfillmentProfile1 = new RefillProfile("ArawArawLoad60");
+			fulfillmentProfile1.setRefillProfileId("1050");
+			fulfillmentProfile1.setRefillType(1);
+			fulfillmentProfile1.setTransactionAmount("0");
+			fulfillmentProfile1.setTransactionCurrency(CurrencyCode.PHP);
+			fulfillmentProfile1.setPurchaseAmount("1");
+			fulfillmentProfile1.setRenewalAmount("9999");
 			
 
-			resource.addFulfillmentProfile(fulfillmentProfile.getName());
-			profileRegistry.createProfile(fulfillmentProfile);
+			resource.addFulfillmentProfile(fulfillmentProfile1.getName());
+			profileRegistry.createProfile(fulfillmentProfile1);
 			
 			templatedOffer = new Offer("ArawArawLoad60");
 			templatedOffer.setDescription("Araw Araw Load 60 Offer");
