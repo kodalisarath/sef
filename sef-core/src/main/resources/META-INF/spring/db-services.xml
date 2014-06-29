@@ -97,9 +97,9 @@
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.RoleManagerMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
-	
+	 -->
 	<bean id="scheduleRequestService"
 		class="com.ericsson.raso.sef.core.db.service.internal.ScheduleRequestServiceImpl">
 		<property name="scheduledRequestMapper" ref="scheduledRequestMapper" />
-	</bean> -->
+	</bean>
 </beans>
