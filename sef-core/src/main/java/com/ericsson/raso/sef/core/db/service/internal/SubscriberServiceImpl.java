@@ -394,6 +394,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The userid  provided was null!!"));
 	try {
 		SubscriberMeta susbscriberMeta=new SubscriberMeta();
+		susbscriberMeta.setSubscriberId(userId);
 		if(meta.getKey() != null && meta.getValue() != null){
 			susbscriberMeta.setKey(meta.getKey());
 			susbscriberMeta.setValue(meta.getValue());
@@ -420,6 +421,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The userid  provided was null!!"));
 		try {
 			SubscriberMeta susbscriberMeta=new SubscriberMeta();
+			susbscriberMeta.setSubscriberId(userId);
 			if(meta.getKey() != null && meta.getValue() != null){
 				susbscriberMeta.setKey(meta.getKey());
 				susbscriberMeta.setValue(meta.getValue());
