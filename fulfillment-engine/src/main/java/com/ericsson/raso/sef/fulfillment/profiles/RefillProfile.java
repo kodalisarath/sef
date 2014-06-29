@@ -61,14 +61,16 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		refillRequest.setRefAccAfterFlag(true);
 		
 		
+		LOGGER.debug("lifecycle: " + map.get("lifeCycleEvent") + ", TransactionAmount: " + this.transactionAmount + ", PurchaseAmount: " + this.purchaseAmount + ", renwalAmount: " + this.renewalAmount);
 		if (map.get("lifeCycleEvent") != null) {
 			if (map.get("lifeCycleEvent").equals("purchase"))
 				this.transactionAmount = this.purchaseAmount;
 			else if (map.get("lifeCycleEvent").equals("renewal"))
 				this.transactionAmount = this.renewalAmount;
+		} else {		
+			refillRequest.setTransacAmount(this.transactionAmount);
 		}
-		
-		refillRequest.setTransacAmount(this.transactionAmount);
+		LOGGER.debug("lifecycle: " + map.get("lifeCycleEvent") + ", TransactionAmount: " + this.transactionAmount + ", PurchaseAmount: " + this.purchaseAmount + ", renwalAmount: " + this.renewalAmount);
 		
 		
 		String extData1 = map.get(Constants.EX_DATA1);
