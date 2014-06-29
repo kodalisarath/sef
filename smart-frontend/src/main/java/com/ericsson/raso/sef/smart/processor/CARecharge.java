@@ -20,6 +20,7 @@ import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
+import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.smart.ErrorCode;
 import com.ericsson.raso.sef.smart.ExceptionUtil;
 import com.ericsson.raso.sef.smart.PasaServiceManager;
@@ -123,7 +124,7 @@ public class CARecharge implements Processor {
 			metas.put("msisdn", msisdn);
 			metas.put("SUBSCRIBER_ID", msisdn);
 			metas.put("pasaload", rechargeRequest.getEventName());
-
+			metas.put("lifeCycleEvent", "purchase");
 			
 			requestContextCache.set(metas);
 

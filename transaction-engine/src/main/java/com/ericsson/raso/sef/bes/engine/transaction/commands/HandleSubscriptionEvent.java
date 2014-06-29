@@ -93,6 +93,7 @@ public class HandleSubscriptionEvent extends AbstractTransaction {
 			}
 			
 			logger.debug("Offer execution to start now...");
+			
 			tasks.addAll(prodcatOffer.execute(((HandleSubscriptionEventRequest)this.getRequest()).getSubscriberId(), 
 												((HandleSubscriptionEventRequest)this.getRequest()).getEvent(), 
 												((HandleSubscriptionEventRequest)this.getRequest()).getOverride(),

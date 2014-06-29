@@ -102,6 +102,7 @@ public abstract class AbstractTransaction implements Callable<Boolean>, Serializ
 		this.metas = metas;
 	}
 
+	
 	public Map<String, String> getMetas() {
 		return metas;
 	}

@@ -67,6 +67,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 			else if (map.get("lifeCycleEvent").equals("renewal"))
 				this.transactionAmount = this.renewalAmount;
 		}
+		
 		refillRequest.setTransacAmount(this.transactionAmount);
 		
 		
