@@ -5,11 +5,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +70,21 @@ public class EntireReadUtil {
 		} else {
 			DateTimeParameter dateTimeParameter = new DateTimeParameter();
 			dateTimeParameter.setName(name);
-			  if ( value != null && !"null".equals(value))
-			dateTimeParameter.setValue(DateUtil.convertDateToUTCtime(value));
+			if ( value != null && !"null".equals(value)) {
+				try {
+					SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+					Date date = storeFormat.parse(value);
+					GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
+					gc.setTime(date);
+					gc.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+					dateTimeParameter.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(gc));	  
+				} catch (DatatypeConfigurationException e) {
+					logger.error("Unable to convert to XMLGregorianCalender: " + e.getMessage());
+				} catch (ParseException e) {
+					logger.error("Unable to parse date from db: " + e.getMessage());
+				}
+			}
 			return dateTimeParameter;
 		}
 	}
