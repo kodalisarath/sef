@@ -26,11 +26,15 @@
 <!-- 	<bean id="licenseInterceptor" class="com.ericsson.raso.sef.auth.integration.LicenseThrottleInterceptor" /> -->
 		<!-- hdr -->
 <!-- 		<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" /> -->
+			<bean id="serverPasswordCallback"  class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor"/> 
 			<bean id="authenticationInterceptor"  class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor"> 
 			<constructor-arg>
 				<map>
 					<entry key="action" value="UsernameToken" />
 					<entry key="passwordType" value="PasswordText" />
+					<entry key="passwordCallbackRef">
+		              <ref bean="serverPasswordCallback" />
+		            </entry>
 				</map>
 			</constructor-arg>
 		</bean>
