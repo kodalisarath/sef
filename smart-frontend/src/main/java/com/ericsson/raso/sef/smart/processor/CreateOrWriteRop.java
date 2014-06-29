@@ -45,6 +45,7 @@ public class CreateOrWriteRop implements Processor {
 			// SubscriberManagement subscriberManagement =
 			// SmartContext.getSubscriberManagement();
 			List<Meta> metas = new ArrayList<Meta>();
+			metas.add(new Meta("CustomerId", request.getCustomerId()));
 			metas.add(new Meta("Key", String.valueOf(request.getKey())));
 			metas.add(new Meta("IsSmsAllowed", String.valueOf(request.getIsSmsAllowed())));
 			metas.add(new Meta("IsUSCAllowed", String.valueOf(request.getIsUSCAllowed())));

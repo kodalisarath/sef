@@ -59,6 +59,7 @@ public class ModifyCustomerGrace implements Processor {
 		keys.add(SmartConstants.GRACE_ENDDATE);
 
 		List<Meta> metas = new ArrayList<Meta>();
+		metas.add(new Meta("CustomerId", request.getCustomerId()));
 		metas.add(new Meta("EventInfo" , String.valueOf(request.getEventInfo())));
 		metas.add(new Meta("MessageId" , String.valueOf(request.getMessageId())));
 		metas.add(new Meta("AccessKey",request.getAccessKey()));

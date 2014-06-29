@@ -45,7 +45,7 @@ public class ModifyCustomerPreActive implements Processor {
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		List<Meta> metas = new ArrayList<Meta>();
 		String newExpiry = new String();
-		
+		metas.add(new Meta("CustomerId", request.getCustomerId()));
 		metas.add(new Meta("EventInfo",String.valueOf(request.getEventInfo())));
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 		metas.add(new Meta("AccessKey",String.valueOf(request.getAccessKey())));
