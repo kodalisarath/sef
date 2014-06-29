@@ -25,6 +25,7 @@ import com.ericsson.raso.sef.client.air.request.RefillRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateAccumulatorRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateFaFListRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateOfferRequest;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
@@ -107,6 +108,7 @@ public final class CallingCircleProfile extends RefillProfile {
 
 
 		// Step 2: Get AccountDetails
+		logger.debug("Attempting to fetch detals of A-Party: " + this.subscriberId);
 		if (!this.readSubscriber(this.subscriberId, this.memberAMetas)) {
 			logger.error("A Party was not found or other error fetching detals... MIGRATION WAAS FAULTY!!!");
 			this.sendSorryMessage(NotificationMessageEvent.B_PartyUnknown.getEventName(), this.subscriberId);
@@ -114,31 +116,36 @@ public final class CallingCircleProfile extends RefillProfile {
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to check A-party details");
 
 			breakFlow = true;
+		} else 
+			logger.debug("A-Pary (" + this.subscriberId + ") getAccountDetails graceful!!");
+		
+		if (!breakFlow) {
+			logger.debug("Going to check for A-Party Calling Circle Expiry...");
+			this.callingCircleExpiry = this.getCallingCircleExpiry();
 		}
-		logger.debug("A-Pary (" + this.subscriberId + ") getAccountDetails graceful!!");
 		
-		this.callingCircleExpiry = this.getCallingCircleExpiry();
-		
+		logger.debug("Attempting to fetch detals of B-Party: " + this.memberB);
 		if (!this.readSubscriber(this.memberB, this.memberBMetas)) {
-			logger.debug("Probably the user was not found or other error fetching detals...");
+			logger.error("Probably the user was not found or other error fetching detals...");
 			this.sendSorryMessage(NotificationMessageEvent.B_PartyUnknown.getEventName(), this.subscriberId);
 			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to check B-party details");
 
 			breakFlow = true;
-		}
-		logger.debug("B-Pary (" + this.memberB + ") getAccountDetails graceful!!");
+		} else 
+			logger.debug("B-Pary (" + this.memberB + ") getAccountDetails graceful!!");
 		
 		
 		// Step 3: Check for B-Number status
+		logger.debug("Attempting to check contract state of B-Party: " + this.memberB);
 		if (!breakFlow && !this.checkAllowedContractState(this.memberB)) {
-			logger.debug("User not allowed to enter Calling Circle Membership");
+			logger.error("User not allowed to enter Calling Circle Membership");
 			this.sendSorryMessage(this.B_PartyInvalidStateEventId, this.subscriberId);
 			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "B-party in invalid state");
 			breakFlow = true;
-		}
-		logger.debug("B-Pary (" + this.memberB + ") is confirmed to be in valid state!!");
+		} else
+			logger.debug("B-Pary (" + this.memberB + ") is confirmed to be in valid state!!");
 		
 		
 		// Step 4a: Send Sorry Messages - already done above
@@ -152,52 +159,53 @@ public final class CallingCircleProfile extends RefillProfile {
 		 *  - 3 Update Accumulator ID for A-number
 		 *  - 4 Store in the DB for all relationships
 		 */
-		CallingCircleService ccService = SefCoreServiceResolver.getCallingCircleService();
-		logger.debug("Attempting to check max member violation");
-		try {
-			CallingCircle query = new CallingCircle();
-			query.setOwner(subscriberId);
-			query.setMemberB(memberB);
-			query.setProdcatOffer(prodcatOffer);
-			int memberCount = ccService.fetchCallingCircleMemberCountForOwner(UniqueIdGenerator.generateId(), query);
-			logger.debug("Existing member count: " + memberCount + ", max members: " + this.maxMembers);
-			if (this.maxMembers <= memberCount) {
-				logger.warn("Subscriber: " + this.subscriberId + " already has max members allowed for this group: " + this.prodcatOffer);
+		if (!breakFlow) {
+			CallingCircleService ccService = SefCoreServiceResolver.getCallingCircleService();
+			logger.debug("Attempting to check max member violation");
+			try {
+				CallingCircle query = new CallingCircle();
+				query.setOwner(subscriberId);
+				query.setMemberB(memberB);
+				query.setProdcatOffer(prodcatOffer);
+				int memberCount = ccService.fetchCallingCircleMemberCountForOwner(UniqueIdGenerator.generateId(), query);
+				logger.debug("Existing member count: " + memberCount + ", max members: " + this.maxMembers);
+				if (this.maxMembers <= memberCount) {
+					logger.warn("Subscriber: " + this.subscriberId + " already has max members allowed for this group: " + this.prodcatOffer);
+					CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+					CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Already invited max members to Calling Circle");
+					breakFlow = true;
+				}
+			} catch(PersistenceError e) {
+				logger.debug("Cannot assert member threshold breach. Cannot proceed!!", e);
+				this.sendSorryMessage(this.A_PartyMemberThresholdBreachMessageEventId, this.subscriberId);
 				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
-				CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Already invited max members to Calling Circle");
+				CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to assert max membership breach for A-Party");
 				breakFlow = true;
 			}
-		} catch(PersistenceError e) {
-			logger.debug("Cannot assert member threshold breach. Cannot proceed!!", e);
-			this.sendSorryMessage(this.A_PartyMemberThresholdBreachMessageEventId, this.subscriberId);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
-			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to assert max membership breach for A-Party");
-			breakFlow = true;
-		}
 
-		logger.debug("Attempting to add members to the circle...	");
-		try {
-			if (!breakFlow && !this.addCallingCircleMembers()) {
-				logger.warn("Transaction with AIR & DB seems to have failed!! Send Sorry and stop.");
+			logger.debug("Attempting to add members to the circle...	");
+			try {
+				if (!breakFlow && !this.addCallingCircleMembers()) {
+					logger.warn("Transaction with AIR & DB seems to have failed!! Send Sorry and stop.");
+					this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);
+					CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+					CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
+					breakFlow = true;
+				}
+			} catch (SmException e) {
+				logger.debug("Cannot update FAF Info to CS-AIR/DB. Send Sorry and stop", e);
+				this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);
+				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+				CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
+				breakFlow = true;
+			} catch (PersistenceError e) {
+				logger.debug("Cannot update FAF Info to CS-AIR/DB. Send Sorry and stop", e);
 				this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);
 				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
 				CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
 				breakFlow = true;
 			}
-		} catch (SmException e) {
-			logger.debug("Cannot update FAF Info to CS-AIR/DB. Send Sorry and stop", e);
-			this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
-			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
-			breakFlow = true;
-		} catch (PersistenceError e) {
-			logger.debug("Cannot update FAF Info to CS-AIR/DB. Send Sorry and stop", e);
-			this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
-			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
-			breakFlow = true;
 		}
-
 
 
 
@@ -217,16 +225,24 @@ public final class CallingCircleProfile extends RefillProfile {
 			if (!breakFlow && this.freebieType != null && this.freebieType.equals("REFILL")) {
 				this.performFreebieRefill(memberB);
 			}
+			
+			if (!breakFlow) {
+				logger.debug("sending welcome message...");
+				this.sendWelcomeMessage();
+
+				logger.debug("sending emlpp update...");
+				this.sendEmlppUpdate();
+			}
+
 		} catch (SmException e) {
 			logger.debug("Cannot provision freebie in CS-AIR. Send Sorry and stop", e);
 			//this.sendSorryMessage(NotificationMessageEvent.FreebieProvisioningFailed);
 			//breakFlow = true;
 		}
 
-		this.sendWelcomeMessage();
-		
-		this.sendEmlppUpdate();
-
+		if (breakFlow) {
+			throw new FulfillmentException("ffe", new ResponseCode(999, "Workflow failed!! Check logs..."));
+		}
 		
 		p.setMetas(map);
 		returned.add(p);
