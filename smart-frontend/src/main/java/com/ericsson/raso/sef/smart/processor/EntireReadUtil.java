@@ -964,9 +964,24 @@ public class EntireReadUtil {
 
 
 		String graceEndDate = getGraceEndDate(subscriber);
-		logger.debug("  graceEndDate  is "+graceEndDate);
-		if(graceEndDate !=null)
-		ropRead.setGraceEndDate(DateUtil.convertDateToString(new Date(Long.parseLong(graceEndDate))));
+		logger.debug(" graceEndDate Before formatting is " + graceEndDate);
+		if (graceEndDate != null) {
+			
+			try {
+				SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				Date date = storeFormat.parse(graceEndDate);
+				SimpleDateFormat nsnFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+				ropRead.setGraceEndDate(nsnFormat.format(date));
+				logger.debug(" graceEndDate After formatting is " + ropRead.getGraceEndDate());
+				
+			} catch (ParseException e) {
+				logger.error("Date ParseException ", e);
+			}
+		} else {
+			logger.error("graceEndDate was not found in IL DB/CS-AIR!!!");
+		}
+		
+		
 		ropRead.setIsBalanceClearanceOnOutpayment(true);
 
 		String isCFMOC = subscriber.getMetas().get("IsCFMOC");
@@ -1014,15 +1029,20 @@ public class EntireReadUtil {
 		String preActiveEndDate = subscriber.getMetas().get("PreActiveEndDate");
 		logger.debug(" preActiveEndDate Before formatting is " + preActiveEndDate);
 		if (preActiveEndDate != null) {
-			Date date = null;
+			
 			try {
-				date = DateUtil.convertStringToDate(preActiveEndDate, "yyyyMMddHHmmss");
+				SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				Date date = storeFormat.parse(preActiveEndDate);
+				SimpleDateFormat nsnFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+				ropRead.setPreActiveEndDate(nsnFormat.format(date));
+				logger.debug(" preActiveEndDate After formatting is " + ropRead.getPreActiveEndDate());
+				
 			} catch (ParseException e) {
 				logger.error("Date ParseException ", e);
 			}
-			ropRead.setPreActiveEndDate(DateUtil.convertDateToString(date));
+		} else {
+			logger.error("PreActiveEndDate was not found in IL DB!!!");
 		}
-		logger.debug(" preActiveEndDate After formatting is " + ropRead.getPreActiveEndDate());
 
 		ropRead.setLastKnownPeriod(subscriber.getContractState());
 		ropRead.setS_CRMTitle("-");
@@ -1146,7 +1166,7 @@ public class EntireReadUtil {
 					String expiryDateTime = str.nextToken();
 
 					if ("1".equals(offerId)) {
-						graceEndDate = expiryDateTime;
+						graceEndDate = ((expiryDate.equals("null")?expiryDateTime:expiryDate));
 						long dateMillis = Long.parseLong(graceEndDate);
 						
 						SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
@@ -1156,29 +1176,6 @@ public class EntireReadUtil {
 			}
 		}
 
-		/*
-		 * Map<String, String> metaMap = subscriber.getMetas(); Set<String>
-		 * keySet = metaMap.keySet(); String key = null;
-		 * 
-		 * for (Iterator<String> i = keySet.iterator(); i.hasNext();) { key =
-		 * i.next(); String value = null;
-		 * 
-		 * if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
-		 * 
-		 * value = metaMap.get(key);
-		 * 
-		 * if ("1".equals(value)) { String temp = ""; if (key.length() >
-		 * Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID .length()) { temp =
-		 * key.substring( Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-		 * .length(), key.length()); }
-		 * 
-		 * if (metaMap
-		 * .containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE +
-		 * temp)) { value = metaMap
-		 * .get(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE + temp);
-		 * 
-		 * return value; } } } }
-		 */
 		return null;
 	}
 

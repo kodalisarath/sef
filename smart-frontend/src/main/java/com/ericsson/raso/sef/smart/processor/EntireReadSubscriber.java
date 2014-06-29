@@ -252,6 +252,8 @@ public class EntireReadSubscriber implements Processor {
 		if (subscriber.getMetas().get("s_CRMTitle") != null) 
 			parameterList.add(EntireReadUtil.stringParameter("s_CRMTitle", subscriber.getMetas().get("s_CRMTitle")));
 		parameterList.add(EntireReadUtil.stringParameter("LastKnownPeriod", "PreActive"));
+		
+		logger.debug("Check PreActiveEndDate: " + subscriber.getMetas().get("PreActiveEndDate"));
 		if (subscriber.getMetas().get("PreActiveEndDate") != null) 
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("PreActiveEndDate", subscriber.getMetas().get("PreActiveEndDate")));
 		operationResult.getOperation().add(operation);
