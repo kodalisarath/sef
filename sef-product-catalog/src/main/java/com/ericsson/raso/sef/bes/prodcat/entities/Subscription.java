@@ -81,6 +81,7 @@ public class Subscription extends Offer {
 		
 		try {
 			this.setRenewalPeriod(offer.getRenewalPeriod());
+			this.getRenewalPeriod().setActivationTime(System.currentTimeMillis());
 			this.setTrialPeriod(offer.getTrialPeriod());
 		} catch (CatalogException e) {
 			logger.info("failed setting renewal period and trial period when creating subscription for offer: " + offer.getName());

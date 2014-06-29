@@ -646,9 +646,10 @@ public class Offer implements Serializable {
 			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.trialPeriod.getExpiryTimeInMillis(), metas));
 		} else {
 			if (this.isRecurrent) {
-				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis(), metas));
+				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
 			} else {
-				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, purchase.getSubscriptionId(), subscriberId, this.renewalPeriod.getExpiryTimeInMillis(), metas));
+				if (!(this.renewalPeriod instanceof InfiniteTime))
+					tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, purchase.getSubscriptionId(), subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
 			}
 		}
 		
