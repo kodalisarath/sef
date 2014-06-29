@@ -37,6 +37,7 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 	}
 
 	public WssAuthInterceptor() {
+		logger.debug("WSS4J & CXF hooking the interceptor in...");
 		this.getProperties().put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
 		// Password type : plain text
 		this.getProperties().put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
@@ -54,6 +55,8 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 		Subject subject = new Subject();
 
 		// delegate to the external security system if possible
+		logger.debug("Delegating to me for authentication & authorization...");
+		
 
 		// authenticate the user somehow
 		String storePassword = this.credentials.get(name);
@@ -66,16 +69,19 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 			return null;
 		}
 
+		logger.debug("authenticated....");
 		subject.getPrincipals().add(new SimplePrincipal(name));
 
 		// add roles this user is in
 		String roleName = "smartClient";
 		subject.getPrincipals().add(new SimpleGroup(roleName, name));
+		logger.debug("authorized...");
 		return subject;
 	}
 	
 	@Override
 	public Set<QName> getUnderstoodHeaders() {
+		logger.debug("negotiating understood headers...");
 		return HEADERS;
 	}
 	
@@ -83,6 +89,7 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 
 	@Override
 	public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+		logger.debug("Intercept hooked for Password Callback...");
 
 		WSPasswordCallback pc = (WSPasswordCallback) callbacks[0];
 		String storePassword = this.credentials.get(pc.getIdentifier());
@@ -94,6 +101,8 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 			logger.error("Username (" + pc.getIdentifier() + ") did not authenticate with the authStore!!");
 			throw new IOException("Username (" + pc.getIdentifier() + ") did not authenticate with the authStore!!");
 		}
+
+		logger.debug("Intercept successfully authenticated Username (" + pc.getIdentifier() + ")...");
 
 
 	}
