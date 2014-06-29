@@ -62,7 +62,6 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 			
 		}
 		logger.debug("Response purchase received.. now creating front end response");
-		//exchange.getOut().setBody(subscriberInfo);
 		
 		Thread.sleep(50); // bcos i am too fast??
 		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");
@@ -71,8 +70,9 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		logger.error("FloodGate acknowledging exgress...");
 		FloodGate.getInstance().exgress();
 		
-		DummyProcessor.response(exchange);		
 		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
+		DummyProcessor.response(exchange);		
+		
 	}
 
 	private SubscriberInfo createSubscriber(String requestId, Subscriber subscriber) {
