@@ -1032,13 +1032,13 @@ public final class CallingCircleProfile extends RefillProfile {
 				+ ", memberB=" + memberB + ", maxMembers=" + maxMembers + ", associatedPromo=" + associatedPromo
 				+ ", welcomeMessageEventId=" + welcomeMessageEventId + ", A_PartyMemberThresholdBreachMessageEventId="
 				+ A_PartyMemberThresholdBreachMessageEventId + ", NewMemberAddedEventId=" + NewMemberAddedEventId
-				+ ", callingCircleCsOfferID=" + callingCircleCsOfferID + ", freebieType=" + freebieType + ", freebieOfferId="
-				+ freebieOfferId + ", freebieOfferType=" + freebieOfferType + ", freebieOfferValidity=" + freebieOfferValidity
-				+ ", freebieRefillID=" + freebieRefillID + ", freebiePlanCode=" + freebiePlanCode + ", freebieRefillType="
-				+ freebieRefillType + ", freebieTransactionAmount=" + freebieTransactionAmount + ", freebieTransactionCurrency="
-				+ freebieTransactionCurrency + ", freebieRenewalAmount=" + freebieRenewalAmount + ", freebiePurchaseAmount="
-				+ freebiePurchaseAmount + ", memberBMetas=" + memberBMetas + ", memberAMetas=" + memberAMetas + ", callingCircleExpiry="
-				+ callingCircleExpiry + "]";
+				+ ", B_PartyInvalidStateEventId=" + B_PartyInvalidStateEventId + ", callingCircleCsOfferID=" + callingCircleCsOfferID
+				+ ", freebieType=" + freebieType + ", freebieOfferId=" + freebieOfferId + ", freebieOfferType=" + freebieOfferType
+				+ ", freebieOfferValidity=" + freebieOfferValidity + ", freebieRefillID=" + freebieRefillID + ", freebiePlanCode="
+				+ freebiePlanCode + ", freebieRefillType=" + freebieRefillType + ", freebieTransactionAmount=" + freebieTransactionAmount
+				+ ", freebieTransactionCurrency=" + freebieTransactionCurrency + ", freebieRenewalAmount=" + freebieRenewalAmount
+				+ ", freebiePurchaseAmount=" + freebiePurchaseAmount + ", memberBMetas=" + memberBMetas + ", memberAMetas=" + memberAMetas
+				+ ", callingCircleExpiry=" + callingCircleExpiry + ", [Refill Inheritance:=" + super.toString() + "]]";
 	}
 
 
