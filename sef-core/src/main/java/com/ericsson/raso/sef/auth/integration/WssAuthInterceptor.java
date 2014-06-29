@@ -21,19 +21,18 @@ import org.apache.ws.security.handler.WSHandlerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+
 public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInterceptor implements CallbackHandler {
 	private static final Logger logger = LoggerFactory.getLogger(WssAuthInterceptor.class);
 
 	//TODO: temporary hack to get SMART authenticated.. must connect to auth framework later...
-	private static final HashMap<String, String> credentials = new HashMap<String, String>();
 	private static final Set<QName> HEADERS = new HashSet<QName>();
 	static {
 		HEADERS.add(new QName(WSConstants.WSSE_NS, "Security"));
 		HEADERS.add(new QName(WSConstants.WSSE11_NS, "Security"));
 		HEADERS.add(new QName(WSConstants.WSU_NS, "UsernameToken"));
 
-		credentials.put("esatnar", "pass");
-		credentials.put("smturm01soapp", "smturm01@3R!");
 	}
 
 	public WssAuthInterceptor() {
@@ -59,7 +58,7 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 		
 
 		// authenticate the user somehow
-		String storePassword = this.credentials.get(name);
+		String storePassword = SefCoreServiceResolver.getConfigService().getValue("SMART_auth", name);
 		if (password == null) {
 			logger.error("Username (" + name + ") not found authStore!!");
 			return null;
@@ -92,7 +91,7 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 		logger.debug("Intercept hooked for Password Callback...");
 
 		WSPasswordCallback pc = (WSPasswordCallback) callbacks[0];
-		String storePassword = this.credentials.get(pc.getIdentifier());
+		String storePassword = SefCoreServiceResolver.getConfigService().getValue("SMART_auth", pc.getIdentifier());
 		if (storePassword == null) {
 			logger.error("Username (" + pc.getIdentifier() + ") not found authStore!!");
 			throw new IOException("Username (" + pc.getIdentifier() + ") not found authStore!!");
