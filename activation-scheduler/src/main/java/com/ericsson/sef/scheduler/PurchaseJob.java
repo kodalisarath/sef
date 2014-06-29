@@ -1,4 +1,4 @@
-package com.ericsson.sef.scheduler;
+/*package com.ericsson.sef.scheduler;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -85,4 +85,4 @@ public class PurchaseJob implements Job {
 					+ scheduledRequest.getLifeCycleEvent().name(), smException);
 		}
 	}
-}
+}*/

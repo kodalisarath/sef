@@ -22,13 +22,10 @@ import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
-import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
-import com.ericsson.raso.sef.smart.subscription.response.HelperConstant;
-import com.ericsson.sef.bes.api.entities.Subscriber;
+import com.ericsson.sef.scheduler.HelperConstant;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
 import com.ericsson.sef.scheduler.SubscriptionLifeCycleJob;
-import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class SubscriptionLifeCycleCommand implements Command<Void> {
 
@@ -57,23 +54,8 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 	public Void execute() throws SmException {
 		try {
 			log.debug("Calling SubscriptionLifeCycleCommand execute method.");
-			Subscriber subscriber = null;
-			try {
-				SubscriberInfo subscriberInfo = TransactionEngineHelper
-						.getSubscriberInfo(subscriberId);
-				log.debug("subscriberInfo returned is " + subscriberInfo);
-				subscriber = subscriberInfo.getSubscriber();
-				if (subscriber == null) {
-					throw new RuntimeException("User with userID: "
-							+ subscriberId + " does not exist anymore: ");
-				}
-			} catch (Exception e1) {
-				throw new RuntimeException(e1);
-			}
-			final ScheduleRequestService mapper = SefCoreServiceResolver
-					.getScheduleRequestService();
-			ObsoleteCodeDbSequence sequence = mapper
-					.scheduledRequestSequence(UUID.randomUUID().toString());
+			final ScheduleRequestService mapper = SefCoreServiceResolver.getScheduleRequestService();
+			ObsoleteCodeDbSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
 			final long id = sequence.getSeq();
 			final ScheduledRequest request = new ScheduledRequest();
 			request.setCreated(new DateTime());
@@ -89,20 +71,25 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			else if ("PRE_EXPIRY".equals(event))
 				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.PRE_EXPIRY);
 			request.setMsisdn(subscriberId);
-			request.setUserId(subscriber.getUserId());
+			request.setUserId(subscriberId);
 			request.setOfferId(offerId);
 			DateTime scheduleTime = new DateTime(schedule);
 			request.setScheduleTime(scheduleTime);
+			
+			log.debug("Preparing for Quartz...");
 			String jobId = event + '-' + String.valueOf(id);
+			log.debug("jobID: " + jobId);
 			request.setJobId(jobId);
-			JobDetail job = newJob(SubscriptionLifeCycleJob.class).withIdentity(jobId)
-					.build();
+			
+			log.debug("Quartz request: " + request);
+			
+			JobDetail job = newJob(SubscriptionLifeCycleJob.class).withIdentity(jobId).build();
 			Trigger trigger = newTrigger()
 					.withIdentity(event + '-' + String.valueOf(id))
-					.startAt(scheduleTime.toDate())
-					.withSchedule(
-							simpleSchedule().withIntervalInMilliseconds(
-									schedule).withRepeatCount(0)).build();
+						.startAt(scheduleTime.toDate())
+							.withSchedule(simpleSchedule().withIntervalInMilliseconds(schedule).withRepeatCount(0)).build();
+			log.debug("See whats in this trigger: " + trigger);
+			
 			mapper.insertScheduledRequest(request);
 			for (Entry<String, Object> meta : metas.entrySet()) {
 				if (meta.getKey().equalsIgnoreCase(HelperConstant.REQUEST_ID))
@@ -116,10 +103,16 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 				requestMeta.setScheduledRequestId(id);
 				requestMeta.setKey(meta.getKey());
 				requestMeta.setValue(String.valueOf(meta.getValue()));
+				log.debug("Checking Schedule Meta before insert: " + requestMeta);
 				mapper.insertScheduledRequestMeta(requestMeta);
+				log.debug("schedule inserted into db graceful!!");
 			}
+			
 			SchedulerService scheduler = SchedulerContext.getSchedulerService();
 			scheduler.scheduleJob(job, trigger);
+			log.debug("QUartz engaged and scheduled!!");
+			
+			
 		} catch (Exception e) {
 			log.error("error creating SubscriptionLifeCycleCommand job.", e);
 			throw new SmException(e);

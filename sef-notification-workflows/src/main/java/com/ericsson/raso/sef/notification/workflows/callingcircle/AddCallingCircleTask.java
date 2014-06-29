@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import vasclient.wsdl.VASClientSEI;
 
+import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.Task;
 import com.ericsson.raso.sef.core.config.IConfig;
@@ -24,7 +25,6 @@ import com.ericsson.raso.sef.notification.workflows.ResponseCode;
 import com.ericsson.raso.sef.notification.workflows.common.WorkflowEngineServiceHelper;
 import com.ericsson.raso.sef.notification.workflows.promo.Promo;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
-import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class AddCallingCircleTask implements Task<Void> {

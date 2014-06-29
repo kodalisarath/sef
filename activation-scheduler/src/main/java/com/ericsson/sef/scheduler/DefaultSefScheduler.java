@@ -15,7 +15,6 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.config.Property;
 import com.ericsson.raso.sef.core.config.Section;
-import com.ericsson.raso.sef.smart.subscription.response.HelperConstant;
 public class DefaultSefScheduler implements SefScheduler {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
