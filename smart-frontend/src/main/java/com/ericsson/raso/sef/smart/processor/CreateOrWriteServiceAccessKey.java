@@ -32,6 +32,8 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		logger.info("Printing values from SOAP before Processing :"+request.getCategory()+" "+request.getKeyType()+" "+request.getvValidFrom()+" "+request.getMessageId());
 		List<Meta> metas = new ArrayList<Meta>();
 		metas.add(new Meta("CustomerId", request.getCustomerId()));
+		metas.add(new Meta("SUBSCRIBER_ID", request.getCustomerId()));
+		metas.add(new Meta("msisdn", request.getCustomerId()));
 		metas.add(new Meta("Key", request.getCategory()));
 		metas.add(new Meta("KeyType", String.valueOf(request.getKeyType())));
 		metas.add(new Meta("vValidFrom", request.getvValidFrom()));
