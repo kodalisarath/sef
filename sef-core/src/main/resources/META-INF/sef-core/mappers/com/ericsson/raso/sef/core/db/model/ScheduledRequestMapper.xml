@@ -6,7 +6,7 @@
 
 <mapper namespace="com.ericsson.raso.sef.core.db.mapper.ScheduledRequestMapper">
 
-	<resultMap id="SequenceResult" type="SmSequence">
+	<resultMap id="SequenceResult" type="ObsoleteCodeDbSequence">
 		<result property="seq" column="seq" />
 		<result property="rand" column="rand" />
 	</resultMap>
