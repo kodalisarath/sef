@@ -91,6 +91,7 @@ public final class CallingCircleProfile extends RefillProfile {
 	public List<Product> fulfill(Product p, Map<String, String> map) throws FulfillmentException {
 		List<Product> returned = new ArrayList<Product>();
 		
+		logger.debug("Check metas: " + map);
 		if (map != null && !map.containsKey("CallingCircleWorkFlow")) {
 			logger.debug("Event Source is NOT Notification Engine. Delegating to 'predefined' Refill.");
 			return super.fulfill(p, map);
@@ -117,6 +118,7 @@ public final class CallingCircleProfile extends RefillProfile {
 
 			breakFlow = true;
 		}
+		logger.debug("A-Pary (" + this.subscriberId + ") getAccountDetails graceful!!");
 		
 		this.callingCircleExpiry = this.getCallingCircleExpiry();
 		
@@ -128,7 +130,9 @@ public final class CallingCircleProfile extends RefillProfile {
 
 			breakFlow = true;
 		}
-
+		logger.debug("B-Pary (" + this.memberB + ") getAccountDetails graceful!!");
+		
+		
 		// Step 3: Check for B-Number status
 		if (!breakFlow && !this.checkAllowedContractState(this.memberB)) {
 			logger.debug("User not allowed to enter Calling Circle Membership");
@@ -137,7 +141,9 @@ public final class CallingCircleProfile extends RefillProfile {
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "B-party in invalid state");
 			breakFlow = true;
 		}
-
+		logger.debug("B-Pary (" + this.memberB + ") is confirmed to be in valid state!!");
+		
+		
 		// Step 4a: Send Sorry Messages - already done above
 
 		// Step 5: B-NUmber is already in Active or Grace...
@@ -150,12 +156,14 @@ public final class CallingCircleProfile extends RefillProfile {
 		 *  - 4 Store in the DB for all relationships
 		 */
 		CallingCircleService ccService = SefCoreServiceResolver.getCallingCircleService();
+		logger.debug("Attempting to check max member violation");
 		try {
 			CallingCircle query = new CallingCircle();
 			query.setOwner(subscriberId);
 			query.setMemberB(memberB);
 			query.setProdcatOffer(prodcatOffer);
 			int memberCount = ccService.fetchCallingCircleMemberCountForOwner(UniqueIdGenerator.generateId(), query);
+			logger.debug("Existing member count: " + memberCount + ", max members: " + this.maxMembers);
 			if (this.maxMembers <= memberCount) {
 				logger.warn("Subscriber: " + this.subscriberId + " already has max members allowed for this group: " + this.prodcatOffer);
 				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
@@ -170,6 +178,7 @@ public final class CallingCircleProfile extends RefillProfile {
 			breakFlow = true;
 		}
 
+		logger.debug("Attempting to add members to the circle...	");
 		try {
 			if (!breakFlow && !this.addCallingCircleMembers()) {
 				logger.warn("Transaction with AIR & DB seems to have failed!! Send Sorry and stop.");
