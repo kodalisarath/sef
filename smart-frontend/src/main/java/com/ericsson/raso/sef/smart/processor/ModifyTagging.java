@@ -70,22 +70,38 @@ public class ModifyTagging implements Processor {
 		//Integer tag = Integer.valueOf(tagging);
 		
 		switch (tag) {
-			case 0: metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
-					break;
-			case 1: metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetForcedDeleteBit"));
-					break;
-			case 2: metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarGeneralBit"));
-					break;
-			case 3: metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarIRMBit"));
-					break;
-			case 4:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarOtherBit"));
-					break;
-			case 5:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetSpecialFraudBit"));
-					break;
-			case 6:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_AccountActivationBlockingBit"));
-					break;
-			case 7:	metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetRecycleBit"));
-					break;
+			case 0: 
+				metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetResetBit"));
+				metas.add(new Meta("IsLocked", "false"));
+				break;
+			case 1: 
+				metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetForcedDeleteBit"));
+				metas.add(new Meta("IsLocked", "true"));
+				break;
+			case 2: 
+				metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarGeneralBit"));
+				metas.add(new Meta("IsLocked", "true"));
+				break;
+			case 3: 
+				metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarIRMBit"));
+				metas.add(new Meta("IsLocked", "true"));
+				break;
+			case 4:	
+				metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetBarOtherBit"));
+				metas.add(new Meta("IsLocked", "true"));
+				break;
+			case 5:	
+				metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetSpecialFraudBit"));
+				metas.add(new Meta("IsLocked", "true"));
+				break;
+			case 6:	
+				metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_AccountActivationBlockingBit"));
+				metas.add(new Meta("IsLocked", "true"));
+				break;
+			case 7:	
+				metas.add(new Meta("HANDLE_LIFE_CYCLE", "MODIFY_SUBSCRIBER_TAGGING_SetRecycleBit"));
+				metas.add(new Meta("IsLocked", "true"));
+				break;
 			default:
 					throw ExceptionUtil.toSmException(ErrorCode.invalidOperationState);
 		}
@@ -108,7 +124,7 @@ public class ModifyTagging implements Processor {
 		Subscriber subscriber = subscriberObj.getSubscriber();
 		if (subscriber == null) {
 			logger.error("Unable to fetch the subscriber entity out");
-			throw ExceptionUtil.toSmException(ErrorCode.technicalError);
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 		}
 		
 		logger.info("SK GET METAS BALANCE " + subscriber.getMetas());

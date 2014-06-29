@@ -30,8 +30,11 @@ import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.hazelcast.core.ISemaphore;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisException;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResponseData;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.CommandResult;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ErrorInfo;
+import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.FaultMessage;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.IntElement;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ListParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.Operation;
@@ -79,7 +82,7 @@ public class EntireReadSubscriber implements Processor {
 	}
 
 	
-	private Subscriber simpleRead(String customerId) throws SmException {
+	private Subscriber simpleRead(String customerId) throws SmException, TisException {
 		List<Meta> metaList = new ArrayList<Meta>();
 		//metaList.add(new Meta("READ_SUBSCRIBER", "ENTIRE_READ_SUBSCRIBER"));
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
@@ -97,10 +100,18 @@ public class EntireReadSubscriber implements Processor {
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		
 		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0) {
-			if (subscriberInfo.getStatus().getCode() == 504)
-				throw ExceptionUtil.toSmException(ErrorCode.primaryKeyAlreadyExists1);
-			else
+			if (subscriberInfo.getStatus().getCode() == 504) {
+				//throw ExceptionUtil.toSmException(ErrorCode.primaryKeyAlreadyExists1);
+				ErrorInfo errorInfo = new ErrorInfo();
+				errorInfo.setCode(String.valueOf(ErrorCode.primaryKeyAlreadyExists1.getCode()));
+				errorInfo.setText("EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + customerId + " does not exist");
+				FaultMessage message = new FaultMessage();
+				message.getErrorInfo().add(errorInfo);
+				TisException exception = new TisException("EntireRead Entity - Customer with primary key Keyname:PK,CustomerId: " + customerId + " does not exist", message);
+				throw new TisException(errorInfo.getText(), message);
+			} else {
 				throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
+			}
 		}
 		
 		return subscriberInfo.getSubscriber();
@@ -222,7 +233,7 @@ public class EntireReadSubscriber implements Processor {
 		parameterList.add(EntireReadUtil.booleanParameter("IsGPRSUsed", false));
 		parameterList.add(EntireReadUtil.booleanParameter("IsLastRechargeInfoStored", false));
 		parameterList.add(EntireReadUtil.booleanParameter("IsLastTransactionEnqUsed", false));
-		parameterList.add(EntireReadUtil.booleanParameter("IsLocked", false));
+		parameterList.add(EntireReadUtil.booleanParameter("IsLocked", Boolean.parseBoolean(subscriber.getMetas().get("IsLocked"))));
 		parameterList.add(EntireReadUtil.booleanParameter("IsOperatorCollectCallAllowed", false));
 		parameterList.add(EntireReadUtil.booleanParameter("IsSmsAllowed", false));
 		parameterList.add(EntireReadUtil.booleanParameter("IsUSCAllowed", false));

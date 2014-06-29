@@ -1011,7 +1011,7 @@ public class EntireReadUtil {
 			ropRead.setIsSmsAllowed(Boolean.valueOf(IsSmsAllowed));
 		}
 
-		String preActiveEndDate = subscriber.getMetas().get("PreactiveEndDate");
+		String preActiveEndDate = subscriber.getMetas().get("PreActiveEndDate");
 		logger.debug(" preActiveEndDate Before formatting is " + preActiveEndDate);
 		if (preActiveEndDate != null) {
 			Date date = null;
@@ -1115,41 +1115,7 @@ public class EntireReadUtil {
 		
 	}
 
-//	private static Tag getSmartTagging(Subscriber subscriber) {
-//
-//		Map<String, String> metaMap = subscriber.getMetas();
-//		Set<String> keySet = metaMap.keySet();
-//		String key = null;
-//
-//		for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
-//			key = i.next();
-//			String value = null;
-//			if (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
-//				String temp = "";
-//				if (key.length() > Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-//						.length()) {
-//					temp = key.substring(
-//							Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID
-//									.length(), key.length());
-//				}
-//				if (metaMap
-//						.containsKey(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG
-//								+ temp)) {
-//					value = metaMap
-//							.get(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ACTIVE_FLAG
-//									+ temp);
-//					if (Boolean.valueOf(value)) {
-//						Tag tag = Tag.getTagById(Integer.parseInt(metaMap
-//								.get(key)));
-//						if (tag != null && tag.isSmartTag()) {
-//							return tag;
-//						}
-//					}
-//				}
-//			}
-//		}
-//		return null;
-//	}
+
 
 	private static String getGraceEndDate(Subscriber subscriber) {
 

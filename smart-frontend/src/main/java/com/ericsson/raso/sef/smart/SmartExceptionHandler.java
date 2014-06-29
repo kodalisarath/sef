@@ -22,7 +22,10 @@ public class SmartExceptionHandler implements Processor {
 		Throwable error = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
 		log.error("Recieved error of Type Throwable "+error.getMessage(), error);
 
-		if (error instanceof SmException) {
+		if (error instanceof TisException) {
+			log.debug("just to ensure any translation does not happen to premapped exceptions...");
+			exception = (TisException) error;
+		} else if (error instanceof SmException) {
 			SmException e = (SmException) error;
 			log.error("error is SmException instance "+e.getStatusCode().toString(), e);
 			exception = ExceptionUtil.toTisException(((SmException) error).getStatusCode());
@@ -35,7 +38,6 @@ public class SmartExceptionHandler implements Processor {
 		FloodGate.getInstance().exgress();
 		
 		throw exception;
-		//new SmartEDRProcessor().printError(exception.getFaultInfo().getErrorInfo().get(0));
 	}
 
 
