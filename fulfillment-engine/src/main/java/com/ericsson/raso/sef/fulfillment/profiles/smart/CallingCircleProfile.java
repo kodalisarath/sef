@@ -46,8 +46,6 @@ public final class CallingCircleProfile extends RefillProfile {
 	private static final long serialVersionUID = 2321187981269420862L;
 	private static final Logger logger = LoggerFactory.getLogger(CallingCircleProfile.class);
 	
-	private SubscriptionLifeCycleEvent event;
-
 	private String fafIndicatorSponsorMember;
 	private String fafIndicatorMemberSponsor;
 	private String fafIndicatorMemberMember;
@@ -100,7 +98,6 @@ public final class CallingCircleProfile extends RefillProfile {
 		boolean breakFlow = false;
 
 		// Step 1: Collect all variables needed here....
-		this.event = SubscriptionLifeCycleEvent.valueOf(map.get("subscriptionLifeCycleEvent"));
 		this.subscriberId = map.get("SUBSCRIBER_ID");
 		if (this.subscriberId == null)
 			this.subscriberId = map.get("msisdn");
@@ -707,14 +704,6 @@ public final class CallingCircleProfile extends RefillProfile {
 	
 	
 
-	public SubscriptionLifeCycleEvent getEvent() {
-		return event;
-	}
-
-	public void setEvent(SubscriptionLifeCycleEvent event) {
-		this.event = event;
-	}
-
 	public String getFafIndicatorSponsorMember() {
 		return fafIndicatorSponsorMember;
 	}
@@ -1026,7 +1015,7 @@ public final class CallingCircleProfile extends RefillProfile {
 
 	@Override
 	public String toString() {
-		return "CallingCircleProfile [event=" + event + ", fafIndicatorSponsorMember=" + fafIndicatorSponsorMember
+		return "CallingCircleProfile [fafIndicatorSponsorMember=" + fafIndicatorSponsorMember
 				+ ", fafIndicatorMemberSponsor=" + fafIndicatorMemberSponsor + ", fafIndicatorMemberMember=" + fafIndicatorMemberMember
 				+ ", fafAccumulatorId=" + fafAccumulatorId + ", subscriberId=" + subscriberId + ", prodcatOffer=" + prodcatOffer
 				+ ", memberB=" + memberB + ", maxMembers=" + maxMembers + ", associatedPromo=" + associatedPromo
