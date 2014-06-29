@@ -19,21 +19,25 @@ public class TestSMSC {
 	@Handler
 	public void process(Exchange exchange) throws SmException {
 
+		
 		CamelContext camelContext = GatewayContext.getCamelContext();
 		ProducerTemplate template = camelContext.createProducerTemplate();
 		
 		String messageTxt = exchange.getIn().getBody(String.class);
-		SmppMessage message = new SmppMessage();
-		message.setDestinationMsisdn("9275615248");
+		log.debug("Receivng message from testNotificationQueue: "+messageTxt);
+		String messages[] = messageTxt.split(";");
 		
-		SmppMessage smppMessage = new SmppMessage();
-		smppMessage.setDestinationMsisdn("9275615248");
-		smppMessage.setMessageBody("1001,SC:1001");
-		message.setMessageBody(messageTxt+":from SMPP server");
+		if ( messages.length != 2){
+			//93695571186;1001,SC:1001 //activateSubscriber workflow
+			//93695571186;090109999000,SC:090109999000,AP:638000000151,BP:638000000152,circleID:K10 //alkansyaWorkflow?
+			//93695571186;777788889999,SC:777788889999,PID:1 //alkansyaWorkflow 
+			throw new IllegalArgumentException(String.format("Valid message format to test SMPP is <msisdn>;<messagebody>, 93695571186;1001,SC:1001", messageTxt));
+		}
+		SmppMessage message = new SmppMessage();
+		message.setDestinationMsisdn(messages[0]);
+		message.setMessageBody(messages[1]);
 		
 		template.sendBody("activemq:queue:notification", message);
-		
-		log.debug("sent message:"+messageTxt+":from SMPP server");;
 		
 	}
 }
