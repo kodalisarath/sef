@@ -129,10 +129,10 @@ public class CARecharge implements Processor {
 
 			List<Meta> listMeta = convertToList(metas);
 			logger.debug("Confirm metas: " + listMeta);
+			RequestCorrelationStore.put(requestId, response);
 			String correlationId = subscriptionRequest.purchase(requestId, offerid, msisdn, true, listMeta);
 			logger.debug("Got past event class....");
-			RequestCorrelationStore.put(correlationId, response);
-
+			
 			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(correlationId);
 
 			try {
