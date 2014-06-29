@@ -260,17 +260,15 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 		return true;
 	}
 
-
 	@Override
 	public String toString() {
-		return "RefillProfile [refillProfileId=" + refillProfileId
-				+ ", refillType=" + refillType + ", transactionAmount="
-				+ transactionAmount + ", transactionCurrency="
-				+ transactionCurrency + "]";
+		return "RefillProfile [refillProfileId=" + refillProfileId + ", refillType=" + refillType + ", transactionAmount="
+				+ transactionAmount + ", transactionCurrency=" + transactionCurrency + ", renewalAmount=" + renewalAmount
+				+ ", purchaseAmount=" + purchaseAmount + "]";
 	}
 
 
-
+	
 	
 
 
