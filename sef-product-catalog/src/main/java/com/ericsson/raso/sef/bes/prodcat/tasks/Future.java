@@ -75,8 +75,10 @@ public final class Future extends TransactionTask {
 
 	@Override
 	public String toString() {
-		return "Future [mode=" + mode + ", event=" + event + ", offerId=" + offerId + ", subscriberId=" + subscriberId
-				+ ", schedule=" + schedule + "]";
+		return "Future [mode=" + mode + ", event=" + event + ", offerId=" + offerId + ", subscriberId=" + subscriberId + ", schedule="
+				+ schedule + ", metas=" + metas + "]";
 	}
+
+	
 
 }

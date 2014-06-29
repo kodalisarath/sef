@@ -21,6 +21,7 @@ public class SchedulingStep extends Step<SchedulingStepResult> {
 	@Override
 	public SchedulingStepResult execute() {
 		Future future = (Future) getExecutionInputs();
+		LOGGER.debug("Scheduling engaged. Future: " + future);
 
 //		String requestId = RequestContextLocalStore.get().getRequestId();
 //		if (requestId == null) {
