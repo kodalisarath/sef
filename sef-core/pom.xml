@@ -51,7 +51,7 @@
 			javax.crypto,
 			javax.xml.namespace,
 			 org.opensaml.ws,
-			 org.joda.time,
+			 org.joda.time;version=2.3.0,
 			 com.ericsson.pps.diameter.dccapi,
  			com.ericsson.pps.diameter.dccapi.avp,
  			com.ericsson.pps.diameter.dccapi.command,
