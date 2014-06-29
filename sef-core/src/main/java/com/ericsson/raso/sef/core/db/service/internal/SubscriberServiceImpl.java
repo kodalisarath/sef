@@ -109,6 +109,9 @@ public class SubscriberServiceImpl implements SubscriberService{
 			logger.warn("The 'contractId' attribute was null. Assuming to default 'msisdn'");
 			subscriber.setContractId(subscriber.getMsisdn());
 		}
+		
+		subscriber.setContractState(ContractState.PREACTIVE);
+		
 
 		// Perform encryption of identities...
 //		try {
