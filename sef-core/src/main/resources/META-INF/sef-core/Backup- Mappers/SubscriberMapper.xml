@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ericsson.raso.sef.core.db.mapper.SubscriberMapper">
+
+	<resultMap id="SubscriberResult" type="Subscriber">
+		<id property="userId" column="user_id" />
+		<result property="accountId" column="account_id" />
+		<result property="msisdn" column="msisdn" />
+		<result property="contractState" column="contract_state" />
+		<result property="customerId" column="customer_id" />
+		<result property="contractId" column="contract_id" />
+		<result property="pin" column="pin" />
+		<result property="email" column="email" />
+		<result property="imsi" column="imsi" />
+		<result property="imeiSv" column="imei_sv" />
+		<result property="paymentType" column="payment_type" />
+		<result property="paymentResponsible" column="paymentresponsible" />
+		<result property="paymentParent" column="paymentparent" />
+		<result property="billCycleDay" column="billcycle_day" />
+		<result property="dateOfBirth" column="date_of_birth" />
+		<result property="gender" column="gender" />
+		<result property="prefferedLanguage" column="preferred_language" />
+		<result property="registrationDate" column="registration_date" />
+		<result property="activeDate" column="active_date" />
+		<result property="ratePlan" column="rate_plan" />
+		<result property="customerSegment" column="customer_segment" />
+	</resultMap>
+	
+	<select id="isSubscriberExists" parameterType="String" resultType="int" >
+		select 1 from subscriber where msisdn = #{msisdn}
+	</select>
+	<select id="getSubscriberMetas" parameterType="String" resultMap="MetaResult">
+	select * from subscriber_meta where user_id=#{subscriberId}
+	</select>
+	<insert id="createSubscriber" parameterType="Subscriber">
+		insert into
+		subscriber
+		(user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
+		values
+		(#{userId},#{accountId},#{msisdn},#{registrationDate
+		jdbcType=TIMESTAMP},#{contractState.name},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment})
+	</insert>
+	
+	<resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
+		<id property="subscriberId" column="USER_ID " />
+		<result property="eventTimestamp" column="EVENT_TIMESTAMP"
+			jdbcType="TIMESTAMP" />
+		<result property="attributeName" column="ATTRIBUTE_NAME" />
+		<result property="attributeNewValue" column="ATTRIBUTE_NEW_VALUE" />
+		<result property="changedByUser" column="CHANGE_BY_USER" />
+	</resultMap>
+	
+	<resultMap id="MetaResult" type="SubscriberMeta">
+		<result property="subscriberId" column="USER_ID" />
+		<result property="key" column="ATTRIBUTE_NAME" />
+		<result property="value" column="ATTRIBUTE_VALUE" />
+	</resultMap>
+	<!-- <select id="userSequence" resultMap="SequenceResult" parameterType="String"> 
+		select user_id_sequence.nextval as seq, #{rand} as rand from dual </select> -->
+	<update id="deleteSubscriber" parameterType="String" flushCache="true">
+		delete from subscriber where msisdn = #{userId}
+		<!-- update subscriber set deleted = #{userId} where user_id = #{userId} -->
+	</update>
+
+	<select id="getSubscriber" resultMap="SubscriberResult"
+		parameterType="String">
+		select *
+		from subscriber
+		where user_id = #{userId}
+	</select>
+	<delete id="deleteSubscriberMetas" parameterType="String" >
+	delete from susbcriber_meta where user_id=#{userId}
+	</delete>
+
+	<select id="getSubscriberByUserId" resultMap="SubscriberResult"
+		parameterType="String">
+		select *
+		from subscriber s
+		where s.user_id = #{userId}
+	</select>
+	
+	<insert id="insertSubscriberMeta" parameterType="SubscriberMeta">
+		insert into subscriber_meta (user_id, attribute_name, attribute_value)
+		values (#{subscriberId}, #{key}, #{value})
+	</insert>
+	
+	<update id="updateSubscriberMeta" parameterType="SubscriberMeta">
+		update subscriber_meta set attribute_value = #{value}
+		where user_id = #{subscriberId}
+		and attribute_name = #{key}
+	</update>
+	<update id="changeContractStatus" parameterType="Subscriber">
+	update subscriber set contract_state=#{contractState.name} where user_id=#{userId}
+	</update>
+	<!-- <update id="updateSubscriberTable" >
+	update subscriber
+	<set>
+      <if test="activeDate != null">active_date=#{activeDate},</if>
+      <if test="registrationDate != null">registrationDate=#{registration_date}</if>
+    </set>
+     where user_id=#{userId}
+	</update> -->
+	
+	<select id="getContractState" parameterType="String">
+	select contract_state from subscriber where user_id=#{userId}
+	</select>
+	<update id="updateSubscriber" parameterType="Subscriber">
+		update subscriber
+		set
+			contract_state=#{contractState jdbcType=VARCHAR},
+			account_id=#{accountId jdbcType=VARCHAR},
+			customer_id=#{customerId
+			jdbcType=VARCHAR},
+			contract_id=#{contractId jdbcType=VARCHAR},
+			msisdn=#{msisdn jdbcType=VARCHAR},
+			email=#{email jdbcType=VARCHAR},
+			imsi=#{imsi jdbcType=VARCHAR},
+			imei_sv=#{imeiSv jdbcType=VARCHAR},
+			payment_type=#{paymentType jdbcType=VARCHAR},
+			paymentresponsible=#{paymentResponsible jdbcType=VARCHAR},
+			billcycle_day=#{billCycleDay jdbcType=VARCHAR},
+			date_of_birth=#{dateOfBirth jdbcType=TIMESTAMP},
+			gender=#{gender
+			jdbcType=VARCHAR},
+			preferred_language=#{prefferedLanguage
+			jdbcType=VARCHAR},
+			registration_date=#{registrationDate
+			jdbcType=TIMESTAMP},
+			active_date=#{activeDate jdbcType=TIMESTAMP},
+			rate_plan=#{ratePlan jdbcType=VARCHAR}
+		where user_id = #{userId}
+	</update>
+	<insert id="insertSubscriberHistory" parameterType="SubscriberAuditTrial">
+		insert into
+		SUBSCRIBER_AUDIT_TRAIL (user_id,event_timestamp, CHANGE_BY_USER,
+		ATTRIBUTE_NAME, ATTRIBUTE_NEW_VALUE)
+		values
+		(#{userId},
+		#{eventTimestamp}, #{attributeName}, #{attributeNewValue
+		jdbcType=VARCHAR},#{changedByUser jdbccType=VARCHAR})
+	</insert>
+	<select id="getAllSubscriberMetas" resultMap="MetaResult"
+		parameterType="String">
+		select *
+		from
+		subscriber_meta s
+		where user_id = #{subscriberId}
+	</select>
+	
+	
+
+</mapper>

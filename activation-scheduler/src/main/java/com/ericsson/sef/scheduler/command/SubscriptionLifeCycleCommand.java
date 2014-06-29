@@ -4,12 +4,13 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.quartz.JobDetail;
+import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +56,10 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 		try {
 			log.debug("Calling SubscriptionLifeCycleCommand execute method.");
 			final ScheduleRequestService mapper = SefCoreServiceResolver.getScheduleRequestService();
-			ObsoleteCodeDbSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
+			
+			ObsoleteCodeDbSequence sequence = mapper.scheduledRequestSequence(subscriberId);
 			final long id = sequence.getSeq();
+			
 			final ScheduledRequest request = new ScheduledRequest();
 			request.setCreated(new Date());
 			request.setId(id);
@@ -73,10 +76,13 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			request.setMsisdn(subscriberId);
 			request.setUserId(subscriberId);
 			request.setOfferId(offerId);
-			Date scheduleTime = new Date(schedule);
+			//Date scheduleTime = new Date(schedule);
+			Calendar cal = Calendar.getInstance();
+			 cal.add(Calendar.MINUTE, 1);
+			Date scheduleTime = cal.getTime();
 			request.setScheduleTime(scheduleTime);
 			
-			log.debug("Preparing for Quartz...");
+			log.debug("Preparing for Quartz...scheduleTime is "+scheduleTime);
 			String jobId = event + '-' + String.valueOf(id);
 			log.debug("jobID: " + jobId);
 			request.setJobId(jobId);
@@ -84,10 +90,22 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			log.debug("Quartz request: " + request);
 			
 			JobDetail job = newJob(SubscriptionLifeCycleJob.class).withIdentity(jobId).build();
-			Trigger trigger = newTrigger()
+			
+			log.debug("Quartz Job Created: Key is " + job.getKey());
+			
+			log.debug("Quartz Job Created: Trigger Event Key is " + event + '-' + String.valueOf(id) +" scheduleTime=  "+ scheduleTime);
+			
+			/*Trigger trigger = newTrigger()
 					.withIdentity(event + '-' + String.valueOf(id))
 						.startAt(scheduleTime)
-							.withSchedule(simpleSchedule().withIntervalInMilliseconds(schedule).withRepeatCount(0)).build();
+							.withSchedule(simpleSchedule().withIntervalInMilliseconds(10).withRepeatCount(0)).build();*/
+			
+			SimpleTrigger trigger = (SimpleTrigger) newTrigger() 
+				    .withIdentity(event + '-' + String.valueOf(id))
+				    .startAt(scheduleTime) // some Date 
+				    .forJob(job.getKey()) // identify job with name, group strings
+				    .build();
+				
 			log.debug("See whats in this trigger: " + trigger);
 			
 			mapper.insertScheduledRequest(request);
