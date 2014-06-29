@@ -26,7 +26,6 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInterceptor implements CallbackHandler {
 	private static final Logger logger = LoggerFactory.getLogger(WssAuthInterceptor.class);
 
-	//TODO: temporary hack to get SMART authenticated.. must connect to auth framework later...
 	private static final Set<QName> HEADERS = new HashSet<QName>();
 	static {
 		HEADERS.add(new QName(WSConstants.WSSE_NS, "Security"));
@@ -59,10 +58,11 @@ public class WssAuthInterceptor extends AbstractUsernameTokenAuthenticatingInter
 
 		// authenticate the user somehow
 		String storePassword = SefCoreServiceResolver.getConfigService().getValue("SMART_auth", name);
-		if (password == null) {
+		if (storePassword == null) {
 			logger.error("Username (" + name + ") not found authStore!!");
 			return null;
 		}
+		logger.debug("password from store not null... value: " + storePassword);
 		if (!password.equals(storePassword)) {
 			logger.error("Username (" + name + ") did not authenticate with the authStore!!");
 			return null;
