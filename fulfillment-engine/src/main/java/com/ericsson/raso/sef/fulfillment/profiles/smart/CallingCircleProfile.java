@@ -15,16 +15,22 @@ import org.slf4j.LoggerFactory;
 import vasclient.wsdl.VASClientSEI;
 
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
+import com.ericsson.raso.sef.client.air.command.GetAccountDetailsCommand;
 import com.ericsson.raso.sef.client.air.command.RefillCommand;
 import com.ericsson.raso.sef.client.air.command.UpdateAccumulatorCommand;
 import com.ericsson.raso.sef.client.air.command.UpdateFaFListCommand;
 import com.ericsson.raso.sef.client.air.command.UpdateOfferCommand;
 import com.ericsson.raso.sef.client.air.request.AccumulatorInformation;
 import com.ericsson.raso.sef.client.air.request.FafInformation;
+import com.ericsson.raso.sef.client.air.request.GetAccountDetailsRequest;
 import com.ericsson.raso.sef.client.air.request.RefillRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateAccumulatorRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateFaFListRequest;
 import com.ericsson.raso.sef.client.air.request.UpdateOfferRequest;
+import com.ericsson.raso.sef.client.air.response.AccountFlags;
+import com.ericsson.raso.sef.client.air.response.GetAccountDetailsResponse;
+import com.ericsson.raso.sef.client.air.response.OfferInformation;
+import com.ericsson.raso.sef.client.air.response.ServiceOffering;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
@@ -496,7 +502,7 @@ public final class CallingCircleProfile extends RefillProfile {
 				int soID = Integer.parseInt(soParts[0]);
 				boolean soFlag = Boolean.parseBoolean(soParts[1]);
 
-				ServiceOffering so = new ServiceOffering(soID, soFlag);
+				SvcOffering so = new SvcOffering(soID, soFlag);
 				if ( (so.soID >= 2 && so.soID <= 7) && so.isFlag()) {
 					logger.debug("SO ID: " + soID + " is SET. User not allowed for this transaction");
 					return false;
@@ -720,6 +726,122 @@ public final class CallingCircleProfile extends RefillProfile {
 	
 	
 
+	
+
+	private boolean readSubscriber(String customerId, Map<String, String> metas) {
+		try {
+			memberBMetas.put("msisdn", customerId);
+			memberBMetas.put("SUBSCRIBER_ID", customerId);
+			memberBMetas.put("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER");
+
+			GetAccountDetailsRequest request = new GetAccountDetailsRequest();
+			request.setSubscriberNumber(customerId);
+			request.setSubscriberNumberNAI(1);
+			
+			GetAccountDetailsCommand command =  new GetAccountDetailsCommand(request);
+			GetAccountDetailsResponse response = command.execute();
+			
+			this.processAccountDetailsResponse(metas, response);
+			
+		} catch(Exception e) {
+			logger.error("Couldnt fetch subscriber info. Cause: " + e.getMessage(), e);
+			if (e instanceof SmException) {
+				if (((SmException) e).getStatusCode().getCode() == 102) {
+					metas.put("unknownSubscriber", "true");
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+	
+	private void processAccountDetailsResponse(Map<String, String> accountDetails, GetAccountDetailsResponse response) {
+		// direct attributes...
+		if (response.getActivationDate() != null)
+			accountDetails.put(READ_SUBSCRIBER_ACTIVATION_DATE, "" + response.getActivationDate().getTime());
+
+		if (response.getSupervisionExpiryDate() != null)
+			accountDetails.put(READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE, "" + response.getSupervisionExpiryDate().getTime());
+
+		if (response.getServiceFeeExpiryDate() != null)
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE, "" + response.getServiceFeeExpiryDate().getTime());
+
+		logger.debug("Packed all date attributes...");
+
+		// service offerings
+		int index = 0;
+		for (com.ericsson.raso.sef.client.air.response.ServiceOffering serviceOffering: response.getServiceOfferings()) {
+			logger.debug("extracting service offering: " + serviceOffering);
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING + "." + ++index, "" + serviceOffering.getServiceOfferingID() + "," + serviceOffering.isServiceOfferingActiveFlag());
+		}
+		logger.debug("Packed all service offerings...");
+
+		// account flags
+		AccountFlags accountFlags = response.getAccountFlags();
+		Boolean flag = accountFlags.isActivationStatusFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG, "" + flag);
+
+		flag = accountFlags.isNegativeBarringStatusFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG, "" + flag);
+
+		flag = accountFlags.isSupervisionPeriodWarningActiveFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG, "" + flag);
+
+		flag = accountFlags.isServiceFeePeriodWarningActiveFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG, "" + flag);
+
+		flag = accountFlags.isSupervisionPeriodExpiryFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG, "" + flag);
+
+		flag = accountFlags.isServiceFeePeriodExpiryFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG, "" + flag);
+
+		flag = accountFlags.isTwoStepActivationFlag();
+		if (flag != null)
+			accountDetails.put(READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG, "" + flag);
+
+		logger.debug("Packed all account flags...");
+
+		if (response.getServiceOfferings() != null) {
+			logger.debug("About to process ServiceOfferings. Size: " + response.getServiceOfferings().size());
+			index = 0;
+			for (ServiceOffering serviceOffering: response.getServiceOfferings()) {
+				accountDetails.put(READ_SUBSCRIBER_SERVICE_OFFERING + "." + ++index, serviceOffering.getServiceOfferingID() + 
+						"," + serviceOffering.isServiceOfferingActiveFlag());
+			}
+		}
+		
+		
+		// offer info...
+		index = 0;
+		if (response.getOfferInformationList() != null) {
+			logger.debug("About to process OfferInfoList. Size: " + response.getOfferInformationList().size());
+			for (OfferInformation offerInformation: response.getOfferInformationList()) {
+				accountDetails.put(READ_SUBSCRIBER_OFFER_INFO + "." + ++index, (offerInformation.getOfferID() + 
+						"," + ((offerInformation.getStartDate()==null)?"null":offerInformation.getStartDate().getTime()) + 
+						"," + ((offerInformation.getStartDateTime()==null)?"null":offerInformation.getStartDateTime().getTime()) + 
+						"," + ((offerInformation.getExpiryDate()==null)?"null":offerInformation.getExpiryDate().getTime()) + 
+						"," + ((offerInformation.getExpiryDateTime()==null)?"null":offerInformation.getExpiryDateTime().getTime()) ));
+			}
+		} else {
+			logger.error("DID NOT RECEIVE Offer Info List from UCIP Response!!");
+		}
+		
+		// service class
+		//TODO: IGroup UCIP stack does not have this impl...
+		
+		logger.debug("Packed all offer info..." + accountDetails.toString());
+
+	}
+	
+	
 	public String getFafIndicatorSponsorMember() {
 		return fafIndicatorSponsorMember;
 	}
@@ -916,38 +1038,11 @@ public final class CallingCircleProfile extends RefillProfile {
 		this.callingCircleExpiry = callingCircleExpiry;
 	}
 
-	private boolean readSubscriber(String customerId, Map<String, String> metas) {
-		try {
-			memberBMetas.put("msisdn", customerId);
-			memberBMetas.put("SUBSCRIBER_ID", customerId);
-			memberBMetas.put("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER");
-
-			Product p = new Product();
-			p.setName("partialRead");
-			p.setResourceName("PARTIAL_READ_SUBSCRIBER");
-			List<Product> result = new PartialReadSubscriberProfile("temp").fulfill(p, memberBMetas);
-
-			for (Product product: result)
-				metas.putAll(p.getMetas());
-
-		} catch(Exception e) {
-			logger.error("Couldnt fetch subscriber info. Cause: " + e.getMessage(), e);
-			if (e instanceof SmException) {
-				if (((SmException) e).getStatusCode().getCode() == 102) {
-					metas.put("unknownSubscriber", "true");
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	class ServiceOffering {
+	class SvcOffering {
 		private int soID;
 		private boolean flag;
 
-		public ServiceOffering(int soID, boolean flag) {
+		public SvcOffering(int soID, boolean flag) {
 			this.soID = soID;
 			this.flag = flag;
 		}
@@ -1046,6 +1141,18 @@ public final class CallingCircleProfile extends RefillProfile {
 				+ ", callingCircleExpiry=" + callingCircleExpiry + ", [Refill Inheritance:=" + super.toString() + "]]";
 	}
 
+	private static final String READ_SUBSCRIBER_ACTIVATION_DATE = "READ_SUBSCRIBER_ACTIVATION_DATE";
+	private static final String READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE = "READ_SUBSCRIBER_SUPERVISION_EXPIRY_DATE";
+	private static final String READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE = "READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE";
+	private static final String	READ_SUBSCRIBER_SERVICE_OFFERING	= "READ_SUBSCRIBER_SERVICE_OFFERING";
+	private static final String READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG = "READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG";
+	private static final String READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG = "READ_SUBSCRIBER_NEGATIVE_BARRING_STATUS_FLAG";
+	private static final String READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG = "READ_SUBSCRIBER_SUPERVISION_PERIOD_WARNING_ACTIVE_FLAG";
+	private static final String READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG = "READ_SUBSCRIBER_SERVICE_FEE_PERIOD_WARNING_ACTIVE_FLAG";
+	private static final String READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG = "READ_SUBSCRIBER_SUPERVISION_PERIOD_EXPIRY_FLAG";
+	private static final String READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG = "READ_SUBSCRIBER_SERVICE_FEE_PERIOD_EXPIRY_FLAG";
+	private static final String READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG = "READ_SUBSCRIBER_TWO_STEP_ACTIVATION_FLAG";
+	private static final String	READ_SUBSCRIBER_OFFER_INFO	= "READ_SUBSCRIBER_OFFER_INFO";
 
 	
 
