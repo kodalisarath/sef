@@ -49,7 +49,7 @@ public class RefillProfile extends BlockingFulfillment<Product> {
 	@Override
 	public List<Product> fulfill(Product e, Map<String, String> map) throws FulfillmentException {
 		
-		LOGGER.debug("Fufill request for refill. Check metas: " + map);
+		LOGGER.debug("Fufill request for refill. Check metas: " + map + ", \tCheck static config: " + this.toString());
 
 		RefillRequest refillRequest = new RefillRequest();
 		refillRequest.setSubscriberNumber(map.get("msisdn"));
