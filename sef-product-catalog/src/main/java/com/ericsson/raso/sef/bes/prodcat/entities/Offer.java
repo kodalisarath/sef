@@ -275,25 +275,30 @@ public class Offer implements Serializable {
 		if (metas != null)
 			subscriptionId = (String) metas.get(Constants.SUBSCRIPTION_ID.name());
 		
+		//TODO: this is a temporary fix until subcription entity model is available....
+		if (subscription == null) {
+			subscription = this.createPurchaseSubscription(subscriber, System.currentTimeMillis());
+		}
+		metas.put(Constants.SUBSCRIPTION_ENTITY.name(), subscription);
+
+		
 		if (subscriptionId == null) {
 			if (event != SubscriptionLifeCycleEvent.PURCHASE && event != SubscriptionLifeCycleEvent.DISCOVERY) {
 				LOGGER.info("subscriptionId is not populated in a subscription event[" + event + "]. Cannot proceed with assumptions");
 				throw new CatalogException("Subscription Identifier was null!!");
 			}
 		} else {
-			try {
-				subscription = new FetchSubscription(subscriptionId).execute();
+			//TODO: this is a temporary fix until subscription entity model is available....
+			
+//			try {
 				
-				//TODO: this is a temporary fix until subcription entity model is available....
-				if (subscription == null) {
-					subscription = new Subscription(this);
-				}
-				metas.put(Constants.SUBSCRIPTION_ENTITY.name(), subscription);
-			} catch (FrameworkException e) {
-				if (e instanceof CatalogException)
-					throw ((CatalogException) e);
-				throw new CatalogException("Unable to fetch subscription for: " + subscriptionId, e);
-			}
+				//subscription = new FetchSubscription(subscriptionId).execute();
+				
+//			} catch (FrameworkException e) {
+//				if (e instanceof CatalogException)
+//					throw ((CatalogException) e);
+//				throw new CatalogException("Unable to fetch subscription for: " + subscriptionId, e);
+//			}
 		}
 
 

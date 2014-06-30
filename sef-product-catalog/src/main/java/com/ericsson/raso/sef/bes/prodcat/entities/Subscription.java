@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.Constants;
+import com.ericsson.raso.sef.bes.prodcat.OfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.ServiceResolver;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleState;
@@ -82,7 +83,8 @@ public class Subscription extends Offer {
 		try {
 			this.setRenewalPeriod(offer.getRenewalPeriod());
 			this.getRenewalPeriod().setActivationTime(System.currentTimeMillis());
-			this.setTrialPeriod(offer.getTrialPeriod());
+			if (offer.getTrialPeriod() != null)
+				this.setTrialPeriod(offer.getTrialPeriod());
 		} catch (CatalogException e) {
 			logger.info("failed setting renewal period and trial period when creating subscription for offer: " + offer.getName());
 		}
@@ -112,7 +114,13 @@ public class Subscription extends Offer {
 		
 		
 		// first, pack all the fulfillment tasks pertinent to deprovisioning
-		for(AtomicProduct atomicProduct: this.getProvisionedProducts()) {
+		Set<AtomicProduct> provisionedProducts = this.getProvisionedProducts();
+		if (provisionedProducts == null) {
+			logger.error("No Provisioned Products found in this Subscription(" + this.subscriptionId + "). FATAL ERROR!!");
+			throw new CatalogException("No Provisioned Products found in this Subscription(" + this.subscriptionId + "). FATAL ERROR!!");
+		}
+		logger.debug("checking for provisionedProducts... size: " + provisionedProducts.size());
+		for(AtomicProduct atomicProduct: provisionedProducts) {
 			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId, null));
 		}
 
@@ -158,7 +166,9 @@ public class Subscription extends Offer {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
 		Map<String, Object> context = RequestContextLocalStore.get().getInProcess();
 		
-		if (this.getOfferState() != State.PUBLISHED) {
+		OfferCatalog catalog = new OfferCatalog();
+		Offer relevantOffer =catalog.getOfferById(this.getName());
+		if (relevantOffer.getOfferState() != State.PUBLISHED) {
 			// current subscribed offer is not renewable anymore
 			logger.info("This offer is not available for RENEWAAL anymore... Converting to expiry...");
 			tasks.addAll(this.expiry(subscriberId, true, metas));
