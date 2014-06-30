@@ -1,263 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
-  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
-  <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="var" path="M2_REPO/javax/ws/rs/javax.ws.rs-api/2.0-m10/javax.ws.rs-api-2.0-m10.jar" sourcepath="M2_REPO/javax/ws/rs/javax.ws.rs-api/2.0-m10/javax.ws.rs-api-2.0-m10-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/javax/ws/rs/javax.ws.rs-api/2.0-m10/javax.ws.rs-api-2.0-m10-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/net/sourceforge/findbugs/annotations/1.3.2/annotations-1.3.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" sourcepath="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/asm/asm/3.3.1/asm-3.3.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar" sourcepath="M2_REPO/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/camel/camel-core/2.10.0/camel-core-2.10.0.jar" sourcepath="M2_REPO/org/apache/camel/camel-core/2.10.0/camel-core-2.10.0-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/camel/camel-core/2.10.0/camel-core-2.10.0-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/camel/camel-mybatis/2.10.0/camel-mybatis-2.10.0.jar" sourcepath="M2_REPO/org/apache/camel/camel-mybatis/2.10.0/camel-mybatis-2.10.0-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/camel/camel-mybatis/2.10.0/camel-mybatis-2.10.0-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/camel/camel-spring/2.10.0/camel-spring-2.10.0.jar" sourcepath="M2_REPO/org/apache/camel/camel-spring/2.10.0/camel-spring-2.10.0-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/camel/camel-spring/2.10.0/camel-spring-2.10.0-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/commons-codec/commons-codec/1.4/commons-codec-1.4-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-api/2.7.11/cxf-api-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-api/2.7.11/cxf-api-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-api/2.7.11/cxf-api-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-bindings-soap/2.7.11/cxf-rt-bindings-soap-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-bindings-soap/2.7.11/cxf-rt-bindings-soap-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-bindings-soap/2.7.11/cxf-rt-bindings-soap-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-bindings-xml/2.7.11/cxf-rt-bindings-xml-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-bindings-xml/2.7.11/cxf-rt-bindings-xml-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-bindings-xml/2.7.11/cxf-rt-bindings-xml-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-core/2.7.11/cxf-rt-core-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-core/2.7.11/cxf-rt-core-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-core/2.7.11/cxf-rt-core-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-databinding-jaxb/2.7.11/cxf-rt-databinding-jaxb-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-databinding-jaxb/2.7.11/cxf-rt-databinding-jaxb-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-databinding-jaxb/2.7.11/cxf-rt-databinding-jaxb-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-frontend-jaxrs/2.7.11/cxf-rt-frontend-jaxrs-2.7.11.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-frontend-jaxrs/2.7.11/cxf-rt-frontend-jaxrs-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-frontend-jaxws/2.7.11/cxf-rt-frontend-jaxws-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-frontend-jaxws/2.7.11/cxf-rt-frontend-jaxws-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-frontend-jaxws/2.7.11/cxf-rt-frontend-jaxws-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-frontend-simple/2.7.11/cxf-rt-frontend-simple-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-frontend-simple/2.7.11/cxf-rt-frontend-simple-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-frontend-simple/2.7.11/cxf-rt-frontend-simple-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-transports-http/2.7.11/cxf-rt-transports-http-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-transports-http/2.7.11/cxf-rt-transports-http-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-transports-http/2.7.11/cxf-rt-transports-http-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-ws-addr/2.7.11/cxf-rt-ws-addr-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-ws-addr/2.7.11/cxf-rt-ws-addr-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-ws-addr/2.7.11/cxf-rt-ws-addr-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-ws-policy/2.7.11/cxf-rt-ws-policy-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-ws-policy/2.7.11/cxf-rt-ws-policy-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-ws-policy/2.7.11/cxf-rt-ws-policy-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/cxf/cxf-rt-ws-security/2.7.11/cxf-rt-ws-security-2.7.11.jar" sourcepath="M2_REPO/org/apache/cxf/cxf-rt-ws-security/2.7.11/cxf-rt-ws-security-2.7.11-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/cxf/cxf-rt-ws-security/2.7.11/cxf-rt-ws-security-2.7.11-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/ericsson/pps/diameter/dcc-api/release/dcc-api-release.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/ericsson/pps/diameter/diameter-base-api/release/diameter-base-api-release.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/sf/ehcache/ehcache-core/2.5.1/ehcache-core-2.5.1.jar" sourcepath="M2_REPO/net/sf/ehcache/ehcache-core/2.5.1/ehcache-core-2.5.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/net/sf/ehcache/ehcache-core/2.5.1/ehcache-core-2.5.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/geronimo/specs/geronimo-javamail_1.4_spec/1.7.1/geronimo-javamail_1.4_spec-1.7.1.jar" sourcepath="M2_REPO/org/apache/geronimo/specs/geronimo-javamail_1.4_spec/1.7.1/geronimo-javamail_1.4_spec-1.7.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/geronimo/specs/geronimo-javamail_1.4_spec/1.7.1/geronimo-javamail_1.4_spec-1.7.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/hazelcast/hazelcast/3.2.3/hazelcast-3.2.3.jar" sourcepath="M2_REPO/com/hazelcast/hazelcast/3.2.3/hazelcast-3.2.3-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/hazelcast/hazelcast-client/3.2.3/hazelcast-client-3.2.3.jar" sourcepath="M2_REPO/com/hazelcast/hazelcast-client/3.2.3/hazelcast-client-3.2.3-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/ericsson/pps/diameter/high-level-api/release/high-level-api-release.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-impl/2.2.5/jaxb-impl-2.2.5.jar" sourcepath="M2_REPO/com/sun/xml/bind/jaxb-impl/2.2.5/jaxb-impl-2.2.5-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/com/sun/xml/bind/jaxb-impl/2.2.5/jaxb-impl-2.2.5-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/joda-time/joda-time/2.2/joda-time-2.2.jar" sourcepath="M2_REPO/joda-time/joda-time/2.2/joda-time-2.2-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/joda-time/joda-time/2.2/joda-time-2.2-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/logging/log4j/log4j-api/2.0-rc1/log4j-api-2.0-rc1.jar" sourcepath="M2_REPO/org/apache/logging/log4j/log4j-api/2.0-rc1/log4j-api-2.0-rc1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/logging/log4j/log4j-api/2.0-rc1/log4j-api-2.0-rc1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/logging/log4j/log4j-core/2.0-rc1/log4j-core-2.0-rc1.jar" sourcepath="M2_REPO/org/apache/logging/log4j/log4j-core/2.0-rc1/log4j-core-2.0-rc1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/logging/log4j/log4j-core/2.0-rc1/log4j-core-2.0-rc1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/logging/log4j/log4j-slf4j-impl/2.0-rc1/log4j-slf4j-impl-2.0-rc1.jar" sourcepath="M2_REPO/org/apache/logging/log4j/log4j-slf4j-impl/2.0-rc1/log4j-slf4j-impl-2.0-rc1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.0-rc1/log4j-slf4j-impl-2.0-rc1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/mybatis/mybatis/3.1.1/mybatis-3.1.1.jar" sourcepath="M2_REPO/org/mybatis/mybatis/3.1.1/mybatis-3.1.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/mybatis/mybatis/3.1.1/mybatis-3.1.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/mybatis/mybatis-spring/1.2.2/mybatis-spring-1.2.2.jar" sourcepath="M2_REPO/org/mybatis/mybatis-spring/1.2.2/mybatis-spring-1.2.2-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/mybatis/mybatis-spring/1.2.2/mybatis-spring-1.2.2-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/neethi/neethi/3.0.3/neethi-3.0.3.jar" sourcepath="M2_REPO/org/apache/neethi/neethi/3.0.3/neethi-3.0.3-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/neethi/neethi/3.0.3/neethi-3.0.3-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/oracle/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/opensaml/opensaml/2.6.1/opensaml-2.6.1.jar" sourcepath="M2_REPO/org/opensaml/opensaml/2.6.1/opensaml-2.6.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/opensaml/opensaml/2.6.1/opensaml-2.6.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/opensaml/openws/1.5.1/openws-1.5.1.jar" sourcepath="M2_REPO/org/opensaml/openws/1.5.1/openws-1.5.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/opensaml/openws/1.5.1/openws-1.5.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/quartz-scheduler/quartz/2.2.0/quartz-2.2.0.jar" sourcepath="M2_REPO/org/quartz-scheduler/quartz/2.2.0/quartz-2.2.0-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/quartz-scheduler/quartz/2.2.0/quartz-2.2.0-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/quartz-scheduler/quartz-jobs/2.2.0/quartz-jobs-2.2.0.jar" sourcepath="M2_REPO/org/quartz-scheduler/quartz-jobs/2.2.0/quartz-jobs-2.2.0-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/quartz-scheduler/quartz-jobs/2.2.0/quartz-jobs-2.2.0-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/quartz-scheduler/quartz-oracle/2.1.7/quartz-oracle-2.1.7.jar" sourcepath="M2_REPO/org/quartz-scheduler/quartz-oracle/2.1.7/quartz-oracle-2.1.7-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/quartz-scheduler/quartz-oracle/2.1.7/quartz-oracle-2.1.7-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/ericsson/pps/diameter/scap-v2-api/release/scap-v2-api-release.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xalan/serializer/2.7.1/serializer-2.7.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/snmp4j/snmp4j/2.2.5/snmp4j-2.2.5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-aop/3.0.7.RELEASE/spring-aop-3.0.7.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-aop/3.0.7.RELEASE/spring-aop-3.0.7.RELEASE-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-beans/3.2.9.RELEASE/spring-beans-3.2.9.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-beans/3.2.9.RELEASE/spring-beans-3.2.9.RELEASE-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/springframework/spring-beans/3.2.9.RELEASE/spring-beans-3.2.9.RELEASE-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-context/3.2.9.RELEASE/spring-context-3.2.9.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-context/3.2.9.RELEASE/spring-context-3.2.9.RELEASE-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/springframework/spring-context/3.2.9.RELEASE/spring-context-3.2.9.RELEASE-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/3.2.9.RELEASE/spring-core-3.2.9.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-core/3.2.9.RELEASE/spring-core-3.2.9.RELEASE-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/springframework/spring-core/3.2.9.RELEASE/spring-core-3.2.9.RELEASE-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-expression/3.2.9.RELEASE/spring-expression-3.2.9.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-expression/3.2.9.RELEASE/spring-expression-3.2.9.RELEASE-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/springframework/spring-expression/3.2.9.RELEASE/spring-expression-3.2.9.RELEASE-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-jdbc/3.2.9.RELEASE/spring-jdbc-3.2.9.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-jdbc/3.2.9.RELEASE/spring-jdbc-3.2.9.RELEASE-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/springframework/spring-jdbc/3.2.9.RELEASE/spring-jdbc-3.2.9.RELEASE-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-tx/3.2.9.RELEASE/spring-tx-3.2.9.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-tx/3.2.9.RELEASE/spring-tx-3.2.9.RELEASE-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/springframework/spring-tx/3.2.9.RELEASE/spring-tx-3.2.9.RELEASE-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/codehaus/woodstox/stax2-api/3.1.4/stax2-api-3.1.4.jar" sourcepath="M2_REPO/org/codehaus/woodstox/stax2-api/3.1.4/stax2-api-3.1.4-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/codehaus/woodstox/stax2-api/3.1.4/stax2-api-3.1.4-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/tomcat/tomcat-dbcp/7.0.50/tomcat-dbcp-7.0.50.jar" sourcepath="M2_REPO/org/apache/tomcat/tomcat-dbcp/7.0.50/tomcat-dbcp-7.0.50-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/ericsson/pps/diameter/utils/release/utils-release.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/codehaus/woodstox/woodstox-core-asl/4.2.1/woodstox-core-asl-4.2.1.jar" sourcepath="M2_REPO/org/codehaus/woodstox/woodstox-core-asl/4.2.1/woodstox-core-asl-4.2.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/codehaus/woodstox/woodstox-core-asl/4.2.1/woodstox-core-asl-4.2.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/wsdl4j/wsdl4j/1.6.3/wsdl4j-1.6.3.jar" sourcepath="M2_REPO/wsdl4j/wsdl4j/1.6.3/wsdl4j-1.6.3-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/wsdl4j/wsdl4j/1.6.3/wsdl4j-1.6.3-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/ws/security/wss4j/1.6.15/wss4j-1.6.15.jar" sourcepath="M2_REPO/org/apache/ws/security/wss4j/1.6.15/wss4j-1.6.15-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/ws/security/wss4j/1.6.15/wss4j-1.6.15-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/xml-resolver/xml-resolver/1.2/xml-resolver-1.2.jar" sourcepath="M2_REPO/xml-resolver/xml-resolver/1.2/xml-resolver-1.2-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/ws/xmlschema/xmlschema-core/2.1.0/xmlschema-core-2.1.0.jar" sourcepath="M2_REPO/org/apache/ws/xmlschema/xmlschema-core/2.1.0/xmlschema-core-2.1.0-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/ws/xmlschema/xmlschema-core/2.1.0/xmlschema-core-2.1.0-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/santuario/xmlsec/1.5.6/xmlsec-1.5.6.jar" sourcepath="M2_REPO/org/apache/santuario/xmlsec/1.5.6/xmlsec-1.5.6-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/apache/santuario/xmlsec/1.5.6/xmlsec-1.5.6-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/opensaml/xmltooling/1.4.1/xmltooling-1.4.1.jar" sourcepath="M2_REPO/org/opensaml/xmltooling/1.4.1/xmltooling-1.4.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/Khai%20Shen/.m2/repository/org/opensaml/xmltooling/1.4.1/xmltooling-1.4.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

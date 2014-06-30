@@ -45,7 +45,7 @@
 		WHERE member_a=#{subscriberId} OR member_b=#{subscriberId}
 	</select>
 	
-	<select id="fetchCallingCircleMemberCountForOwner" resultMap="Integer" parameterType="CallingCircle">
+	<select id="fetchCallingCircleMemberCountForOwner" resultMap="int" parameterType="CallingCircle">
 		SELECT COUNT(*) 
 		FROM callingcircle
 		WHERE owner=#{owner}
@@ -54,7 +54,7 @@
 		AND relationship='SPONSER_MEMBER'
 	</select>
 	
-	<select id="fetchCallingCircleMembersForOwner" resultMap="Integer" parameterType="CallingCircle">
+	<select id="fetchCallingCircleMembersForOwner" resultMap="int" parameterType="CallingCircle">
 		SELECT owner, product_offer, member_a, member_b, relationship, faf_indicator, creation_datetime, expiry_datetime 
 		FROM callingcircle
 		WHERE owner=#{owner}
@@ -62,7 +62,7 @@
 		AND relationship='SPONSER_MEMBER'
 	</select>
 	
-	<select id="fetchCallingCircleMembersOnly" resultMap="Integer" parameterType="CallingCircle">
+	<select id="fetchCallingCircleMembersOnly" resultMap="int" parameterType="CallingCircle">
 		SELECT UNIQUE member_a
 		FROM callingcircle
 		WHERE owner=#{owner}
@@ -77,15 +77,13 @@
 		AND product_offer=#{prodcatOffer}
 	</select>
 	
-	<select id="fetchCallingCircleMemberCountForMember" resultMap="Integer" parameterType="CallingCircle">
-	<![CDATA[
+	<select id="fetchCallingCircleMemberCountForMember" resultMap="int" parameterType="CallingCircle">
 		SELECT COUNT(*) 
 		FROM callingcircle
 		WHERE owner<>#{owner}
 		AND product_offer=#{prodcatOffer}
 		AND member_b=#{memberB}
 		AND relationship='SPONSER_MEMBER'
-	]]>	
 	</select>
 	
 	<delete id="deleteCallingCircle" parameterType="CallingCircle" flushCache="true" >
