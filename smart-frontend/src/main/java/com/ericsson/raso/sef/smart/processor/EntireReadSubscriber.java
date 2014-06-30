@@ -203,7 +203,7 @@ public class EntireReadSubscriber implements Processor {
 				logger.debug("Setting vValidFrom when unparseable from DB: " + date);
 				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", date));
 			}
-		date = subscriber.getMetas().get("vValidFrom");
+		date = subscriber.getMetas().get("vInvalidFrom");
 		if (date == null)
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(new Date())));
 		else
