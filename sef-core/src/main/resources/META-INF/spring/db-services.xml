@@ -95,6 +95,12 @@
  	<bean id="subscriberService" class="com.ericsson.raso.sef.core.db.service.internal.SubscriberServiceImpl">
  		<property name="subscriberMapper" ref="subscriberMapper"/> 
  	</bean> 
+	
+	<bean id="callingCircleService" class="com.ericsson.raso.sef.core.db.service.internal.CallingCircleServiceImpl">
+ 		<property name="callingCircleMapper" ref="callingCircleMapper"/> 
+ 	</bean> 
+	
+	
 	<!-- <bean id="roleManagerMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.RoleManagerMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
