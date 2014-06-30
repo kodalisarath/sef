@@ -40,7 +40,11 @@ public class RemoveCallingCircleTask implements Task<Void> {
 			newMetaList.add(newMeta);
 		}
 		
-		TransactionEngineHelper.expiry(callingCircleId, newMetaList);
+		//To Do Expiry method signature change. 
+		//TransactionEngineHelper.expiry(callingCircleId, newMetaList);
+		
+		
+		
 //	log.warn("Remove Calling Circle Task is not implmented in Notification Workflow");
 //		long callingCircleId = 0;
 //		for (Meta meta : metas) {

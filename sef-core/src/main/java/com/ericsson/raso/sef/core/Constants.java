@@ -120,4 +120,8 @@ public class Constants {
 	public static final String IL_CHANNEL = "ILCHANNEL";
 	public static final String SUBSCRIPTION_LIFE_CYCLE_EVENT = "subscriptionLifeCycleEvent";
 	public static final String USECASE = "usecase";
+
+	public static final String TXN_ENGINE_SUBSCRIBER_ID = "TXN_ENGINE_SUBSCRIBER_ID";
+	public static final String TXN_ENGINE_OFFER_ID = "TXN_ENGINE_OFFER_ID";
+	
 }

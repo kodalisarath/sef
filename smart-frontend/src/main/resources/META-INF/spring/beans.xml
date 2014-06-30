@@ -17,48 +17,53 @@
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
 
-	<bean id="smartContext" class="com.ericsson.raso.sef.smart.SmartServiceResolver"/>
+	<bean id="smartContext" class="com.ericsson.raso.sef.smart.SmartServiceResolver" />
 
 
-<!-- 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" /> -->
-<!-- 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" /> -->
+	<!-- <bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" 
+		/> -->
+	<!-- <bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" 
+		/> -->
 
-<!-- 	<bean id="licenseInterceptor" class="com.ericsson.raso.sef.auth.integration.LicenseThrottleInterceptor" /> -->
-		<!-- hdr -->
-<!-- 		<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" /> -->
-			<bean id="serverPasswordCallback"  class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor"/> 
-			<bean id="authenticationInterceptor"  class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor"> 
-			<constructor-arg>
-				<map>
-					<entry key="action" value="UsernameToken" />
-					<entry key="passwordType" value="PasswordText" />
-					<entry key="passwordCallbackRef">
-		              <ref bean="serverPasswordCallback" />
-		            </entry>
-				</map>
-			</constructor-arg>
-		</bean>
- 
+	<!-- <bean id="licenseInterceptor" class="com.ericsson.raso.sef.auth.integration.LicenseThrottleInterceptor" 
+		/> -->
+	<!-- hdr -->
+	<!-- <bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" 
+		/> -->
+	<bean id="serverPasswordCallback"
+		class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor" />
+	<bean id="authenticationInterceptor"
+		class="com.ericsson.raso.sef.auth.integration.WssAuthInterceptor">
+		<constructor-arg>
+			<map>
+				<entry key="action" value="UsernameToken" />
+				<entry key="passwordType" value="PasswordText" />
+				<entry key="passwordCallbackRef">
+					<ref bean="serverPasswordCallback" />
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+
 	<cxf:cxfEndpoint id="smartInterface"
-	  serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface"
-	  xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/"
-	  wsdlURL="classpath:wsdl/TisService.xml" bus="cxf">
+		serviceClass="com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1.TisInterface"
+		xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" wsdlURL="classpath:wsdl/TisService.xml"
+		bus="cxf">
 
 
 		<cxf:properties>
-			<entry key="address"
-				value="http://0.0.0.0:9882/services/TisService" />
-				<entry key="dataFormat" value="POJO" />
-				<entry key="ws-security.validate.token" value="false" />
+			<entry key="address" value="http://0.0.0.0:9882/services/TisService" />
+			<entry key="dataFormat" value="POJO" />
+			<entry key="ws-security.validate.token" value="false" />
 		</cxf:properties>
 		<cxf:inInterceptors>
-<!-- 			<ref bean="loggingInInterceptor" /> -->
-<!-- 			<ref bean="licenseInterceptor" /> -->
-			<ref bean="authenticationInterceptor" /> 
+			<!-- <ref bean="loggingInInterceptor" /> -->
+			<!-- <ref bean="licenseInterceptor" /> -->
+			<ref bean="authenticationInterceptor" />
 		</cxf:inInterceptors>
 
 		<cxf:outInterceptors>
-<!-- 			<ref bean="loggingOutInterceptor" /> -->
+			<!-- <ref bean="loggingOutInterceptor" /> -->
 		</cxf:outInterceptors>
 	</cxf:cxfEndpoint>
 
@@ -66,7 +71,8 @@
 		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" />
+			<entry key="address"
+				value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" />
 		</cxf:properties>
 
 	</cxf:cxfEndpoint>
@@ -76,186 +82,229 @@
 		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
+			<entry key="address"
+				value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
 		</cxf:properties>
 
 	</cxf:cxfEndpoint>
 
-<!-- 	<httpj:engine-factory> -->
-<!-- 		<httpj:engine port="9882"> -->
-<!-- 			<httpj:connector> -->
-<!-- 				<bean class="org.eclipse.jetty.server.nio.SelectChannelConnector"/> -->
-<!-- 				<bean class="org.eclipse.jetty.server.nio.BlockingChannelConnector"> -->
-<!-- 					<property name="port" value="9882"/> -->
-<!-- 				</bean> -->
-<!-- 			</httpj:connector> -->
-<!-- 		</httpj:engine> -->
-<!-- 	</httpj:engine-factory> -->
+	<!-- <httpj:engine-factory> -->
+	<!-- <httpj:engine port="9882"> -->
+	<!-- <httpj:connector> -->
+	<!-- <bean class="org.eclipse.jetty.server.nio.SelectChannelConnector"/> -->
+	<!-- <bean class="org.eclipse.jetty.server.nio.BlockingChannelConnector"> -->
+	<!-- <property name="port" value="9882"/> -->
+	<!-- </bean> -->
+	<!-- </httpj:connector> -->
+	<!-- </httpj:engine> -->
+	<!-- </httpj:engine-factory> -->
 
-    <!--Please add new beans in alphabetical order, so we know what is missing-->
+	<!--Please add new beans in alphabetical order, so we know what is missing -->
 
 	<bean id="usecaseProcessor" class="com.ericsson.raso.sef.smart.usecase.UsecaseProcessor" />
 
-    <bean id="balanceAdjustment" class="com.ericsson.raso.sef.smart.processor.BalanceAdjustment" />
-    <bean id="bucketCreateOrWriteRop" class="com.ericsson.raso.sef.smart.processor.BucketCreateOrWriteRop"/>
-    <bean id="bucketRetrieveReadROP" class="com.ericsson.raso.sef.smart.processor.BucketRetrieveReadROP" />
-    <bean id="bucketRetrieveReadRPP" class="com.ericsson.raso.sef.smart.processor.BucketRetrieveReadRPP" />
+	<bean id="balanceAdjustment" class="com.ericsson.raso.sef.smart.processor.BalanceAdjustment" />
+	<bean id="bucketCreateOrWriteRop"
+		class="com.ericsson.raso.sef.smart.processor.BucketCreateOrWriteRop" />
+	<bean id="bucketRetrieveReadROP"
+		class="com.ericsson.raso.sef.smart.processor.BucketRetrieveReadROP" />
+	<bean id="bucketRetrieveReadRPP"
+		class="com.ericsson.raso.sef.smart.processor.BucketRetrieveReadRPP" />
 
-    <bean id="CARecharge" class="com.ericsson.raso.sef.smart.processor.CARecharge" />
+	<bean id="CARecharge" class="com.ericsson.raso.sef.smart.processor.CARecharge" />
 
-    <bean id="createOrWriteCustomer" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteCustomerProcessor"/>
-    <bean id="createOrWriteRop" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteRop"/>
-    <bean id="createOrWriteServiceAccessKey" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteServiceAccessKey"/>
+	<bean id="createOrWriteCustomer"
+		class="com.ericsson.raso.sef.smart.processor.CreateOrWriteCustomerProcessor" />
+	<bean id="createOrWriteRop" class="com.ericsson.raso.sef.smart.processor.CreateOrWriteRop" />
+	<bean id="createOrWriteServiceAccessKey"
+		class="com.ericsson.raso.sef.smart.processor.CreateOrWriteServiceAccessKey" />
 
-    <bean id="dateUtil" class="com.ericsson.raso.sef.smart.processor.DateUtil"/>
+	<bean id="dateUtil" class="com.ericsson.raso.sef.smart.processor.DateUtil" />
 
-    <bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
-	<bean id="dummyResponseProcessor" class="com.ericsson.raso.sef.smart.processor.DummyResponseProcessor" />
-	
-    <bean id="entireDeleteSubscriber" class="com.ericsson.raso.sef.smart.processor.EntireDeleteSubscriber" />
-    <bean id="entireRead" class="com.ericsson.raso.sef.smart.processor.EntireReadSubscriber" />
+	<bean id="dummyProcessor" class="com.ericsson.raso.sef.smart.processor.DummyProcessor" />
+	<bean id="dummyResponseProcessor"
+		class="com.ericsson.raso.sef.smart.processor.DummyResponseProcessor" />
 
-    <bean id="entireReadUtil" class="com.ericsson.raso.sef.smart.processor.EntireReadUtil"/>
+	<bean id="entireDeleteSubscriber"
+		class="com.ericsson.raso.sef.smart.processor.EntireDeleteSubscriber" />
+	<bean id="entireRead"
+		class="com.ericsson.raso.sef.smart.processor.EntireReadSubscriber" />
 
-    <bean id="modifyCustomerGrace" class="com.ericsson.raso.sef.smart.processor.ModifyCustomerGrace"/>
-    <bean id="modifyCustomerPreActive" class="com.ericsson.raso.sef.smart.processor.ModifyCustomerPreActive"/>
-    <bean id="modifyPackageItem" class="com.ericsson.raso.sef.smart.processor.ModifyPackageItem" />
-    <bean id="modifyTagging" class="com.ericsson.raso.sef.smart.processor.ModifyTagging" />
+	<bean id="entireReadUtil" class="com.ericsson.raso.sef.smart.processor.EntireReadUtil" />
 
-    <bean id="readCustomerInfoCharge" class="com.ericsson.raso.sef.smart.processor.ReadCustomerInfoCharge" />
+	<bean id="modifyCustomerGrace"
+		class="com.ericsson.raso.sef.smart.processor.ModifyCustomerGrace" />
+	<bean id="modifyCustomerPreActive"
+		class="com.ericsson.raso.sef.smart.processor.ModifyCustomerPreActive" />
+	<bean id="modifyPackageItem" class="com.ericsson.raso.sef.smart.processor.ModifyPackageItem" />
+	<bean id="modifyTagging" class="com.ericsson.raso.sef.smart.processor.ModifyTagging" />
 
-    <bean id="requestIdGenerator" class="com.ericsson.raso.sef.smart.processor.RequestIdProcessor" />
+	<bean id="readCustomerInfoCharge"
+		class="com.ericsson.raso.sef.smart.processor.ReadCustomerInfoCharge" />
 
-    <bean id="retrieveDeleteProcessor" class="com.ericsson.raso.sef.smart.processor.RetrieveDeleteProcessor" />
-    <bean id="retrieveReadRPP" class="com.ericsson.raso.sef.smart.processor.RetrieveReadRPP" />
+	<bean id="requestIdGenerator"
+		class="com.ericsson.raso.sef.smart.processor.RequestIdProcessor" />
 
-   	<bean id="smartInEdr" class="com.ericsson.raso.sef.edr.processor.SmartEdrInProcessor" />
-    <bean id="smartOutEdr" class="com.ericsson.raso.sef.edr.processor.SmartEdrOutProcessor" />
-    <bean id="smartCleanEdr" class="com.ericsson.raso.sef.edr.processor.SmartEdrCleanProcessor" />
+	<bean id="retrieveDeleteProcessor"
+		class="com.ericsson.raso.sef.smart.processor.RetrieveDeleteProcessor" />
+	<bean id="retrieveReadRPP" class="com.ericsson.raso.sef.smart.processor.RetrieveReadRPP" />
 
-    <bean id="subscribePackageItem" class="com.ericsson.raso.sef.smart.processor.SubscribePackageItem" />
-    <bean id="unsubscribePackageItem" class="com.ericsson.raso.sef.smart.processor.UnsubscribePackageItem" />
+	<bean id="smartInEdr" class="com.ericsson.raso.sef.edr.processor.SmartEdrInProcessor" />
+	<bean id="smartOutEdr"
+		class="com.ericsson.raso.sef.edr.processor.SmartEdrOutProcessor" />
+	<bean id="smartCleanEdr"
+		class="com.ericsson.raso.sef.edr.processor.SmartEdrCleanProcessor" />
 
-    <bean id="versionCreateOrWriteCustomer" class="com.ericsson.raso.sef.smart.processor.VersionCreateOrWriteCustomer" />
-    <bean id="versionCreateOrWriteRop" class="com.ericsson.raso.sef.smart.processor.VersionCreateOrWriteRop"/>
+	<bean id="subscribePackageItem"
+		class="com.ericsson.raso.sef.smart.processor.SubscribePackageItem" />
+	<bean id="unsubscribePackageItem"
+		class="com.ericsson.raso.sef.smart.processor.UnsubscribePackageItem" />
 
-    <bean id="versionretrieveReadROP" class="com.ericsson.raso.sef.smart.processor.VersionRetrieveReadROP" />
+	<bean id="versionCreateOrWriteCustomer"
+		class="com.ericsson.raso.sef.smart.processor.VersionCreateOrWriteCustomer" />
+	<bean id="versionCreateOrWriteRop"
+		class="com.ericsson.raso.sef.smart.processor.VersionCreateOrWriteRop" />
+
+	<bean id="versionretrieveReadROP"
+		class="com.ericsson.raso.sef.smart.processor.VersionRetrieveReadROP" />
 
 
-	<camelContext id="com.ericsson.raso.sef.smart.smartInterface" xmlns="http://camel.apache.org/schema/spring">
+	<camelContext id="com.ericsson.raso.sef.smart.smartInterface"
+		xmlns="http://camel.apache.org/schema/spring">
 		<route>
 			<from uri="cxf:bean:smartInterface" />
 			<camel:doTry>
-				<camel:bean ref="requestIdGenerator"/>
-<!-- 				<camel:bean ref="gatekeeperProcessor" method="process"/> -->
+				<camel:bean ref="requestIdGenerator" />
+				<!-- <camel:bean ref="gatekeeperProcessor" method="process"/> -->
 
-				 <camel:wireTap uri="direct:EDRIn"  /> 
-				
-				<camel:bean ref="usecaseProcessor"/>
+				<camel:wireTap uri="direct:EDRIn" />
 
-				<camel:wireTap uri="direct:EDROut"  />
-				<camel:bean ref="dummyResponseProcessor"/>
-				 
+				<camel:bean ref="usecaseProcessor" />
+
+				<camel:wireTap uri="direct:EDROut" />
+				<camel:bean ref="dummyResponseProcessor" />
+
 				<camel:doCatch>
 					<camel:exception>java.lang.Exception</camel:exception>
 					<camel:bean beanType="com.ericsson.raso.sef.smart.SmartExceptionHandler" />
 				</camel:doCatch>
-				
+
 				<camel:doFinally>
-				
-				<camel:wireTap uri="direct:EDRClean"  />
-					<camel:bean ref="dummyResponseProcessor"/>
-				
+
+					<camel:wireTap uri="direct:EDRClean" />
+					<camel:bean ref="dummyResponseProcessor" />
+
 				</camel:doFinally>
 			</camel:doTry>
 		</route>
 
 		<route>
-			<from uri="cxf:bean:subscriptionResponse"/>
+			<from uri="cxf:bean:subscriptionResponse" />
+			<camel:log
+				message="Entering Smart Front End subscriptionResponse header operation is:  ${header.operationName}"
+				logName="com.ericsson.sef.scheduler.common" />
+
 			<camel:doTry>
 				<camel:choice>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.DiscoverOfferByFederatedIdResponseProcessor"/>
-					</camel:when> 
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscription.response.DiscoverOfferByFederatedIdResponseProcessor" />
+					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'purchase'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PurchaseResponseProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscription.response.PurchaseResponseProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'renew'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.RenewResponseProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscription.response.RenewResponseProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'terminate'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.TerminateResponseProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscription.response.TerminateResponseProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'expiry'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.ExpiryResponseProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscription.response.ExpiryResponseProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'preExpiry'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PreExpiryResponseProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscription.response.PreExpiryResponseProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'preRewnal'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.PreRenewResponseProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscription.response.PreRenewResponseProcessor" />
 					</camel:when>
 				</camel:choice>
 				<camel:doFinally>
-				<!-- Add exception handler -->
+					<!-- Add exception handler -->
 				</camel:doFinally>
 			</camel:doTry>
 		</route>
 
 		<route>
-			<from uri="cxf:bean:subscriberResponse"/>
+			<from uri="cxf:bean:subscriberResponse" />
+			
+			<camel:log
+				message="Entering Smart Front End subscriberResponse header operation is:  ${header.operationName}"
+				logName="com.ericsson.sef.scheduler.common" />
+			
 			<camel:doTry>
 				<camel:choice>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'createSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.CreateSubscriberProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscriber.response.CreateSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'readSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.ReadSubscriberProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscriber.response.ReadSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'updateSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.UpdateSubscriberProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscriber.response.UpdateSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'deleteSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.DeleteSubscriberProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscriber.response.DeleteSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'handleLifeCycle'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscriber.response.HandleLifeCycleSubscriberProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscriber.response.HandleLifeCycleSubscriberProcessor" />
 					</camel:when>
 				</camel:choice>
 				<camel:doFinally>
-				<!-- Add exception handler -->
+					<!-- Add exception handler -->
 				</camel:doFinally>
 
 			</camel:doTry>
 		</route>
-		
+
 		<camel:route id="wireTap_to_EDRIn">
-			<camel:from uri="direct:EDRIn"/>
-			<camel:to uri="bean:smartInEdr"/>
+			<camel:from uri="direct:EDRIn" />
+			<camel:to uri="bean:smartInEdr" />
 		</camel:route>
 
 		<camel:route id="wireTap_to_EDROut">
-			<camel:from uri="direct:EDROut"/>
-			<camel:to uri="bean:smartOutEdr"/>
+			<camel:from uri="direct:EDROut" />
+			<camel:to uri="bean:smartOutEdr" />
 		</camel:route>
-		
+
 		<camel:route id="wireTap_to_EDRClean">
-			<camel:from uri="direct:EDRClean"/>
-			<camel:to uri="bean:smartCleanEdr"/>
+			<camel:from uri="direct:EDRClean" />
+			<camel:to uri="bean:smartCleanEdr" />
 		</camel:route>
-		
+
 	</camelContext>
 
 </beans>

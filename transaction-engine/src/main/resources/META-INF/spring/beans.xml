@@ -2,8 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:osgi="http://www.springframework.org/schema/osgi"
-	xmlns:cxf="http://camel.apache.org/schema/cxf"
-	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
@@ -15,30 +14,35 @@
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	<import resource="classpath:META-INF/product-catalog/beans.xml" />
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
-	
+
 	<bean id="cfg" class="com.ericsson.raso.sef.core.config.ConfigService" />
 	<bean id="transactionEngineProperties"
 		class="com.ericsson.raso.sef.core.config.ComponentPropertiesBean">
 		<constructor-arg name="config" ref="cfg" />
 		<constructor-arg name="component" value="transactionEngine" />
 	</bean>
-	<context:property-placeholder properties-ref="transactionEngineProperties" />
+	<context:property-placeholder
+		properties-ref="transactionEngineProperties" />
 
-	<bean id="transactionManager" class="com.ericsson.raso.sef.bes.engine.transaction.TransactionManager" />
-	<bean id="serviceResolver" class="com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver" />
+	<bean id="transactionManager"
+		class="com.ericsson.raso.sef.bes.engine.transaction.TransactionManager" />
+	<bean id="serviceResolver"
+		class="com.ericsson.raso.sef.bes.engine.transaction.ServiceResolver" />
 	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
 	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
-	<bean id="authenticationInterceptor" class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
+	<bean id="authenticationInterceptor"
+		class="com.ericsson.raso.sef.auth.integration.WSSByPassInterceptor" />
 
 	<bean class="org.apache.activemq.camel.component.ActiveMQComponent"
 		id="activemq">
-		<property name="brokerURL" value="${activeMqBrokerURL}"/>
-        <property name="userName" value="${activeMqUserName}"/>
-        <property name="password" value="${activeMqUserPassword}"/>
+		<property name="brokerURL" value="${activeMqBrokerURL}" />
+		<property name="userName" value="${activeMqUserName}" />
+		<property name="password" value="${activeMqUserPassword}" />
 	</bean>
-	
+
 	<cxf:cxfEndpoint id="subscriberInterface"
-		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberRequest" bus="cxf">
+		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberRequest"
+		bus="cxf">
 
 		<cxf:properties>
 			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriber" />
@@ -46,6 +50,7 @@
 
 		<cxf:inInterceptors>
 			<ref bean="loggingInInterceptor" />
+			-
 			<ref bean="authenticationInterceptor" />
 		</cxf:inInterceptors>
 
@@ -53,9 +58,10 @@
 			<ref bean="loggingOutInterceptor" />
 		</cxf:outInterceptors>
 	</cxf:cxfEndpoint>
-	
+
 	<cxf:cxfEndpoint id="subscriptionInterface"
-		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionRequest" bus="cxf">
+		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionRequest"
+		bus="cxf">
 
 		<cxf:properties>
 			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscription" />
@@ -71,10 +77,12 @@
 		</cxf:outInterceptors>
 	</cxf:cxfEndpoint>
 	<cxf:cxfEndpoint id="fulfillmentResponseInterface"
-		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse" bus="cxf">
+		serviceClass="com.ericsson.sef.bes.api.fulfillment.FulfillmentResponse"
+		bus="cxf">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/fulfillmentresponse" />
+			<entry key="address"
+				value="http://0.0.0.0:8080/services/ws/fulfillmentresponse" />
 		</cxf:properties>
 
 		<cxf:inInterceptors>
@@ -86,14 +94,14 @@
 			<ref bean="loggingOutInterceptor" />
 		</cxf:outInterceptors>
 	</cxf:cxfEndpoint>
-	
+
 
 	<httpj:engine-factory>
 		<httpj:engine port="8080">
 			<httpj:connector>
 				<!-- <bean class="org.eclipse.jetty.server.nio.SelectChannelConnector"/> -->
 				<bean class="org.eclipse.jetty.server.nio.BlockingChannelConnector">
-					<property name="port" value="8080"/>
+					<property name="port" value="8080" />
 				</bean>
 			</httpj:connector>
 		</httpj:engine>
@@ -114,101 +122,129 @@
 		<!-- camel route for the subscriber -->
 		<route>
 			<from uri="cxf:bean:subscriberInterface" />
-			
+
 			<camel:doTry>
+				<camel:log
+					message="Entering Transaction Engine subscriberInterface headers are :  ${header.operationName}"
+					logName="com.ericsson.sef.scheduler.common" />
 				<camel:choice>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'readSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ReadSubscriberProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ReadSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'readSubscriberMeta'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ReadSubscriberMetaProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ReadSubscriberMetaProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'createSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.CreateSubscriberProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.CreateSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'updateSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.UpdateSubscriberProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.UpdateSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'deleteSubscriber'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DeleteSubscriberProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DeleteSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'handleLifeCycle'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.HandleLifeCycleProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.HandleLifeCycleProcessor" />
 					</camel:when>
 				</camel:choice>
 				<camel:doFinally>
-				<!-- Add exception handler -->
+					<!-- Add exception handler -->
 				</camel:doFinally>
 			</camel:doTry>
 		</route>
 		<route>
 			<from uri="cxf:bean:subscriptionInterface" />
 			<camel:doTry>
+
+				<camel:log
+					message="Entering Transaction Engine subscriptionInterface headers are :  ${header.operationName}"
+					logName="com.ericsson.sef.scheduler.common" />
 				<camel:choice>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'discoverOffersForUser'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOffersForUserProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOffersForUserProcessor" />
 					</camel:when>
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'discoverOfferById'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByIdProcessor" /> -->
-<!-- 					</camel:when> -->
+					<!-- <camel:when> -->
+					<!-- <camel:simple>${header.operationName} == 'discoverOfferById'</camel:simple> -->
+					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByIdProcessor" 
+						/> -->
+					<!-- </camel:when> -->
 					<camel:when>
 						<camel:simple>${header.operationName} == 'discoverOfferForUserById'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.CreateSubscriberProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.CreateSubscriberProcessor" />
 					</camel:when>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByFederatedIdProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.DiscoverOfferByFederatedIdProcessor" />
 					</camel:when>
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'getAdviceOfCharge'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.GetAdviceOfChargeProcessor" /> -->
-<!-- 					</camel:when> -->
+					<!-- <camel:when> -->
+					<!-- <camel:simple>${header.operationName} == 'getAdviceOfCharge'</camel:simple> -->
+					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.GetAdviceOfChargeProcessor" 
+						/> -->
+					<!-- </camel:when> -->
 					<camel:when>
 						<camel:simple>${header.operationName} == 'purchase'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PurchaseProcessor" />
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PurchaseProcessor" />
 					</camel:when>
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'terminate'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.TerminateProcessor" /> -->
-<!-- 					</camel:when> -->
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'expiry'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ExpiryProcessor" /> -->
-<!-- 					</camel:when> -->
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'renew'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.RenewProcessor" /> -->
-<!-- 					</camel:when> -->
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'preExpiry'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreExpiryProcessor" /> -->
-<!-- 					</camel:when> -->
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'preRenewal'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreRenewalProcessor" /> -->
-<!-- 					</camel:when> -->
-<!-- 					<camel:when> -->
-<!-- 						<camel:simple>${header.operationName} == 'querySubscription'</camel:simple> -->
-<!-- 						<camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.QuerySubscriptionProcessor" /> -->
-<!-- 					</camel:when> -->
+					<!-- <camel:when> -->
+					<!-- <camel:simple>${header.operationName} == 'terminate'</camel:simple> -->
+					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.TerminateProcessor" 
+						/> -->
+					<!-- </camel:when> -->
+					<!-- <camel:when> -->
+					<!-- <camel:simple>${header.operationName} == 'expiry'</camel:simple> -->
+					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ExpiryProcessor" 
+						/> -->
+					<!-- </camel:when> -->
+					
+					<camel:when>
+						<camel:simple>${header.operationName} == 'renew'</camel:simple>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.RenewProcessor" />
+					</camel:when>
+					
+					<!-- <camel:when> -->
+					<!-- <camel:simple>${header.operationName} == 'preExpiry'</camel:simple> -->
+					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreExpiryProcessor" 
+						/> -->
+					<!-- </camel:when> -->
+					<!-- <camel:when> -->
+					<!-- <camel:simple>${header.operationName} == 'preRenewal'</camel:simple> -->
+					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreRenewalProcessor" 
+						/> -->
+					<!-- </camel:when> -->
+					<!-- <camel:when> -->
+					<!-- <camel:simple>${header.operationName} == 'querySubscription'</camel:simple> -->
+					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.QuerySubscriptionProcessor" 
+						/> -->
+					<!-- </camel:when> -->
 				</camel:choice>
 				<camel:doFinally>
-				<!-- Add exception handler -->
+					<!-- Add exception handler -->
 				</camel:doFinally>
 			</camel:doTry>
 		</route>
-		
+
 		<route>
-			<from uri="cxf:bean:fulfillmentResponseInterface"/>
-			<camel:bean beanType="com.ericsson.raso.sef.bes.engine.fulfillment.response.FulfillResponseProcessor"></camel:bean>
+			<from uri="cxf:bean:fulfillmentResponseInterface" />
+			<camel:bean
+				beanType="com.ericsson.raso.sef.bes.engine.fulfillment.response.FulfillResponseProcessor"></camel:bean>
 		</route>
 		<!-- End of the route -->
 	</camelContext>
