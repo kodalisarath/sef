@@ -28,10 +28,10 @@ public class SchedulingStep extends Step<SchedulingStepResult> {
 		case SCHEDULE:
 
 			try {
-				/*TO DO Remove the function scaleDownTimeForTesting Once the testing is over,*/
+				
 				SubscriptionLifeCycleCommand schedule =  new SubscriptionLifeCycleCommand(future.getEvent().name(),
 																			future.getOfferId(), future.getSubscriberId(),
-																			future.getMetas(), scaleDownTimeForTesting(future.getSchedule()));
+																			future.getMetas(), future.getSchedule());
 				schedule.execute();
 				LOGGER.debug("Scheduling successful for: " + schedule);
 				return new SchedulingStepResult(null, true);
