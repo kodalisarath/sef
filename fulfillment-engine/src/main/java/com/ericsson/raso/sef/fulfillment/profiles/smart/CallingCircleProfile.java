@@ -129,11 +129,20 @@ public final class CallingCircleProfile extends RefillProfile {
 		
 		if (!breakFlow) {
 			logger.debug("Going to check for A-Party Calling Circle Expiry...");
-			this.callingCircleExpiry = this.getCallingCircleExpiry();
+			 this.callingCircleExpiry = this.getCallingCircleExpiry(); 
+			 if (this.callingCircleExpiry == -1) {
+				 logger.error("A Party has not subscribed to the calling circle offer!!");
+				 this.sendSorryMessage(NotificationMessageEvent.B_PartyUnknown.getEventName(), this.subscriberId);
+				 CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+				 CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to check A-party details");
+
+				 breakFlow = true;
+
+			 }
 		}
 		
 		logger.debug("Attempting to fetch detals of B-Party: " + this.memberB);
-		if (!this.readSubscriber(this.memberB, this.memberBMetas)) {
+		if (!breakFlow && !this.readSubscriber(this.memberB, this.memberBMetas)) {
 			logger.error("Probably the user was not found or other error fetching detals...");
 			this.sendSorryMessage(NotificationMessageEvent.B_PartyUnknown.getEventName(), this.subscriberId);
 			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
