@@ -110,4 +110,9 @@
 		class="com.ericsson.raso.sef.core.db.service.internal.ScheduleRequestServiceImpl">
 		<property name="scheduledRequestMapper" ref="scheduledRequestMapper" />
 	</bean>
+	
+	<bean id="callingCircleService"
+		class="com.ericsson.raso.sef.core.db.service.internal.CallingCircleServiceImpl">
+		<property name="callingCircleMapper" ref="callingCircleMapper" />
+	</bean>
 </beans>

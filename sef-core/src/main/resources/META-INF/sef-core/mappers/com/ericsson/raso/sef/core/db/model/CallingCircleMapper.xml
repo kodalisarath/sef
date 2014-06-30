@@ -78,15 +78,17 @@
 	</select>
 	
 	<select id="fetchCallingCircleMemberCountForMember" resultMap="Integer" parameterType="CallingCircle">
+	<![CDATA[
 		SELECT COUNT(*) 
 		FROM callingcircle
 		WHERE owner<>#{owner}
 		AND product_offer=#{prodcatOffer}
 		AND member_b=#{memberB}
 		AND relationship='SPONSER_MEMBER'
+	]]>	
 	</select>
 	
-	<delete id="deleteCallingCircle" parameterType="CallingCircle" flushCache="true">
+	<delete id="deleteCallingCircle" parameterType="CallingCircle" flushCache="true" >
 		DELETE FROM callingcircle
 		WHERE owner=#{owner}
 		AND product_offer=#{prodcatOffer}

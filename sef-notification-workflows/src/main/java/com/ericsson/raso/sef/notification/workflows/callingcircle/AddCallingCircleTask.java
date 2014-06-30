@@ -178,16 +178,22 @@ public class AddCallingCircleTask implements Task<Void> {
 		
 		com.ericsson.sef.bes.api.entities.Meta subscriberMeta = new com.ericsson.sef.bes.api.entities.Meta();
 		subscriberMeta.setKey("SUBSCRIBER_ID");
-		subscriberMeta.setValue(msisdn);
+		subscriberMeta.setValue(appendCountryCode(msisdn));
 		
 		com.ericsson.sef.bes.api.entities.Meta msisdnMeta = new com.ericsson.sef.bes.api.entities.Meta();
 		msisdnMeta.setKey("msisdn");
-		msisdnMeta.setValue(msisdn);
+		msisdnMeta.setValue(appendCountryCode(msisdn));
+		
+		com.ericsson.sef.bes.api.entities.Meta bpartyMeta = new com.ericsson.sef.bes.api.entities.Meta();
+		bpartyMeta.setKey("B-Party");
+		bpartyMeta.setValue(appendCountryCode(bparty));
 		
 		newMetaList.add(workflowMeta);
 		newMetaList.add(subscriberMeta);
 		newMetaList.add(msisdnMeta);
-	 
+		newMetaList.add(bpartyMeta);
+
+		
 		PurchaseResponse response = TransactionEngineHelper.purchase(productId, appendCountryCode(msisdn), newMetaList);
 		
 		return null;
