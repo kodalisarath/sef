@@ -1078,25 +1078,13 @@ public class EntireReadUtil {
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setbCategory("ONLINE");
 		read.setbInvalidFrom(SmartConstants.MAX_DATETIME);
-		/*
-		 * if (accountDetailsResponse != null &&
-		 * accountDetailsResponse.getActivationDate() != null) {config
-		 * read.setbValidFrom(accountDetailsResponse.getActivationDate()
-		 * .toString()); }
-		 */
+
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		logger.debug("read.subscriber.bValidFro : "
-				+ subscriber.getActiveDate());
+		logger.debug("read.subscriber.bValidFro : " + subscriber.getActiveDate());
 		if (subscriber.getActiveDate() != null)
-			read.setbValidFrom(DateUtil.convertDateToString(new Date(subscriber
-					.getActiveDate())));
+			read.setbValidFrom(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
 		logger.debug("read.bValidFrom. bValidFrom : " + read.getbValidFrom());
-		/*
-		 * DedicatedAccountInformation da =
-		 * daMap.get(SmConstants.AIRTIME_DA_ID); if (da != null) {
-		 * read.setOnPeakFuBalance(Long.valueOf(da
-		 * .getDedicatedAccountActiveValue1())); }
-		 */
+
 		String peakFullBalance = getDedicatedAccount(subscriber, "1");
 		if (peakFullBalance != null)
 			read.setOnPeakFuBalance(Long.parseLong(peakFullBalance));
@@ -1110,19 +1098,12 @@ public class EntireReadUtil {
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setCategory("ONLINE");
 		read.setKey(1);
-		/*
-		 * OfferInformation offer = offerMap.get(SmConstants.AIRTIME_OFFER_ID);
-		 * if (offer != null) {
-		 * read.setOnPeakAccountExpiryDate(offer.getExpiryDateTime()
-		 * .toString()); }
-		 */
+
 		String offerExpiryDateTime = getOfferExpiryDateTime(subscriber);
 		logger.debug("createRopVersionRead getOfferExpiryDateTime "
 				+ offerExpiryDateTime);
 		if (offerExpiryDateTime != null)
-			read.setOnPeakAccountExpiryDate(DateUtil
-					.convertDateToString(new Date(Long
-							.parseLong(offerExpiryDateTime))));
+			read.setOnPeakAccountExpiryDate(DateUtil.convertDateToString(new Date(Long.parseLong(offerExpiryDateTime))));
 		logger.debug("createRopVersionRead getOnPeakAccountExpiryDate "
 				+ read.getOnPeakAccountExpiryDate());
 
@@ -1439,23 +1420,20 @@ public class EntireReadUtil {
 
 		// String offerId = subscriber.getMetas().get(key);
 		logger.debug("offerId  is " + offerId);
-		String walletName = SefCoreServiceResolver.getConfigService().getValue(
-				"GLOBAL_walletMapping", offerId.trim());
+		String walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", offerId.trim());
 		logger.debug("walletName  is " + walletName);
 		if (walletName != null) {
 			Rpp rpp = new Rpp();
 
-			RppRead rppRead = createRppRead(subscriber, key, offerId);
+			RppRead rppRead = createRppRead(subscriber, key, offerId, walletName);
 			rppRead.setKey(index);
 			rpp.setRppRead(rppRead);
 
-			RppBucketRead bucketRead = createRppBucketRead(subscriber, key,
-					offerId);
+			RppBucketRead bucketRead = createRppBucketRead(subscriber, key, offerId, walletName);
 			bucketRead.setKey(index);
 			rpp.setRppBucketRead(bucketRead);
 
-			RppVersionRead versionRead = createRppVersionRead(subscriber, key,
-					offerId, currentTime);
+			RppVersionRead versionRead = createRppVersionRead(subscriber, key, offerId, currentTime);
 			versionRead.setKey(index);
 			rpp.setRppVersionRead(versionRead);
 
@@ -1464,13 +1442,8 @@ public class EntireReadUtil {
 		return null;
 	}
 
-	private static RppRead createRppRead(Subscriber subscriber, String key,
-			String offerId) {
-		// String wallet =
-		// offerWalletMapping.getProperty(String.valueOf(offerId));
-		String walletName = SefCoreServiceResolver.getConfigService().getValue(
-				"GLOBAL_walletMapping", offerId.trim());
-
+	private static RppRead createRppRead(Subscriber subscriber, String key, String offerId, String walletName) {
+		
 		RppRead read = new RppRead();
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setCategory("ONLINE");
@@ -1561,24 +1534,12 @@ public class EntireReadUtil {
 		return read;
 	}
 
-	private static RppBucketRead createRppBucketRead(Subscriber subscriber,
-			String key, String offerId) {
-		// String wallet =
-		// offerWalletMapping.getProperty(String.valueOf(offerId)));
-
-		String walletName = SefCoreServiceResolver.getConfigService().getValue(
-				"GLOBAL_walletMapping", offerId.trim());
+	private static RppBucketRead createRppBucketRead(Subscriber subscriber, String key, String offerId, String walletName) {
 
 		RppBucketRead read = new RppBucketRead();
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setOfferProfileKey(1);
 
-		/*
-		 * if(offer.getStartDateTime() == null ||
-		 * offer.getStartDateTime().before(new Date(0))) {
-		 * read.setbValidFrom(new Date(0).toString()); } else {
-		 * read.setbValidFrom(offer.getStartDateTime().toString()); }
-		 */
 
 		String offerStarteDateTime = getOfferStartDateTime(subscriber, offerId);
 		logger.debug("createRppBucketRead.offerStarteDateTime : " + offerStarteDateTime);
@@ -1588,12 +1549,10 @@ public class EntireReadUtil {
 		IConfig config = SefCoreServiceResolver.getConfigService();
 		Date offerExpiryDate = null;
 		logger.debug("createRppBucketRead.offerExpiryDateString : " + offerExpiryDateString);
+		
 		if (offerExpiryDateString != null) {
-			
 			offerExpiryDate = new Date(Long.parseLong(offerExpiryDateString));
-			
-			logger.debug("createRppBucketRead.offerExpiryDate After formatting: "
-					+ offerExpiryDate);
+			logger.debug("createRppBucketRead.offerExpiryDate After formatting: " + offerExpiryDate);
 			read.setbInvalidFrom(DateUtil.convertDateToString(offerExpiryDate));
 			read.setsNextPeriodAct(offerExpiryDate);
 			read.setsExpireDate(DateUtil.convertDateToString(offerExpiryDate));
@@ -1611,20 +1570,15 @@ public class EntireReadUtil {
 		read.setsInfo(0);
 		read.setsValid(true);
 
-		// String daId =
-		// offerDaMapping.getProperty(String.valueOf(offer.getOfferID()));
-		String daId = SefCoreServiceResolver.getConfigService().getValue(
-				"Global_offerMapping", offerId);
+		String daId = SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", offerId);
 
-		if (daId != null && Integer.parseInt(offerId) <= 2000) {
+		if (daId != null && Integer.parseInt(offerId) < 2000) {
 			Long balance = 0l;
 
 			String dedicatedAccountVal1 = getDedicatedAccount(subscriber, daId);
-			// DedicatedAccountInformation da =
-			// daMap.get(Integer.valueOf(daId));
 			if (dedicatedAccountVal1 != null) {
 				balance = Long.parseLong(dedicatedAccountVal1);
-				long confec = getConversionFector(offerId);
+				long confec = getConversionFector(walletName);
 				balance = balance / confec;
 			}
 			read.setsPeriodicBonusBalance(balance);
@@ -1661,30 +1615,22 @@ public class EntireReadUtil {
 		return read;
 	}
 
-	private static long getConversionFector(String offerId) {
+	private static long getConversionFector(String walletName) {
 
 		long conFec = 1;
-		// IConfig config = SmCoreContext.getConfig();
-		// Properties walletMapping =
-		// config.properties(IConfig.GLOBAL_COMPONENT, "walletMapping");
 
-		String walletName = SefCoreServiceResolver.getConfigService().getValue(
-				"GLOBAL_walletMapping", offerId.trim());
-		// String walletName = name;
-		String conversionFactor = SefCoreServiceResolver.getConfigService()
-				.getValue("GLOBAL_walletConversionFactor", walletName);
-
+		String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
+		logger.debug("Fetch conversion factor - walletName: " + walletName + ", conversionFator: " + conversionFactor);
 		if (conversionFactor != null) {
-			conFec = Long.parseLong(conversionFactor);
+			try {
+				conFec = Long.parseLong(conversionFactor);
+			} catch (NullPointerException e) {
+				logger.error("unable to get numeric value from config. NullPpointer for wallet config: " + walletName);
+			} catch (NumberFormatException e) {
+				logger.error("unable to get numeric value from config. NullPpointer for wallet config: " + walletName, e);
+			}
 		}
-		/*
-		 * Properties offerConvMapping =
-		 * config.properties(IConfig.GLOBAL_COMPONENT,
-		 * SmConstants.OfferConversionFector); //String walletName =
-		 * walletMapping.getProperty(offerId.trim()); if(walletName!=null){
-		 * String conv = offerConvMapping.getProperty(walletName);
-		 * if(conv!=null){ conFec= Long.parseLong(conv); } }
-		 */
+
 		return conFec;
 	}
 
