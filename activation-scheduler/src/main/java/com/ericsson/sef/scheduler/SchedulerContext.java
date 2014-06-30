@@ -30,9 +30,9 @@ public class SchedulerContext implements ApplicationContextAware {
 		return context.getBean("com.ericsson.sef.schedluer", CamelContext.class);
 	}
 	
-	public static ScheduledRequestMapper getScheduledRequestMapper() {
+	/*public static ScheduledRequestMapper getScheduledRequestMapper() {
 		return context.getBean(ScheduledRequestMapper.class);
-	}
+	}*/
 	
 	public static <T> T getBean(Class<T> type) {
 		return context.getBean(type);

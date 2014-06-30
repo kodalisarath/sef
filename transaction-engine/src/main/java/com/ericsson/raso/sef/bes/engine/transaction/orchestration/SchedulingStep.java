@@ -1,5 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.orchestration;
 
+import java.util.Calendar;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +28,10 @@ public class SchedulingStep extends Step<SchedulingStepResult> {
 		case SCHEDULE:
 
 			try {
+				/*TO DO Remove the function scaleDownTimeForTesting Once the testing is over,*/
 				SubscriptionLifeCycleCommand schedule =  new SubscriptionLifeCycleCommand(future.getEvent().name(),
 																			future.getOfferId(), future.getSubscriberId(),
-																			future.getMetas(), future.getSchedule());
+																			future.getMetas(), scaleDownTimeForTesting(future.getSchedule()));
 				schedule.execute();
 				LOGGER.debug("Scheduling successful for: " + schedule);
 				return new SchedulingStepResult(null, true);
@@ -63,6 +66,13 @@ public class SchedulingStep extends Step<SchedulingStepResult> {
 				+ ", getFault()=" + getFault() + "]";
 	}
 
-	
+
+	private long scaleDownTimeForTesting(long requestedTimeInMilliSeconds)
+	{
+		long currentTimeInMilliSeconds = Calendar.getInstance().getTimeInMillis();
+		long timeDifference = currentTimeInMilliSeconds - currentTimeInMilliSeconds;
+		long scaledDownTime = timeDifference/30 ; //ScaledDownTime 1 Hour = 2 Minute.
+		return(currentTimeInMilliSeconds + scaledDownTime);
+	}
 
 }

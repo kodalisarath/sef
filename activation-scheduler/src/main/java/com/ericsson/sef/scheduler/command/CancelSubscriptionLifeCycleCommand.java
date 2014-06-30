@@ -1,11 +1,16 @@
 package com.ericsson.sef.scheduler.command;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Command;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
 
@@ -18,7 +23,7 @@ public class CancelSubscriptionLifeCycleCommand implements Command<Void> {
 	private String offerId = null;
 	private String subscriberId = null;
 
-	private String jobName;
+	// private String jobName;
 
 	public CancelSubscriptionLifeCycleCommand(String lifeCycleEvent,
 			String offerId, String subscriberId) {
@@ -38,22 +43,32 @@ public class CancelSubscriptionLifeCycleCommand implements Command<Void> {
 	@Override
 	public Void execute() throws SmException {
 
-		jobName = SchedulerContext.getScheduledRequestMapper()
-				.getJobIdByOfferId(subscriberId, offerId, lifeCycleEvent);
+		List<ScheduledRequest> scheduledRequestList = (List<ScheduledRequest>) SefCoreServiceResolver
+				.getScheduleRequestService().getJobIdByOfferId(subscriberId,
+						offerId, lifeCycleEvent);
 
-		log.debug("CancelSubscriptionLifeCycleCommand  jobName: " + jobName);
+		log.debug("CancelSubscriptionLifeCycleCommand  jobsName: "
+				+ scheduledRequestList);
 
-		if (jobName != null)
+		if (scheduledRequestList != null)
 
 		{
 			SchedulerService scheduler = SchedulerContext.getSchedulerService();
-			try {
-				scheduler.deleteJob(jobName);
-			} catch (SchedulerException e) {
-				log.error("Cannot cancel the Job " + lifeCycleEvent
-						+ " offerId: " + offerId + " subscriberId: "
-						+ subscriberId + ":" + e.getMessage(), e);
-				throw new SmException(e);
+
+			for (ScheduledRequest scheduledRequest : scheduledRequestList) {
+
+				
+				log.debug("CancelSubscriptionLifeCycleCommand  Jbb About to be Cancelled: "
+						+ scheduledRequest.getJobId());
+
+				try {
+					scheduler.deleteJob(scheduledRequest.getJobId());
+				} catch (SchedulerException e) {
+					log.error("Cannot cancel the Job " + lifeCycleEvent
+							+ " offerId: " + offerId + " subscriberId: "
+							+ subscriberId + ":" + e.getMessage(), e);
+					throw new SmException(e);
+				}
 			}
 		} else {
 			log.debug("CancelSubscriptionLifeCycleCommand Job Not Found: lifeCycleEvent: "
