@@ -6,91 +6,115 @@
 
 <mapper namespace="com.ericsson.raso.sef.core.db.mapper.CallingCircleMapper">
 
-	<resultMap type="CallingCircle" id="CallingCircleResult">
-		<result column="OWNER" property="owner"/>
-		<result column="PRODUCT_OFFER" property="prodcatOffer"/>
-		<result column="MEMBER_A" property="memberA"/>
-		<result column="MEMBER_B" property="memberB"/>
-		<result column="RELATIONSHIP" property="relationship"/>
-		<result column="FAF_INDICATOR" property="fafIndicator"/>
-		<result column="CREATION_DATETIME" property="creationTime"/>
-		<result column="EXPIRY_DATETIME" property="expiryTime"/>
-	</resultMap>
-	
 
-	<insert id="createCallingCircleAndMembership" parameterType="CallingCircle" flushCache="true">
-		INSERT INTO 
+	<resultMap type="CallingCircle" id="CallingCircleResult">
+		<result column="OWNER" property="owner" />
+		<result column="PRODUCT_OFFER" property="prodcatOffer" />
+		<result column="MEMBER_A" property="memberA" />
+		<result column="MEMBER_B" property="memberB" />
+		<result column="RELATIONSHIP" property="relationship" />
+		<result column="FAF_INDICATOR" property="fafIndicator" />
+		<result column="CREATION_DATETIME" property="creationTime" />
+		<result column="EXPIRY_DATETIME" property="expiryTime" />
+	</resultMap>
+
+
+	<insert id="createCallingCircleAndMembership" parameterType="CallingCircle"
+		flushCache="true">
+		INSERT INTO
 		callingcircle
-		(owner,product_offer, member_a, member_b, relationship, faf_indicator, creation_datetime, expiry_datetime)
+		(owner,product_offer, member_a, member_b, relationship, faf_indicator,
+		creation_datetime, expiry_datetime)
 		values
 		(#{owner},
-		#{prodcatOffer jdbcType=VARCHAR},
+		#{prodcatOffer
+		jdbcType=VARCHAR},
 		#{memberA jdbcType=VARCHAR},
-		#{memberB jdbcType=VARCHAR},
+		#{memberB
+		jdbcType=VARCHAR},
 		#{fafIndicator jdbcType=VARCHAR},
-		#{creationTime jdbcType=TIMESTAMP},
+		#{creationTime
+		jdbcType=TIMESTAMP},
 		#{expiryTime jdbcType=TIMESTAMP})
 	</insert>
 
-	<select id="fetchCallingCircle" resultMap="CallingCircleResult" parameterType="CallingCircle">
-		SELECT owner, product_offer, member_a, member_b, relationship, faf_indicator, creation_datetime, expiry_datetime
-		FROM callingcircle
+	<select id="fetchCallingCircle" resultMap="CallingCircleResult"
+		parameterType="CallingCircle">
+		SELECT owner, product_offer, member_a, member_b,
+		relationship, faf_indicator, creation_datetime, expiry_datetime
+		FROM
+		callingcircle
 		WHERE owner=#{owner}
 		AND product_offer=#{prodcatOffer}
 	</select>
-	
-	<select id="fetchCallingCirclesWithMembershipFor" resultMap="CallingCircleResult" parameterType="String">
-		SELECT owner, product_offer, member_a, member_b, relationship, faf_indicator, creation_datetime, expiry_datetime
-		FROM callingcircle
-		WHERE member_a=#{subscriberId} OR member_b=#{subscriberId}
+
+	<select id="fetchCallingCirclesWithMembershipFor" resultMap="CallingCircleResult"
+		parameterType="String">
+		SELECT owner, product_offer, member_a, member_b,
+		relationship, faf_indicator, creation_datetime, expiry_datetime
+		FROM
+		callingcircle
+		WHERE member_a=#{subscriberId} OR
+		member_b=#{subscriberId}
 	</select>
-	
-	<select id="fetchCallingCircleMemberCountForOwner" resultMap="int" parameterType="CallingCircle">
-		SELECT COUNT(*) 
+
+	<select id="fetchCallingCircleMemberCountForOwner" resultType="Integer"
+		parameterType="CallingCircle">
+		SELECT COUNT(*)
 		FROM callingcircle
 		WHERE owner=#{owner}
 		AND product_offer=#{prodcatOffer}
 		AND member_b=#{memberB}
 		AND relationship='SPONSER_MEMBER'
 	</select>
-	
-	<select id="fetchCallingCircleMembersForOwner" resultMap="int" parameterType="CallingCircle">
-		SELECT owner, product_offer, member_a, member_b, relationship, faf_indicator, creation_datetime, expiry_datetime 
+
+	<select id="fetchCallingCircleMembersForOwner" resultType="Integer"
+		parameterType="CallingCircle">
+		SELECT owner, product_offer, member_a, member_b,
+		relationship, faf_indicator, creation_datetime, expiry_datetime
 		FROM callingcircle
 		WHERE owner=#{owner}
 		AND product_offer=#{prodcatOffer}
 		AND relationship='SPONSER_MEMBER'
 	</select>
-	
-	<select id="fetchCallingCircleMembersOnly" resultMap="int" parameterType="CallingCircle">
+
+	<select id="fetchCallingCircleMembersOnly" resultType="Integer"
+		parameterType="CallingCircle">
 		SELECT UNIQUE member_a
 		FROM callingcircle
-		WHERE owner=#{owner}
+		WHERE
+		owner=#{owner}
 		AND product_offer=#{prodcatOffer}
-		AND relationship='MEMBER_MEMBER'
+		AND
+		relationship='MEMBER_MEMBER'
 	</select>
-	
-	<select id="fetchAllCallingCircleMembers" resultMap="String" parameterType="CallingCircle">
+
+	<select id="fetchAllCallingCircleMembers" resultType="String"
+		parameterType="CallingCircle">
 		SELECT UNIQUE member_a
 		FROM callingcircle
-		WHERE owner=#{owner}
+		WHERE
+		owner=#{owner}
 		AND product_offer=#{prodcatOffer}
 	</select>
-	
-	<select id="fetchCallingCircleMemberCountForMember" resultMap="int" parameterType="CallingCircle">
-		SELECT COUNT(*) 
+
+	<select id="fetchCallingCircleMemberCountForMember" resultType="Integer"
+		parameterType="CallingCircle">
+		SELECT COUNT(*)
 		FROM callingcircle
 		WHERE owner<>#{owner}
 		AND product_offer=#{prodcatOffer}
 		AND member_b=#{memberB}
 		AND relationship='SPONSER_MEMBER'
 	</select>
-	
-	<delete id="deleteCallingCircle" parameterType="CallingCircle" flushCache="true" >
+
+	<delete id="deleteCallingCircle" parameterType="CallingCircle"
+		flushCache="true">
 		DELETE FROM callingcircle
 		WHERE owner=#{owner}
-		AND product_offer=#{prodcatOffer}
+		AND
+		product_offer=#{prodcatOffer}
 	</delete>
-	
-	
+
+
 </mapper>
