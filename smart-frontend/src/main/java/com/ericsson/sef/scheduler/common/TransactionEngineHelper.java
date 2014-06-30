@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
@@ -99,10 +100,12 @@ public abstract class TransactionEngineHelper {
 
 	}
 
-	public static SubscriptionEventResponse renew(String subscriptionId,
+	public static SubscriptionEventResponse renew(String offerId,String subscriberId, String subscriptionId,
 			List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....renew ");
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
+		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID,subscriberId));
+		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID,offerId));
 		String requestId = UniqueIdGenerator.generateId();
 		String resultId = iSubscriptionRequest.renew(requestId, subscriptionId,
 				true, metas);
@@ -138,11 +141,15 @@ public abstract class TransactionEngineHelper {
 
 	}
 
-	public static SubscriptionEventResponse expiry(String subscriptionId,
+	public static SubscriptionEventResponse expiry(String offerId,String subscriberId, String subscriptionId,
 			List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....expiry ");
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
+	
+		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID,subscriberId));
+		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID,offerId));
+		
 		String resultId = iSubscriptionRequest.expiry(requestId,
 				subscriptionId, true, metas);
 		SubscriptionEventResponse subscriptionEventResponse = null;
@@ -179,11 +186,15 @@ public abstract class TransactionEngineHelper {
 
 
 
-	public static SubscriptionEventResponse terminate(String subscriptionId,
+	public static SubscriptionEventResponse terminate(String offerId,String subscriberId, String subscriptionId,
 			List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....terminate ");
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
+		
+		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID,subscriberId));
+		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID,offerId));
+		
 		String resultId = iSubscriptionRequest.terminate(requestId,
 				subscriptionId, true, metas);
 		SubscriptionEventResponse subscriptionEventResponse = null;

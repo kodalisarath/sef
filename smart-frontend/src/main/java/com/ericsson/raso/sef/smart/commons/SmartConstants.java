@@ -57,5 +57,7 @@ public class SmartConstants {
 	public static final String SERVICE_IDENTIFIER = "Service-Identifier";
 	public static final String FLEXIBLE_SERVICE_IDENTIFIER = "flexible";
 	public static final String PREDEFINED_SERVICE_IDENTIFIER = "predefined";
+	
+
 
 }

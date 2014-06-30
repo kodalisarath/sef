@@ -78,7 +78,7 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			request.setOfferId(offerId);
 			//Date scheduleTime = new Date(schedule);
 			Calendar cal = Calendar.getInstance();
-			 cal.add(Calendar.MINUTE, 1);
+			 cal.add(Calendar.SECOND, 15);
 			Date scheduleTime = cal.getTime();
 			request.setScheduleTime(scheduleTime);
 			

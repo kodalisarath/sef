@@ -1,5 +1,7 @@
 package com.ericsson.sef.scheduler;
 
+import java.util.List;
+
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
+import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class SubscriptionLifeCycleJob implements Job {
@@ -19,24 +22,29 @@ public class SubscriptionLifeCycleJob implements Job {
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
 		String jobId = context.getJobDetail().getKey().getName();
-		log.info("SubscriptionLifeCycleJob executing job with job ID(Modified Logs Details  : " + jobId
+		log.info("SubscriptionLifeCycleJob executing job with job ID(Modified Logs Details  : "
+				+ jobId
 				+ " Job details : "
 				+ context.getJobDetail().getJobDataMap().toString());
-		
-		log.info("About to fetch from ScheduledRequestMapper ");
-		
-		ScheduledRequest scheduledRequest =null;
-		try
-		{
-		 scheduledRequest =SefCoreServiceResolver.getScheduleRequestService().getScheduledRequestByJobId(jobId);
 
+		log.info("About to fetch from ScheduledRequestMapper ");
+
+		ScheduledRequest scheduledRequest = null;
+		List<ScheduledRequestMeta> scheduledRequestMetaList = null;
+		try {
+			scheduledRequest = SefCoreServiceResolver
+					.getScheduleRequestService().getScheduledRequestByJobId(
+							jobId);
+			scheduledRequestMetaList = (List<ScheduledRequestMeta>) SefCoreServiceResolver
+					.getScheduleRequestService().getScheduledRequestMetas(
+							scheduledRequest.getId());
+
+		} catch (Exception e) {
+			log.error("Exception while fetching the job details " + e);
 		}
-		catch(Exception e)
-		{
-			log.error("Exception while fetching the job details "+e);
-		}
-		log.debug("scheduledRequest "+scheduledRequest);
-		
+		log.debug("scheduledRequest " + scheduledRequest);
+		log.debug("scheduledRequestMetaList " + scheduledRequestMetaList);
+
 		if (scheduledRequest == null) {
 			log.error("Job is null for the given executing job with job ID:  "
 					+ jobId + " Scheduled Job cannot Execute ");
@@ -46,38 +54,36 @@ public class SubscriptionLifeCycleJob implements Job {
 		}
 		try {
 
-			log.debug("LifeCycle Name is "+scheduledRequest.getLifeCycleEvent().name() + " ,Offer id: "+scheduledRequest.getOfferId() +" ,MSISDN: "+scheduledRequest.getMsisdn() +" ,Metas: "+scheduledRequest.getRequestMetas());
-			
-			
+			log.debug("LifeCycle Name is "
+					+ scheduledRequest.getLifeCycleEvent().name()
+					+ " ,Offer id: " + scheduledRequest.getOfferId()
+					+ " ,MSISDN: " + scheduledRequest.getMsisdn() + " ,Metas: "
+					+ scheduledRequest.getRequestMetas());
+
 			switch (scheduledRequest.getLifeCycleEvent().name()) {
 
-			
-			
 			case "PURCHASE":
 				TransactionEngineHelper
 						.purchase(
 								scheduledRequest.getOfferId(),
 								scheduledRequest.getMsisdn(),
 								TransactionEngineHelper
-										.convertScheduledReqMetasToAPIMetas(scheduledRequest
-												.getRequestMetas()));
+										.convertScheduledReqMetasToAPIMetas(scheduledRequestMetaList));
 				break;
 
 			case "RENEWAL":
 				TransactionEngineHelper
-						.renew(scheduledRequest.getMsisdn(),
+						.renew(scheduledRequest.getOfferId(), scheduledRequest.getMsisdn(),null,
 								TransactionEngineHelper
-										.convertScheduledReqMetasToAPIMetas(scheduledRequest
-												.getRequestMetas()));
+										.convertScheduledReqMetasToAPIMetas(scheduledRequestMetaList));
 				break;
 
 			case "EXPIRY":
 
 				TransactionEngineHelper
-						.expiry(scheduledRequest.getMsisdn(),
+						.expiry(scheduledRequest.getOfferId(), scheduledRequest.getMsisdn(),null,
 								TransactionEngineHelper
-										.convertScheduledReqMetasToAPIMetas(scheduledRequest
-												.getRequestMetas()));
+										.convertScheduledReqMetasToAPIMetas(scheduledRequestMetaList));
 
 				break;
 
@@ -85,10 +91,9 @@ public class SubscriptionLifeCycleJob implements Job {
 
 				TransactionEngineHelper
 						.terminate(
-								scheduledRequest.getMsisdn(),
+								scheduledRequest.getOfferId(), scheduledRequest.getMsisdn(),null,
 								TransactionEngineHelper
-										.convertScheduledReqMetasToAPIMetas(scheduledRequest
-												.getRequestMetas()));
+										.convertScheduledReqMetasToAPIMetas(scheduledRequestMetaList));
 				break;
 
 			default:
