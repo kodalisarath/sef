@@ -25,6 +25,8 @@ import com.ericsson.raso.sef.notification.workflows.ResponseCode;
 import com.ericsson.raso.sef.notification.workflows.common.WorkflowEngineServiceHelper;
 import com.ericsson.raso.sef.notification.workflows.promo.Promo;
 import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
+//import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
+//import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class AddCallingCircleTask implements Task<Void> {
@@ -56,18 +58,18 @@ public class AddCallingCircleTask implements Task<Void> {
 
 		
 		//SmartCommonService smartCommonService = NotificationContext.getBean(SmartCommonService.class);
-		Subscriber  subscriber = null;
-		try {
-			subscriber = WorkflowEngineServiceHelper.getSubscriber( msisdn );
-		} catch (SmException e) {
-			circleEdrProcessor.printEdr(CallingCircleUtil.getCallingCircleEdr(msisdn, bparty, productId, "FAILED", "SUBSCRIBER  " + msisdn + " NOT FOUND"));
-			sendInvalidCallAttemptMessage("800120130000", msisdn);
-			log.error("Subscriber:" + msisdn + " Not found.");
-			if (e.getStatusCode().getCode() == 102) {
-				throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);
-			} else
-				throw e;
-		}
+//		Subscriber  subscriber = null;
+//		try {
+//			subscriber = WorkflowEngineServiceHelper.getSubscriber( msisdn );
+//		} catch (SmException e) {
+//			circleEdrProcessor.printEdr(CallingCircleUtil.getCallingCircleEdr(msisdn, bparty, productId, "FAILED", "SUBSCRIBER  " + msisdn + " NOT FOUND"));
+//			sendInvalidCallAttemptMessage("800120130000", msisdn);
+//			log.error("Subscriber:" + msisdn + " Not found.");
+//			if (e.getStatusCode().getCode() == 102) {
+//				throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);
+//			} else
+//				throw e;
+//		}
 /**
  *		After discussing with Sean Kumar, Sathya, on 25/6/2014
  *		Workflow does not need to perform validation
@@ -90,21 +92,21 @@ public class AddCallingCircleTask implements Task<Void> {
 //			throw new SmException(ErrorCode.invalidRequest);
 //		}
 
-		subscriber = null;
-		try {
-			//subscriberInfo = smartCommonService.refreshSubscriberState(bparty);
-			//subscriberInfo = ServiceHelper.getAndRefreshSubscriber( bparty );
-			subscriber = WorkflowEngineServiceHelper.getSubscriber(bparty);
-		} catch (SmException e) {
-			if (e.getStatusCode().getCode() == 102) {
-				sendInvalidCallAttemptMessage("800120130000", msisdn);
-				circleEdrProcessor.printEdr(CallingCircleUtil.getCallingCircleEdr(msisdn, bparty, productId, "FAILED", "SUBSCRIBER  " + bparty + " NOT FOUND"));
-				log.error("Subscriber:" + bparty + " NOT FOUND.");
-				throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);
-
-			} else
-				throw e;
-		}
+//		subscriber = null;
+//		try {
+//			//subscriberInfo = smartCommonService.refreshSubscriberState(bparty);
+//			//subscriberInfo = ServiceHelper.getAndRefreshSubscriber( bparty );
+//			subscriber = WorkflowEngineServiceHelper.getSubscriber(bparty);
+//		} catch (SmException e) {
+//			if (e.getStatusCode().getCode() == 102) {
+//				sendInvalidCallAttemptMessage("800120130000", msisdn);
+//				circleEdrProcessor.printEdr(CallingCircleUtil.getCallingCircleEdr(msisdn, bparty, productId, "FAILED", "SUBSCRIBER  " + bparty + " NOT FOUND"));
+//				log.error("Subscriber:" + bparty + " NOT FOUND.");
+//				throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);
+//
+//			} else
+//				throw e;
+//		}
 
 //		if (subscriber.getContractState() == null || (subscriber.getContractState() == ContractState.RECYCLED)
 //				|| subscriber.getContractState() == ContractState.PREACTIVE) {
@@ -160,32 +162,64 @@ public class AddCallingCircleTask implements Task<Void> {
 		for (Meta meta : metas) {
 			com.ericsson.sef.bes.api.entities.Meta newMeta = new com.ericsson.sef.bes.api.entities.Meta();
 			newMeta.setKey(meta.getKey());
-			newMeta.setValue(meta.getValue());
+			if ( meta.getKey().equalsIgnoreCase(CallingCircleConstants.BP)
+					|| meta.getKey().equalsIgnoreCase(CallingCircleConstants.AP)){
+				newMeta.setValue(appendCountryCode(meta.getValue()));
+			} else {
+				newMeta.setValue(meta.getValue());
+			}
+			
+			
 			newMetaList.add(newMeta);
 		}
+		com.ericsson.sef.bes.api.entities.Meta workflowMeta = new com.ericsson.sef.bes.api.entities.Meta();
+		workflowMeta.setKey("CallingCircleWorkFlow");
+		workflowMeta.setValue("true");
+		
+		com.ericsson.sef.bes.api.entities.Meta subscriberMeta = new com.ericsson.sef.bes.api.entities.Meta();
+		subscriberMeta.setKey("SUBSCRIBER_ID");
+		subscriberMeta.setValue(msisdn);
+		
+		com.ericsson.sef.bes.api.entities.Meta msisdnMeta = new com.ericsson.sef.bes.api.entities.Meta();
+		msisdnMeta.setKey("msisdn");
+		msisdnMeta.setValue(msisdn);
+		
+		newMetaList.add(workflowMeta);
+		newMetaList.add(subscriberMeta);
+		newMetaList.add(msisdnMeta);
 	 
-		PurchaseResponse response = TransactionEngineHelper.purchase(productId, msisdn, newMetaList);
+		PurchaseResponse response = TransactionEngineHelper.purchase(productId, appendCountryCode(msisdn), newMetaList);
 		
 		return null;
 	}
-
-	public void emlppApi(String bparty, String productId) {
-		log.debug(String.format("Query EmlppApi for bparty %s, productId %s.", bparty, productId));
-		try {
-			int ser1 = (int) Math.floor(Math.random() * 900000000) + 1000000000;
-			int ser2 = (int) Math.floor(Math.random() * 900000000) + 1000000000;
-			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-			String emlppString = ser1 + "" + ser2 + ":" + df.format(new Date()) + ":" + "GSFA:G_ULC1::" + bparty + "::38:::::::::::::::::::::::;";
-			VASClientSEI vasClient = NotificationContext.getBean(VASClientSEI.class);
-			String emlResponse = vasClient.sendToSPS(emlppString);
-			log.info(emlResponse);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+	
+	private final static String appendCountryCode (String msisdn){
+		if ( msisdn.startsWith("0")){
+			return msisdn.replaceFirst("0", "63");
+		} else if (msisdn.startsWith("63")) {
+			return msisdn;
+		} else {
+			return "63"+msisdn;
 		}
 	}
 
-	public void openCloudApi(String bparty, String productId) {
-		log.error(String.format("Open Cloud API is not implemented."));
+//	public void emlppApi(String bparty, String productId) {
+//		log.debug(String.format("Query EmlppApi for bparty %s, productId %s.", bparty, productId));
+//		try {
+//			int ser1 = (int) Math.floor(Math.random() * 900000000) + 1000000000;
+//			int ser2 = (int) Math.floor(Math.random() * 900000000) + 1000000000;
+//			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//			String emlppString = ser1 + "" + ser2 + ":" + df.format(new Date()) + ":" + "GSFA:G_ULC1::" + bparty + "::38:::::::::::::::::::::::;";
+//			VASClientSEI vasClient = NotificationContext.getBean(VASClientSEI.class);
+//			String emlResponse = vasClient.sendToSPS(emlppString);
+//			log.info(emlResponse);
+//		} catch (Exception e) {
+//			log.error(e.getMessage(), e);
+//		}
+//	}
+
+//	public void openCloudApi(String bparty, String productId) {
+//		log.error(String.format("Open Cloud API is not implemented."));
 //		try {
 //			SmartUnliSmsAdmin openCLoudSms = NotificationContext.getBean(SmartUnliSmsAdmin.class);
 //			CreateUpdateSubscriberRequest request = new CreateUpdateSubscriberRequest();
@@ -198,43 +232,43 @@ public class AddCallingCircleTask implements Task<Void> {
 //		} catch (Exception e) {
 //			log.error(e.getMessage(), e);
 //		}
-	}
+//	}
 
-	public String getInGTAddress() {
-		IConfig config = NotificationContext.getBean(IConfig.class);
-		String property = config.getValue("GLOBAL", "InGTAddress");
-		return property;
-	}
+//	public String getInGTAddress() {
+//		IConfig config = NotificationContext.getBean(IConfig.class);
+//		String property = config.getValue("GLOBAL", "InGTAddress");
+//		return property;
+//	}
 
-	private void sendEnrollmentMessage(Collection<String> recipientList, Promo promo) {
-		StringBuilder circles = new StringBuilder();
-
-		for (String str : recipientList) {
-			if (circles.length() == 0) {
-				circles.append(str);
-			} else {
-				circles.append("{#}" + str);
-			}
-		}
-
-		int ind = circles.lastIndexOf("{#}");
-		circles = circles.replace(ind, ind + 3, " & ");
-		
-		for (String recipient : recipientList) {
-			SmppMessage message = new SmppMessage();
-			message.setDestinationMsisdn(recipient);
-			message.setMessageBody(promo.getSuccessEventId()+",circle-numbers:" + circles.toString() + ",promo:" + promo.getAssociatedPromo());
-			ProducerTemplate template = NotificationContext.getCamelContext().createProducerTemplate();
-			template.sendBody("activemq:queue:notification", message);
-		}
-	}
-
-	private void sendInvalidCallAttemptMessage(String event, String recipient) {
-		SmppMessage message = new SmppMessage();
-		message.setDestinationMsisdn(recipient);
-		message.setMessageBody(event + "," + "x:X");
-		ProducerTemplate template = NotificationContext.getCamelContext().createProducerTemplate();
-		template.sendBody("activemq:queue:notification", message);
-
-	}
+//	private void sendEnrollmentMessage(Collection<String> recipientList, Promo promo) {
+//		StringBuilder circles = new StringBuilder();
+//
+//		for (String str : recipientList) {
+//			if (circles.length() == 0) {
+//				circles.append(str);
+//			} else {
+//				circles.append("{#}" + str);
+//			}
+//		}
+//
+//		int ind = circles.lastIndexOf("{#}");
+//		circles = circles.replace(ind, ind + 3, " & ");
+//		
+//		for (String recipient : recipientList) {
+//			SmppMessage message = new SmppMessage();
+//			message.setDestinationMsisdn(recipient);
+//			message.setMessageBody(promo.getSuccessEventId()+",circle-numbers:" + circles.toString() + ",promo:" + promo.getAssociatedPromo());
+//			ProducerTemplate template = NotificationContext.getCamelContext().createProducerTemplate();
+//			template.sendBody("activemq:queue:notification", message);
+//		}
+//	}
+//
+//	private void sendInvalidCallAttemptMessage(String event, String recipient) {
+//		SmppMessage message = new SmppMessage();
+//		message.setDestinationMsisdn(recipient);
+//		message.setMessageBody(event + "," + "x:X");
+//		ProducerTemplate template = NotificationContext.getCamelContext().createProducerTemplate();
+//		template.sendBody("activemq:queue:notification", message);
+//
+//	}
 }
