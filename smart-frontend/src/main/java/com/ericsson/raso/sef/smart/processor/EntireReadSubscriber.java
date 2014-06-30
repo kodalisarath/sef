@@ -208,7 +208,7 @@ public class EntireReadSubscriber implements Processor {
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(new Date())));
 		else
 			try {
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("vInValidFrom")))));
+				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("vInvalidFrom")))));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(vInvalidFrom): " + date);
 				date = nsnResponseFormat.format(new Date());
