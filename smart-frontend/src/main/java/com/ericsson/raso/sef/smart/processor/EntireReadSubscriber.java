@@ -160,25 +160,28 @@ public class EntireReadSubscriber implements Processor {
 		if (date == null)
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
 		else
-			try {
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", nsnResponseFormat.format(metaStoreFormat.parse(date))));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bInvalidFrom): " + date);
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
-			}
+//			try {
+				//parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", nsnResponseFormat.format(metaStoreFormat.parse(date))));
+				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", date));
+//			} catch (ParseException e) {
+//				logger.error("Unparseable date(bInvalidFrom): " + date);
+//				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
+//			}
 
 		date = subscriber.getMetas().get("bValidFrom");
 		if (date == null)
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(new Date())));
+			//parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(new Date())));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", metaStoreFormat.format(new Date())));
 		else
-			try {
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("bValidFrom")))));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bValidFrom): " + date);
-				date = nsnResponseFormat.format(new Date());
-				logger.debug("Setting bValidFrom when unparseable from DB: " + date);
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", date));
-			}
+//			try {
+				//parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("bValidFrom")))));
+				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", subscriber.getMetas().get("bValidFrom")));
+//			} catch (ParseException e) {
+//				logger.error("Unparseable date(bValidFrom): " + date);
+//				date = nsnResponseFormat.format(new Date());
+//				logger.debug("Setting bValidFrom when unparseable from DB: " + date);
+//				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", date));
+//			}
 		parameterList.add(EntireReadUtil.intParameter("bSeriesId", 0));
 		operationResult.getOperation().add(operation);
 		
