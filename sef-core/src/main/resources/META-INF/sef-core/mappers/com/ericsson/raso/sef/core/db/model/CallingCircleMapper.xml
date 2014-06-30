@@ -80,7 +80,7 @@
 	<select id="fetchCallingCircleMemberCountForMember" resultMap="int" parameterType="CallingCircle">
 		SELECT COUNT(*) 
 		FROM callingcircle
-		WHERE owner<>#{owner}
+		WHERE owner&lt;>#{owner}
 		AND product_offer=#{prodcatOffer}
 		AND member_b=#{memberB}
 		AND relationship='SPONSER_MEMBER'
