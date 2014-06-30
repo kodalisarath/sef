@@ -168,34 +168,13 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 								logger.debug("Seems to have completed PREP_FULFILLMENT. State: " + this.printPhasingProgress());
 							} 
 							break;
-						
-							//				if (this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.PROCESSING) {
-							//					logger.debug("Yes.. we will do persistence...");
-							//					if (this.isPhaseComplete(Phase.TX_PHASE_PERSISTENCE) && this.phasingProgress.get(Phase.TX_PHASE_PERSISTENCE) == Status.DONE_SUCCESS) {
-							//						this.status = Status.DONE_SUCCESS;
-							//						logger.debug("Persistence tasks are completed. Use case respnose processing will start now");
-							//					}	else {
-							//						this.status = Status.DONE_FAULT;
-							//						this.executionFault = new TransactionException(northBoundCorrelator, "PERSISTENCE OF THIS TRANSACTION FAILED");
-							//					}
-							//				} 
-
-							//				if (this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.PROCESSING) {
-							//					if (this.isPhaseComplete(Phase.TX_PHASE_SCHEDULE) && this.phasingProgress.get(Phase.TX_PHASE_SCHEDULE) == Status.DONE_SUCCESS) {
-							//						logger.debug("Schedule tasks are completed. Promoting to persistence tasks");
-							//						this.promote2Persist();
-							//					}	else {
-							//						this.status = Status.DONE_FAULT;
-							//						this.executionFault = new TransactionException(northBoundCorrelator, "FUTURE EVENT SCHEDULING FAILED");
-							//					}
-							//				} 
 						case TX_PHASE_FULFILLMENT:
 							if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 								logger.debug("Entering " + Phase.TX_PHASE_FULFILLMENT.name());
 								if (this.isPhaseComplete(Phase.TX_PHASE_FULFILLMENT) && this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
 									this.currentPhase = this.currentPhase.getNextPhase();
 									this.phasingProgress.put(currentPhase, Status.PROCESSING);
-									//this.promote2Schedule();
+									this.promote2Schedule();
 									this.promote2Persist();
 									//this.processNotification();
 
