@@ -96,6 +96,8 @@ public final class CallingCircleProfile extends RefillProfile {
 	public List<Product> fulfill(Product p, Map<String, String> map) throws FulfillmentException {
 		List<Product> returned = new ArrayList<Product>();
 		
+		logger.debug("CallingCircle fulfill() invoked... Sanity Check: metas: " + map + "\n\n static config: " + this.toString());
+		
 		logger.debug("Check metas: " + map);
 		if (map != null && !map.containsKey("CallingCircleWorkFlow")) {
 			logger.debug("Event Source is NOT Notification Engine. Delegating to 'predefined' Refill.");
