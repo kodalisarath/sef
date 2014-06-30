@@ -97,7 +97,7 @@ public class ClientMain {
         config0.setWindowSize(1);
         config0.setName("Tester.Session.0");
         config0.setType(SmppBindType.TRANSMITTER);
-        config0.setHost("localhost");
+        config0.setHost("10.202.160.18");
         config0.setPort(2778);
         config0.setConnectTimeout(10000);
         config0.setSystemId("systemID2014");
@@ -141,7 +141,11 @@ public class ClientMain {
             //String text160 = "100080039999,RC:1001";
 //            String text160 = "0,Dear Subscriber your UnliSurfFbcCtl has been expired now. Please purchase UnliSurfFbcCtl to avail UNLIMITED offer";
 //            String text160 = "000020041173,RC:1001";
-            String text160 = "000010060114,circleID:K15,AP:636000000011,BP:639098107385";
+            //String text160 = "000010060114,circleID:K15,AP:636000000011,BP:639098107385";
+            //String text160 = "090109999000,circleID:K10,AP:9485507562,BP:639485508459";
+            //9485508459
+            String text160 = "090109999000,circleID:K10,AP:639485507562,BP:639485508459";
+            //String text160 = "090127049001,ACT:ICA,RC:2704"; 
 
             byte[] textBytes = CharsetUtil.encode(text160, CharsetUtil.CHARSET_ISO_8859_1);
             SubmitSm submit0 = new SubmitSm();
