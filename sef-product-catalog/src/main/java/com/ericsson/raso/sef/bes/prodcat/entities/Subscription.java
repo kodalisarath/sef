@@ -116,6 +116,7 @@ public class Subscription extends Offer {
 			tasks.add(new Fulfillment(FulfillmentMode.CANCEL, atomicProduct, subscriberId, null));
 		}
 
+		tasks.add(new Future(FutureMode.CANCEL, SubscriptionLifeCycleEvent.RENEWAL, getName(), subscriberId, -1L, metas));
 		tasks.add(new Notification(NotificationMode.NOTIFY_USER, this.getName(), subscriberId, SubscriptionLifeCycleEvent.EXPIRY.name(), metas));
 				
 		// now, pack all tasks related to exit event...

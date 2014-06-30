@@ -653,6 +653,11 @@ public class Offer implements Serializable {
 			}
 		}
 		
+		if (this.autoTermination != null && !(this.autoTermination instanceof NoTermination)) {
+			long scheduledFinalExpiry = this.autoTermination.getTerminationTime(System.currentTimeMillis(), purchase.getRenewalPeriod().getExpiryTimeInMillis());
+			LOGGER.debug("Placing final expiry date to auto-termination case: ");
+		}
+		
 		//----------- Notification Tasks
 		/*
 		 * 1. Send Notification for each state of the Request Processing

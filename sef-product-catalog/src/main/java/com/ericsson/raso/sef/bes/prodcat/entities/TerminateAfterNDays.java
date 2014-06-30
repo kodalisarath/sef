@@ -28,7 +28,8 @@ public class TerminateAfterNDays extends AbstractAutoTermination {
 
 	@Override
 	public long getTerminationTime(long activationTime, long renewalPeriod) throws CatalogException {
-		return (activationTime + (days * DAYS2MILLIS));
+		//return (activationTime + (days * DAYS2MILLIS));
+		return (activationTime + (days * DAYS2MILLIS) - 2000); // putting in a 2 seconds headstart before renewal can be cancelled in SMART until full SEF framework can be developed
 	}
 	
 	@Override

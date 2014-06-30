@@ -22,7 +22,8 @@ public class TerminateHardDate extends AbstractAutoTermination {
 
 	@Override
 	public long getTerminationTime(long activationTime, long renewalPeriod) throws CatalogException {
-		return this.date;
+		//return this.date;
+		return this.date - 2000; // giving 2 second head start for an expiry scheduled by autotermination to cancel out renewals in future.
 	}
 
 	
