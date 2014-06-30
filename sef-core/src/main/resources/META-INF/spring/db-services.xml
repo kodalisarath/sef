@@ -100,13 +100,11 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
  	 -->
-	<bean id="scheduleRequestService"
-		class="com.ericsson.raso.sef.core.db.service.internal.ScheduleRequestServiceImpl">
+	<bean id="scheduleRequestService" class="com.ericsson.raso.sef.core.db.service.internal.ScheduleRequestServiceImpl">
 		<property name="scheduledRequestMapper" ref="scheduledRequestMapper" />
 	</bean>
 	
-	<bean id="callingCircleService"
-		class="com.ericsson.raso.sef.core.db.service.internal.CallingCircleServiceImpl">
+	<bean id="callingCircleService" class="com.ericsson.raso.sef.core.db.service.internal.CallingCircleServiceImpl">
 		<property name="callingCircleMapper" ref="callingCircleMapper" />
 	</bean>
 </beans>

@@ -39,21 +39,21 @@
 		<cxf:properties>
 			<entry key="address"
 				value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />
-			<!-- 	<entry key="address"
-				value="/services/ws/iSubscriberResponse" /> -->
+			<!-- <entry key="address" value="/services/ws/iSubscriberResponse" /> -->
 		</cxf:properties>
 	</cxf:cxfEndpoint>
-	
-		<cxf:cxfEndpoint id="subscriptionResponse"
+
+	<cxf:cxfEndpoint id="subscriptionResponse"
 		serviceClass="com.ericsson.sef.bes.api.subscription.ISubscriptionResponse">
 
 		<cxf:properties>
-			<entry key="address" value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" />
+			<entry key="address"
+				value="http://0.0.0.0:8080/services/ws/iSubscriptionResponse" />
 			<!-- <entry key="address" value="/services/ws/iSubscriptionResponse" /> -->
 		</cxf:properties>
 
 	</cxf:cxfEndpoint>
-	
+
 
 	<cxf:rsServer id="cgeServer" address="http://0.0.0.0:9090/charginggateway/"
 		serviceClass="com.ericsson.raso.sef.cg.engine.web.CgWeb" />
@@ -75,8 +75,9 @@
 				<camel:bean
 					beanType="com.ericsson.raso.sef.cg.engine.processor.RequestEntryProcessor" />
 				<!-- <camel:bean ref="gatekeeperProcessor" method="process"/> -->
-				<camel:bean
-					beanType="com.ericsson.raso.sef.cg.engine.processor.SubscriberValidationProcessor" />
+				<!-- <camel:bean -->
+				<!-- beanType="com.ericsson.raso.sef.cg.engine.processor.SubscriberValidationProcessor" 
+					/> -->
 				<camel:bean
 					beanType="com.ericsson.raso.sef.cg.engine.processor.TransactionIdentityProcessor" />
 				<camel:bean
@@ -118,16 +119,17 @@
 		</route>
 
 		<route>
-			<from uri="cxf:bean:subscriptionResponse"/>
+			<from uri="cxf:bean:subscriptionResponse" />
 			<camel:doTry>
 				<camel:choice>
 					<camel:when>
 						<camel:simple>${header.operationName} == 'discoverOfferByFederatedId'</camel:simple>
-						<camel:bean beanType="com.ericsson.raso.sef.smart.subscription.response.DiscoverOfferByFederatedIdResponseProcessor"/>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.smart.subscription.response.DiscoverOfferByFederatedIdResponseProcessor" />
 					</camel:when>
 				</camel:choice>
 				<camel:doFinally>
-				<!-- Add exception handler -->
+					<!-- Add exception handler -->
 				</camel:doFinally>
 			</camel:doTry>
 		</route>

@@ -3,9 +3,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+        
 <mapper namespace="com.ericsson.raso.sef.core.db.mapper.CallingCircleMapper">
-
 	<resultMap type="CallingCircle" id="CallingCircleResult">
 		<result column="OWNER" property="owner"/>
 		<result column="PRODUCT_OFFER" property="prodcatOffer"/>
@@ -16,8 +15,6 @@
 		<result column="CREATION_DATETIME" property="creationTime"/>
 		<result column="EXPIRY_DATETIME" property="expiryTime"/>
 	</resultMap>
-	
-
 	<insert id="createCallingCircleAndMembership" parameterType="CallingCircle" flushCache="true">
 		INSERT INTO 
 		callingcircle
@@ -31,20 +28,17 @@
 		#{creationTime jdbcType=TIMESTAMP},
 		#{expiryTime jdbcType=TIMESTAMP})
 	</insert>
-
 	<select id="fetchCallingCircle" resultMap="CallingCircleResult" parameterType="CallingCircle">
 		SELECT owner, product_offer, member_a, member_b, relationship, faf_indicator, creation_datetime, expiry_datetime
 		FROM callingcircle
 		WHERE owner=#{owner}
 		AND product_offer=#{prodcatOffer}
 	</select>
-	
 	<select id="fetchCallingCirclesWithMembershipFor" resultMap="CallingCircleResult" parameterType="String">
 		SELECT owner, product_offer, member_a, member_b, relationship, faf_indicator, creation_datetime, expiry_datetime
 		FROM callingcircle
 		WHERE member_a=#{subscriberId} OR member_b=#{subscriberId}
 	</select>
-	
 	<select id="fetchCallingCircleMemberCountForOwner" resultMap="Integer" parameterType="CallingCircle">
 		SELECT COUNT(*) 
 		FROM callingcircle
@@ -53,7 +47,6 @@
 		AND member_b=#{memberB}
 		AND relationship='SPONSER_MEMBER'
 	</select>
-	
 	<select id="fetchCallingCircleMembersForOwner" resultMap="Integer" parameterType="CallingCircle">
 		SELECT owner, product_offer, member_a, member_b, relationship, faf_indicator, creation_datetime, expiry_datetime 
 		FROM callingcircle
@@ -61,7 +54,6 @@
 		AND product_offer=#{prodcatOffer}
 		AND relationship='SPONSER_MEMBER'
 	</select>
-	
 	<select id="fetchCallingCircleMembersOnly" resultMap="Integer" parameterType="CallingCircle">
 		SELECT UNIQUE member_a
 		FROM callingcircle
@@ -69,30 +61,25 @@
 		AND product_offer=#{prodcatOffer}
 		AND relationship='MEMBER_MEMBER'
 	</select>
-	
 	<select id="fetchAllCallingCircleMembers" resultMap="String" parameterType="CallingCircle">
 		SELECT UNIQUE member_a
 		FROM callingcircle
 		WHERE owner=#{owner}
 		AND product_offer=#{prodcatOffer}
 	</select>
-	
 	<select id="fetchCallingCircleMemberCountForMember" resultMap="Integer" parameterType="CallingCircle">
-	<![CDATA[
+		<![CDATA[
 		SELECT COUNT(*) 
 		FROM callingcircle
 		WHERE owner<>#{owner}
 		AND product_offer=#{prodcatOffer}
 		AND member_b=#{memberB}
 		AND relationship='SPONSER_MEMBER'
-	]]>	
+		]]>
 	</select>
-	
-	<delete id="deleteCallingCircle" parameterType="CallingCircle" flushCache="true" >
+	<delete id="deleteCallingCircle" parameterType="CallingCircle" flushCache="true">
 		DELETE FROM callingcircle
 		WHERE owner=#{owner}
 		AND product_offer=#{prodcatOffer}
 	</delete>
-	
-	
 </mapper>
