@@ -59,6 +59,8 @@
 			com.ericsson.raso.sef.core.db.service.smart,
 			com.ericsson.raso.sef.core.db.model,
 			com.ericsson.raso.sef.core.db.service,
+			com.ericsson.raso.sef.core.smpp,
+			oracle.jdbc.driver
 		</osgi-import-package>
 	</properties>
 
