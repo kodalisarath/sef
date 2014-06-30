@@ -150,7 +150,4 @@
 		subscriber_meta s
 		where user_id = #{subscriberId}
 	</select>
-	
-	
-
 </mapper>
