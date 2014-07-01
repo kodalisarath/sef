@@ -197,30 +197,30 @@ public class EntireReadSubscriber implements Processor {
 
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.enumerationValueParameter("category", "ONLINE"));
+		
 		date = subscriber.getMetas().get("vValidFrom");
 		if (date == null)
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", nsnResponseFormat.format(new Date())));
-		else
-			try {
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("vValidFrom")))));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(vValidFrom): " + date);
-				date = nsnResponseFormat.format(new Date());
-				logger.debug("Setting vValidFrom when unparseable from DB: " + date);
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", date));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", "NOW"));
+		else {
+			if (date.equals("NOW"))
+				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", "NOW"));
+			else {
+				try {
+					parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("vValidFrom")))));
+				} catch (ParseException e) {
+					logger.error("Unparseable date(vValidFrom): " + date);
+					date = nsnResponseFormat.format(new Date());
+					logger.debug("Setting vValidFrom when unparseable from DB: " + date);
+					parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", date));
+				}
 			}
+		}
+		
 		date = subscriber.getMetas().get("vInvalidFrom");
 		if (date == null)
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(new Date())));
 		else
-			try {
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("vInvalidFrom")))));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(vInvalidFrom): " + date);
-				date = nsnResponseFormat.format(new Date());
-				logger.debug("Setting vInvalidFrom when unparseable from DB: " + date);
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", date));
-			}
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", "MAX_DATEANDTIME"));
 		operationResult.getOperation().add(operation);
 		
 		
@@ -258,8 +258,8 @@ public class EntireReadSubscriber implements Processor {
 			intParameter.setValue(0);
 			counterListParameter.getElementOrBooleanElementOrByteElement().add(intParameter);
 		}
-		if (subscriber.getMetas().get("c_TaggingStatus") != null) 
-			parameterList.add(EntireReadUtil.intParameter("c_TaggingStatus", Integer.parseInt(subscriber.getMetas().get("c_TaggingStatus"))));
+		if (subscriber.getMetas().get("Tagging") != null) 
+			parameterList.add(EntireReadUtil.intParameter("c_TaggingStatus", Integer.parseInt(subscriber.getMetas().get("Tagging"))));
 		// skipping firstcall date, since the user is not yet active
 		// skipping grace date, since the user is not yet active
 		if (subscriber.getMetas().get("s_CRMTitle") != null) 
