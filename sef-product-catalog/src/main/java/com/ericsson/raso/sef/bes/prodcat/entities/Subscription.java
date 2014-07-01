@@ -54,7 +54,7 @@ public class Subscription extends Offer {
 	private String subscriptionId = null;
 	private SubscriptionHistory subscriptionHistory = null;
 	private PurchaseHistory purchaseHistory = null;
-	private Set<AtomicProduct> provisionedProducts = null;
+	private List<AtomicProduct> provisionedProducts = null;
 	
 	public Subscription(Offer offer) {
 		super(offer.getName());
@@ -79,6 +79,9 @@ public class Subscription extends Offer {
 		this.setSwitching(offer.getSwitching());
 		this.setVersion(offer.getVersion());
 		this.setWhiteListedUsers(offer.getWhiteListedUsers());
+		
+		this.addProvisionedProducts(offer.getAllAtomicProducts());
+		
 		
 		try {
 			this.setRenewalPeriod(offer.getRenewalPeriod());
@@ -114,7 +117,7 @@ public class Subscription extends Offer {
 		
 		
 		// first, pack all the fulfillment tasks pertinent to deprovisioning
-		Set<AtomicProduct> provisionedProducts = this.getProvisionedProducts();
+		List<AtomicProduct> provisionedProducts = this.getProvisionedProducts();
 		if (provisionedProducts == null) {
 			logger.error("No Provisioned Products found in this Subscription(" + this.subscriptionId + "). FATAL ERROR!!");
 			throw new CatalogException("No Provisioned Products found in this Subscription(" + this.subscriptionId + "). FATAL ERROR!!");
@@ -397,7 +400,7 @@ public class Subscription extends Offer {
 			throw new CatalogException("Given Product was null");
 
 		if (this.provisionedProducts == null)
-			this.provisionedProducts = new TreeSet<AtomicProduct>();
+			this.provisionedProducts = new ArrayList<AtomicProduct>();
 
 		this.provisionedProducts.add(product);
 	}
@@ -410,11 +413,11 @@ public class Subscription extends Offer {
 			this.provisionedProducts.add(product);
 	}
 
-	public Set<AtomicProduct> getProvisionedProducts() {
+	public List<AtomicProduct> getProvisionedProducts() {
 		return this.provisionedProducts;
 	}
 
-	public void addProvisionedProducts(Set<AtomicProduct> products) {
+	public void addProvisionedProducts(List<AtomicProduct> products) {
 		this.provisionedProducts.addAll(products);
 	}
 	
