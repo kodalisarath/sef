@@ -130,26 +130,27 @@ public class EntireReadSubscriber implements Processor {
 			result.setOperationResult(operationResult);
 		}
 		
+		
 		// Read Customer - read, bucket, version
 		//// customer read
-		Operation operation = new Operation();
-		operation.setName("Read");
-		operation.setModifier("Customer");
-		List<Object> parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		Operation readCustomerOperation = new Operation();
+		readCustomerOperation.setName("Read");
+		readCustomerOperation.setModifier("Customer");
+		List<Object> parameterList = readCustomerOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.shortParameter("billCycleId", 0));
 		parameterList.add(EntireReadUtil.symbolicOrDateParameter("billCycleSwitch", "MAX_DATEANDTIME"));
 		parameterList.add(EntireReadUtil.shortParameter("billCycleIdAfterSwitch", -1));
 		parameterList.add(EntireReadUtil.intParameter("prefetchFilter", -1));
 		parameterList.add(EntireReadUtil.enumerationValueParameter("category", "ONLINE"));
-		operationResult.getOperation().add(operation);
+		operationResult.getOperation().add(readCustomerOperation);
 		
 		//// customer read bucket
-		operation = new Operation();
-		operation.setName("BucketRead");
-		operation.setModifier("Customer");
+		Operation readCustomerBucketOperation = new Operation();
+		readCustomerBucketOperation.setName("BucketRead");
+		readCustomerBucketOperation.setModifier("Customer");
 
-		parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		parameterList = readCustomerBucketOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.enumerationValueParameter("bCategory", "ONLINE"));
@@ -185,18 +186,19 @@ public class EntireReadSubscriber implements Processor {
 				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", "NOW"));
 			}
 		parameterList.add(EntireReadUtil.intParameter("bSeriesId", 0));
-		operationResult.getOperation().add(operation);
+		operationResult.getOperation().add(readCustomerBucketOperation);
 		
 		//// customer read version
-		operation = new Operation();
-		operation.setName("VersionRead");
-		operation.setModifier("Customer");
+		Operation readCustomerVersionOperation = new Operation();
+		readCustomerVersionOperation.setName("VersionRead");
+		readCustomerVersionOperation.setModifier("Customer");
 
-		parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		parameterList = readCustomerVersionOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.enumerationValueParameter("category", "ONLINE"));
 		
+	
 		date = subscriber.getMetas().get("vValidFrom");
 		logger.debug("Checking for vValidFrom: " + date);
 		if (date == null)
@@ -218,23 +220,23 @@ public class EntireReadSubscriber implements Processor {
 		else {
 			try {
 				metaStoreFormat.parse(date);
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", date));
+				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", date));
 			} catch (ParseException e) {
 				parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATEANDTIME")); 
 			}
 		}
-		operationResult.getOperation().add(operation);
+		operationResult.getOperation().add(readCustomerVersionOperation);
 		
 		
 		
 		
 		// Read RopRead, RopBucket, RopVersion
 		//// rop read
-		operation = new Operation();
-		operation.setName("Read");
-		operation.setModifier("ROP");
+		Operation readRopOperation = new Operation();
+		readRopOperation.setName("Read");
+		readRopOperation.setModifier("ROP");
 
-		parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		parameterList = readRopOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.intParameter("Key", 1));
 		parameterList.add(EntireReadUtil.enumerationValueParameter("category", "ONLINE"));
@@ -271,14 +273,14 @@ public class EntireReadSubscriber implements Processor {
 		logger.debug("Check PreActiveEndDate: " + subscriber.getMetas().get("PreActiveEndDate"));
 		if (subscriber.getMetas().get("PreActiveEndDate") != null) 
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("PreActiveEndDate", subscriber.getMetas().get("PreActiveEndDate")));
-		operationResult.getOperation().add(operation);
+		operationResult.getOperation().add(readRopOperation);
 
 		//// rop read bucket
-		operation = new Operation();
-		operation.setName("BucketRead");
-		operation.setModifier("ROP");
+		Operation readRopBucketOperation = new Operation();
+		readRopOperation.setName("BucketRead");
+		readRopOperation.setModifier("ROP");
 
-		parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		parameterList = readRopOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.intParameter("Key", 1));
 		parameterList.add(EntireReadUtil.enumerationValueParameter("bCategory", "ONLINE"));
@@ -293,28 +295,16 @@ public class EntireReadSubscriber implements Processor {
 				logger.error("Unparseable date(bInvalidFrom): " + date);
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
 			}
-
-		date = subscriber.getMetas().get("bValidFrom");
-		if (date == null)
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(new Date())));
-		else
-			try {
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("bValidFrom")))));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bValidFrom): " + date);
-				date = nsnResponseFormat.format(new Date());
-				logger.debug("Setting bValidFrom when unparseable from DB: " + date);
-				parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(new Date())));
-			}
-		operationResult.getOperation().add(operation);
+		// skipping bValidFrom - since preactive users are not activated yet....
+		operationResult.getOperation().add(readRopOperation);
 	
 		
 		//// rop read version
-		operation = new Operation();
-		operation.setName("VersionRead");
-		operation.setModifier("ROP");
+		Operation readRopReadOperation = new Operation();
+		readRopReadOperation.setName("VersionRead");
+		readRopReadOperation.setModifier("ROP");
 
-		parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		parameterList = readRopReadOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.intParameter("Key", 1));
 		date = subscriber.getMetas().get("vValidFrom");
@@ -343,15 +333,15 @@ public class EntireReadSubscriber implements Processor {
 			}
 		
 		parameterList.add(EntireReadUtil.stringParameter("s_OfferId", "TnT"));
-		operationResult.getOperation().add(operation);
+		operationResult.getOperation().add(readRopReadOperation);
 		
 		// Read Rpp's - read, bucket, version
 		//// rpp read
-		operation = new Operation();
-		operation.setName("Read");
-		operation.setModifier("RPP_s_subLifeIncentive");
+		Operation readRppOperation = new Operation();
+		readRppOperation.setName("Read");
+		readRppOperation.setModifier("RPP_s_subLifeIncentive");
 
-		operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		readRppOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.booleanParameter("s_CanBeSharedByMultipleRops", false));
@@ -370,14 +360,14 @@ public class EntireReadSubscriber implements Processor {
 			packagge = subscriber.getMetas().get("-");
 		parameterList.add(EntireReadUtil.stringParameter("s_PackageId", packagge));
 		parameterList.add(EntireReadUtil.intParameter("s_PeriodStartPoint", -1));
-		operationResult.getOperation().add(operation);
+		operationResult.getOperation().add(readRppOperation);
 		
 		//// rpp read bucket
-		operation = new Operation();
-		operation.setName("BucketRead");
-		operation.setModifier("RPP_s_subLifeIncentive");
+		Operation readRppBucketOperation = new Operation();
+		readRppBucketOperation.setName("BucketRead");
+		readRppBucketOperation.setModifier("RPP_s_subLifeIncentive");
 
-		parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		parameterList = readRppBucketOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.booleanParameter("s_Active", true));
 		parameterList.add(EntireReadUtil.booleanParameter("s_Valid", true));
@@ -388,20 +378,20 @@ public class EntireReadSubscriber implements Processor {
 		parameterList.add(EntireReadUtil.intParameter("OfferProfileKey", 1));
 		parameterList.add(EntireReadUtil.byteParameter("s_Error", (byte)0x00));
 		parameterList.add(EntireReadUtil.intParameter("s_Info", 0));
-		operationResult.getOperation().add(operation);
+		operationResult.getOperation().add(readRppBucketOperation);
 		
 		//// rpp read version
-		operation = new Operation();
-		operation.setName("VersionRead");
-		operation.setModifier("RPP_s_subLifeIncentive");
+		Operation readRppVersionOperation = new Operation();
+		readRppVersionOperation.setName("VersionRead");
+		readRppVersionOperation.setModifier("RPP_s_subLifeIncentive");
 
-		parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
+		parameterList = readRppVersionOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		parameterList.add(EntireReadUtil.enumerationValueParameter("Category", "ONLINE"));
 		parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
 		parameterList.add(EntireReadUtil.intParameter("Key", 1));
 		parameterList.add(EntireReadUtil.intParameter("OfferProfileKey", 1));
-		operationResult.getOperation().add(operation);
+		operationResult.getOperation().add(readRppVersionOperation);
 		
 		
 		return responseData;
