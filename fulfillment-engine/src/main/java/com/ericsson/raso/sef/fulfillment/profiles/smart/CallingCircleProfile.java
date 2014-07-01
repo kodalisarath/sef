@@ -110,9 +110,11 @@ public final class CallingCircleProfile extends RefillProfile {
 		this.subscriberId = map.get("SUBSCRIBER_ID");
 		if (this.subscriberId == null)
 			this.subscriberId = map.get("msisdn");
+		
 		this.prodcatOffer = map.get("prodcatOffer");
 		if (this.prodcatOffer == null)
 			this.prodcatOffer = map.get("productId");
+		
 		this.memberB = map.get("B-Party");
 		if (this.memberB == null)
 			this.memberB = map.get("BP");
@@ -381,8 +383,7 @@ public final class CallingCircleProfile extends RefillProfile {
 			return false;
 		}
 
-		CallingCircle ccRelationship = null; 
-		ccRelationship = new CallingCircle(subscriberId, prodcatOffer, subscriberId, memberB, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember, this.callingCircleExpiry);
+		CallingCircle ccRelationship = new CallingCircle(this.subscriberId, prodcatOffer, subscriberId, memberB, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember, this.callingCircleExpiry);
 		logger.debug("Adding Member & relation: " + ccRelationship);
 		this.updateFaf(subscriberId, ccRelationship, "ADD");
 		logger.debug("AIR updated");

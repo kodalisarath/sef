@@ -32,7 +32,12 @@ public class CallingCircle {
 
 	public CallingCircle(String owner, String prodcatOffer, String memberA, String memberB, CallingCircleRelation relationship,
 			String fafIndicator, long expiryDateTime) {
-		this();
+		this.owner = owner;
+		this.prodcatOffer = prodcatOffer;
+		this.memberA = memberA;
+		this.memberB = memberB;
+		this.relationship = relationship;
+		this.fafIndicator = fafIndicator;
 		this.expiryTime = new Date(expiryDateTime);
 	}
 
