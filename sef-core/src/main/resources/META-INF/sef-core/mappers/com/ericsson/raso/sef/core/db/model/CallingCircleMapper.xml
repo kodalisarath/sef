@@ -62,9 +62,9 @@
 		parameterType="CallingCircle">
 		SELECT COUNT(*)
 		FROM callingcircle
-		WHERE owner=#{owner}
-		AND product_offer=#{prodcatOffer}
-		AND member_b=#{memberB}
+		WHERE owner=#{owner jdbcType=VARCHAR}
+		AND product_offer=#{prodcatOffer jdbcType=VARCHAR}
+		AND member_b=#{memberB jdbcType=VARCHAR}
 		AND relationship='SPONSER_MEMBER'
 	</select>
 
