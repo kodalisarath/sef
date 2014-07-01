@@ -292,6 +292,9 @@ public class SubscriberServiceImpl implements SubscriberService{
 	@Override
 	public Subscriber getSubscriber(String nbCorrelator, String msisdn)throws PersistenceError {
 	logger.debug("In the Method getSubscriber to  retrieve subscriber while updating ");
+	
+	//profiling on SMART's request..
+	long startTime = System.currentTimeMillis();
      if(msisdn == null){
     	 throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(ApplicationContextError,"The subscriber entity provided was null!!"));
      }
@@ -324,6 +327,9 @@ public class SubscriberServiceImpl implements SubscriberService{
          subscriber.setUserId(msisdn);
          subscriber.setPin("1234");
      }
+     
+     long endTime = System.currentTimeMillis();
+     logger.error("DB LATENCY ON READ SUBSCRIBER: " + (endTime - startTime));
 	 return subscriber;
 	}
 	
