@@ -251,7 +251,7 @@ public class Subscription extends Offer {
 			AtomicProduct cloned = CloneHelper.deepClone(atomicProduct);
 			cloned.getValidity().setActivationTime(RENEWAL_TIMESTAMP);
 			this.addProvisionedProduct(cloned);
-			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, cloned, subscriberId, null));
+			tasks.add(new Fulfillment(FulfillmentMode.FULFILL, cloned, subscriberId, metas));
 		} 
 	
 		this.setActivatedTimeNow();
