@@ -118,6 +118,7 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 			throw new PersistenceError(nbCorrelator, "Calling Circle", new ResponseCode(ApplicationContextError, "The given value for Calling Circle was null"));
 		}
 		
+		logger.debug("Query attributes check: " + query);
 		if (query.getOwner() == null ||
 				query.getProdcatOffer() == null ||
 				query.getMemberB() == null) {

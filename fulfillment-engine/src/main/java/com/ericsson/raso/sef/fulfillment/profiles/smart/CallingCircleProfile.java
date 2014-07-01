@@ -111,8 +111,11 @@ public final class CallingCircleProfile extends RefillProfile {
 		if (this.subscriberId == null)
 			this.subscriberId = map.get("msisdn");
 		this.prodcatOffer = map.get("prodcatOffer");
+		if (this.prodcatOffer == null)
+			this.prodcatOffer = map.get("productId");
 		this.memberB = map.get("B-Party");
-
+		if (this.memberB == null)
+			this.memberB = map.get("BP");
 
 
 		// Step 2: Get AccountDetails
