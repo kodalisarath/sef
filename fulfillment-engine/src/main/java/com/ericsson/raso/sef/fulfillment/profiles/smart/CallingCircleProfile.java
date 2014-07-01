@@ -120,7 +120,7 @@ public final class CallingCircleProfile extends RefillProfile {
 		if (!this.readSubscriber(this.subscriberId, this.memberAMetas)) {
 			logger.error("A Party was not found or other error fetching detals... MIGRATION WAAS FAULTY!!!");
 			this.sendSorryMessage(NotificationMessageEvent.B_PartyUnknown.getEventName(), this.subscriberId);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to check A-party details");
 
 			breakFlow = true;
@@ -133,7 +133,7 @@ public final class CallingCircleProfile extends RefillProfile {
 			 if (this.callingCircleExpiry == -1) {
 				 logger.error("A Party has not subscribed to the calling circle offer!!");
 				 this.sendSorryMessage(NotificationMessageEvent.B_PartyUnknown.getEventName(), this.subscriberId);
-				 CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+				 CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 				 CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to check A-party details");
 
 				 breakFlow = true;
@@ -145,7 +145,7 @@ public final class CallingCircleProfile extends RefillProfile {
 		if (!breakFlow && !this.readSubscriber(this.memberB, this.memberBMetas)) {
 			logger.error("Probably the user was not found or other error fetching detals...");
 			this.sendSorryMessage(NotificationMessageEvent.B_PartyUnknown.getEventName(), this.subscriberId);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to check B-party details");
 
 			breakFlow = true;
@@ -158,7 +158,7 @@ public final class CallingCircleProfile extends RefillProfile {
 		if (!breakFlow && !this.checkAllowedContractState(this.memberB)) {
 			logger.error("User not allowed to enter Calling Circle Membership");
 			this.sendSorryMessage(this.B_PartyInvalidStateEventId, this.subscriberId);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "B-party in invalid state");
 			breakFlow = true;
 		} else
@@ -188,14 +188,14 @@ public final class CallingCircleProfile extends RefillProfile {
 				logger.debug("Existing member count: " + memberCount + ", max members: " + this.maxMembers);
 				if (this.maxMembers <= memberCount) {
 					logger.warn("Subscriber: " + this.subscriberId + " already has max members allowed for this group: " + this.prodcatOffer);
-					CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+					CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 					CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Already invited max members to Calling Circle");
 					breakFlow = true;
 				}
 			} catch(PersistenceError e) {
 				logger.debug("Cannot assert member threshold breach. Cannot proceed!!", e);
 				this.sendSorryMessage(this.A_PartyMemberThresholdBreachMessageEventId, this.subscriberId);
-				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 				CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Unable to assert max membership breach for A-Party");
 				breakFlow = true;
 			}
@@ -205,20 +205,20 @@ public final class CallingCircleProfile extends RefillProfile {
 				if (!breakFlow && !this.addCallingCircleMembers()) {
 					logger.warn("Transaction with AIR & DB seems to have failed!! Send Sorry and stop.");
 					this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);
-					CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+					CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 					CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
 					breakFlow = true;
 				}
 			} catch (SmException e) {
 				logger.debug("Cannot update FAF Info to CS-AIR/DB. Send Sorry and stop", e);
 				this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);
-				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 				CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
 				breakFlow = true;
 			} catch (PersistenceError e) {
 				logger.debug("Cannot update FAF Info to CS-AIR/DB. Send Sorry and stop", e);
 				this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);
-				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+				CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 				CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
 				breakFlow = true;
 			}
@@ -379,12 +379,12 @@ public final class CallingCircleProfile extends RefillProfile {
 		}
 
 		CallingCircle ccRelationship = null; 
-		ccRelationship = new CallingCircle(subscriberId, prodcatOffer, subscriberId, memberB, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember);
+		ccRelationship = new CallingCircle(subscriberId, prodcatOffer, subscriberId, memberB, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember, this.callingCircleExpiry);
 		this.updateFaf(subscriberId, ccRelationship, "ADD");
 		ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
 		CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorSponsorMember, null);
 
-		ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, subscriberId,CallingCircleRelation.MEMBER_SPONSER, fafIndicatorMemberSponsor);
+		ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, subscriberId,CallingCircleRelation.MEMBER_SPONSER, fafIndicatorMemberSponsor, this.callingCircleExpiry);
 		this.updateFaf(memberB, ccRelationship, "ADD");
 		ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
 		CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberSponsor, null);
@@ -393,12 +393,12 @@ public final class CallingCircleProfile extends RefillProfile {
 
 
 		for (String member: members) {
-			ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, member, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember);
+			ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, member, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember, this.callingCircleExpiry);
 			this.updateFaf(memberB, ccRelationship, "ADD");
 			ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberMember, null);
 	
-			ccRelationship = new CallingCircle(subscriberId, prodcatOffer, member, memberB, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember);
+			ccRelationship = new CallingCircle(subscriberId, prodcatOffer, member, memberB, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember, this.callingCircleExpiry);
 			this.updateFaf(member, ccRelationship, "ADD");
 			ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberMember, null);
@@ -627,7 +627,7 @@ public final class CallingCircleProfile extends RefillProfile {
 			}
 		} catch(SmException e) {
 			logger.error("Failed to remove calling circle from  CS-AIR. Cause: " + e.getMessage(), e);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 			CallingCircleEdr.generateEdr("DELETE", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Could not assert existing members in this Calling Circle");
 			breakFlow = true;
 		}
@@ -640,7 +640,7 @@ public final class CallingCircleProfile extends RefillProfile {
 			}
 		} catch(PersistenceError e) {
 			logger.error("Failed to remove calling circle from DB. Cause: " + e.getMessage(), e);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 			CallingCircleEdr.generateEdr("DELETE", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Could not assert existing members in this Calling Circle");
 			breakFlow = true;
 		}
@@ -676,7 +676,7 @@ public final class CallingCircleProfile extends RefillProfile {
 			members = ccService.fetchAllCallingCircleMembers(UniqueIdGenerator.generateId(), query);
 		} catch (PersistenceError e) {
 			logger.debug("Cannot fetch member threshold breach. Cannot proceed!!", e);
-			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember);
+			CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 			CallingCircleEdr.generateEdr("DELETE", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Could not assert existing members in this Calling Circle");
 			return false;
 		}
@@ -688,11 +688,11 @@ public final class CallingCircleProfile extends RefillProfile {
 		CallingCircle ccRelationship = null; 
 		for (String member: members) {
 			if (!this.subscriberId.equals(member)) {
-				ccRelationship = new CallingCircle(subscriberId, prodcatOffer, subscriberId, memberB, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember);
+				ccRelationship = new CallingCircle(subscriberId, prodcatOffer, subscriberId, memberB, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember, this.callingCircleExpiry);
 				this.updateFaf(subscriberId, ccRelationship, "DELETE");
 				CallingCircleEdr.generateEdr("DELETE", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorSponsorMember, null);
 
-				ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, subscriberId,CallingCircleRelation.MEMBER_SPONSER, fafIndicatorMemberSponsor);
+				ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, subscriberId,CallingCircleRelation.MEMBER_SPONSER, fafIndicatorMemberSponsor, this.callingCircleExpiry);
 				this.updateFaf(memberB, ccRelationship, "DELETE");
 				CallingCircleEdr.generateEdr("DELETE", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberSponsor, null);
 			} else {
@@ -703,11 +703,11 @@ public final class CallingCircleProfile extends RefillProfile {
 							int otherMemberships = ccService.fetchCallingCircleMemberCountForMember(UniqueIdGenerator.generateId(), query);
 							
 							if (otherMemberships == 0) {
-								ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, member, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember);
+								ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, member, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember, this.callingCircleExpiry);
 								this.updateFaf(memberB, ccRelationship, "DELETE");
 								CallingCircleEdr.generateEdr("DELETE", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberMember, null);
 						
-								ccRelationship = new CallingCircle(subscriberId, prodcatOffer, member, memberB, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember);
+								ccRelationship = new CallingCircle(subscriberId, prodcatOffer, member, memberB, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember, this.callingCircleExpiry);
 								this.updateFaf(member, ccRelationship, "DELETE");
 								CallingCircleEdr.generateEdr("DELETE", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberMember, null);
 							
@@ -720,7 +720,7 @@ public final class CallingCircleProfile extends RefillProfile {
 							}
 						} catch (PersistenceError e) {
 							logger.debug("Cannot fetch member threshold breach. Cannot proceed!!", e);
-							ccRelationship = new CallingCircle(subscriberId, prodcatOffer, subscriberId, otherMember, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember);
+							ccRelationship = new CallingCircle(subscriberId, prodcatOffer, subscriberId, otherMember, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember, this.callingCircleExpiry);
 							CallingCircleEdr.generateEdr("DELETE", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorSponsorMember, "Could not assert existing members in this Calling Circle");
 							return false;
 						}
