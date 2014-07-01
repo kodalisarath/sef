@@ -125,7 +125,7 @@ public final class CallingCircleProfile extends RefillProfile {
 
 			breakFlow = true;
 		} else 
-			logger.debug("A-Pary (" + this.subscriberId + ") getAccountDetails graceful!!");
+			logger.debug("A-Party (" + this.subscriberId + ") getAccountDetails graceful!!");
 		
 		if (!breakFlow) {
 			logger.debug("Going to check for A-Party Calling Circle Expiry...");
@@ -150,7 +150,7 @@ public final class CallingCircleProfile extends RefillProfile {
 
 			breakFlow = true;
 		} else 
-			logger.debug("B-Pary (" + this.memberB + ") getAccountDetails graceful!!");
+			logger.debug("B-Party (" + this.memberB + ") getAccountDetails graceful!!");
 		
 		
 		// Step 3: Check for B-Number status
@@ -162,7 +162,7 @@ public final class CallingCircleProfile extends RefillProfile {
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "B-party in invalid state");
 			breakFlow = true;
 		} else
-			logger.debug("B-Pary (" + this.memberB + ") is confirmed to be in valid state!!");
+			logger.debug("B-Party (" + this.memberB + ") is confirmed to be in valid state!!");
 		
 		
 		// Step 4a: Send Sorry Messages - already done above
@@ -437,7 +437,7 @@ public final class CallingCircleProfile extends RefillProfile {
 	private void updateFaf(String subscriberId, CallingCircle callingCircle, String fafAction) throws SmException {
 		List<FafInformation> updateFafInfo = new ArrayList<FafInformation>();
 		FafInformation fafInfo = new FafInformation();
-		fafInfo.setOwner(callingCircle.getOwner());
+		fafInfo.setOwner("SUBSCRIBER");
 		fafInfo.setFafIndicator(Integer.parseInt(callingCircle.getFafIndicator()));
 		fafInfo.setFafNumber(callingCircle.getMemberB());
 		updateFafInfo.add(fafInfo);
