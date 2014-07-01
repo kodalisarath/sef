@@ -62,7 +62,7 @@ public abstract class TransactionEngineHelper {
 		PurchaseResponse purchaseResponse = new PurchaseResponse();
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, purchaseResponse);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(resultId);
 
 		try {
 			semaphore.init(0);
@@ -75,7 +75,7 @@ public abstract class TransactionEngineHelper {
 
 		logger.debug("Awake from sleep.. going to check response in store with id: " + resultId);
 
-		purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
+		purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(resultId);
 
 		logger.debug("PurchaseResponse recieved here is " + purchaseResponse);
 		if (purchaseResponse == null) {
@@ -95,9 +95,9 @@ public abstract class TransactionEngineHelper {
 		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID, offerId));
 		String requestId = UniqueIdGenerator.generateId();
 		String resultId = iSubscriptionRequest.renew(requestId, subscriptionId, true, metas);
-		SubscriptionEventResponse subscriptionEventResponse = null;
+		SubscriptionEventResponse subscriptionEventResponse = new SubscriptionEventResponse();
 		logger.debug("Got past event class....");
-		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
+		RequestCorrelationStore.put(requestId, subscriptionEventResponse);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 
 		try {
@@ -109,7 +109,7 @@ public abstract class TransactionEngineHelper {
 		}
 		semaphore.destroy();
 
-		logger.debug("Awake from sleep.. going to check response in store with id: " + resultId);
+		logger.debug("Awake from sleep.. going to check response in store with id: " + requestId);
 
 		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore.remove(requestId);
 
@@ -133,10 +133,10 @@ public abstract class TransactionEngineHelper {
 		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID, offerId));
 
 		String resultId = iSubscriptionRequest.expiry(requestId, subscriptionId, true, metas);
-		SubscriptionEventResponse subscriptionEventResponse = null;
+		SubscriptionEventResponse subscriptionEventResponse = new SubscriptionEventResponse();
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(resultId);
 
 		try {
 			semaphore.init(0);
@@ -149,7 +149,7 @@ public abstract class TransactionEngineHelper {
 
 		logger.debug("Awake from sleep.. going to check response in store with id: " + resultId);
 
-		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore.remove(requestId);
+		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore.remove(resultId);
 
 		logger.debug("SubscriptionEventResponse recieved here is " + subscriptionEventResponse);
 		if (subscriptionEventResponse == null) {
@@ -171,7 +171,7 @@ public abstract class TransactionEngineHelper {
 		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID, offerId));
 
 		String resultId = iSubscriptionRequest.terminate(requestId, subscriptionId, true, metas);
-		SubscriptionEventResponse subscriptionEventResponse = null;
+		SubscriptionEventResponse subscriptionEventResponse = new SubscriptionEventResponse();
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
