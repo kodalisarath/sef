@@ -388,21 +388,30 @@ public final class CallingCircleProfile extends RefillProfile {
 
 		CallingCircle ccRelationship = new CallingCircle(this.subscriberId, prodcatOffer, subscriberId, memberB, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember, this.callingCircleExpiry);
 		logger.debug("Adding Member & relation: " + ccRelationship);
+	
 		this.updateFaf(subscriberId, ccRelationship, "ADD");
 		logger.debug("AIR updated");
-		ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
-		logger.debug("DB updated");
+		
 		CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorSponsorMember, null);
 		logger.debug("EDR updated");
 		
-		ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, subscriberId,CallingCircleRelation.MEMBER_SPONSER, fafIndicatorMemberSponsor, this.callingCircleExpiry);
-		logger.debug("Adding Member & relation: " + ccRelationship);
-		this.updateFaf(memberB, ccRelationship, "ADD");
-		logger.debug("AIR updated");
 		ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
 		logger.debug("DB updated");
+		
+		
+		
+		ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, subscriberId,CallingCircleRelation.MEMBER_SPONSER, fafIndicatorMemberSponsor, this.callingCircleExpiry);
+		logger.debug("Adding Member & relation: " + ccRelationship);
+		
+		this.updateFaf(memberB, ccRelationship, "ADD");
+		logger.debug("AIR updated");
+		
 		CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberSponsor, null);
 		logger.debug("EDR updated");
+		
+		ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
+		logger.debug("DB updated");
+		
 		
 		this.updateFafAccumulator(subscriberId, fafAccumulatorId, 1);
 
@@ -410,20 +419,29 @@ public final class CallingCircleProfile extends RefillProfile {
 		for (String member: members) {
 			ccRelationship = new CallingCircle(subscriberId, prodcatOffer, memberB, member, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember, this.callingCircleExpiry);
 			logger.debug("Adding Member & relation: " + ccRelationship);
+			
 			this.updateFaf(memberB, ccRelationship, "ADD");
 			logger.debug("AIR updated");
-			ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
-			logger.debug("DB updated");
+			
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberMember, null);
 			logger.debug("EDR updated");
 			
-			ccRelationship = new CallingCircle(subscriberId, prodcatOffer, member, memberB, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember, this.callingCircleExpiry);
-			logger.debug("Adding Member & relation: " + ccRelationship);
 			ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
 			logger.debug("DB updated");
+			
+			
+			ccRelationship = new CallingCircle(subscriberId, prodcatOffer, member, memberB, CallingCircleRelation.MEMBER_MEMBER, fafIndicatorMemberMember, this.callingCircleExpiry);
+			logger.debug("Adding Member & relation: " + ccRelationship);
+			
 			this.updateFaf(member, ccRelationship, "ADD");
+			logger.debug("AIR updated");
+			
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, ccRelationship, this.fafIndicatorMemberMember, null);
 			logger.debug("EDR updated");
+
+			ccService.createCallingCircleMemberMapping(UniqueIdGenerator.generateId(), ccRelationship);
+			logger.debug("DB updated");
+			
 			
 		}
 
