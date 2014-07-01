@@ -75,8 +75,8 @@
 				<camel:bean
 					beanType="com.ericsson.raso.sef.cg.engine.processor.RequestEntryProcessor" />
 				<!-- <camel:bean ref="gatekeeperProcessor" method="process"/> -->
-				<!-- <camel:bean -->
-				<!-- beanType="com.ericsson.raso.sef.cg.engine.processor.SubscriberValidationProcessor" 
+				<!-- <camel:bean
+				beanType="com.ericsson.raso.sef.cg.engine.processor.SubscriberValidationProcessor" 
 					/> -->
 				<camel:bean
 					beanType="com.ericsson.raso.sef.cg.engine.processor.TransactionIdentityProcessor" />

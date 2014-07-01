@@ -18,6 +18,7 @@
 			org.csapi.wsdl.parlayx.payment.amount_charging.v2_1.service,
 			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1._interface,
 			org.csapi.wsdl.parlayx.payment.reserve_amount_charging.v2_1.service, -->
+			
 			org.springframework.*,
 			com.ericsson.raso.sef.core,
 			com.ericsson.raso.sef.core.camelprocessors,
@@ -68,6 +69,7 @@
 			com.ericsson.raso.sef.core.cg.nsn.avp.sms,
 			org.apache.camel.component.gson,
 			com.ericsson.raso.sef.core.cg.diameter,
+			org.apache.camel.component.http4,
 		</osgi-import-package>
 		<osgi-export-package>
 		<!-- 	com.ericsson.raso.sef.charginggateway.diameter -->
@@ -83,6 +85,11 @@
 		 <dependency>
 		  <groupId>org.apache.camel</groupId>
 		  <artifactId>camel-gson</artifactId>
+		  <version>2.10.0</version>
+		</dependency>
+		 <dependency>
+		  <groupId>org.apache.camel</groupId>
+		  <artifactId>camel-http4</artifactId>
 		  <version>2.10.0</version>
 		</dependency>
 	</dependencies>
