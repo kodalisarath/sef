@@ -1064,11 +1064,13 @@ public class EntireReadUtil {
 
 		ropRead.setLastKnownPeriod(subscriber.getContractState());
 		ropRead.setS_CRMTitle("-");
-		if (tag != null && tag.isSmartTag()) {
-			ropRead.setIsLocked(true);
-		} else {
-			ropRead.setIsLocked(false);
-		}
+		
+		ropRead.setIsLocked(Boolean.parseBoolean(subscriber.getMetas().get("IsLocked")));
+//		if (tag != null && tag.isSmartTag()) {
+//			ropRead.setIsLocked(true);
+//		} else {
+//			ropRead.setIsLocked(false);
+//		}
 
 		return ropRead;
 	}
