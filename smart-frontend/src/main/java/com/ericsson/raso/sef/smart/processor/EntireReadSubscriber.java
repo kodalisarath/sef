@@ -172,12 +172,9 @@ public class EntireReadSubscriber implements Processor {
 
 		date = subscriber.getMetas().get("bValidFrom");
 		if (date == null)
-			//parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(new Date())));
 			readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", metaStoreFormat.format(new Date())));
 		else
 			try {
-				//parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(metaStoreFormat.parse(subscriber.getMetas().get("bValidFrom")))));
-				
 				metaStoreFormat.parse(date);
 				readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", subscriber.getMetas().get("bValidFrom")));
 			} catch (ParseException e) {
@@ -419,12 +416,16 @@ public class EntireReadSubscriber implements Processor {
 				operationResult.getOperation().add(EntireReadUtil.createCustomerRead(entireRead.getCustomer().getCustomerRead()));
 				operationResult.getOperation().add(EntireReadUtil.createCustomerBucketRead(entireRead.getCustomer().getCustomerBucketRead()));
 				operationResult.getOperation().add(EntireReadUtil.createCustomerVersionRead(entireRead.getCustomer().getCustomerVersionRead()));
+			} else {
+				logger.error("Entire Read is present but without Customer!!");
 			}
 
 			if (entireRead.getRop() != null) {
 				operationResult.getOperation().add(EntireReadUtil.createRopRead(entireRead.getRop().getRopRead()));
 				operationResult.getOperation().add(EntireReadUtil.createRopBucketRead(entireRead.getRop().getRopBucketRead()));
 				operationResult.getOperation().add(EntireReadUtil.createRopVersionRead(entireRead.getRop().getRopVersionRead()));
+			} else {
+				logger.error("Entire Read is present but without Rop!!");
 			}
 
 			if (entireRead.getRpps() != null) {
@@ -437,6 +438,8 @@ public class EntireReadSubscriber implements Processor {
 					operationResult.getOperation().add(EntireReadUtil.createRppVersionRead(rpp.getRppVersionRead()));
 					lastIndex = rpp.getRppVersionRead().getKey();
 				}
+			} else {
+				logger.error("Entire Read is present but without Rpp's!!");
 			}
 
 			logger.debug("WelcomePack: " + entireRead.getWelcomePack() + ", Package: " + entireRead.getWelcomePack().getRead().getsPackageId());
@@ -449,6 +452,8 @@ public class EntireReadSubscriber implements Processor {
 				operationResult.getOperation().add(EntireReadUtil.createWelcomePackRead(entireRead.getWelcomePack().getRead()));
 				operationResult.getOperation().add(EntireReadUtil.createWelcomePackBucketRead(entireRead.getWelcomePack().getBucketRead()));
 				operationResult.getOperation().add(EntireReadUtil.createWelcomePackVersionRead(entireRead.getWelcomePack().getVersionRead()));
+			} else {
+				logger.error("Entire Read is present but without Welcome Pack!!");
 			}
 		}
 		return responseData;

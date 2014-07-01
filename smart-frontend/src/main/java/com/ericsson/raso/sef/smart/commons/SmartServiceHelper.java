@@ -180,11 +180,15 @@ public abstract class SmartServiceHelper {
 
 		}
 
-		entireRead.setWelcomePack(EntireReadUtil.getWelcomePack(subscriber));
-		entireRead.setCustomer(EntireReadUtil.getCustomer(subscriber, currentTime));
-		entireRead.setRop(EntireReadUtil.getRop(subscriber, currentTime));
-		entireRead.setRpps(EntireReadUtil.getRpp(subscriber, currentTime));
-
+		try {
+			entireRead.setWelcomePack(EntireReadUtil.getWelcomePack(subscriber));
+			entireRead.setCustomer(EntireReadUtil.getCustomer(subscriber, currentTime));
+			entireRead.setRop(EntireReadUtil.getRop(subscriber, currentTime));
+			entireRead.setRpps(EntireReadUtil.getRpp(subscriber, currentTime));
+		} catch (Exception e) {
+			logger.error("Unable to read complete subscriber info... Lost Execution Context to resume!! Cause: " + e.getMessage(), e);
+			throw ExceptionUtil.toSmException(ErrorCode.unknownInternalError);
+		}
 		return entireRead;
 
 	}

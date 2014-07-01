@@ -912,22 +912,56 @@ public class EntireReadUtil {
 	}
 
 	private static CustomerVersionRead createCustomerVersionRead(Subscriber subcriber, Date currentTime) {
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		
 		CustomerVersionRead versionRead = new CustomerVersionRead();
 		versionRead.setCustomerId(subcriber.getMsisdn());
 		versionRead.setCategory("ONLINE");
 		versionRead.setvInvalidFrom(SmartConstants.MAX_DATETIME);
-		// IConfig config = SefCoreServiceResolver.getConfigService();
+
+		String date = subcriber.getMetas().get("vValidFrom");
+		if (date == null)
+			versionRead.setvValidFrom(metaStoreFormat.format(new Date()));
+		else
+			try {
+				metaStoreFormat.parse(date);
+				versionRead.setvValidFrom(subcriber.getMetas().get("vValidFrom"));
+			} catch (ParseException e) {
+				logger.error("Unparseable date(vValidFrom): " + date);
+				logger.debug("Setting bValidFrom to 'NOW'");
+				versionRead.setvValidFrom("NOW");
+			}
+		
+		logger.debug("versionRead. vValidFrom : " + versionRead.getvValidFrom());
+
+		
 		versionRead.setvValidFrom(DateUtil.convertDateToString(currentTime));
 		return versionRead;
 	}
 
 	private static CustomerBucketRead createCustomerBucketRead(Subscriber subscriber, Date currentTime) {
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		
 		CustomerBucketRead bucketRead = new CustomerBucketRead();
 		bucketRead.setCustomerId(subscriber.getMsisdn());
 		bucketRead.setbCategory("ONLINE");
 		bucketRead.setbSeriesId(0);
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		bucketRead.setbValidFrom(DateUtil.convertDateToString(currentTime));
+		
+		bucketRead.setbValidFrom(subscriber.getMetas().get("bValidFrom"));
+		String date = subscriber.getMetas().get("bValidFrom");
+		if (date == null)
+			bucketRead.setbValidFrom(metaStoreFormat.format(new Date()));
+		else
+			try {
+				metaStoreFormat.parse(date);
+				bucketRead.setbValidFrom(subscriber.getMetas().get("bValidFrom"));
+			} catch (ParseException e) {
+				logger.error("Unparseable date(bValidFrom): " + date);
+				logger.debug("Setting bValidFrom to 'NOW'");
+				bucketRead.setbValidFrom("NOW");
+			}
+		
 		logger.debug("bucketRead. bValidFrom : " + bucketRead.getbValidFrom());
 		bucketRead.setbInvalidFrom(SmartConstants.MAX_DATETIME);
 		return bucketRead;
@@ -942,26 +976,29 @@ public class EntireReadUtil {
 	}
 
 	private static RopRead createRopRead(Subscriber subscriber) {
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		
+		
 		RopRead ropRead = new RopRead();
 		ropRead.setCustomerId(subscriber.getMsisdn());
 		ropRead.setKey(1);
 		ropRead.setCategory("ONLINE");
 		ropRead.setPrefetchFilter(-1);
 		
-		if (subscriber.getMetas() != null) {
-			if (subscriber.getMetas().containsKey(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE)) {
-
-				logger.debug("Active End Date is " + subscriber.getMetas().get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE));
-
-				String serviceFeeExpiry = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE);
-				if (serviceFeeExpiry != null) {
-					ropRead.setActiveEndDate(DateUtil.convertDateToString(new Date(Long.parseLong(serviceFeeExpiry))));
-				}
-				
-				logger.debug("Active End Date after formating is " + ropRead.getActiveEndDate());
+		
+		
+		String activeEndDate = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE);
+		if (activeEndDate == null)
+			ropRead.setGraceEndDate("");
+		else
+			try {
+				metaStoreFormat.parse(activeEndDate);
+				ropRead.setActiveEndDate(activeEndDate);
+			} catch (ParseException e) {
+				logger.error("Unparseable date(activeEndDate): " + activeEndDate);
+				ropRead.setActiveEndDate("");
 			}
-		}
-
+		
 		ropRead.setAnnoFirstWarningPeriodSent(false);
 		ropRead.setAnnoSecondWarningPeriodSent(false);
 
@@ -977,27 +1014,32 @@ public class EntireReadUtil {
 		ropRead.setCustomerId(subscriber.getMsisdn());
 
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		if (subscriber.getActiveDate() != null)
-			ropRead.setFirstCallDate(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
 
+		String firstCallDate = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_ACTIVATION_DATE);
+		if (firstCallDate == null)
+			ropRead.setFirstCallDate("");
+		else
+			try {
+				metaStoreFormat.parse(firstCallDate);
+				ropRead.setActiveEndDate(firstCallDate);
+			} catch (ParseException e) {
+				logger.error("Unparseable date(firstCallDate): " + firstCallDate);
+				ropRead.setActiveEndDate("");
+			}
+		
+		
 
 		String graceEndDate = getGraceEndDate(subscriber);
-		logger.debug(" graceEndDate Before formatting is " + graceEndDate);
-		if (graceEndDate != null) {
-			
+		if (graceEndDate == null)
+			ropRead.setGraceEndDate("NOW");
+		else
 			try {
-				SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-				Date date = storeFormat.parse(graceEndDate);
-				SimpleDateFormat nsnFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-				ropRead.setGraceEndDate(nsnFormat.format(date));
-				logger.debug(" graceEndDate After formatting is " + ropRead.getGraceEndDate());
-				
+				metaStoreFormat.parse(graceEndDate);
+				ropRead.setGraceEndDate(graceEndDate);
 			} catch (ParseException e) {
-				logger.error("Date ParseException ", e);
+				logger.error("Unparseable date(graceEndDate): " + graceEndDate);
+				ropRead.setGraceEndDate("NOW");
 			}
-		} else {
-			logger.error("graceEndDate was not found in IL DB/CS-AIR!!!");
-		}
 		
 		
 		ropRead.setIsBalanceClearanceOnOutpayment(true);
@@ -1045,48 +1087,50 @@ public class EntireReadUtil {
 		}
 
 		String preActiveEndDate = subscriber.getMetas().get("PreActiveEndDate");
-		logger.debug(" preActiveEndDate Before formatting is " + preActiveEndDate);
-		if (preActiveEndDate != null) {
-			
+		if (preActiveEndDate == null)
+			ropRead.setPreActiveEndDate("NOW");
+		else
 			try {
-				SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-				Date date = storeFormat.parse(preActiveEndDate);
-				SimpleDateFormat nsnFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-				ropRead.setPreActiveEndDate(nsnFormat.format(date));
-				logger.debug(" preActiveEndDate After formatting is " + ropRead.getPreActiveEndDate());
-				
+				metaStoreFormat.parse(preActiveEndDate);
+				ropRead.setPreActiveEndDate(preActiveEndDate);
 			} catch (ParseException e) {
-				logger.error("Date ParseException ", e);
+				logger.error("Unparseable date(preActiveEndDate): " + preActiveEndDate);
+				ropRead.setPreActiveEndDate("NOW");
 			}
-		} else {
-			logger.error("PreActiveEndDate was not found in IL DB!!!");
-		}
 
+	
 		ropRead.setLastKnownPeriod(subscriber.getContractState());
 		ropRead.setS_CRMTitle("-");
 		
 		ropRead.setIsLocked(Boolean.parseBoolean(subscriber.getMetas().get("IsLocked")));
-//		if (tag != null && tag.isSmartTag()) {
-//			ropRead.setIsLocked(true);
-//		} else {
-//			ropRead.setIsLocked(false);
-//		}
 
 		return ropRead;
 	}
 
 	private static RopBucketRead createRopBucketRead(Subscriber subscriber) {
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		
 		RopBucketRead read = new RopBucketRead();
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setbCategory("ONLINE");
 		read.setbInvalidFrom(SmartConstants.MAX_DATETIME);
 
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		logger.debug("read.subscriber.bValidFro : " + subscriber.getActiveDate());
-		if (subscriber.getActiveDate() != null)
-			read.setbValidFrom(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
-		logger.debug("read.bValidFrom. bValidFrom : " + read.getbValidFrom());
-
+		String date = subscriber.getMetas().get("bValidFrom");
+		if (date == null)
+			read.setbValidFrom(metaStoreFormat.format(new Date()));
+		else
+			try {
+				metaStoreFormat.parse(date);
+				read.setbValidFrom(subscriber.getMetas().get("bValidFrom"));
+			} catch (ParseException e) {
+				logger.error("Unparseable date(bValidFrom): " + date);
+				logger.debug("Setting bValidFrom to 'NOW'");
+				read.setbValidFrom("NOW");
+			}
+		
+		logger.debug("bucketRead. bValidFrom : " + read.getbValidFrom());
+		
 		String peakFullBalance = getDedicatedAccount(subscriber, "1");
 		if (peakFullBalance != null)
 			read.setOnPeakFuBalance(Long.parseLong(peakFullBalance));
@@ -1094,32 +1138,41 @@ public class EntireReadUtil {
 		return read;
 	}
 
-	private static RopVersionRead createRopVersionRead(Subscriber subscriber,
-			Date currentTime) {
+	private static RopVersionRead createRopVersionRead(Subscriber subscriber, Date currentTime) {
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		
 		RopVersionRead read = new RopVersionRead();
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setCategory("ONLINE");
 		read.setKey(1);
 
 		String offerExpiryDateTime = getOfferExpiryDateTime(subscriber);
-		logger.debug("createRopVersionRead getOfferExpiryDateTime "
-				+ offerExpiryDateTime);
+		logger.debug("createRopVersionRead getOfferExpiryDateTime " + offerExpiryDateTime);
 		if (offerExpiryDateTime != null)
 			read.setOnPeakAccountExpiryDate(DateUtil.convertDateToString(new Date(Long.parseLong(offerExpiryDateTime))));
-		logger.debug("createRopVersionRead getOnPeakAccountExpiryDate "
-				+ read.getOnPeakAccountExpiryDate());
+		logger.debug("createRopVersionRead getOnPeakAccountExpiryDate " + read.getOnPeakAccountExpiryDate());
 
 		read.setsOfferId("TnT");
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		logger.debug("createRopVersionRead.subscriber.getActiveDate() : "
-				+ subscriber.getActiveDate());
+		logger.debug("createRopVersionRead.subscriber.getActiveDate() : " + subscriber.getActiveDate());
 		if (subscriber.getActiveDate() != null)
-			read.setvValidFrom(DateUtil.convertDateToString(new Date(subscriber
-					.getActiveDate())));
+			read.setvValidFrom(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
 
-		logger.debug("createRopVersionRead.setvValidFrom. bValidFrom : "
-				+ read.getvValidFrom());
-		read.setvInvalidFrom(SmartConstants.MAX_DATETIME);
+		String date = subscriber.getMetas().get("vValidFrom");
+		if (date == null)
+			read.setvValidFrom(metaStoreFormat.format(new Date()));
+		else
+			try {
+				metaStoreFormat.parse(date);
+				read.setvValidFrom(subscriber.getMetas().get("vValidFrom"));
+			} catch (ParseException e) {
+				logger.error("Unparseable date(vValidFrom): " + date);
+				logger.debug("Setting bValidFrom to 'NOW'");
+				read.setvValidFrom("NOW");
+			}
+		logger.debug("versionRead. vValidFrom : " + read.getvValidFrom());
+		
+		
 
 		return read;
 	}
