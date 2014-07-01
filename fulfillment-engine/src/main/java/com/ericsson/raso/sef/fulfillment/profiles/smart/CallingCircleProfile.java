@@ -213,7 +213,8 @@ public final class CallingCircleProfile extends RefillProfile {
 					CallingCircle edrEntry = new CallingCircle(this.subscriberId, this.prodcatOffer, this.subscriberId, this.memberB, CallingCircleRelation.SPONSER_MEMBER, this.fafIndicatorSponsorMember, this.callingCircleExpiry);
 					CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Update CS-AIR/DB for Calling Circle Membership failed");
 					breakFlow = true;
-				}
+				} else 
+					logger.debug("Completed adding/updating all members to this circle...");
 			} catch (SmException e) {
 				logger.debug("Cannot update FAF Info to CS-AIR/DB. Send Sorry and stop", e);
 				this.sendSorryMessage(NotificationMessageEvent.UpdateFafFailed.getEventName(), this.subscriberId);

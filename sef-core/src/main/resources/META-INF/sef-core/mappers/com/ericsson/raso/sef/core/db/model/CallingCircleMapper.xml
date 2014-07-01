@@ -30,8 +30,8 @@
 		#{prodcatOffer
 		jdbcType=VARCHAR},
 		#{memberA jdbcType=VARCHAR},
-		#{memberB
-		jdbcType=VARCHAR},
+		#{memberB jdbcType=VARCHAR},
+		#{relationship jdbcType=VARCHAR},
 		#{fafIndicator jdbcType=VARCHAR},
 		#{creationTime
 		jdbcType=TIMESTAMP},
