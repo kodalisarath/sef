@@ -43,12 +43,12 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 		if (callingCircle == null) 
 			throw new PersistenceError(nbCorrelator, "Calling Circle", new ResponseCode(ApplicationContextError, "The given value for Calling Circle was null"));
 		
+		logger.debug("Check before insert: " + callingCircle);
 		if (callingCircle.getOwner() == null ||
 				callingCircle.getMemberA() == null ||
 				callingCircle.getMemberB() == null ||
 				callingCircle.getProdcatOffer() == null ||
 				callingCircle.getRelationship() == null ||
-				callingCircle.getCreationTime() == null ||
 				callingCircle.getExpiryTime() == null) {
 			throw new PersistenceError(nbCorrelator, "Calling Circle", new ResponseCode(FunctionalDataError, "The given value for Calling Circle was empty with all attributes"));
 		}
