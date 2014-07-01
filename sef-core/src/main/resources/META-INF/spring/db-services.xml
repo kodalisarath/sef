@@ -23,9 +23,9 @@
           <property name="password" value="3r1c5s0n" />
           <property name="testWhileIdle" value="true"/>
           <property name="testOnReturn" value="false"/>
-          <property name="validationQuery" value="select 1 from dual"/>
+<!--           <property name="validationQuery" value="select 1 from dual"/>
           <property name="validationQueryTimeout" value="30000"/>
-          <property name="timeBetweenEvictionRunsMillis" value="5000"/>
+ -->          <property name="timeBetweenEvictionRunsMillis" value="5000"/>
           <property name="maxActive" value="100"/>
           <property name="maxIdle" value="80"/>
           <property name="minIdle" value="10"/>
