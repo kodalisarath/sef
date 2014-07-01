@@ -3,6 +3,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -665,18 +666,42 @@ public class Offer implements Serializable {
 		
 		if (isTrialAllowed) {
 			// Make the scheduler call this offer at the end of trial period...
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.trialPeriod.getExpiryTimeInMillis(), metas));
+			//TODO: This hack is need for SMART.. please remove this shit before it goes to any other good customer....
+			if (metas == null) 
+				metas = new HashMap<String, Object>();
+			metas.put("SUBSCRIPTION_ID", purchase.getSubscriberId());
+			
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, this.name, subscriberId, this.trialPeriod.getExpiryTimeInMillis(), metas));
+			//tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, this.trialPeriod.getExpiryTimeInMillis(), metas));
 		} else {
 			if (this.isRecurrent) {
-				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
+				//TODO: This hack is need for SMART.. please remove this shit before it goes to any other good customer....
+				if (metas == null) 
+					metas = new HashMap<String, Object>();
+				metas.put("SUBSCRIPTION_ID", purchase.getSubscriberId());
+				
+				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, this.name, subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
+//				tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.RENEWAL, purchase.getSubscriptionId(), subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
 			} else {
 				if (!(this.renewalPeriod instanceof InfiniteTime))
-					tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, purchase.getSubscriptionId(), subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
+					//TODO: This hack is need for SMART.. please remove this shit before it goes to any other good customer....
+					if (metas == null) 
+						metas = new HashMap<String, Object>();
+					metas.put("SUBSCRIPTION_ID", purchase.getSubscriberId());
+					
+					tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, this.name, subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
+//					tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, purchase.getSubscriptionId(), subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
 			}
 		}
 		
 		if (this.autoTermination != null && !(this.autoTermination instanceof NoTermination)) {
 			long scheduledFinalExpiry = this.autoTermination.getTerminationTime(System.currentTimeMillis(), purchase.getRenewalPeriod().getExpiryTimeInMillis());
+			//TODO: This hack is need for SMART.. please remove this shit before it goes to any other good customer....
+			if (metas == null) 
+				metas = new HashMap<String, Object>();
+			metas.put("SUBSCRIPTION_ID", purchase.getSubscriberId());
+			
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, this.name, subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
 			LOGGER.debug("Placing final expiry date to auto-termination case: ");
 		}
 		
