@@ -437,7 +437,7 @@ public final class CallingCircleProfile extends RefillProfile {
 	private void updateFaf(String subscriberId, CallingCircle callingCircle, String fafAction) throws SmException {
 		List<FafInformation> updateFafInfo = new ArrayList<FafInformation>();
 		FafInformation fafInfo = new FafInformation();
-		fafInfo.setOwner("SUBSCRIBER");
+		fafInfo.setOwner("Subscriber");
 		fafInfo.setFafIndicator(Integer.parseInt(callingCircle.getFafIndicator()));
 		fafInfo.setFafNumber(callingCircle.getMemberB());
 		updateFafInfo.add(fafInfo);
