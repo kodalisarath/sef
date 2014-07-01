@@ -44,8 +44,8 @@
 		relationship, faf_indicator, creation_datetime, expiry_datetime
 		FROM
 		callingcircle
-		WHERE owner=#{owner}
-		AND product_offer=#{prodcatOffer}
+		WHERE owner=#{param1}
+		AND product_offer=#{param2}
 	</select>
 
 	<select id="fetchCallingCirclesWithMembershipFor" resultMap="CallingCircleResult" parameterType="String">
@@ -60,9 +60,9 @@
 	<select id="fetchCallingCircleMemberCountForOwner" resultType="Integer"  parameterType="map">
 		SELECT COUNT(*)
 		FROM callingcircle
-		WHERE owner=#{owner jdbcType=VARCHAR}
-		AND product_offer=#{prodcatOffer jdbcType=VARCHAR}
-		AND member_b=#{memberB jdbcType=VARCHAR}
+		WHERE owner=#{param2}
+		AND product_offer=#{param3}
+		AND member_b=#{param4}
 		AND relationship='SPONSER_MEMBER'
 	</select>
 
@@ -70,8 +70,8 @@
 		SELECT owner, product_offer, member_a, member_b,
 		relationship, faf_indicator, creation_datetime, expiry_datetime
 		FROM callingcircle
-		WHERE owner=#{owner}
-		AND product_offer=#{prodcatOffer}
+		WHERE owner=#{param2}
+		AND product_offer=#{param3}
 		AND relationship='SPONSER_MEMBER'
 	</select>
 
@@ -79,8 +79,8 @@
 		SELECT UNIQUE member_a
 		FROM callingcircle
 		WHERE
-		owner=#{owner}
-		AND product_offer=#{prodcatOffer}
+		owner=#{param2}
+		AND product_offer=#{param3}
 		AND
 		relationship='MEMBER_MEMBER'
 	</select>
@@ -89,24 +89,24 @@
 		SELECT UNIQUE member_a
 		FROM callingcircle
 		WHERE
-		owner=#{owner}
-		AND product_offer=#{prodcatOffer}
+		owner=#{param2}
+		AND product_offer=#{param3}
 	</select>
 
 	<select id="fetchCallingCircleMemberCountForMember" resultType="Integer" parameterType="map">
 		SELECT COUNT(*)
 		FROM callingcircle
-		WHERE owner!=#{owner}
-		AND product_offer=#{prodcatOffer}
-		AND member_b=#{memberB}
+		WHERE owner!=#{param2}
+		AND product_offer=#{param3}
+		AND member_b=#{param4}
 		AND relationship='SPONSER_MEMBER'
 	</select>
 
-	<delete id="deleteCallingCircle" parameterType="map" flushCache="true">
+	<delete id="deleteCallingCircle" flushCache="true" parameterType="map">
 		DELETE FROM callingcircle
-		WHERE owner=#{owner}
+		WHERE owner=#{param1}
 		AND
-		product_offer=#{prodcatOffer}
+		product_offer=#{param2}
 	</delete>
 
 
