@@ -118,8 +118,11 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 		if (metas != null && metas.containsKey(Constants.TXN_ENGINE_OFFER_ID))
 			offerId = (String) metas.get(Constants.TXN_ENGINE_OFFER_ID);
 
-		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, null, null, subscriptionId,
+		
+		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, offerId, subscriberId, subscriptionId,
 				SubscriptionLifeCycleEvent.EXPIRY, override, metas);
+		
+		
 		executor.submit(command);
 		return requestId;
 	}
@@ -148,8 +151,10 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 			subscriberId = (String) metas.get(Constants.TXN_ENGINE_SUBSCRIBER_ID);
 		if (metas != null && metas.containsKey(Constants.TXN_ENGINE_OFFER_ID))
 			offerId = (String) metas.get(Constants.TXN_ENGINE_OFFER_ID);
-		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, null, null, subscriptionId,
+		
+		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, offerId, subscriberId, subscriptionId,
 				SubscriptionLifeCycleEvent.PRE_EXPIRY, override, metas);
+	
 		executor.submit(command);
 		return requestId;
 	}
@@ -163,8 +168,9 @@ public class TransactionManager implements ISubscriberRequest, ISubscriptionRequ
 			subscriberId = (String) metas.get(Constants.TXN_ENGINE_SUBSCRIBER_ID);
 		if (metas != null && metas.containsKey(Constants.TXN_ENGINE_OFFER_ID))
 			offerId = (String) metas.get(Constants.TXN_ENGINE_OFFER_ID);
-		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, null, null, subscriptionId,
+		HandleSubscriptionEvent command = new HandleSubscriptionEvent(requestId, offerId, subscriberId, subscriptionId,
 				SubscriptionLifeCycleEvent.PRE_RENEWAL, override, metas);
+	
 		executor.submit(command);
 		return requestId;
 	}
