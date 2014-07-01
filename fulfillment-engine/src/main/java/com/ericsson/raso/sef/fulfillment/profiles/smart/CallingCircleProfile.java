@@ -242,10 +242,12 @@ public final class CallingCircleProfile extends RefillProfile {
 		 */
 		try {
 			if (!breakFlow && this.freebieType != null && this.freebieType.equals("OFFER")) {
+				logger.debug("Calling circle members provisioned. B-Party gets a Freebie Offer...");
 				this.updateFreebieOffer(memberB);
 			}
 
 			if (!breakFlow && this.freebieType != null && this.freebieType.equals("REFILL")) {
+				logger.debug("Calling circle members provisioned. B-Party gets a Freebie Refill...");
 				this.performFreebieRefill(memberB);
 			}
 			

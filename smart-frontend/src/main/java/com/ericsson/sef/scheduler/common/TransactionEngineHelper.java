@@ -25,25 +25,19 @@ import com.hazelcast.core.ISemaphore;
 
 public abstract class TransactionEngineHelper {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(TransactionEngineHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(TransactionEngineHelper.class);
 
-	public static SubscriberInfo getSubscriberInfo(String msisdn)
-			throws SmException {
+	public static SubscriberInfo getSubscriberInfo(String msisdn) throws SmException {
 
 		logger.debug("Entering TransactionEngineHelper.....getSubscriberInfo ");
 		String requestId = UniqueIdGenerator.generateId();
-		logger.debug("Generated TransactionEngineHelper Request ID..... "
-				+ requestId);
+		logger.debug("Generated TransactionEngineHelper Request ID..... " + requestId);
 		SubscriberInfo subscriberInfo = new SubscriberInfo();
 		logger.debug("Entering SchedulerServiceHelper.....");
-		ISubscriberRequest subscriberRequest = SmartServiceResolver
-				.getBean(ISubscriberRequest.class);
-		String correlationId = subscriberRequest.readSubscriber(requestId,
-				msisdn, null);
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getBean(ISubscriberRequest.class);
+		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, null);
 		SubscriberResponseStore.put(correlationId, subscriberInfo);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
 			semaphore.acquire();
@@ -52,28 +46,23 @@ public abstract class TransactionEngineHelper {
 			logger.debug("Exception while sleep     :" + e.getMessage());
 		}
 		semaphore.destroy();
-		logger.debug("Awake from sleep.. going to check subscriber response in store with id: "
-				+ correlationId);
+		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
 
-		subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.get(correlationId);
+		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
 
 		return subscriberInfo;
 	}
 
-	public static PurchaseResponse purchase(String offerId,
-			String subscriberId, List<Meta> metas) throws SmException {
+	public static PurchaseResponse purchase(String offerId, String subscriberId, List<Meta> metas) throws SmException {
 
 		logger.debug("Entering TransactionEngineHelper.....purchase ");
-		ISubscriptionRequest iSubscriptionRequest =  SmartServiceResolver.getSubscriptionRequest();
+		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
-		String resultId = iSubscriptionRequest.purchase(requestId, offerId,
-				subscriberId, true, metas);
-		PurchaseResponse purchaseResponse = null;
+		String resultId = iSubscriptionRequest.purchase(requestId, offerId, subscriberId, true, metas);
+		PurchaseResponse purchaseResponse = new PurchaseResponse();
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, purchaseResponse);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 
 		try {
 			semaphore.init(0);
@@ -84,11 +73,9 @@ public abstract class TransactionEngineHelper {
 		}
 		semaphore.destroy();
 
-		logger.debug("Awake from sleep.. going to check response in store with id: "
-				+ resultId);
+		logger.debug("Awake from sleep.. going to check response in store with id: " + resultId);
 
-		purchaseResponse = (PurchaseResponse) RequestCorrelationStore
-				.remove(requestId);
+		purchaseResponse = (PurchaseResponse) RequestCorrelationStore.remove(requestId);
 
 		logger.debug("PurchaseResponse recieved here is " + purchaseResponse);
 		if (purchaseResponse == null) {
@@ -100,20 +87,18 @@ public abstract class TransactionEngineHelper {
 
 	}
 
-	public static SubscriptionEventResponse renew(String offerId,String subscriberId, String subscriptionId,
-			List<Meta> metas) throws SmException {
+	public static SubscriptionEventResponse
+			renew(String offerId, String subscriberId, String subscriptionId, List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....renew ");
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
-		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID,subscriberId));
-		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID,offerId));
+		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID, subscriberId));
+		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID, offerId));
 		String requestId = UniqueIdGenerator.generateId();
-		String resultId = iSubscriptionRequest.renew(requestId, subscriptionId,
-				true, metas);
+		String resultId = iSubscriptionRequest.renew(requestId, subscriptionId, true, metas);
 		SubscriptionEventResponse subscriptionEventResponse = null;
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 
 		try {
 			semaphore.init(0);
@@ -124,14 +109,11 @@ public abstract class TransactionEngineHelper {
 		}
 		semaphore.destroy();
 
-		logger.debug("Awake from sleep.. going to check response in store with id: "
-				+ resultId);
+		logger.debug("Awake from sleep.. going to check response in store with id: " + resultId);
 
-		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore
-				.remove(requestId);
+		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore.remove(requestId);
 
-		logger.debug("SubscriptionEventResponse recieved here is "
-				+ subscriptionEventResponse);
+		logger.debug("SubscriptionEventResponse recieved here is " + subscriptionEventResponse);
 		if (subscriptionEventResponse == null) {
 			logger.debug("No response arrived???");
 			throw new SmException(ErrorCode.internalServerError);
@@ -141,22 +123,20 @@ public abstract class TransactionEngineHelper {
 
 	}
 
-	public static SubscriptionEventResponse expiry(String offerId,String subscriberId, String subscriptionId,
-			List<Meta> metas) throws SmException {
+	public static SubscriptionEventResponse
+			expiry(String offerId, String subscriberId, String subscriptionId, List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....expiry ");
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
-	
-		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID,subscriberId));
-		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID,offerId));
-		
-		String resultId = iSubscriptionRequest.expiry(requestId,
-				subscriptionId, true, metas);
+
+		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID, subscriberId));
+		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID, offerId));
+
+		String resultId = iSubscriptionRequest.expiry(requestId, subscriptionId, true, metas);
 		SubscriptionEventResponse subscriptionEventResponse = null;
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 
 		try {
 			semaphore.init(0);
@@ -167,14 +147,11 @@ public abstract class TransactionEngineHelper {
 		}
 		semaphore.destroy();
 
-		logger.debug("Awake from sleep.. going to check response in store with id: "
-				+ resultId);
+		logger.debug("Awake from sleep.. going to check response in store with id: " + resultId);
 
-		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore
-				.remove(requestId);
+		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore.remove(requestId);
 
-		logger.debug("SubscriptionEventResponse recieved here is "
-				+ subscriptionEventResponse);
+		logger.debug("SubscriptionEventResponse recieved here is " + subscriptionEventResponse);
 		if (subscriptionEventResponse == null) {
 			logger.debug("No response arrived???");
 			throw new SmException(ErrorCode.internalServerError);
@@ -184,24 +161,20 @@ public abstract class TransactionEngineHelper {
 
 	}
 
-
-
-	public static SubscriptionEventResponse terminate(String offerId,String subscriberId, String subscriptionId,
-			List<Meta> metas) throws SmException {
+	public static SubscriptionEventResponse
+			terminate(String offerId, String subscriberId, String subscriptionId, List<Meta> metas) throws SmException {
 		logger.debug("Entering TransactionEngineHelper.....terminate ");
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 		String requestId = UniqueIdGenerator.generateId();
-		
-		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID,subscriberId));
-		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID,offerId));
-		
-		String resultId = iSubscriptionRequest.terminate(requestId,
-				subscriptionId, true, metas);
+
+		metas.add(new Meta(Constants.TXN_ENGINE_SUBSCRIBER_ID, subscriberId));
+		metas.add(new Meta(Constants.TXN_ENGINE_OFFER_ID, offerId));
+
+		String resultId = iSubscriptionRequest.terminate(requestId, subscriptionId, true, metas);
 		SubscriptionEventResponse subscriptionEventResponse = null;
 		logger.debug("Got past event class....");
 		RequestCorrelationStore.put(resultId, subscriptionEventResponse);
-		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster()
-				.getSemaphore(requestId);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 
 		try {
 			semaphore.init(0);
@@ -212,14 +185,11 @@ public abstract class TransactionEngineHelper {
 		}
 		semaphore.destroy();
 
-		logger.debug("Awake from sleep.. going to check response in store with id: "
-				+ resultId);
+		logger.debug("Awake from sleep.. going to check response in store with id: " + resultId);
 
-		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore
-				.remove(requestId);
+		subscriptionEventResponse = (SubscriptionEventResponse) RequestCorrelationStore.remove(requestId);
 
-		logger.debug("SubscriptionEventResponse recieved here is "
-				+ subscriptionEventResponse);
+		logger.debug("SubscriptionEventResponse recieved here is " + subscriptionEventResponse);
 		if (subscriptionEventResponse == null) {
 			logger.debug("No response arrived???");
 			throw new SmException(ErrorCode.internalServerError);
@@ -228,8 +198,8 @@ public abstract class TransactionEngineHelper {
 		return subscriptionEventResponse;
 
 	}
-	public static List<Meta> convertScheduledReqMetasToAPIMetas(
-			List<ScheduledRequestMeta> scheduledRequestMetaList) {
+
+	public static List<Meta> convertScheduledReqMetasToAPIMetas(List<ScheduledRequestMeta> scheduledRequestMetaList) {
 		List<Meta> apiMetaList = new ArrayList<Meta>();
 		Meta meta = null;
 		for (ScheduledRequestMeta scheduledRequestMeta : scheduledRequestMetaList) {
@@ -241,8 +211,7 @@ public abstract class TransactionEngineHelper {
 		return apiMetaList;
 	}
 
-	public static List<ScheduledRequestMeta> convertAPIMetasToScheduledReqMetas(
-			List<Meta> apiMetaList) {
+	public static List<ScheduledRequestMeta> convertAPIMetasToScheduledReqMetas(List<Meta> apiMetaList) {
 		List<ScheduledRequestMeta> scedhuledReqMetaList = new ArrayList<ScheduledRequestMeta>();
 		ScheduledRequestMeta scheduledRequestMeta = null;
 		for (Meta meta : apiMetaList) {
