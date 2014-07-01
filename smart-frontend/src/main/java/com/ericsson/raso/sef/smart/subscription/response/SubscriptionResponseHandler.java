@@ -25,10 +25,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setOffers(offers);
-		RequestCorrelationStore.put(requestCorrelator, response);
-
+		if ( response != null){
+			response.setFault(fault);
+			response.setOffers(offers);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
@@ -40,9 +41,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setOffers(offers);
-		RequestCorrelationStore.put(requestCorrelator, response);
+		if ( response != null){
+			response.setFault(fault);
+			response.setOffers(offers);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
@@ -55,9 +58,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setOffer(offer);
-		RequestCorrelationStore.put(requestCorrelator, response);
+		if ( response != null){
+			response.setFault(fault);
+			response.setOffer(offer);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
@@ -70,10 +75,12 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		DiscoveryResponse response = (DiscoveryResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setOffer(offer);
-		response.setFault(fault);
-		RequestCorrelationStore.put(requestCorrelator, response);
+		if ( response != null){
+			response.setOffer(offer);
+			response.setFault(fault);
+			RequestCorrelationStore.put(requestCorrelator, response);
 		logger.debug("Successfully set the response object in response store: " + response);
+		}
 
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
@@ -87,10 +94,12 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setMonetaryAmount(priceAmount);
-		response.setCurrency(iso4217);
-		RequestCorrelationStore.put(requestCorrelator, response);
+		if ( response != null){
+			response.setFault(fault);
+			response.setMonetaryAmount(priceAmount);
+			response.setCurrency(iso4217);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
@@ -103,11 +112,13 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		PurchaseResponse response = (PurchaseResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setBillingMetas(billingMetas);
-		response.setProducts(products);
-		response.setSubscriptionId(subscriptionId);
-		response.setFault(fault);
-		RequestCorrelationStore.put(requestCorrelator, response);
+		if ( response != null){
+			response.setBillingMetas(billingMetas);
+			response.setProducts(products);
+			response.setSubscriptionId(subscriptionId);
+			response.setFault(fault);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
@@ -120,9 +131,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setResult(result);
-		RequestCorrelationStore.put(requestCorrelator, response);
+		if ( response != null){
+			response.setFault(fault);
+			response.setResult(result);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
@@ -135,10 +148,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setResult(result);
-		RequestCorrelationStore.put(requestCorrelator, response);
-
+		if ( response != null){
+			response.setFault(fault);
+			response.setResult(result);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
@@ -150,9 +164,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setResult(result);
-		RequestCorrelationStore.put(requestCorrelator, response);
+		if ( response != null){
+			response.setFault(fault);
+			response.setResult(result);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
@@ -165,10 +181,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setResult(result);
-		RequestCorrelationStore.put(requestCorrelator, response);
-
+		if ( response != null){
+			response.setFault(fault);
+			response.setResult(result);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
@@ -181,10 +198,12 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setResult(result);
-		RequestCorrelationStore.put(requestCorrelator, response);
-
+		if ( response != null){
+			response.setFault(fault);
+			response.setResult(result);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
+		
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
@@ -197,10 +216,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setSubscription(subscription);
-		RequestCorrelationStore.put(requestCorrelator, response);
-
+		if ( response != null){
+			response.setFault(fault);
+			response.setSubscription(subscription);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
@@ -213,10 +233,11 @@ public class SubscriptionResponseHandler implements ISubscriptionResponse {
 		
 		//Step 1: Place the response in a location where the original node can access
 		SubscriptionEventResponse response = (SubscriptionEventResponse) RequestCorrelationStore.get(requestCorrelator);
-		response.setFault(fault);
-		response.setOffer(offer);
-		RequestCorrelationStore.put(requestCorrelator, response);
-
+		if ( response != null){
+			response.setFault(fault);
+			response.setOffer(offer);
+			RequestCorrelationStore.put(requestCorrelator, response);
+		}
 		//Step 2: Trigger the original node that is waiting for response
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestCorrelator);
 		semaphore.release();
