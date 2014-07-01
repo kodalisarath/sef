@@ -195,5 +195,21 @@ public final class AtomicProduct extends Product implements Serializable, Compar
 		
 	}
 
+	@Override
+	public String toString() {
+		return "AtomicProduct [name()=" + getName() 
+				+ ", owner()=" + getOwner() 
+				+ ", criteria()=" + getCriteria() 
+				+ ", resource=" + resource 
+				+ ", quota=" + quota 
+				+ ", validity=" + validity 
+				+ ", metas=" + metas
+				+ ", suppressFulfilment=" + suppressFulfilment 
+				+ ", resetQuotaOnRenewal=" + resetQuotaOnRenewal + "]";
+	}
+
+	
+	
+
 
 }
