@@ -94,7 +94,7 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 
 		
 		try {
-			CallingCircle returned = callingCircleMapper.fetchCallingCircle(query);
+			CallingCircle returned = callingCircleMapper.fetchCallingCircle(query.getOwner(), query.getProdcatOffer());
 			
 			if (returned != null) {
 				returned.setOwner(query.getOwner());
@@ -133,7 +133,7 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 		}
 
 		try {
-			Integer memberCount = callingCircleMapper.fetchCallingCircleMemberCountForOwner(nbCorrelator, query);
+			Integer memberCount = callingCircleMapper.fetchCallingCircleMemberCountForOwner(nbCorrelator, query.getOwner(), query.getProdcatOffer(), query.getMemberB());
 			
 			if (memberCount == null) {
 				return 0;
@@ -170,7 +170,7 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 		}
 
 		try {
-			Integer memberCount = callingCircleMapper.fetchCallingCircleMemberCountForMember(nbCorrelator, query);
+			Integer memberCount = callingCircleMapper.fetchCallingCircleMemberCountForMember(nbCorrelator, query.getOwner(), query.getProdcatOffer(), query.getMemberB());
 			
 			if (memberCount == null) {
 				return 0;
@@ -240,7 +240,7 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 		}
 
 		try {
-			Collection<String> members = callingCircleMapper.fetchAllCallingCircleMembers(nbCorrelator, query);
+			Collection<String> members = callingCircleMapper.fetchAllCallingCircleMembers(nbCorrelator, query.getOwner(), query.getProdcatOffer());
 			Collection<String> membersClear = new ArrayList<String>();
 			for (String member: members)
 				membersClear.add((String)encryptor.decrypt(org.apache.commons.codec.binary.Base64.decodeBase64(member)));
@@ -278,7 +278,7 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 		}
 
 		try {
-			Collection<String> members = callingCircleMapper.fetchCallingCircleMembersOnly(nbCorrelator, query);
+			Collection<String> members = callingCircleMapper.fetchCallingCircleMembersOnly(nbCorrelator, query.getOwner(), query.getProdcatOffer());
 			Collection<String> membersClear = new ArrayList<String>();
 			for (String member: members)
 				membersClear.add((String)encryptor.decrypt(org.apache.commons.codec.binary.Base64.decodeBase64(member)));
@@ -321,7 +321,7 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 		}
 		
 		try {
-			 callingCircleMapper.deleteCallingCircle(delete);
+			 callingCircleMapper.deleteCallingCircle(delete.getOwner(), delete.getProdcatOffer());
 		} catch(PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get calling circle with the provided query params"), e);
@@ -349,7 +349,7 @@ public class CallingCircleServiceImpl implements CallingCircleService {
 		}
 		
 		try {
-			 callingCircleMapper.deleteCallingCircle(delete);
+			 callingCircleMapper.deleteCallingCircle(delete.getOwner(), delete.getProdcatOffer());
 		} catch(PersistenceException e) {
 			logger.error("Encountered Persistence Error. Cause: "+ e.getCause().getClass().getCanonicalName(), e);
 			throw new PersistenceError(nbCorrelator, this.getClass().getName(),new ResponseCode(InfrastructureError,"Failed to get calling circle with the provided query params"), e);

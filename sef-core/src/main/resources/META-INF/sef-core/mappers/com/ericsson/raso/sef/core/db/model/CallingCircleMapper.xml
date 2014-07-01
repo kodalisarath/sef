@@ -39,7 +39,7 @@
 	</insert>
 
 	<select id="fetchCallingCircle" resultMap="CallingCircleResult"
-		parameterType="CallingCircle">
+		parameterType="map">
 		SELECT owner, product_offer, member_a, member_b,
 		relationship, faf_indicator, creation_datetime, expiry_datetime
 		FROM
@@ -48,8 +48,7 @@
 		AND product_offer=#{prodcatOffer}
 	</select>
 
-	<select id="fetchCallingCirclesWithMembershipFor" resultMap="CallingCircleResult"
-		parameterType="String">
+	<select id="fetchCallingCirclesWithMembershipFor" resultMap="CallingCircleResult" parameterType="String">
 		SELECT owner, product_offer, member_a, member_b,
 		relationship, faf_indicator, creation_datetime, expiry_datetime
 		FROM
@@ -58,8 +57,7 @@
 		member_b=#{subscriberId}
 	</select>
 
-	<select id="fetchCallingCircleMemberCountForOwner" resultType="Integer"
-		parameterType="CallingCircle">
+	<select id="fetchCallingCircleMemberCountForOwner" resultType="Integer"  parameterType="map">
 		SELECT COUNT(*)
 		FROM callingcircle
 		WHERE owner=#{owner jdbcType=VARCHAR}
@@ -68,8 +66,7 @@
 		AND relationship='SPONSER_MEMBER'
 	</select>
 
-	<select id="fetchCallingCircleMembersForOwner" resultType="Integer"
-		parameterType="CallingCircle">
+	<select id="fetchCallingCircleMembersForOwner" resultType="Integer" parameterType="map">
 		SELECT owner, product_offer, member_a, member_b,
 		relationship, faf_indicator, creation_datetime, expiry_datetime
 		FROM callingcircle
@@ -78,8 +75,7 @@
 		AND relationship='SPONSER_MEMBER'
 	</select>
 
-	<select id="fetchCallingCircleMembersOnly" resultType="Integer"
-		parameterType="CallingCircle">
+	<select id="fetchCallingCircleMembersOnly" resultType="Integer" parameterType="map">
 		SELECT UNIQUE member_a
 		FROM callingcircle
 		WHERE
@@ -89,8 +85,7 @@
 		relationship='MEMBER_MEMBER'
 	</select>
 
-	<select id="fetchAllCallingCircleMembers" resultType="String"
-		parameterType="CallingCircle">
+	<select id="fetchAllCallingCircleMembers" resultType="String" parameterType="map">
 		SELECT UNIQUE member_a
 		FROM callingcircle
 		WHERE
@@ -98,18 +93,16 @@
 		AND product_offer=#{prodcatOffer}
 	</select>
 
-	<select id="fetchCallingCircleMemberCountForMember" resultType="Integer"
-		parameterType="CallingCircle">
+	<select id="fetchCallingCircleMemberCountForMember" resultType="Integer" parameterType="map">
 		SELECT COUNT(*)
 		FROM callingcircle
-		WHERE owner&lt;>#{owner}
+		WHERE owner!=#{owner}
 		AND product_offer=#{prodcatOffer}
 		AND member_b=#{memberB}
 		AND relationship='SPONSER_MEMBER'
 	</select>
 
-	<delete id="deleteCallingCircle" parameterType="CallingCircle"
-		flushCache="true">
+	<delete id="deleteCallingCircle" parameterType="map" flushCache="true">
 		DELETE FROM callingcircle
 		WHERE owner=#{owner}
 		AND
