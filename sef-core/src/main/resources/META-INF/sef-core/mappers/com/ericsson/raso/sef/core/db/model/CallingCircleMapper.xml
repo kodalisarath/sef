@@ -54,7 +54,7 @@
 		FROM
 		callingcircle
 		WHERE member_a=#{subscriberId} OR
-		member_b=#{subscriberId}
+		member_b=#{subscriberId} 
 	</select>
 
 	<select id="fetchCallingCircleMemberCountForOwner" resultType="Integer"  parameterType="map">
