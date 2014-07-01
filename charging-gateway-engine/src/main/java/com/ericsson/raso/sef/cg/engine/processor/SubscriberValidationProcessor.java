@@ -44,13 +44,14 @@ public class SubscriberValidationProcessor implements Processor {
 		} catch (SmException e) {
 			log.error("Exception in ChargingGatewayEngine.SubscriberValidationProcessor "+e.getMessage(), e);
 			if(e.getStatusCode().getCode() == 102) {
+				log.error("TRYING TO GET SUBSCRIBER AND NOT FOUND" + msisdn);
 				throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);
 			} else throw e;
 		}
 		
-		log.debug("SubscriberInfo in charging gateway engine: "+subscriberInfo  +" & msisdn: "+msisdn);
+		log.error("SubscriberInfo in charging gateway engine: "+subscriberInfo  +" & msisdn: "+msisdn);
 		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0){
-			log.debug("Inside the if condition for status check");
+			log.error("Inside the if condition for status check" + msisdn);
 			throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);
 		}
 		  

@@ -44,10 +44,18 @@
 		xmlns="http://camel.apache.org/schema/spring">
 		<propertyPlaceholder id="properties" location="ref:cgProperties" />
 		<route id="cg-engine-route-dispatch">
-			<from uri="direct:charging-gateway" />
+			<from uri="seda:charging-gateway?concurrentConsumers=500" />
 			<camel:marshal ref="gson"/>
 			<camel:log message="From Charging Gateway :${body}"/>
 			<!-- <camel:to uri="http://0.0.0.0:9090/charginggateway/CgWeb/process"/> -->
+		<!-- 	<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="CamelHttpQuery">
+				<constant>connectionsPerRoute=200</constant>
+			</setHeader> -->
+			<!-- <camel:bean
+					beanType="com.ericsson.raso.sef.charginggateway.ExchangeHeaderProcessor" /> -->
 			<camel:to uri="{{chargingGatewayEngineUrl}}" />
 			<camel:unmarshal ref="gson"/>
 		</route>

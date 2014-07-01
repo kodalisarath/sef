@@ -59,7 +59,7 @@ public class CgRequestListener implements ApplicationRequestListener {
 
 			log.debug("CgiRequestListener  ..Set the AVp.");
 			ChargingInfo response = producerTemplate.requestBody(
-					"direct:charging-gateway", chargingRequest,
+					"seda:charging-gateway", chargingRequest,
 					ChargingInfo.class);
 
 			answer = createAnswer(request, response.getResultCodeAvp()
