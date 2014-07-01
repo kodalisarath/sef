@@ -1,18 +1,20 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ericsson.raso.sef.bes.prodcat.tasks.Charging;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Notification;
+import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.Task;
 
 public final class EventProfile implements Serializable {
 	private static final long serialVersionUID = 3520970207251399960L;
 
-	private TreeMap<Integer, Object> profile = null;
+	private TreeMap<Integer, TransactionTask> profile = null;
 	private int currentSequence = 0;
 	private AtomicInteger sequence = new AtomicInteger(0);
 
@@ -31,9 +33,9 @@ public final class EventProfile implements Serializable {
 	 * 
 	 * @param event
 	 */
-	public <T> void addEvent(T event) {
+	public void addEvent(TransactionTask event) {
 		if (this.profile == null) {
-			this.profile = new TreeMap<Integer, Object>();
+			this.profile = new TreeMap<Integer, TransactionTask>();
 		} 
 		this.profile.put(sequence.incrementAndGet(), event);
 	}
@@ -54,7 +56,7 @@ public final class EventProfile implements Serializable {
 	 * @param event
 	 * @see #addEvent(Object)
 	 */
-	public <T> void replaceEvent(int sequence, T event) {
+	public void replaceEvent(int sequence, TransactionTask event) {
 		if (this.profile != null)
 			if (this.profile.containsKey(sequence))
 				this.profile.put(sequence, event);
@@ -67,11 +69,17 @@ public final class EventProfile implements Serializable {
 	}
 	
 	
-	public Object getEvent(int sequence) {
+	public TransactionTask getEvent(int sequence) {
 		if (this.profile != null)
 			if (this.profile.containsKey(sequence))
-				return this.profile.get(sequence);
+				return (TransactionTask) this.profile.get(sequence);
 		
+		return null;
+	}
+	
+	public Collection<TransactionTask> getEvents() {
+		if (this.profile != null)
+			return (Collection<TransactionTask>) this.profile.values();
 		return null;
 	}
 

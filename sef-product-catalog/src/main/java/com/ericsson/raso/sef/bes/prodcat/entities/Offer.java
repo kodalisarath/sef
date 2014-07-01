@@ -2,6 +2,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -546,11 +547,11 @@ public class Offer implements Serializable {
 					LOGGER.error("Eligibility Policies rejected processing purchase/ service order request!!");
 					throw new CatalogException("Eligibility Policies rejected processing purchase/ service order request!!");
 				} else { 
-					//TODO: Logger - log the exception you were about to throw
+					LOGGER.debug("eligibilty rules scheduled this request to be processed later on: " + new Date(schedule));
+					tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
+					context.remove(Constants.FUTURE_SCHEDULE);
 				}
 			}
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
-			context.remove(Constants.FUTURE_SCHEDULE);
 		}
 		
 		// check for accumulation policies
@@ -561,11 +562,12 @@ public class Offer implements Serializable {
 					LOGGER.error("Accumulation Policies rejected processing purchase/ service order request!!");
 					throw new CatalogException("Accumulation Policies rejected processing purchase/ service order request!!");
 				} else { 
-					//TODO: Logger - log the exception you were about to throw
+					LOGGER.debug("accumulation rules scheduled this request to be processed later on: " + new Date(schedule));
+					tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
+					context.remove(Constants.FUTURE_SCHEDULE);
 				}
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
-			context.remove(Constants.FUTURE_SCHEDULE);
-		}		
+		}	
+		
 		// check for switch policies
 		if (this.switching != null && this.switching.execute()) {
 			Long schedule = (Long) context.get(Constants.FUTURE_SCHEDULE);
@@ -574,11 +576,26 @@ public class Offer implements Serializable {
 					LOGGER.error("Switching Policies rejected processing purchase/ service order request!!");
 					throw new CatalogException("Switching Policies rejected processing purchase/ service order request!!");
 				} else { 
-					//TODO: Logger - log the exception you were about to throw
+					LOGGER.debug("accumulation rules scheduled this request to be processed later on: " + new Date(schedule));
+					tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
+					context.remove(Constants.FUTURE_SCHEDULE);
 				}
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PURCHASE, this.name, subscriberId, schedule, metas));
-			context.remove(Constants.FUTURE_SCHEDULE);
 		}
+		
+		// check for pre-renewal
+		if (this.preRenewal != null) {
+			for (TransactionTask task: this.preRenewal.getEvents()) {
+				if (task instanceof Future) {
+					Long schedule = ((Future)task).getSchedule();
+					LOGGER.debug("Prenewal rules scheduled this request to be processed later on: " + new Date(schedule));
+					tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.PRE_RENEWAL, this.name, subscriberId, schedule, metas));
+					context.remove(Constants.FUTURE_SCHEDULE);
+
+				}
+			}
+		}
+		
+		
 		
 		// trial period
 		boolean isTrialAllowed = true;
