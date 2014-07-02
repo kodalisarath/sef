@@ -88,7 +88,7 @@ public class DateUtil {
 
 	public static String convertDateToString(Date in) {
 		//String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-		SimpleDateFormat dateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		return dateFormat.format(in);
 		
 	}

@@ -182,8 +182,7 @@ public class EntireReadUtil {
 		return operation;
 	}
 
-	public static Operation createCustomerBucketRead(
-			CustomerBucketRead customerBucketRead) {
+	public static Operation createCustomerBucketRead(CustomerBucketRead customerBucketRead) {
 		Operation operation = new Operation();
 		operation.setName("BucketRead");
 		operation.setModifier("Customer");
@@ -191,57 +190,46 @@ public class EntireReadUtil {
 		List<Object> parameterList = operation.getParameterList()
 				.getParameterOrBooleanParameterOrByteParameter();
 
-		parameterList.add(EntireReadUtil.stringParameter("CustomerId",
-				customerBucketRead.getCustomerId()));
+		parameterList.add(EntireReadUtil.stringParameter("CustomerId", customerBucketRead.getCustomerId()));
 
 		if (customerBucketRead.getbCategory() != null) {
-			parameterList.add(EntireReadUtil.enumerationValueParameter(
-					"bCategory", customerBucketRead.getbCategory()));
+			parameterList.add(EntireReadUtil.enumerationValueParameter("bCategory", customerBucketRead.getbCategory()));
 		}
 
 		if (customerBucketRead.getbInvalidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"bInvalidFrom", customerBucketRead.getbInvalidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", customerBucketRead.getbInvalidFrom()));
 		}
 
 		if (customerBucketRead.getbValidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"bValidFrom", customerBucketRead.getbValidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", customerBucketRead.getbValidFrom()));
 		}
 
 		if (customerBucketRead.getbSeriesId() != null) {
-			parameterList.add(EntireReadUtil.intParameter("bSeriesId",
-					customerBucketRead.getbSeriesId()));
+			parameterList.add(EntireReadUtil.intParameter("bSeriesId",customerBucketRead.getbSeriesId()));
 		}
 
 		return operation;
 	}
 
-	public static Operation createCustomerVersionRead(
-			CustomerVersionRead customerVersionRead) {
+	public static Operation createCustomerVersionRead(CustomerVersionRead customerVersionRead) {
 		Operation operation = new Operation();
 		operation.setName("VersionRead");
 		operation.setModifier("Customer");
 
-		List<Object> parameterList = operation.getParameterList()
-				.getParameterOrBooleanParameterOrByteParameter();
+		List<Object> parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
-		parameterList.add(EntireReadUtil.stringParameter("CustomerId",
-				customerVersionRead.getCustomerId()));
+		parameterList.add(EntireReadUtil.stringParameter("CustomerId", customerVersionRead.getCustomerId()));
 
 		if (customerVersionRead.getCategory() != null) {
-			parameterList.add(EntireReadUtil.enumerationValueParameter(
-					"category", customerVersionRead.getCategory()));
+			parameterList.add(EntireReadUtil.enumerationValueParameter("category", customerVersionRead.getCategory()));
 		}
 
 		if (customerVersionRead.getvValidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"vValidFrom", customerVersionRead.getvValidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", customerVersionRead.getvValidFrom()));
 		}
 
 		if (customerVersionRead.getvInvalidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"vInvalidFrom", customerVersionRead.getvInvalidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", customerVersionRead.getvInvalidFrom()));
 		}
 		return operation;
 	}
@@ -251,121 +239,92 @@ public class EntireReadUtil {
 		operation.setName("Read");
 		operation.setModifier("ROP");
 
-		List<Object> parameterList = operation.getParameterList()
-				.getParameterOrBooleanParameterOrByteParameter();
+		List<Object> parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
-		parameterList.add(EntireReadUtil.stringParameter("CustomerId",
-				ropRead.getCustomerId()));
+		parameterList.add(EntireReadUtil.stringParameter("CustomerId", ropRead.getCustomerId()));
 
 		if (ropRead.getKey() != null) {
-			parameterList.add(EntireReadUtil.intParameter("Key",
-					ropRead.getKey()));
+			parameterList.add(EntireReadUtil.intParameter("Key", ropRead.getKey()));
 		}
 
 		if (ropRead.getCategory() != null) {
-			parameterList.add(EntireReadUtil.enumerationValueParameter(
-					"category", ropRead.getCategory()));
+			parameterList.add(EntireReadUtil.enumerationValueParameter("category", ropRead.getCategory()));
 		}
 
 		if (ropRead.getPrefetchFilter() != null) {
-			parameterList.add(EntireReadUtil.intParameter("prefetchFilter",
-					ropRead.getPrefetchFilter()));
+			parameterList.add(EntireReadUtil.intParameter("prefetchFilter", ropRead.getPrefetchFilter()));
 		}
 
 		if (ropRead.getAnnoFirstWarningPeriodSent() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"AnnoFirstWarningPeriodSent",
-					ropRead.getAnnoFirstWarningPeriodSent()));
+			parameterList.add(EntireReadUtil.booleanParameter("AnnoFirstWarningPeriodSent", ropRead.getAnnoFirstWarningPeriodSent()));
 		}
 
 		if (ropRead.getAnnoSecondWarningPeriodSent() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"AnnoSecondWarningPeriodSent",
-					ropRead.getAnnoSecondWarningPeriodSent()));
+			parameterList.add(EntireReadUtil.booleanParameter("AnnoSecondWarningPeriodSent", ropRead.getAnnoSecondWarningPeriodSent()));
 		}
 
 		if (ropRead.getIsBalanceClearanceOnOutpayment() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"IsBalanceClearanceOnOutpayment",
-					ropRead.getIsBalanceClearanceOnOutpayment()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsBalanceClearanceOnOutpayment", ropRead.getIsBalanceClearanceOnOutpayment()));
 		}
 
 		if (ropRead.getIsCollectCallAllowed() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"IsCollectCallAllowed", ropRead.getIsCollectCallAllowed()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsCollectCallAllowed", ropRead.getIsCollectCallAllowed()));
 		}
 
 		if (ropRead.getIsFirstCallPassed() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"IsFirstCallPassed", ropRead.getIsFirstCallPassed()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsFirstCallPassed", ropRead.getIsFirstCallPassed()));
 		}
 
 		if (ropRead.getIsGPRSUsed() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter("IsGPRSUsed",
-					ropRead.getIsGPRSUsed()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsGPRSUsed", ropRead.getIsGPRSUsed()));
 		}
 
 		if (ropRead.getIsLastRechargeInfoStored() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"IsLastRechargeInfoStored",
-					ropRead.getIsLastRechargeInfoStored()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsLastRechargeInfoStored", ropRead.getIsLastRechargeInfoStored()));
 		}
 
 		if (ropRead.getIsLastTransactionEnqUsed() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"IsLastTransactionEnqUsed",
-					ropRead.getIsLastTransactionEnqUsed()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsLastTransactionEnqUsed", ropRead.getIsLastTransactionEnqUsed()));
 		}
 
 		if (ropRead.getIsLocked() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter("IsLocked",
-					ropRead.getIsLocked()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsLocked", ropRead.getIsLocked()));
 		}
 
 		if (ropRead.getIsOperatorCollectCallAllowed() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter(
-					"IsOperatorCollectCallAllowed",
-					ropRead.getIsOperatorCollectCallAllowed()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsOperatorCollectCallAllowed", ropRead.getIsOperatorCollectCallAllowed()));
 		}
 
 		if (ropRead.getIsSmsAllowed() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter("IsSmsAllowed",
-					ropRead.getIsSmsAllowed()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsSmsAllowed", ropRead.getIsSmsAllowed()));
 		}
 
 		if (ropRead.getIsUSCAllowed() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter("IsUSCAllowed",
-					ropRead.getIsUSCAllowed()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsUSCAllowed", ropRead.getIsUSCAllowed()));
 		}
 
 		if (ropRead.getIsUSCAllowed() != null) {
-			parameterList.add(EntireReadUtil.booleanParameter("IsUSCAllowed",
-					ropRead.getIsUSCAllowed()));
+			parameterList.add(EntireReadUtil.booleanParameter("IsUSCAllowed", ropRead.getIsUSCAllowed()));
 		}
 
 		if (ropRead.getActiveEndDate() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"ActiveEndDate", ropRead.getActiveEndDate()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("ActiveEndDate", ropRead.getActiveEndDate()));
 		}
 
-		ListParameter counterListParameter = EntireReadUtil
-				.listParameter("ChargedMenuAccessCounter");
+		ListParameter counterListParameter = EntireReadUtil.listParameter("ChargedMenuAccessCounter");
 		parameterList.add(counterListParameter);
 		for (Integer counter : ropRead.getChargedMenuAccessCounter()) {
 			IntElement intParameter = new IntElement();
 			intParameter.setValue(counter);
-			counterListParameter.getElementOrBooleanElementOrByteElement().add(
-					intParameter);
+			counterListParameter.getElementOrBooleanElementOrByteElement().add(intParameter);
 		}
 
 		if (ropRead.getcTaggingStatus() != null) {
-			parameterList.add(EntireReadUtil.intParameter("c_TaggingStatus",
-					ropRead.getcTaggingStatus()));
+			parameterList.add(EntireReadUtil.intParameter("c_TaggingStatus", ropRead.getcTaggingStatus()));
 		}
 
 		if (ropRead.getFirstCallDate() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"FirstCallDate", ropRead.getFirstCallDate()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("FirstCallDate", ropRead.getFirstCallDate()));
 		}
 
 		if (ropRead.getGraceEndDate() != null) {
@@ -373,18 +332,15 @@ public class EntireReadUtil {
 		}
 
 		if (ropRead.getS_CRMTitle() != null) {
-			parameterList.add(EntireReadUtil.stringParameter("s_CRMTitle",
-					ropRead.getS_CRMTitle()));
+			parameterList.add(EntireReadUtil.stringParameter("s_CRMTitle", ropRead.getS_CRMTitle()));
 		}
 
 		if (ropRead.getLastKnownPeriod() != null) {
-			parameterList.add(EntireReadUtil.stringParameter("LastKnownPeriod",
-								toSmartEnumerated(ropRead.getLastKnownPeriod())));
+			parameterList.add(EntireReadUtil.stringParameter("LastKnownPeriod", toSmartEnumerated(ropRead.getLastKnownPeriod())));
 		}
 
 		if (ropRead.getPreActiveEndDate() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"PreActiveEndDate", ropRead.getPreActiveEndDate()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("PreActiveEndDate", ropRead.getPreActiveEndDate()));
 		}
 
 		return operation;
@@ -551,11 +507,11 @@ public class EntireReadUtil {
 			parameterList.add(EntireReadUtil.intParameter("prefetchFilter", rppRead.getPrefetchFilter()));
 		}
 
-		if (rppRead.getsActivationEndTime() != null) {
+		if (rppRead.getsActivationEndTime() != null && !rppRead.getsActivationEndTime().equals("null")) {
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("s_ActivationEndTime", rppRead.getsActivationEndTime()));
 		}
 
-		if (rppRead.getsActivationStartTime() != null) {
+		if (rppRead.getsActivationStartTime() != null && !rppRead.getsActivationStartTime().equals("null")) {
 			parameterList.add(EntireReadUtil.symbolicOrDateParameter("s_ActivationStartTime", rppRead.getsActivationStartTime()));
 		}
 
@@ -1005,7 +961,7 @@ public class EntireReadUtil {
 				ropRead.setActiveEndDate(nsnResponseFormat.format(date));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(activeEndDate): " + activeEndDate);
-				ropRead.setActiveEndDate(null);
+				//ropRead.setActiveEndDate(null);
 			}
 		
 		ropRead.setAnnoFirstWarningPeriodSent(false);
@@ -1033,7 +989,7 @@ public class EntireReadUtil {
 				ropRead.setFirstCallDate(nsnResponseFormat.format(date));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(firstCallDate): " + firstCallDate);
-				ropRead.setFirstCallDate(null);
+				//ropRead.setFirstCallDate(null);
 			}
 		
 		
@@ -1047,7 +1003,7 @@ public class EntireReadUtil {
 				ropRead.setGraceEndDate(nsnResponseFormat.format(date));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(graceEndDate): " + graceEndDate);
-				ropRead.setGraceEndDate(null);
+				//ropRead.setGraceEndDate(null);
 			}
 		
 		
@@ -1096,9 +1052,7 @@ public class EntireReadUtil {
 		}
 
 		String preActiveEndDate = subscriber.getMetas().get("PreActiveEndDate");
-		if (preActiveEndDate == null)
-			ropRead.setPreActiveEndDate("NOW");
-		else
+		if (preActiveEndDate != null) {
 			try {
 				Date date = metaStoreFormat.parse(preActiveEndDate);
 				ropRead.setPreActiveEndDate(nsnResponseFormat.format(date));
@@ -1106,7 +1060,7 @@ public class EntireReadUtil {
 				logger.error("Unparseable date(preActiveEndDate): " + preActiveEndDate);
 				ropRead.setPreActiveEndDate("NOW");
 			}
-
+		}
 	
 		ropRead.setLastKnownPeriod(subscriber.getContractState());
 		ropRead.setS_CRMTitle("-");
@@ -1127,17 +1081,18 @@ public class EntireReadUtil {
 
 		IConfig config = SefCoreServiceResolver.getConfigService();
 		String date = subscriber.getMetas().get("bValidFrom");
-		if (date == null)
-			read.setbValidFrom("NOW");
-		else
+		if (date == null) {
+			//read.setbValidFrom("NOW");
+		} else {
 			try {
 				Date dateField = metaStoreFormat.parse(date);
 				read.setbValidFrom(nsnResponseFormat.format(dateField));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(bValidFrom): " + date);
 				logger.debug("Setting bValidFrom to 'NOW'");
-				read.setbValidFrom("NOW");
+				//read.setbValidFrom("NOW");
 			}
+		}
 		
 		logger.debug("bucketRead. bValidFrom : " + read.getbValidFrom());
 		
@@ -1170,17 +1125,18 @@ public class EntireReadUtil {
 			read.setvValidFrom(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
 
 		String date = subscriber.getMetas().get("vValidFrom");
-		if (date == null)
-			read.setvValidFrom("NOW");
-		else
+		if (date == null) {
+			//read.setvValidFrom("NOW");
+		} else {
 			try {
 				Date dateField = metaStoreFormat.parse(date);
 				read.setvValidFrom(nsnResponseFormat.format(dateField));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(vValidFrom): " + date);
 				logger.debug("Setting bValidFrom to 'NOW'");
-				read.setvValidFrom("NOW");
+				//read.setvValidFrom("NOW");
 			}
+		}
 		logger.debug("versionRead. vValidFrom : " + read.getvValidFrom());
 		
 		
@@ -1363,32 +1319,15 @@ public class EntireReadUtil {
 				String expiryDateTime = str.nextToken();
 
 				if (offerId.equals(offerIdTemp)) {
-					if(expiryDateTime !=null)
-					return expiryDateTime;
-					else
-						return expiryDate;
+					if(expiryDate !=null && !expiryDate.equals("null"))
+					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(expiryDate)));
+						else
+					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(expiryDateTime)));
 				}
 
 			}
 		}
 
-		/*
-		 * if (key.startsWith(Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID)) {
-		 * value = metaMap.get(key);
-		 * 
-		 * logger.debug("Manila getOfferExpiryDateTime Key Matched is " + key +
-		 * " Value is " + value);
-		 * 
-		 * String temp = ""; if (key.length() >
-		 * Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID .length()) { temp =
-		 * key.substring(
-		 * Constants.READ_SUBSCRIBER_OFFER_INFO_OFFER_ID.length(),
-		 * key.length()); } if (metaMap
-		 * .containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME +
-		 * temp)) { value = metaMap
-		 * .get(Constants.READ_SUBSCRIBER_OFFER_INFO_EXPIRY_DATE_TIME + temp);
-		 * return value; } }
-		 */
 		return null;
 	}
 
@@ -1419,31 +1358,16 @@ public class EntireReadUtil {
 				String expiryDateTime = str.nextToken();
 
 				if (offerId.equals(offerIdTemp)) {
-					if(startDate !=null)
-					return startDate;
+					if(startDate !=null && !startDate.equals("null"))
+					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(startDate)));
 						else
-					return startDateTime;
+					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(startDateTime)));
 				}
 
 			}
 		}
 
-		/*
-		 * Map<String, String> metaMap = subscriber.getMetas(); String value =
-		 * null; if
-		 * (key.startsWith(Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID)) {
-		 * value = metaMap.get(key);
-		 * logger.debug("Manila getOfferStartDateTime Key is " + key +
-		 * " Value is " + value); String temp = ""; if (key.length() >
-		 * Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID .length()) { temp =
-		 * key.substring(
-		 * Constants.READ_SUBSCRIBER_SERVICE_OFFERING_ID.length(),
-		 * key.length()); } if (metaMap
-		 * .containsKey(Constants.READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME +
-		 * temp)) { value = metaMap
-		 * .get(Constants.READ_SUBSCRIBER_OFFER_INFO_START_DATE_TIME + temp);
-		 * return value; } }
-		 */
+	
 		return null;
 	}
 
@@ -1516,25 +1440,11 @@ public class EntireReadUtil {
 		read.setcUnliResetRechargeValidity(0);
 		read.setOfferProfileKey(1);
 		read.setPrefetchFilter(-1);
-		/*
-		 * if (offerInformation.getExpiryDateTime() != null) {
-		 * read.setsActivationEndTime(offerInformation.getExpiryDateTime()
-		 * .toString()); }
-		 */
-
 		IConfig config = SefCoreServiceResolver.getConfigService();
 
 		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
 		logger.debug("createRppRead offerExpiryDateString  is "+ offerExpiryDateString);
 		
-
-		/*
-		 * if (offerInformation.getStartDateTime() == null ||
-		 * offerInformation.getStartDateTime().before(new Date(0))) {
-		 * read.setsActivationStartTime(new Date(0).toString()); } else {
-		 * read.setsActivationStartTime(offerInformation.getStartDateTime()
-		 * .toString()); }
-		 */
 		
 		String offerStartTime = getOfferStartDateTime(subscriber, offerId);
 		logger.debug("createRppRead offerStartTime  is "+ offerStartTime);
@@ -1547,14 +1457,10 @@ public class EntireReadUtil {
 		Date offerExpiryDate = null;
 
 		if (offerExpiryDateString != null) {
-		
 			offerExpiryDate = new Date(Long.parseLong(offerExpiryDateString));
 			read.setsActivationEndTime(DateUtil.convertDateToString(offerExpiryDate));
 			
-			
-
-			if (walletName.equalsIgnoreCase("1030AutoFbc")
-					&& offerExpiryDate != null) {
+			if (walletName.equalsIgnoreCase("1030AutoFbc") && offerExpiryDate != null) {
 				read.setC_TokenBasedExpiredDate(offerExpiryDate.getTime());
 			}
 		}
@@ -1568,33 +1474,6 @@ public class EntireReadUtil {
 
 		Long balance = 0l;
 
-		/***********
-		 * TBD once the property isssue is fixed. Cannot port the
-		 * usageTimingWindows property as it does not comply to our DTD
-		 ********/
-		// Need to uncomment the below once the schema is corrected for the
-		// property files.
-
-		//WalletUsage usage = WalletUsageUtil.getWalletUsage(walletName);
-
-		// if (usage != null) {
-		// UsageCounterUsageThresholdInformation uc = ucUtMap.get(Integer
-		// .valueOf(usage.getUc()));
-		// if (uc != null
-		// && usage.getUc() == uc.getUsageCounterID().intValue()) {
-		// List<UsageThresholdInformation> tList = uc
-		// .getUsageThresholdInformation();
-		// for (UsageThresholdInformation ut : tList) {
-		// if (ut.getUsageThresholdID().intValue() == usage.getUt()) {
-		// if (uc.getUsageCounterValue() != null
-		// && ut.getUsageThresholdValue() != null) {
-		// balance = Long.valueOf(ut.getUsageThresholdValue())
-		// - Long.valueOf(uc.getUsageCounterValue());
-		// }
-		// }
-		// }
-		// }
-		// }
 
 		read.setcIACCreditLimitValidity(balance);
 		return read;
@@ -1608,30 +1487,44 @@ public class EntireReadUtil {
 
 
 		String offerStarteDateTime = getOfferStartDateTime(subscriber, offerId);
-		logger.debug("createRppBucketRead.offerStarteDateTime : " + offerStarteDateTime);
-		read.setbValidFrom(offerStarteDateTime);
-		logger.debug("read.bValidFro : " + read.getbValidFrom());
-		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
-		IConfig config = SefCoreServiceResolver.getConfigService();
-		Date offerExpiryDate = null;
-		logger.debug("createRppBucketRead.offerExpiryDateString : " + offerExpiryDateString);
-		
-		if (offerExpiryDateString != null) {
-			offerExpiryDate = new Date(Long.parseLong(offerExpiryDateString));
-			logger.debug("createRppBucketRead.offerExpiryDate After formatting: " + offerExpiryDate);
-			read.setbInvalidFrom(DateUtil.convertDateToString(offerExpiryDate));
-			read.setsNextPeriodAct(offerExpiryDate);
-			read.setsExpireDate(DateUtil.convertDateToString(offerExpiryDate));
-		}
-		read.setbSeriesId(0);
-		read.setbCategory("ONLINE");
-
-		if (offerExpiryDate != null && offerExpiryDate.after(new Date())) {
-			read.setsActive(true);
+		if (offerStarteDateTime != null) {
+			logger.debug("createRppBucketRead.offerStarteDateTime : " + offerStarteDateTime);
+			read.setbValidFrom(offerStarteDateTime);
+			logger.debug("read.bValidFrom : " + read.getbValidFrom());
 		} else {
-			read.setsActive(false);
+			logger.error("STRANGE: Offer: " + offerId + " has no start date!!");
 		}
+		
+		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
+		if (offerExpiryDateString != null) {
+			IConfig config = SefCoreServiceResolver.getConfigService();
+			Date offerExpiryDate = null;
+			logger.debug("createRppBucketRead.offerExpiryDateString : " + offerExpiryDateString);
 
+			if (offerExpiryDateString != null) {
+				try {
+					offerExpiryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(offerExpiryDateString);
+					logger.debug("createRppBucketRead.offerExpiryDate After formatting: " + offerExpiryDate);
+					read.setsNextPeriodAct(offerExpiryDate);
+
+				} catch (ParseException e) {
+					logger.error("For some reason, the date not parsed back.. s_NextPeriodAct: " + e.getMessage());
+				}
+				read.setbInvalidFrom(offerExpiryDateString);
+				read.setsExpireDate(offerExpiryDateString);
+			}
+			read.setbSeriesId(0);
+			read.setbCategory("ONLINE");
+
+			if (offerExpiryDate != null && offerExpiryDate.after(new Date())) {
+				read.setsActive(true);
+			} else {
+				read.setsActive(false);
+			}
+		} else {
+			logger.error("STRANGE: Offer: " + offerId + " has no expiry date!!");
+		}
+		
 		read.setsError((byte) 0);
 		read.setsInfo(0);
 		read.setsValid(true);
@@ -1649,32 +1542,7 @@ public class EntireReadUtil {
 			}
 			read.setsPeriodicBonusBalance(balance);
 		} else {
-
 			Long balance = 0l;
-
-			// WalletUsage usage = WalletUsageUtil.getWalletUsage(wallet);
-			// if (usage != null) {
-			// UsageCounterUsageThresholdInformation uc = ucUtMap.get(Integer
-			// .valueOf(usage.getUc()));
-			// if (uc != null
-			// && usage.getUc() == uc.getUsageCounterID().intValue()) {
-			// List<UsageThresholdInformation> tList = uc
-			// .getUsageThresholdInformation();
-			// for (UsageThresholdInformation ut : tList) {
-			// if (ut.getUsageThresholdID().intValue() == usage
-			// .getUt()) {
-			// if (uc.getUsageCounterValue() != null
-			// && ut.getUsageThresholdValue() != null) {
-			// balance = Long.valueOf(ut
-			// .getUsageThresholdValue())
-			// - Long.valueOf(uc
-			// .getUsageCounterValue());
-			// }
-			// }
-			// }
-			// }
-			// }
-
 			read.setsPeriodicBonusBalance(balance);
 		}
 
@@ -1724,16 +1592,16 @@ public class EntireReadUtil {
 			read.setsPeriodicBonusExpiryDate(DateUtil.convertDateToString(offerExpiryDate));
 			read.setvInvalidFrom(DateUtil.convertDateToString(offerExpiryDate));
 
-		} else {
+		} /*else {
 			read.setvInvalidFrom(SmartConstants.MAX_DATETIME);
-		}
+		}*/
 
 		IConfig config = SefCoreServiceResolver.getConfigService();
 		if (offerStartDateString != null) {
 			read.setvValidFrom(offerStartDateString);
-		} else {
+		} /*else {
 			read.setvValidFrom(DateUtil.convertDateToString(currentTime));
-		}
+		}*/
 		return read;
 	}
 
