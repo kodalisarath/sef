@@ -101,9 +101,9 @@ public class CARecharge implements Processor {
 			String eventClass = rechargeRequest.getEventClass();
 			if (eventClass.equals("predefined") || eventClass.equals("unli")) {
 				offerid = rechargeRequest.getEventName();
+				metas = prepareRecharge(rechargeRequest);
 				metas.put("recharge", eventClass);
 				metas.put("eventName", rechargeRequest.getEventName());
-				metas = prepareRecharge(rechargeRequest);
 			} else if (eventClass.equals("flexible")) {
 				offerid = "FlexiRefill";
 				metas = prepareFlexibleRecharge(rechargeRequest);
@@ -416,6 +416,7 @@ public class CARecharge implements Processor {
 
 		
 		logger.debug("Quick Check on Request Context: " + requestContext);
+		requestContextCache.set(requestContext);
 		return requestContext;
 	}
 
