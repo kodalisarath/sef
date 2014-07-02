@@ -61,7 +61,8 @@ public class UseCaseProcessor implements Processor {
 					prepare(correlationId, msisdn, fulfillmentProfiles, product, map);
 					break;
 				case "cancel":
-					cancel(fulfillmentProfiles, product, map);
+					logger.debug("Use case identified as cancel!!");
+					cancel(correlationId, msisdn, fulfillmentProfiles, product, map);
 					break;
 				default:
 					break;
@@ -102,7 +103,7 @@ public class UseCaseProcessor implements Processor {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void fulfill(String correlationId, String msisdn, List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
 
-		logger.debug("Executing fulfillment profiles now");
+		logger.debug("Executing fulfillment profiles now - FULFILL MODE");
 
 		TransactionStatus status = new TransactionStatus();
 		List<Product> products = new ArrayList<Product>();
@@ -127,7 +128,7 @@ public class UseCaseProcessor implements Processor {
 				metas.add(meta);
 			}
 
-			logger.info("Sending fulfillment Response now");
+			logger.info("Sending fulfillment Response now - FULFILL MODE");
 
 			for (Product prod : products) {
 				if (prod != null) {
@@ -142,7 +143,7 @@ public class UseCaseProcessor implements Processor {
 
 			}
 		} catch (FulfillmentException e) {
-			logger.error("Exception while fulfilment " + e.getStackTrace() + "" + e.getMessage() + "Exception: " + e);
+			logger.error("Exception while fulfilment (FULFILL) " + e.getStackTrace() + "" + e.getMessage() + "Cause: " + e.getMessage(), e);
 			status.setComponent(e.getComponent());
 			status.setCode(e.getStatusCode().getCode());
 			status.setDescription(e.getStatusCode().getMessage());
@@ -191,16 +192,60 @@ public class UseCaseProcessor implements Processor {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void reverse(String correlationId, String msisdn, List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
-		logger.debug("Executing reverse profiles now");
+		logger.debug("Executing fulfillment profiles now - REVERT MODE");
+
+		TransactionStatus status = new TransactionStatus();
+		List<Product> products = new ArrayList<Product>();
+		List<Meta> metas = new ArrayList<Meta>();
+		
 		try {
 			for (FulfillmentProfile profile : profiles) {
-				profile.revert(product, map);
+				logger.debug("profile.fulfill(): " + profile);
+				List<Product> prods = profile.revert(product, map);
+				logger.debug("profile.fulfill(): " + profile + " returns: " + prods.size() + " provisioned products");
+				for (Product prod : prods) {
+					if (prod != null) {
+						products.add(prod);
+						map.putAll(prod.getMetas());
+					}
+				}
+			}
+			
+			
+			for (String key : map.keySet()) {
+				Meta meta = new Meta(key, map.get(key));
+				metas.add(meta);
+			}
+
+			logger.info("Sending fulfillment Response now - REVERT MODE");
+
+			for (Product prod : products) {
+				if (prod != null) {
+					if (prod.getName() != null)
+						logger.debug("Product:" + prod.getName());
+					if (prod.getResourceName() != null)
+						logger.debug("Resource:" + prod.getResourceName());
+					logger.debug("Quota consumed:" + prod.getQuotaConsumed());
+					logger.debug("Quote defined: " + prod.getQuotaDefined());
+					logger.debug("Validity: " + prod.getValidity());
+				}
+
 			}
 		} catch (FulfillmentException e) {
-
+			logger.error("Exception while fulfilment (REVERT) " + e.getStackTrace() + "" + e.getMessage() + "Cause: " + e.getMessage(), e);
+			status.setComponent(e.getComponent());
+			status.setCode(e.getStatusCode().getCode());
+			status.setDescription(e.getStatusCode().getMessage());
 		}
 
-		// TODO: Post response
+		
+
+		logger.debug("Confirm response params: " + correlationId + 
+				", msisdn:" + msisdn + 
+				", fault: " + status + 
+				", products: " + products + 
+				", metas: " + metas);
+		sendReverseResponse(correlationId, msisdn, status, products, metas);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -229,29 +274,71 @@ public class UseCaseProcessor implements Processor {
 			status.setCode(e.getStatusCode().getCode());
 			status.setDescription(e.getStatusCode().getMessage());
 		}
-		// TODO: Post response
-
+		
 		sendQueryResponse(correlationId, msisdn, status, products, metas);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void cancel(List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
-		logger.debug("Executing cancel profiles now");
-		try {
+	private void cancel(String correlationId, String msisdn, List<FulfillmentProfile> profiles, Product product, Map<String, String> map) {
+		logger.debug("Executing fulfillment profiles now - CANCEL/REVERT MODE");
 
+		TransactionStatus status = new TransactionStatus();
+		List<Product> products = new ArrayList<Product>();
+		List<Meta> metas = new ArrayList<Meta>();
+		
+		try {
 			for (FulfillmentProfile profile : profiles) {
-				profile.revert(product, map);
+				logger.debug("profile.fulfill(): " + profile);
+				List<Product> prods = profile.revert(product, map);
+				logger.debug("profile.fulfill(): " + profile + " returns: " + prods.size() + " provisioned products");
+				for (Product prod : prods) {
+					if (prod != null) {
+						products.add(prod);
+						map.putAll(prod.getMetas());
+					}
+				}
+			}
+			
+			
+			for (String key : map.keySet()) {
+				Meta meta = new Meta(key, map.get(key));
+				metas.add(meta);
+			}
+
+			logger.info("Sending fulfillment Response now - CANCEL/REVERT MODE");
+
+			for (Product prod : products) {
+				if (prod != null) {
+					if (prod.getName() != null)
+						logger.debug("Product:" + prod.getName());
+					if (prod.getResourceName() != null)
+						logger.debug("Resource:" + prod.getResourceName());
+					logger.debug("Quota consumed:" + prod.getQuotaConsumed());
+					logger.debug("Quote defined: " + prod.getQuotaDefined());
+					logger.debug("Validity: " + prod.getValidity());
+				}
+
 			}
 		} catch (FulfillmentException e) {
-
+			logger.error("Exception while fulfilment (CANCEL/REVERT) " + e.getStackTrace() + "" + e.getMessage() + "Cause: " + e.getMessage(), e);
+			status.setComponent(e.getComponent());
+			status.setCode(e.getStatusCode().getCode());
+			status.setDescription(e.getStatusCode().getMessage());
 		}
-		// TODO: Post Response
+
+		
+
+		logger.debug("Confirm response params: " + correlationId + 
+				", msisdn:" + msisdn + 
+				", fault: " + status + 
+				", products: " + products + 
+				", metas: " + metas);
+		sendCancelResponse(correlationId, msisdn, status, products, metas);
 	}
 
 	private Map<String, String> covertToMap(String msisdn, List<Meta> metas) {
 		Map<String, String> map = new HashMap<String, String>();
-		// map.put("msisdn", msisdn.toString());
-		map.put("SUBSCRIBER_ID", msisdn.toString());
+		map.put("msisdn", msisdn);
+		map.put("SUBSCRIBER_ID", msisdn);
 		if (metas != null) {
 			for (Meta meta : metas) {
 				map.put(meta.getKey(), meta.getValue());
@@ -262,6 +349,14 @@ public class UseCaseProcessor implements Processor {
 
 	private void sendFulfillResponse(String correlationId, String msidn, TransactionStatus fault, List<Product> products, List<Meta> meta) {
 		FulfillmentServiceResolver.getFulfillmentResponseClient().fulfill(correlationId, fault, products, meta);
+	}
+
+	private void sendCancelResponse(String correlationId, String msidn, TransactionStatus fault, List<Product> products, List<Meta> meta) {
+		FulfillmentServiceResolver.getFulfillmentResponseClient().cancel(correlationId, fault, products, meta);
+	}
+
+	private void sendReverseResponse(String correlationId, String msidn, TransactionStatus fault, List<Product> products, List<Meta> meta) {
+		FulfillmentServiceResolver.getFulfillmentResponseClient().reverse(correlationId, fault, products, meta);
 	}
 
 	private void sendPrepareResponse(String correlationId, String msisdn, TransactionStatus fault, List<Product> products, List<Meta> meta) {
