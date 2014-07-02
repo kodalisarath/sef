@@ -912,7 +912,7 @@ public class EntireReadUtil {
 	}
 
 	private static CustomerVersionRead createCustomerVersionRead(Subscriber subcriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		CustomerVersionRead versionRead = new CustomerVersionRead();
 		versionRead.setCustomerId(subcriber.getMsisdn());
@@ -940,7 +940,7 @@ public class EntireReadUtil {
 	}
 
 	private static CustomerBucketRead createCustomerBucketRead(Subscriber subscriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		CustomerBucketRead bucketRead = new CustomerBucketRead();
 		bucketRead.setCustomerId(subscriber.getMsisdn());
@@ -1108,7 +1108,7 @@ public class EntireReadUtil {
 	}
 
 	private static RopBucketRead createRopBucketRead(Subscriber subscriber) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		RopBucketRead read = new RopBucketRead();
 		read.setCustomerId(subscriber.getMsisdn());
@@ -1139,7 +1139,7 @@ public class EntireReadUtil {
 	}
 
 	private static RopVersionRead createRopVersionRead(Subscriber subscriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		RopVersionRead read = new RopVersionRead();
 		read.setCustomerId(subscriber.getMsisdn());
@@ -1223,7 +1223,7 @@ public class EntireReadUtil {
 						graceEndDate = ((expiryDate.equals("null")?expiryDateTime:expiryDate));
 						long dateMillis = Long.parseLong(graceEndDate);
 						
-						SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
+						SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
 						return metaStoreFormat.format(new Date(dateMillis));
 					}
 				}

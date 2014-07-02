@@ -155,7 +155,7 @@ public class EntireReadSubscriber implements Processor {
 		
 		readCustomerBucketParameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		readCustomerBucketParameterList.add(EntireReadUtil.enumerationValueParameter("bCategory", "ONLINE"));
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000'Z'");
 		
 		String date = subscriber.getMetas().get("bInValidFrom");
