@@ -321,14 +321,14 @@ public class EntireReadSubscriber implements Processor {
 
 		date = subscriber.getMetas().get("vInvalidFrom");
 		if (date == null)
-			readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATETIME"));
+			readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATEANDTIME"));
 		else
 			try {
 				Date dateField = metaStoreFormat.parse(date);
 				readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(dateField)));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(bInvalidFrom): " + date);
-				readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATETIME"));
+				readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATEANDTIME"));
 			}
 
 		
