@@ -1457,12 +1457,17 @@ public class EntireReadUtil {
 		Date offerExpiryDate = null;
 
 		if (offerExpiryDateString != null) {
-			offerExpiryDate = new Date(Long.parseLong(offerExpiryDateString));
-			read.setsActivationEndTime(DateUtil.convertDateToString(offerExpiryDate));
-			
-			if (walletName.equalsIgnoreCase("1030AutoFbc") && offerExpiryDate != null) {
-				read.setC_TokenBasedExpiredDate(offerExpiryDate.getTime());
+			try {
+				offerExpiryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(offerExpiryDateString);
+				read.setsActivationEndTime(DateUtil.convertDateToString(offerExpiryDate));
+
+				if (walletName.equalsIgnoreCase("1030AutoFbc") && offerExpiryDate != null) {
+					read.setC_TokenBasedExpiredDate(offerExpiryDate.getTime());
+				}
+			} catch (ParseException e) {
+				logger.error("Unable to handle offerExpiryDate (" + offerExpiryDateString + ") for Offer: " + offerId);
 			}
+			
 		}
 		read.setsPeriodStartPoint(-1);
 		if (ContractState.PREACTIVE.name().equals(

@@ -233,7 +233,7 @@ public class CARecharge implements Processor {
 		requestContext.put("expirationDatePolicy", "" + rechargeRequest.getRatingInput2());
 		requestContext.put("daysOfExtension", "" + rechargeRequest.getRatingInput3());
 		requestContext.put("absoluteDate", "" + rechargeRequest.getRatingInput4());
-		requestContext.put("recharge", "flxi");
+		requestContext.put("recharge", "flexi");
 		
 		/*
 		 * Step 1: GetAccountDetails first.... - Collect all DA - Collect all Offers - Determine longest expiry date - Check if customer is
