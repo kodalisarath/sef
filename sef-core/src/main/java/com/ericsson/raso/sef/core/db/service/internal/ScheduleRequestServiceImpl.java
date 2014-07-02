@@ -60,7 +60,7 @@ public class ScheduleRequestServiceImpl implements ScheduleRequestService {
 	}
 	
 	@Override
-	public Collection<ScheduledRequest> getJobIdByOfferId(String msisdn, String offerId,String lifeCycleEvent) {
+	public Collection<String> getJobIdByOfferId(String msisdn, String offerId,String lifeCycleEvent) {
 		return scheduledRequestMapper.getJobIdByOfferId(msisdn, offerId,lifeCycleEvent);
 	}
 	

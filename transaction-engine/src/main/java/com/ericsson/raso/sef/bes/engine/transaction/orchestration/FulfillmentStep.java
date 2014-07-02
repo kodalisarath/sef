@@ -84,7 +84,7 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 		return new FulfillmentStepResult(null, null);
 		
 		} catch(Exception e) {
-			logger.debug("Exception in execution of fulfillment: Exception: " +  e);
+			logger.error("Exception in execution of fulfillment: Exception: " +e.getMessage(),  e);
 			FulfillmentStepResult result = new FulfillmentStepResult(new StepExecutionException("FulfilmentExecution failed"), null);
 			Map<String, AbstractStepResult> stepResultStore = SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.TRANSACTION_STEP_STATUS.name());
 			stepResultStore.put(stepCorrelator, result);
@@ -98,8 +98,9 @@ public class FulfillmentStep extends Step<FulfillmentStepResult> {
 	private List<Meta> converToList(Map<String, Object> metas) {
 		List<Meta> metaList = new ArrayList<Meta>();
 		
-		logger.debug("We have: " + metas.size() + " here");
+		
 		if(metas != null) {
+			logger.debug("We have: " + metas.size() + " here");
 			for (String metaskey: metas.keySet()) {
 				logger.debug("Converting metas: " + metaskey + "-" + metas.get(metaskey));
 				Meta meta = new Meta();

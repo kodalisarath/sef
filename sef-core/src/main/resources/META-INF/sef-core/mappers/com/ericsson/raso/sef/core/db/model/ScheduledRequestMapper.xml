@@ -112,12 +112,12 @@
 		s.requestid=#{requestId}
 	</select>
 	
-	<select id="getJobIdByOfferId" resultMap="ScheduledRequestResult" parameterType="map">
-		select s.id , s.userid, s.msisdn, s.jobid , s.requestid , s.offerid , s.purchaseid , s.lifecycle_event , s.created , s.updated , s.status , s.resourceId
-		from scheduled_request s
-		where s.msisdn=#{msisdn} and
-		s.offerId=#{offerId}
-		and s.lifeCycleEvent=#{lifeCycleEvent}
+	<select id="getJobIdByOfferId" resultType="String" >
+		select s.jobid
+		from scheduled_request s where s.msisdn= #{param1} and
+		s.offerid = #{param2}
+		and s.lifecycle_event = #{param3}
+		and s.status ='SCHEDLUED'
 	</select>
 	
 </mapper>

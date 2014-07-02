@@ -242,6 +242,12 @@ public class OfferLifeCycle implements Serializable {
 		private OfferLifeCycle getOuterType() {
 			return OfferLifeCycle.this;
 		}
+
+		@Override
+		public String toString() {
+			return "HistoryEvent [state=" + state + ", timestamp=" + timestamp
+					+ "]";
+		}
 		
 		
 

@@ -1,4 +1,4 @@
-/*package com.ericsson.sef.scheduler.command;
+package com.ericsson.sef.scheduler.command;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
@@ -19,15 +18,15 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Command;
 import com.ericsson.raso.sef.core.Meta;
-import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.config.Period;
-import com.ericsson.raso.sef.core.db.mapper.ScheduledRequestMapper;
 import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
+import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
 import com.ericsson.raso.sef.core.ne.Language;
 import com.ericsson.raso.sef.core.ne.NotificationMessage;
 import com.ericsson.raso.sef.core.ne.StringUtils;
@@ -38,24 +37,7 @@ import com.ericsson.sef.scheduler.ExpiryNotificationJob;
 import com.ericsson.sef.scheduler.HelperConstant;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
-import com.ericsson.sm.api.subscriber.Subscriber;
-import com.ericsson.sm.api.subscriber.SubscriberManagement;
-import com.ericsson.sm.api.subscriber.WSException;
-import com.ericsson.sm.core.Command;
-import com.ericsson.sm.core.Meta;
-import com.ericsson.sm.core.Period;
-import com.ericsson.sm.core.SmConstants;
-import com.ericsson.sm.core.SmException;
-import com.ericsson.sm.core.StringUtils;
-import com.ericsson.sm.core.config.Language;
-import com.ericsson.sm.core.db.mapper.ScheduledRequestMapper;
-import com.ericsson.sm.core.db.model.ScheduledRequest;
-import com.ericsson.sm.core.db.model.ScheduledRequestMeta;
-import com.ericsson.sm.core.db.model.ScheduledRequestStatus;
-import com.ericsson.sm.core.db.model.SmSequence;
-import com.ericsson.sm.core.db.model.SubscriptionLifeCycleEvent;
-import com.ericsson.sm.core.notification.NotificationMessage;
-import com.ericsson.sm.core.notification.SubscriptionNotificationEvent;
+import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class ExpiryNotificationCommand implements Command<Void> {
 
@@ -79,24 +61,17 @@ public class ExpiryNotificationCommand implements Command<Void> {
 	@Override
 	public Void execute() throws SmException {
 		try {
-			SubscriberManagement subscriberManagement = SchedulerContext.getSubscriberManagement();
-			Subscriber subscriber = subscriberManagement.getSubscriberProfile(msisdn, null);
 			
-			Subscriber subscriber = null;
-			try{
-				String requestId = RequestContextLocalStore.get().getRequestId();
+		
+				//String requestId =UniqueIdGenerator.generateId();
 //				List<com.ericsson.sef.bes.api.entities.Meta> metaList = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
 //				metaList.add(new com.ericsson.sef.bes.api.entities.Meta("READ_SUBSCRIBER", "SIMP"));
-				SubscriberInfo subscriberInfo = readEntireSubscriberInfo(requestId,
-						msisdn, null);
+				SubscriberInfo subscriberInfo = TransactionEngineHelper.getSubscriberInfo(msisdn);
 
 				log.debug("subscriberInfo returned is " +subscriberInfo);
-				subscriber = subscriberInfo.getSubscriber();
+				Subscriber subscriber = subscriberInfo.getSubscriber();
 				if(subscriber == null){
 					throw new RuntimeException("User with userID: " + msisdn + " does not exist anymore: ");
-				}
-				}catch(Exception e1){
-					throw new RuntimeException(e1);
 				}
 			Language language = Language.en;
 			if (subscriber.getPrefferedLanguage() != null) {
@@ -109,7 +84,7 @@ public class ExpiryNotificationCommand implements Command<Void> {
 			scheduledRequest.setStatus(ScheduledRequestStatus.SCHEDLUED);
 			SchedulerService scheduler = SchedulerContext.getSchedulerService();
 
-			Collection<ScheduledRequest> requests = SchedulerContext.getScheduledRequestMapper().findIdenticalRequests(
+			Collection<ScheduledRequest> requests = SefCoreServiceResolver.getScheduleRequestService().findIdenticalRequests(
 					scheduledRequest);
 			List<JobKey> jobKeys = new ArrayList<JobKey>();
 
@@ -119,7 +94,7 @@ public class ExpiryNotificationCommand implements Command<Void> {
 				}
 				scheduler.deleteJobs(jobKeys);
 				scheduledRequest.setStatus(ScheduledRequestStatus.REMOVED);
-				SchedulerContext.getScheduledRequestMapper().upadteScheduledRequestStatus(scheduledRequest);
+				SefCoreServiceResolver.getScheduleRequestService().upadteScheduledRequestStatus(scheduledRequest);
 			}
 			
 			List<PreparedMessage> preparedMessages = new ArrayList<ExpiryNotificationCommand.PreparedMessage>();
@@ -171,7 +146,7 @@ public class ExpiryNotificationCommand implements Command<Void> {
 			}
 			
 			for (PreparedMessage preparedMessage : preparedMessages) {
-				scheduleEvent(preparedMessage.scheduleDate, preparedMessage.messages, preparedMessage.event);
+				scheduleEvent(preparedMessage.scheduleDate, preparedMessage.messages, preparedMessage.event,subscriberInfo);
 			}
 			
 		}catch (SchedulerException e) {
@@ -184,42 +159,29 @@ public class ExpiryNotificationCommand implements Command<Void> {
 		return null;
 	}
 
-	private void scheduleEvent(Date scheduleTime, final List<String> messages, SubscriptionLifeCycleEvent event)
+	private void scheduleEvent(Date scheduleTime, final List<String> messages, SubscriptionLifeCycleEvent event,SubscriberInfo subscriberInfo)
 			throws SmException {
 		try {
-			UserProfileService userProfileService = SchedulerContext.getUserProfileService();
-			final String userId = userProfileService.getUserId(msisdn);
 			
-			Subscriber subscriber = null;
-			try{
-				String requestId = RequestContextLocalStore.get().getRequestId();
 				//List<com.ericsson.sef.bes.api.entities.Meta> metaList = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
 				//metaList.add(new com.ericsson.sef.bes.api.entities.Meta("READ_SUBSCRIBER", "ENTIRE_READ_SUBSCRIBER"));
-				SubscriberInfo subscriberInfo = readEntireSubscriberInfo(requestId,
-						msisdn, null);
+			
 
-				log.debug("subscriberInfo returned is " +subscriberInfo);
-				subscriber = subscriberInfo.getSubscriber();
-				if(subscriber == null){
-					throw new RuntimeException("User with userID: " + msisdn + " does not exist anymore: ");
-				}
-				}catch(Exception e1){
-					throw new RuntimeException(e1);
-				}
-
-			final ScheduledRequestMapper mapper = SchedulerContext.getScheduledRequestMapper();
+			
+			final ScheduleRequestService mapper = SefCoreServiceResolver
+					.getScheduleRequestService();
 			ObsoleteCodeDbSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
 			final long id = sequence.getSeq();
 			final ScheduledRequest request = new ScheduledRequest();
-			request.setCreated(new DateTime());
+			request.setCreated(new Date());
 			request.setId(id);
 			request.setLifeCycleEvent(event);
 			request.setMsisdn(msisdn);
-			request.setUserId(subscriber.getUserId());
+			request.setUserId(subscriberInfo.getMsisdn());
 			request.setResourceId(resourceId);
 			request.setOfferId(productId);
 			request.setStatus(ScheduledRequestStatus.SCHEDLUED);
-			request.setScheduleTime(new DateTime(scheduleTime));
+			request.setScheduleTime(scheduleTime);
 
 			String jobId = event.name() + '-' + String.valueOf(id);
 			request.setJobId(jobId);
@@ -252,4 +214,3 @@ public class ExpiryNotificationCommand implements Command<Void> {
 	}
 	
 }
-*/

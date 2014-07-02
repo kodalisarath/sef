@@ -12,6 +12,7 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
+import com.ericsson.sef.scheduler.command.CancelSubscriptionLifeCycleCommand;
 import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class SubscriptionLifeCycleJob implements Job {
@@ -60,6 +61,17 @@ public class SubscriptionLifeCycleJob implements Job {
 					+ " ,MSISDN: " + scheduledRequest.getMsisdn() + " ,Metas: "
 					+ scheduledRequest.getRequestMetas());
 
+			String subcriptionId = null;
+
+			if (scheduledRequestMetaList != null) {
+				for (ScheduledRequestMeta scheduledRequestMeta : scheduledRequestMetaList) {
+
+					if ("SUBSCRIBTION_ID".equals(scheduledRequestMeta.getKey())) {
+						subcriptionId = scheduledRequestMeta.getValue();
+						break;
+					}
+				}
+			}
 			switch (scheduledRequest.getLifeCycleEvent().name()) {
 
 			case "PURCHASE":
@@ -73,15 +85,24 @@ public class SubscriptionLifeCycleJob implements Job {
 
 			case "RENEWAL":
 				TransactionEngineHelper
-						.renew(scheduledRequest.getOfferId(), scheduledRequest.getMsisdn(),null,
+						.renew(scheduledRequest.getOfferId(),
+								scheduledRequest.getMsisdn(),
+								subcriptionId,
 								TransactionEngineHelper
 										.convertScheduledReqMetasToAPIMetas(scheduledRequestMetaList));
 				break;
 
 			case "EXPIRY":
-
+				new CancelSubscriptionLifeCycleCommand("RENEWAL",
+						scheduledRequest.getOfferId(),
+						scheduledRequest.getMsisdn()).execute();
+				
+				
+				new SubscriptionLifeCycleJob();
 				TransactionEngineHelper
-						.expiry(scheduledRequest.getOfferId(), scheduledRequest.getMsisdn(),null,
+						.expiry(scheduledRequest.getOfferId(),
+								scheduledRequest.getMsisdn(),
+								subcriptionId,
 								TransactionEngineHelper
 										.convertScheduledReqMetasToAPIMetas(scheduledRequestMetaList));
 
@@ -91,7 +112,9 @@ public class SubscriptionLifeCycleJob implements Job {
 
 				TransactionEngineHelper
 						.terminate(
-								scheduledRequest.getOfferId(), scheduledRequest.getMsisdn(),null,
+								scheduledRequest.getOfferId(),
+								scheduledRequest.getMsisdn(),
+								subcriptionId,
 								TransactionEngineHelper
 										.convertScheduledReqMetasToAPIMetas(scheduledRequestMetaList));
 				break;

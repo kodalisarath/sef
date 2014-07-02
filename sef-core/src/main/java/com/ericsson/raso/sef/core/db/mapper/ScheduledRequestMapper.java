@@ -27,7 +27,7 @@ public interface ScheduledRequestMapper {
 	String getJobId(@Param("msisdn") String msisdn,
 			@Param("requestId") String requestId);
 
-	Collection<ScheduledRequest> getJobIdByOfferId(@Param("msisdn") String msisdn,
+	Collection<String> getJobIdByOfferId(@Param("msisdn") String msisdn,
 			@Param("offerId") String offerId,
 			@Param("lifeCycleEvent") String lifeCycleEvent);
 
