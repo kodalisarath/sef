@@ -437,6 +437,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		boolean isAllScheduleComplete = true;
 		for (SchedulingStep schedule: this.schedules) {
 			SchedulingStepResult result = null;
+			
+			((Future)schedule.getExecutionInputs()).getMetas().putAll(this.metas);
 
 			try {
 				result = schedule.call();
