@@ -1573,35 +1573,27 @@ public class EntireReadUtil {
 		return conFec;
 	}
 
-	private static RppVersionRead createRppVersionRead(Subscriber subscriber,
-			String key, String offerId, Date currentTime) {
+	private static RppVersionRead createRppVersionRead(Subscriber subscriber, String key, String offerId, Date currentTime) {
 		RppVersionRead read = new RppVersionRead();
 		read.setCategory("ONLINE");
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setOfferProfileKey(1);
 		read.setsPeriodicBonusCreditLimit(0L);
 
-		// if (offer.getStartDateTime() == null ||
-		// offer.getStartDateTime().before(new Date(0))) {
-		// read.setvValidFrom(new Date(0).toString()); } else {
-		// read.setvValidFrom(offer.getStartDateTime().toString()); }
-		//
 		String offerStartDateString = getOfferStartDateTime(subscriber, offerId);
 		logger.debug("createRppVersionRead offerStartDateString is "+offerStartDateString);
+		
 		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
 		logger.debug("createRppVersionRead offerExpiryDateString is "+offerExpiryDateString);
-		Date offerExpiryDate=null;
 		if (offerExpiryDateString != null) {
 			
-			offerExpiryDate = new Date(Long.parseLong(offerExpiryDateString));
-			read.setsPeriodicBonusExpiryDate(DateUtil.convertDateToString(offerExpiryDate));
-			read.setvInvalidFrom(DateUtil.convertDateToString(offerExpiryDate));
+			read.setsPeriodicBonusExpiryDate(offerExpiryDateString);
+			read.setvInvalidFrom(offerExpiryDateString);
 
 		} /*else {
 			read.setvInvalidFrom(SmartConstants.MAX_DATETIME);
 		}*/
 
-		IConfig config = SefCoreServiceResolver.getConfigService();
 		if (offerStartDateString != null) {
 			read.setvValidFrom(offerStartDateString);
 		} /*else {
