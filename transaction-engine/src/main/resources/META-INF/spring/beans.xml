@@ -202,33 +202,33 @@
 						<camel:bean
 							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PurchaseProcessor" />
 					</camel:when>
-					<!-- <camel:when> -->
-					<!-- <camel:simple>${header.operationName} == 'terminate'</camel:simple> -->
-					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.TerminateProcessor" 
-						/> -->
-					<!-- </camel:when> -->
-					<!-- <camel:when> -->
-					<!-- <camel:simple>${header.operationName} == 'expiry'</camel:simple> -->
-					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ExpiryProcessor" 
-						/> -->
-					<!-- </camel:when> -->
-					
+					<camel:when>
+						<camel:simple>${header.operationName} == 'terminate'</camel:simple>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.TerminateProcessor" />
+					</camel:when>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'expiry'</camel:simple>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.ExpiryProcessor" />
+					</camel:when>
+
 					<camel:when>
 						<camel:simple>${header.operationName} == 'renew'</camel:simple>
 						<camel:bean
 							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.RenewProcessor" />
 					</camel:when>
-					
-					<!-- <camel:when> -->
-					<!-- <camel:simple>${header.operationName} == 'preExpiry'</camel:simple> -->
-					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreExpiryProcessor" 
-						/> -->
-					<!-- </camel:when> -->
-					<!-- <camel:when> -->
-					<!-- <camel:simple>${header.operationName} == 'preRenewal'</camel:simple> -->
-					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreRenewalProcessor" 
-						/> -->
-					<!-- </camel:when> -->
+
+					<camel:when>
+						<camel:simple>${header.operationName} == 'preExpiry'</camel:simple>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreExpiryProcessor" />
+					</camel:when>
+					<camel:when>
+						<camel:simple>${header.operationName} == 'preRenewal'</camel:simple>
+						<camel:bean
+							beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.PreRenewalProcessor"/> 
+					</camel:when>
 					<!-- <camel:when> -->
 					<!-- <camel:simple>${header.operationName} == 'querySubscription'</camel:simple> -->
 					<!-- <camel:bean beanType="com.ericsson.raso.sef.bes.engine.transaction.processor.QuerySubscriptionProcessor" 

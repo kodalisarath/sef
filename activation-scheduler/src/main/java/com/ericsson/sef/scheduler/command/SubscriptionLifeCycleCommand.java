@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.quartz.JobDetail;
 import org.quartz.SimpleTrigger;
@@ -22,6 +23,7 @@ import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
+import com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
 import com.ericsson.sef.scheduler.ErrorCode;
@@ -38,10 +40,11 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 	private String event = null;
 	private String offerId = null;
 	private String subscriberId = null;
+	private String subscribtionId =null;
 	private Long schedule;
 	private Map<String, Object> metas;
 
-	public SubscriptionLifeCycleCommand(String event, String offerId,
+	public SubscriptionLifeCycleCommand(String event, String subscriptionId, String offerId,
 			String subscriberId, Map<String, Object> metas, Long schedule) {
 		log.debug("SubscriptionLifeCycleCommand  Constructor  event: " + event
 				+ " offerId: " + offerId + " subscriberId: " + subscriberId
@@ -52,6 +55,7 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 		this.subscriberId = subscriberId;
 		this.metas = metas;
 		this.schedule = schedule;
+		this.subscribtionId=subscriptionId;
 	}
 
 	@Override
@@ -62,18 +66,26 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 					.getScheduleRequestService();
 
 			ObsoleteCodeDbSequence sequence = mapper
-					.scheduledRequestSequence(subscriberId);
+					.scheduledRequestSequence(UUID.randomUUID().toString());
 			final long id = sequence.getSeq();
-
+			// Date scheduleTime = new Date(schedule);
+			Calendar scheduledTime = Calendar.getInstance();
+			//scheduledTime.add(Calendar.SECOND, 20);
+			scheduledTime.setTimeInMillis(schedule);
 			final ScheduledRequest request = new ScheduledRequest();
 			request.setCreated(new Date());
+			request.setStatus(ScheduledRequestStatus.SCHEDLUED);
+			request.setResourceId(HelperConstant.RESOURCE_NAME);
 			request.setId(id);
 			if ("NEW_PURCHASE".equals(event))
 				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.NEW_PURCHASE);
 			else if ("RENEWAL".equals(event))
 				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.RENEWAL);
 			else if ("EXPIRY".equals(event))
+			{
+				scheduledTime.add(Calendar.SECOND, -30);
 				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.EXPIRY);
+			}
 			else if ("TERMINATION".equals(event))
 				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.TERMINATION);
 			else if ("PRE_EXPIRY".equals(event))
@@ -81,16 +93,15 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			request.setMsisdn(subscriberId);
 			request.setUserId(subscriberId);
 			request.setOfferId(offerId);
-			// Date scheduleTime = new Date(schedule);
-			Calendar scheduledTime = Calendar.getInstance();
-			scheduledTime.setTimeInMillis(schedule);
+			
+		
 
 			Calendar now = Calendar.getInstance();
 			SimpleDateFormat formatter = new SimpleDateFormat(
 					"yyyy-MM-dd HH:mm:ss.SSSZ");
 			if (now.after(scheduledTime)) {
 				log.error("Requested Scheduled Time is already past...Cannot Proceed."
-						+ formatter.format(scheduledTime));
+						+ formatter.format(scheduledTime.getTime()));
 				throw new SmException(
 						"Requested Scheduled Time is already past...Cannot Proceed",
 						ErrorCode.internalServerError);
@@ -132,6 +143,7 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			log.debug("See whats in this trigger: " + trigger);
 
 			mapper.insertScheduledRequest(request);
+			ScheduledRequestMeta requestMeta =null;
 			for (Entry<String, Object> meta : metas.entrySet()) {
 				if (meta.getKey().equalsIgnoreCase(HelperConstant.REQUEST_ID))
 					continue;
@@ -140,16 +152,29 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 				if (meta.getKey().equalsIgnoreCase(
 						HelperConstant.SUBSCRIPTION_LIFE_CYCLE_EVENT))
 					continue;
-				ScheduledRequestMeta requestMeta = new ScheduledRequestMeta();
+				
+			
+				requestMeta = new ScheduledRequestMeta();
 				requestMeta.setScheduledRequestId(id);
 				requestMeta.setKey(meta.getKey());
 				requestMeta.setValue(String.valueOf(meta.getValue()));
 				log.debug("Checking Schedule Meta before insert: "
 						+ requestMeta);
 				mapper.insertScheduledRequestMeta(requestMeta);
-				log.debug("schedule inserted into db graceful!!");
+				log.debug("schedule Meta inserted into db graceful!!");
 			}
 
+			
+			requestMeta = new ScheduledRequestMeta();
+			requestMeta.setScheduledRequestId(id);
+			requestMeta.setKey("SUBSCRIBTION_ID");
+			requestMeta.setValue(subscribtionId);
+			log.debug("Checking Schedule Meta before insert: "
+					+ requestMeta);
+			mapper.insertScheduledRequestMeta(requestMeta);
+			log.debug("schedule inserted into db graceful!!");
+			
+			
 			SchedulerService scheduler = SchedulerContext.getSchedulerService();
 			scheduler.scheduleJob(job, trigger);
 			log.debug("QUartz engaged and scheduled!!");

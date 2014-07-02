@@ -1,6 +1,5 @@
 package com.ericsson.sef.scheduler.command;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.quartz.SchedulerException;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.Command;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
 
@@ -29,9 +27,9 @@ public class CancelSubscriptionLifeCycleCommand implements Command<Void> {
 			String offerId, String subscriberId) {
 		log.debug("CancelSubscriptionLifeCycleCommand  Constructor  lifeCycleEvent: "
 				+ lifeCycleEvent
-				+ " offerId: "
+				+ " ,offerId: "
 				+ offerId
-				+ " subscriberId: "
+				+ " ,subscriberId: "
 				+ subscriberId);
 
 		this.lifeCycleEvent = lifeCycleEvent;
@@ -43,10 +41,22 @@ public class CancelSubscriptionLifeCycleCommand implements Command<Void> {
 	@Override
 	public Void execute() throws SmException {
 
-		List<ScheduledRequest> scheduledRequestList = (List<ScheduledRequest>) SefCoreServiceResolver
-				.getScheduleRequestService().getJobIdByOfferId(subscriberId,
+		
+		log.debug("CancelSubscriptionLifeCycleCommand  Execute Method: "
+				);
+		List<String> scheduledRequestList =null;
+		try
+		{
+			String msisdn = subscriberId;
+		 scheduledRequestList = (List<String>) SefCoreServiceResolver
+				.getScheduleRequestService().getJobIdByOfferId(msisdn,
 						offerId, lifeCycleEvent);
 
+		}
+		catch(Exception e)
+		{
+			log.error("Excetpion Occured at CancelSubscriptionLifeCycleCommand getJobIdByOfferId",e);
+		}
 		log.debug("CancelSubscriptionLifeCycleCommand  jobsName: "
 				+ scheduledRequestList);
 
@@ -55,14 +65,14 @@ public class CancelSubscriptionLifeCycleCommand implements Command<Void> {
 		{
 			SchedulerService scheduler = SchedulerContext.getSchedulerService();
 
-			for (ScheduledRequest scheduledRequest : scheduledRequestList) {
+			for (String jobId : scheduledRequestList) {
 
 				
-				log.debug("CancelSubscriptionLifeCycleCommand  Jbb About to be Cancelled: "
-						+ scheduledRequest.getJobId());
+				log.debug("CancelSubscriptionLifeCycleCommand  Job About to be Cancelled: "
+						+ jobId);
 
 				try {
-					scheduler.deleteJob(scheduledRequest.getJobId());
+					scheduler.deleteJob(jobId);
 				} catch (SchedulerException e) {
 					log.error("Cannot cancel the Job " + lifeCycleEvent
 							+ " offerId: " + offerId + " subscriberId: "

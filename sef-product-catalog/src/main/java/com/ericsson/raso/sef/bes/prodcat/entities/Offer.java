@@ -304,7 +304,7 @@ public class Offer implements Serializable {
 		}
 
 
-		
+		LOGGER.debug("OFFER CLASS:   SUBSCRITPION "+subscription);
 		switch (event) {
 			case DISCOVERY:
 				// If an offer is already executing, then discovery is complete. Assuming to be a query on subscription status and consumption; or it must be a Subscriber Workflow

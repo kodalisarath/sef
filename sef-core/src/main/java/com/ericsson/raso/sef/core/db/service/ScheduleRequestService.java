@@ -24,6 +24,6 @@ public interface ScheduleRequestService {
 
 	String getJobId(String msisdn, String requestId);
 	
-	Collection<ScheduledRequest> getJobIdByOfferId(String msisdn, String offerId,String lifeCycleEvent);
+	Collection<String> getJobIdByOfferId(String msisdn, String offerId,String lifeCycleEvent);
 
 }

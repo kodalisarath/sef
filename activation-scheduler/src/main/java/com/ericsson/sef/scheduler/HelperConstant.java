@@ -19,5 +19,6 @@ public interface HelperConstant {
 	public static final String USECASE = "usecase";
 	public static final int AIRTIME_DA_ID = 1;
 	public static final String EVENT_ID = "eventId";
+	public static final String RESOURCE_NAME = "QUARTZ";
 
 }

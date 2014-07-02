@@ -35,197 +35,245 @@ import com.ericsson.sef.bes.api.entities.Product;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionResponse;
 
-
 public class HandleSubscriptionEvent extends AbstractTransaction {
-	private static final long	serialVersionUID	= 8130277491237379246L;
+	private static final long serialVersionUID = 8130277491237379246L;
 
-	private static final Logger logger = LoggerFactory.getLogger(HandleSubscriptionEvent.class);
-	
-	public HandleSubscriptionEvent(String requestId, 
-									String offerId, 
-									String subscriberId, 
-									String subscriptionId,
-									SubscriptionLifeCycleEvent event, 
-									Boolean override, 
-									Map<String, Object> metas) {
-		
-		super(requestId, new HandleSubscriptionEventRequest(requestId, offerId, subscriberId, subscriptionId, event, override, metas));
+	private static final Logger logger = LoggerFactory
+			.getLogger(HandleSubscriptionEvent.class);
+
+	public HandleSubscriptionEvent(String requestId, String offerId,
+			String subscriberId, String subscriptionId,
+			SubscriptionLifeCycleEvent event, Boolean override,
+			Map<String, Object> metas) {
+
+		super(requestId, new HandleSubscriptionEventRequest(requestId, offerId,
+				subscriberId, subscriptionId, event, override, metas));
 		this.setResponse(new HandleSubscriptionEventResponse(requestId));
 	}
 
 	@Override
 	public Boolean execute() throws TransactionException {
-		logger.debug("Entered handleSubscriptionEvent!!!");
-		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
-		
+		logger.debug("Entered handleSubscriptionEvent!!!  ");
+		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
+
 		IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-		
-		if (((HandleSubscriptionEventRequest)this.getRequest()).getSubscriberId() == null) {
+
+		if (((HandleSubscriptionEventRequest) this.getRequest())
+				.getSubscriberId() == null) {
 			logger.debug("MSISDN/ Subscriber Id is missing in request!!");
-			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(505, "Technical Error")));
+			this.getResponse().setReturnFault(
+					new TransactionException("txe", new ResponseCode(505,
+							"Technical Error")));
 			this.sendResponse();
 		}
+
 		
-		//TODO: its hack specific to SMART. address this through calling discoverOfferByFederatedId in purchase processor
-		String offerId = ((HandleSubscriptionEventRequest)this.getRequest()).getOfferId();
+		// TODO: its hack specific to SMART. address this through calling
+		// discoverOfferByFederatedId in purchase processor
+		String offerId = ((HandleSubscriptionEventRequest) this.getRequest())
+				.getOfferId();
+		
+		logger.debug("Entered handleSubscriptionEvent!!! offerId is  "+offerId);
 		Offer prodcatOffer = catalog.getOfferByExternalHandle(offerId);
 		if (prodcatOffer == null) {
-			logger.debug("Offer (" + offerId + ") not defined in the offerStore!!");
-			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(999, "Invalid Event Name")));
-			this.sendResponse();
-			return true; // to ensure stablity and eliminate any abnormal flows
-		} 
-		logger.debug("Offer retrieved from catalog: " + prodcatOffer.getName());
-		
+
+			prodcatOffer = catalog.getOfferById(offerId);
+			if (prodcatOffer == null) {
+				logger.debug("Offer (" + offerId
+						+ ") not defined in the offerStore!!");
+				this.getResponse().setReturnFault(
+						new TransactionException("txe", new ResponseCode(999,
+								"Invalid Event Name")));
+				this.sendResponse();
+				return true; // to ensure stablity and eliminate any abnormal
+								// flows
+			}
+		}
+		logger.debug("Offer retrieved from catalog: " + prodcatOffer);
+
 		try {
-			
-			if (((HandleSubscriptionEventRequest)this.getRequest()).getEvent() != SubscriptionLifeCycleEvent.PURCHASE) {
+
+			if (((HandleSubscriptionEventRequest) this.getRequest()).getEvent() != SubscriptionLifeCycleEvent.PURCHASE) {
 				logger.debug("Not a purchase event...");
-				String subscriptionId = ((HandleSubscriptionEventRequest)this.getRequest()).getSubscriptionId();
+				String subscriptionId = ((HandleSubscriptionEventRequest) this
+						.getRequest()).getSubscriptionId();
 				if (subscriptionId != null) {
-					Map<String, Object> metas = ((HandleSubscriptionEventRequest)this.getRequest()).getMetas();
+					Map<String, Object> metas = ((HandleSubscriptionEventRequest) this
+							.getRequest()).getMetas();
 					if (metas == null)
 						metas = new TreeMap<String, Object>();
 
 					metas.put(Constants.SUBSCRIPTION_ID.name(), subscriptionId);
-					((HandleSubscriptionEventRequest)this.getRequest()).setMetas(metas);
+					((HandleSubscriptionEventRequest) this.getRequest())
+							.setMetas(metas);
 				}
 			}
-			
+
 			logger.debug("Offer execution to start now...");
-			
-			tasks.addAll(prodcatOffer.execute(((HandleSubscriptionEventRequest)this.getRequest()).getSubscriberId(), 
-												((HandleSubscriptionEventRequest)this.getRequest()).getEvent(), 
-												((HandleSubscriptionEventRequest)this.getRequest()).getOverride(),
-												((HandleSubscriptionEventRequest)this.getRequest()).getMetas()));
-			logger.debug("Offer executed successfully!!!. Total tasks to be orchestrated = " + tasks.size());
+
+			tasks.addAll(prodcatOffer.execute(
+					((HandleSubscriptionEventRequest) this.getRequest())
+							.getSubscriberId(),
+					((HandleSubscriptionEventRequest) this.getRequest())
+							.getEvent(), ((HandleSubscriptionEventRequest) this
+							.getRequest()).getOverride(),
+					((HandleSubscriptionEventRequest) this.getRequest())
+							.getMetas()));
+			logger.debug("Offer executed successfully!!!. Total tasks to be orchestrated = "
+					+ tasks.size());
 		} catch (CatalogException e) {
-			logger.error("Offer execution failed??. Cause: " + e.getMessage(), e);
-			this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(11614, "Generic Exception!!")));
+			logger.error("Offer execution failed??. Cause: " + e.getMessage(),
+					e);
+			this.getResponse().setReturnFault(
+					new TransactionException("txe", new ResponseCode(11614,
+							"Generic Exception!!")));
 		}
-		
-		Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
-		
-		logger.info("Going to execute the orcheastration profile for: " + execution.getNorthBoundCorrelator());
+
+		Orchestration execution = OrchestrationManager.getInstance()
+				.createExecutionProfile(this.getRequestId(), tasks);
+
+		logger.info("Going to execute the orcheastration profile for: "
+				+ execution.getNorthBoundCorrelator());
 		OrchestrationManager.getInstance().submit(this, execution);
-		
+
 		return true;
 	}
 
-	
 	@Override
 	public void sendResponse() {
-		//TODO: implement this logic
+		// TODO: implement this logic
 		/*
-		 * 1. when this method is called, it means that Orchestration Manager has executed all steps in the transaction. Either a response or
+		 * 1. when this method is called, it means that Orchestration Manager
+		 * has executed all steps in the transaction. Either a response or
 		 * exception is available.
 		 * 
-		 * 2. The response will most likely be results/ responses/ exceptions from atomic steps in the transaction. This must be packed into
-		 * the response pojo structure pertinent to method signature of the response interface.
+		 * 2. The response will most likely be results/ responses/ exceptions
+		 * from atomic steps in the transaction. This must be packed into the
+		 * response pojo structure pertinent to method signature of the response
+		 * interface.
 		 * 
-		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
-		 * interface will notify the right JVM waiting for this response thru a Object.wait
+		 * 3. once the response pojo entity is packed, the client for response
+		 * interface must be invoked. the assumption is that response interface
+		 * will notify the right JVM waiting for this response thru a
+		 * Object.wait
 		 * 
-		 * a. If purchase event, then ensure returning subscriptionId
-		 * b. For renewal, terminate, expiry, pre-renewal, pre-expiry 
+		 * a. If purchase event, then ensure returning subscriptionId b. For
+		 * renewal, terminate, expiry, pre-renewal, pre-expiry
 		 */
 		logger.debug("Handle Subscription Event use case response to be sent now");
 		String subscriptionId = null;
 		List<Product> products = new ArrayList<Product>();
 		List<Meta> billingMetas = null;
-		TransactionStatus txnStatus=null;
-		
-		
-		
-		if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
-			txnStatus = new TransactionStatus(this.getResponse().getReturnFault().getComponent(),
-						this.getResponse().getReturnFault().getStatusCode().getCode(),
-						this.getResponse().getReturnFault().getStatusCode().getMessage());
+		TransactionStatus txnStatus = null;
+
+		if (this.getResponse() != null
+				&& this.getResponse().getReturnFault() != null) {
+			txnStatus = new TransactionStatus(this.getResponse()
+					.getReturnFault().getComponent(), this.getResponse()
+					.getReturnFault().getStatusCode().getCode(), this
+					.getResponse().getReturnFault().getStatusCode()
+					.getMessage());
 			logger.debug("Orchestration had failed. TxStatus: " + txnStatus);
-			
+
 		} else {
-	
-			for (Step<?> result: this.getResponse().getAtomicStepResults().keySet()) {
-				logger.debug("Looping thru atomic steps..."  + result);
+
+			for (Step<?> result : this.getResponse().getAtomicStepResults()
+					.keySet()) {
+				logger.debug("Looping thru atomic steps..." + result);
 				if (result.getExecutionInputs().getType() == TaskType.PERSIST) {
-					Object saved = ((Persistence<?>)((PersistenceStep) result).getExecutionInputs()).getToSave();
+					Object saved = ((Persistence<?>) ((PersistenceStep) result)
+							.getExecutionInputs()).getToSave();
 					if (saved instanceof Subscription) {
-						subscriptionId = ((Subscription)saved).getSubscriptionId(); 
-					}	
+						subscriptionId = ((Subscription) saved)
+								.getSubscriptionId();
+					}
 				}
 
 				if (result.getExecutionInputs().getType() == TaskType.FULFILLMENT) {
 					logger.debug("Checking in Fulfillment Step Result...");
-					if(result.getFault() != null){
+					if (result.getFault() != null) {
 						logger.debug("Yes there is a fault in Fulfillment...");
-						txnStatus=new TransactionStatus();
-						txnStatus.setCode(result.getFault().getStatusCode().getCode());
-						txnStatus.setComponent(result.getFault().getComponent());
-						txnStatus.setDescription(result.getFault().getStatusCode().getMessage());
-						logger.debug("Fulfillment failure found. TxStatus: " + txnStatus);
+						txnStatus = new TransactionStatus();
+						txnStatus.setCode(result.getFault().getStatusCode()
+								.getCode());
+						txnStatus
+								.setComponent(result.getFault().getComponent());
+						txnStatus.setDescription(result.getFault()
+								.getStatusCode().getMessage());
+						logger.debug("Fulfillment failure found. TxStatus: "
+								+ txnStatus);
 						break;
-					}else{
+					} else {
 						logger.debug("No Fault in Fulfillment Step...");
-						if((((FulfillmentStep) result).getResult()) != null) {
+						if ((((FulfillmentStep) result).getResult()) != null) {
 							logger.debug("Handling functional results from backend...");
-							products.addAll(TransactionServiceHelper.translateProducts(((FulfillmentStep) result).getResult().getFulfillmentResult()));
+							products.addAll(TransactionServiceHelper
+									.translateProducts(((FulfillmentStep) result)
+											.getResult().getFulfillmentResult()));
 						}
 					}
 				}
 			}
 		}
-		
+
 		// Handle the metas
 		billingMetas = TransactionServiceHelper.getSefApiList(this.getMetas());
 		logger.debug("Billing Metas: " + billingMetas);
-		
+
 		logger.debug("Invoking subscription response!!");
-		ISubscriptionResponse subscriptionClient = ServiceResolver.getSubscriptionResponseClient();
+		ISubscriptionResponse subscriptionClient = ServiceResolver
+				.getSubscriptionResponseClient();
 		if (subscriptionClient != null) {
 			logger.debug("Subscription Response client available. Can send the response now...");
-			switch (((HandleSubscriptionEventRequest)this.getRequest()).getEvent()) {
-				case PURCHASE:
-					subscriptionClient.purchase(this.getRequestId(), 
-		                    txnStatus, 
-							subscriptionId, 
-							products, 
-							billingMetas);
-					break;
-				case EXPIRY:
-					subscriptionClient.expiry(this.getRequestId(), 
-		                    txnStatus, 
-							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
-					break;
-				case PRE_EXPIRY:
-					subscriptionClient.preExpiry(this.getRequestId(), 
-		                    txnStatus, 
-							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
-					break;
-				case PRE_RENEWAL:
-					subscriptionClient.preRenewal(this.getRequestId(), 
-		                    txnStatus, 
-							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
-					break;
-				case RENEWAL:
-					subscriptionClient.renew(this.getRequestId(), 
-		                    txnStatus, 
-							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
-					break;
-				case TERMINATE:
-					subscriptionClient.terminate(this.getRequestId(), 
-		                    txnStatus, 
-							((HandleSubscriptionEventResponse)this.getResponse()).getResult());
-					break;
-				default:
-					logger.error("Not Implemented yet... FE Request must timeout!!"); //TODO: in CR scope... high potential of memory leak
+			switch (((HandleSubscriptionEventRequest) this.getRequest())
+					.getEvent()) {
+			case PURCHASE:
+				subscriptionClient.purchase(this.getRequestId(), txnStatus,
+						subscriptionId, products, billingMetas);
+				break;
+			case EXPIRY:
+				subscriptionClient.expiry(this.getRequestId(), txnStatus,
+						((HandleSubscriptionEventResponse) this.getResponse())
+								.getResult());
+				break;
+			case PRE_EXPIRY:
+				subscriptionClient.preExpiry(this.getRequestId(), txnStatus,
+						((HandleSubscriptionEventResponse) this.getResponse())
+								.getResult());
+				break;
+			case PRE_RENEWAL:
+				subscriptionClient.preRenewal(this.getRequestId(), txnStatus,
+						((HandleSubscriptionEventResponse) this.getResponse())
+								.getResult());
+				break;
+			case RENEWAL:
+				subscriptionClient.renew(this.getRequestId(), txnStatus,
+						((HandleSubscriptionEventResponse) this.getResponse())
+								.getResult());
+				break;
+			case TERMINATE:
+				subscriptionClient.terminate(this.getRequestId(), txnStatus,
+						((HandleSubscriptionEventResponse) this.getResponse())
+								.getResult());
+				break;
+			default:
+				logger.error("Not Implemented yet... FE Request must timeout!!"); // TODO:
+																					// in
+																					// CR
+																					// scope...
+																					// high
+																					// potential
+																					// of
+																					// memory
+																					// leak
 			}
 			logger.debug("Subscription response posted");
 		} else {
-			logger.error("Seems like Subscription Response Client is not available... releasing transaction(" + this.getRequestId() + ") to avoid stress accumulation!!!");
-			SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(this.getRequestId()).release();
+			logger.error("Seems like Subscription Response Client is not available... releasing transaction("
+					+ this.getRequestId() + ") to avoid stress accumulation!!!");
+			SefCoreServiceResolver.getCloudAwareCluster()
+					.getSemaphore(this.getRequestId()).release();
 		}
-	} 
-	
-	
+	}
 
 }

@@ -28,10 +28,13 @@ public class OfferManager implements IOfferAdmin {
 		if (ssh.fileExists(offerStoreLocation)) {
 			try {
 				this.container = (OfferContainer) ssh.fetchFromFile(offerStoreLocation);
+				container.listAllOffers();
 			} catch (FrameworkException e) {
 				// TODO: LOgger on this error...
+		
 			}
 		}
+		
 	}
 	
 	private String getStoreLocation() {
