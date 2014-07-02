@@ -62,7 +62,7 @@ public class EntireReadUtil {
 			.getLogger(EntireReadUtil.class);
 
 	public static Object symbolicOrDateParameter(String name, String value) {
-		if (value.equals(SmartConstants.MAX_DATETIME)) {
+		if (value.equals(SmartConstants.MAX_DATETIME) || value.equals("NOW")) {
 			SymbolicParameter symbolicParameter = new SymbolicParameter();
 			symbolicParameter.setName(name);
 			symbolicParameter.setValue(value);
@@ -72,7 +72,7 @@ public class EntireReadUtil {
 			dateTimeParameter.setName(name);
 			if ( value != null && !"null".equals(value)) {
 				try {
-					SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+					SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					Date date = storeFormat.parse(value);
 					GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
 					gc.setTime(date);
@@ -85,6 +85,7 @@ public class EntireReadUtil {
 					logger.error("Unable to parse date from db: " + e.getMessage());
 				}
 			}
+			logger.error("Check returned NSN Date Parameter: (name=" + name + ", value=" + value + ")");
 			return dateTimeParameter;
 		}
 	}
@@ -912,7 +913,9 @@ public class EntireReadUtil {
 	}
 
 	private static CustomerVersionRead createCustomerVersionRead(Subscriber subcriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		
 		CustomerVersionRead versionRead = new CustomerVersionRead();
 		versionRead.setCustomerId(subcriber.getMsisdn());
@@ -921,11 +924,11 @@ public class EntireReadUtil {
 
 		String date = subcriber.getMetas().get("vValidFrom");
 		if (date == null)
-			versionRead.setvValidFrom(metaStoreFormat.format(new Date()));
+			versionRead.setvValidFrom("NOW");
 		else
 			try {
-				metaStoreFormat.parse(date);
-				versionRead.setvValidFrom(subcriber.getMetas().get("vValidFrom"));
+				Date dateField = metaStoreFormat.parse(date);
+				versionRead.setvValidFrom(nsnResponseFormat.format(dateField));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(vValidFrom): " + date);
 				logger.debug("Setting bValidFrom to 'NOW'");
@@ -940,7 +943,8 @@ public class EntireReadUtil {
 	}
 
 	private static CustomerBucketRead createCustomerBucketRead(Subscriber subscriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		CustomerBucketRead bucketRead = new CustomerBucketRead();
 		bucketRead.setCustomerId(subscriber.getMsisdn());
@@ -951,11 +955,11 @@ public class EntireReadUtil {
 		bucketRead.setbValidFrom(subscriber.getMetas().get("bValidFrom"));
 		String date = subscriber.getMetas().get("bValidFrom");
 		if (date == null)
-			bucketRead.setbValidFrom(metaStoreFormat.format(new Date()));
+			bucketRead.setbValidFrom("NOW");
 		else
 			try {
-				metaStoreFormat.parse(date);
-				bucketRead.setbValidFrom(subscriber.getMetas().get("bValidFrom"));
+				Date dateField = metaStoreFormat.parse(date);
+				bucketRead.setbValidFrom(nsnResponseFormat.format(dateField));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(bValidFrom): " + date);
 				logger.debug("Setting bValidFrom to 'NOW'");
@@ -977,6 +981,7 @@ public class EntireReadUtil {
 
 	private static RopRead createRopRead(Subscriber subscriber) {
 		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		
 		RopRead ropRead = new RopRead();
@@ -989,14 +994,14 @@ public class EntireReadUtil {
 		
 		String activeEndDate = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE);
 		if (activeEndDate == null)
-			ropRead.setGraceEndDate("");
+			ropRead.setActiveEndDate(null);
 		else
 			try {
-				metaStoreFormat.parse(activeEndDate);
-				ropRead.setActiveEndDate(activeEndDate);
+				Date date = metaStoreFormat.parse(activeEndDate);
+				ropRead.setActiveEndDate(nsnResponseFormat.format(date));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(activeEndDate): " + activeEndDate);
-				ropRead.setActiveEndDate("");
+				ropRead.setActiveEndDate(null);
 			}
 		
 		ropRead.setAnnoFirstWarningPeriodSent(false);
@@ -1017,28 +1022,28 @@ public class EntireReadUtil {
 
 		String firstCallDate = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_ACTIVATION_DATE);
 		if (firstCallDate == null)
-			ropRead.setFirstCallDate("");
+			ropRead.setFirstCallDate(null);
 		else
 			try {
-				metaStoreFormat.parse(firstCallDate);
-				ropRead.setActiveEndDate(firstCallDate);
+				Date date = metaStoreFormat.parse(firstCallDate);
+				ropRead.setFirstCallDate(nsnResponseFormat.format(date));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(firstCallDate): " + firstCallDate);
-				ropRead.setActiveEndDate("");
+				ropRead.setFirstCallDate(null);
 			}
 		
 		
 
 		String graceEndDate = getGraceEndDate(subscriber);
 		if (graceEndDate == null)
-			ropRead.setGraceEndDate("NOW");
+			ropRead.setGraceEndDate(null);
 		else
 			try {
-				metaStoreFormat.parse(graceEndDate);
-				ropRead.setGraceEndDate(graceEndDate);
+				Date date = metaStoreFormat.parse(graceEndDate);
+				ropRead.setGraceEndDate(nsnResponseFormat.format(date));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(graceEndDate): " + graceEndDate);
-				ropRead.setGraceEndDate("NOW");
+				ropRead.setGraceEndDate(null);
 			}
 		
 		
@@ -1091,8 +1096,8 @@ public class EntireReadUtil {
 			ropRead.setPreActiveEndDate("NOW");
 		else
 			try {
-				metaStoreFormat.parse(preActiveEndDate);
-				ropRead.setPreActiveEndDate(preActiveEndDate);
+				Date date = metaStoreFormat.parse(preActiveEndDate);
+				ropRead.setPreActiveEndDate(nsnResponseFormat.format(date));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(preActiveEndDate): " + preActiveEndDate);
 				ropRead.setPreActiveEndDate("NOW");
@@ -1108,7 +1113,8 @@ public class EntireReadUtil {
 	}
 
 	private static RopBucketRead createRopBucketRead(Subscriber subscriber) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		RopBucketRead read = new RopBucketRead();
 		read.setCustomerId(subscriber.getMsisdn());
@@ -1118,11 +1124,11 @@ public class EntireReadUtil {
 		IConfig config = SefCoreServiceResolver.getConfigService();
 		String date = subscriber.getMetas().get("bValidFrom");
 		if (date == null)
-			read.setbValidFrom(metaStoreFormat.format(new Date()));
+			read.setbValidFrom("NOW");
 		else
 			try {
-				metaStoreFormat.parse(date);
-				read.setbValidFrom(subscriber.getMetas().get("bValidFrom"));
+				Date dateField = metaStoreFormat.parse(date);
+				read.setbValidFrom(nsnResponseFormat.format(dateField));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(bValidFrom): " + date);
 				logger.debug("Setting bValidFrom to 'NOW'");
@@ -1139,7 +1145,8 @@ public class EntireReadUtil {
 	}
 
 	private static RopVersionRead createRopVersionRead(Subscriber subscriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		RopVersionRead read = new RopVersionRead();
 		read.setCustomerId(subscriber.getMsisdn());
@@ -1160,11 +1167,11 @@ public class EntireReadUtil {
 
 		String date = subscriber.getMetas().get("vValidFrom");
 		if (date == null)
-			read.setvValidFrom(metaStoreFormat.format(new Date()));
+			read.setvValidFrom("NOW");
 		else
 			try {
-				metaStoreFormat.parse(date);
-				read.setvValidFrom(subscriber.getMetas().get("vValidFrom"));
+				Date dateField = metaStoreFormat.parse(date);
+				read.setvValidFrom(nsnResponseFormat.format(dateField));
 			} catch (ParseException e) {
 				logger.error("Unparseable date(vValidFrom): " + date);
 				logger.debug("Setting bValidFrom to 'NOW'");
@@ -1223,7 +1230,7 @@ public class EntireReadUtil {
 						graceEndDate = ((expiryDate.equals("null")?expiryDateTime:expiryDate));
 						long dateMillis = Long.parseLong(graceEndDate);
 						
-						SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+						SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
 						return metaStoreFormat.format(new Date(dateMillis));
 					}
 				}
