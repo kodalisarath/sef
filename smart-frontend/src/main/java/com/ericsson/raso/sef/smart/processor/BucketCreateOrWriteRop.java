@@ -1,6 +1,8 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -36,8 +38,27 @@ public class BucketCreateOrWriteRop implements Processor {
 		metas.add(new Meta("CustomerId", request.getCustomerId()));
 		metas.add(new Meta("category", request.getCategory()));
 		metas.add(new Meta("Key", String.valueOf(request.getKey())));
-		metas.add(new Meta("bValidFrom", request.getbValidFrom()));
-		metas.add(new Meta("bInvalidFrom", request.getbInvalidFrom()));
+		
+		
+		String validFrom = request.getbValidFrom();
+		if (validFrom != null) { 
+			if (validFrom.equals("NOW")) {
+				validFrom = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+				metas.add(new Meta("bValidFrom", validFrom));
+			} else {
+				metas.add(new Meta("bValidFrom", DateUtil.convertISOToSimpleDateFormat(validFrom)));
+			}
+		}
+		
+		validFrom = request.getbInvalidFrom();
+		if (validFrom != null) { 
+			if (validFrom.equals("MAX_DATEANDTIME")) {
+				logger.error("Cannot process infinity (MAX_DATEANDTIME) for bucket create or write rop: " + validFrom);
+			} else {
+				metas.add(new Meta("bInvalidFrom", DateUtil.convertISOToSimpleDateFormat(validFrom)));
+			}
+		}
+		
 		metas.add(new Meta("OnPeakAccountID_FU", request.getOnPeakAccountID_FU()));
 		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
 		String requestId = RequestContextLocalStore.get().getRequestId();

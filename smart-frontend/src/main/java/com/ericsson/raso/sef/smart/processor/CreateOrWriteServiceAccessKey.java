@@ -1,6 +1,8 @@
 package com.ericsson.raso.sef.smart.processor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -36,9 +38,19 @@ public class CreateOrWriteServiceAccessKey implements Processor {
 		metas.add(new Meta("msisdn", request.getCustomerId()));
 		metas.add(new Meta("Key", request.getCategory()));
 		metas.add(new Meta("KeyType", String.valueOf(request.getKeyType())));
-		metas.add(new Meta("vValidFrom", request.getvValidFrom()));
 		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
 
+		String validFrom = request.getvValidFrom();
+		if (validFrom != null) { 
+			if (validFrom.equals("NOW")) {
+				validFrom = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+				metas.add(new Meta("vValidFrom", validFrom));
+			} else {
+				metas.add(new Meta("vValidFrom", DateUtil.convertISOToSimpleDateFormat(validFrom)));
+			}
+		}
+
+		
 		String requestId = RequestContextLocalStore.get().getRequestId();
 
 		SubscriberInfo subscriberInfo = updateSubscriber(requestId,request.getCustomerId(), metas,Constants.CreateOrWriteServiceAccessKey);
