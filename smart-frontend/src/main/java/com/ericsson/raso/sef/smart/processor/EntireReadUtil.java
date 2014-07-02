@@ -62,18 +62,22 @@ public class EntireReadUtil {
 			.getLogger(EntireReadUtil.class);
 
 	public static Object symbolicOrDateParameter(String name, String value) {
+		logger.debug("Check for value: " + value);
 		if (value.equals(SmartConstants.MAX_DATETIME) || value.equals("NOW")) {
+			logger.debug("Detected processing of symbolicParam for: " + value);
 			SymbolicParameter symbolicParameter = new SymbolicParameter();
 			symbolicParameter.setName(name);
 			symbolicParameter.setValue(value);
 			return symbolicParameter;
 		} else {
+			logger.debug("Detected processing of dateTimeParam for: " + value);
 			DateTimeParameter dateTimeParameter = new DateTimeParameter();
 			dateTimeParameter.setName(name);
 			if ( value != null && !"null".equals(value)) {
 				try {
 					SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					Date date = storeFormat.parse(value);
+					logger.debug("Formmatter acepted procesing of " + value + ", dateTime: " + date);
 					GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
 					gc.setTime(date);
 					gc.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -85,7 +89,7 @@ public class EntireReadUtil {
 					logger.error("Unable to parse date from db: " + e.getMessage());
 				}
 			}
-			logger.error("Check returned NSN Date Parameter: (name=" + name + ", value=" + value + ")");
+			logger.error("Check returned NSN Date Parameter: (name=" + name + ", value=" + value + ", dateTimeParam: " + dateTimeParameter.getValue() + ")");
 			return dateTimeParameter;
 		}
 	}
