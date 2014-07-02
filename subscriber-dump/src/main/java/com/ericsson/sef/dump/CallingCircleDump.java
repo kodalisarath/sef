@@ -20,7 +20,7 @@ public class CallingCircleDump {
 	
 	public static void main(String[] args) throws Exception {
 		
-		String inputDate = "2099-09-09";
+		String inputDate = "09-09-2099";
 		if (args.length>0)
 			inputDate = args[0];
 		Properties properties = new Properties();
@@ -32,7 +32,8 @@ public class CallingCircleDump {
 
 		Connection connection = DriverManager.getConnection(properties.getProperty("jdbc.url"), properties.getProperty("jdbc.username"), properties.getProperty("jdbc.password"));
 		String sql = String.format(properties.getProperty("callingcircle.query"), inputDate);
-
+		//System.out.println("SQL : "+sql);
+		
 		PreparedStatement stmt = connection.prepareStatement(sql);
 
 		ResultSet rset = stmt.executeQuery();
