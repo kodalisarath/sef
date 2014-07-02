@@ -101,6 +101,8 @@ public class CARecharge implements Processor {
 			String eventClass = rechargeRequest.getEventClass();
 			if (eventClass.equals("predefined") || eventClass.equals("unli")) {
 				offerid = rechargeRequest.getEventName();
+				metas.put("recharge", eventClass);
+				metas.put("eventName", rechargeRequest.getEventName());
 				metas = prepareRecharge(rechargeRequest);
 			} else if (eventClass.equals("flexible")) {
 				offerid = "FlexiRefill";
@@ -192,8 +194,7 @@ public class CARecharge implements Processor {
 
 		map.put(Constants.EX_DATA1, rechargeRequest.getEventName());
 		map.put(Constants.EX_DATA2, rechargeRequest.getEventInfo());
-		map.put(SmartConstants.USECASE, "recharge");
-
+		
 		return map;
 
 	}
@@ -232,7 +233,8 @@ public class CARecharge implements Processor {
 		requestContext.put("expirationDatePolicy", "" + rechargeRequest.getRatingInput2());
 		requestContext.put("daysOfExtension", "" + rechargeRequest.getRatingInput3());
 		requestContext.put("absoluteDate", "" + rechargeRequest.getRatingInput4());
-
+		requestContext.put("recharge", "flxi");
+		
 		/*
 		 * Step 1: GetAccountDetails first.... - Collect all DA - Collect all Offers - Determine longest expiry date - Check if customer is
 		 * in Grace
