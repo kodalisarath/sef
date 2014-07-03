@@ -12,6 +12,7 @@ import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
+import com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus;
 import com.ericsson.sef.scheduler.command.CancelSubscriptionLifeCycleCommand;
 import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
@@ -96,8 +97,7 @@ public class SubscriptionLifeCycleJob implements Job {
 				new CancelSubscriptionLifeCycleCommand("RENEWAL",
 						scheduledRequest.getOfferId(),
 						scheduledRequest.getMsisdn()).execute();
-				
-				
+
 				new SubscriptionLifeCycleJob();
 				TransactionEngineHelper
 						.expiry(scheduledRequest.getOfferId(),
@@ -125,6 +125,10 @@ public class SubscriptionLifeCycleJob implements Job {
 				break;
 
 			}
+
+			scheduledRequest.setStatus(ScheduledRequestStatus.COMPLETED);
+			SefCoreServiceResolver.getScheduleRequestService()
+					.upadteScheduledRequestStatus(scheduledRequest);
 		} catch (SmException smException) {
 			log.error("Error Executing the Job for offerID: "
 					+ scheduledRequest.getOfferId() + " LifeCycle Event "

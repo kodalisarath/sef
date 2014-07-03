@@ -1185,6 +1185,11 @@
 
 		<!-- For calling circle event Id -->
 		<property key="eventId" value="090109999000" />
+		
+		<property key="activeMqBrokerURL" value="tcp://localhost:61616" />
+		<property key="activeMqUserName" value="admin" />
+		<property key="activeMqUserPassword" value="admin" />
+		
 	</section>
 
 	<!-- activation scheduler -->

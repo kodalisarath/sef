@@ -84,7 +84,7 @@
 	</select>
 	
 	<select id="findIdenticalRequests" resultMap="ScheduledRequestResult" parameterType="ScheduledRequest">
-		select s.id, s.userid, s.msisdn, s.jobid , s.requestid , s.offerid , s.purchaseid , s.lifecycle_event , s.created , s.updated , s.status , s.resourceId
+		select s.id, s.userid, s.msisdn, s.jobid , s.requestid , s.offerid , s.purchaseid , s.lifecycle_event , s.created , s.updated , s.status , s.resourceId, s.expiryTime
 		from scheduled_request s
 		where s.status = #{status}
 		<if test="msisdn != null">

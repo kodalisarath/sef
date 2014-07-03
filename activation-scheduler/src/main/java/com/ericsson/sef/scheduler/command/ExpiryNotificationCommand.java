@@ -3,214 +3,231 @@ package com.ericsson.sef.scheduler.command;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import org.quartz.SimpleTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Command;
-import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.config.Period;
 import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
-import com.ericsson.raso.sef.core.ne.Language;
-import com.ericsson.raso.sef.core.ne.NotificationMessage;
-import com.ericsson.raso.sef.core.ne.StringUtils;
-import com.ericsson.raso.sef.core.ne.SubscriptionNotificationEvent;
-import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
-import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.scheduler.ExpiryNotificationJob;
 import com.ericsson.sef.scheduler.HelperConstant;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
-import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
+/*Expiry Notification Command and Job design are told by Sathya and Navneet,  implemented as per their input on 03-July-2014 2 AM at Mandrin Hotel*/
 public class ExpiryNotificationCommand implements Command<Void> {
 
-	private static Logger log = LoggerFactory.getLogger(ExpiryNotificationCommand.class);
+	private static Logger log = LoggerFactory
+			.getLogger(ExpiryNotificationCommand.class);
 
 	private String resourceId;
 	private String msisdn;
-	private Collection<SubscriptionNotificationEvent> events;
-	private String productId;
-	private Date expirydate;
+	private String offerId;
+	private long expirySchedule;
+	Map<String, Object> metas = null;
+	String eventType;
 
-	public ExpiryNotificationCommand(String msisdn, String resourceId, String productId, Date expiryDate,
-			Collection<SubscriptionNotificationEvent> events) {
+	public ExpiryNotificationCommand(String msisdn, String resourceId,
+			String offerId, long expirySchedule, Map<String, Object> metas,
+			String eventType) {
+
+		log.debug("Inside ExpiryNotificationCommand constructor msisdn ="
+				+ msisdn + " ,resourceId= " + resourceId + " ,offerId ="
+				+ offerId + " ,expirySchedule= " + expirySchedule + " ,metas= "
+				+ metas + ", eventType =" + eventType);
 		this.resourceId = resourceId;
 		this.msisdn = msisdn;
-		this.events = events;
-		this.productId = productId;
-		this.expirydate = expiryDate;
+		// this.events = events;
+		this.offerId = offerId;
+		this.expirySchedule = expirySchedule;
+		this.metas = metas;
+		this.eventType = eventType;
 	}
 
 	@Override
 	public Void execute() throws SmException {
 		try {
-			
-		
-				//String requestId =UniqueIdGenerator.generateId();
-//				List<com.ericsson.sef.bes.api.entities.Meta> metaList = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
-//				metaList.add(new com.ericsson.sef.bes.api.entities.Meta("READ_SUBSCRIBER", "SIMP"));
-				SubscriberInfo subscriberInfo = TransactionEngineHelper.getSubscriberInfo(msisdn);
 
-				log.debug("subscriberInfo returned is " +subscriberInfo);
-				Subscriber subscriber = subscriberInfo.getSubscriber();
-				if(subscriber == null){
-					throw new RuntimeException("User with userID: " + msisdn + " does not exist anymore: ");
-				}
-			Language language = Language.en;
-			if (subscriber.getPrefferedLanguage() != null) {
-				language = Language.valueOf(subscriber.getPrefferedLanguage());
-			}
+			log.debug("Inside ExpiryNotificationCommand execute");
 
 			final ScheduledRequest scheduledRequest = new ScheduledRequest();
 			scheduledRequest.setMsisdn(msisdn);
 			scheduledRequest.setResourceId(resourceId);
 			scheduledRequest.setStatus(ScheduledRequestStatus.SCHEDLUED);
+			
 			SchedulerService scheduler = SchedulerContext.getSchedulerService();
 
-			Collection<ScheduledRequest> requests = SefCoreServiceResolver.getScheduleRequestService().findIdenticalRequests(
-					scheduledRequest);
-			List<JobKey> jobKeys = new ArrayList<JobKey>();
+			Collection<ScheduledRequest> requests = SefCoreServiceResolver
+					.getScheduleRequestService().findIdenticalRequests(
+							scheduledRequest);
+			log.debug("Inside ExpiryNotificationCommand execute identifical ScheduledRequest are "
+					+ requests);
 
+			List<JobKey> jobKeys = new ArrayList<JobKey>();
+			boolean isJobToBeScheduled = true;
 			if (requests != null && requests.size() > 0) {
 				for (ScheduledRequest rq : requests) {
-					jobKeys.add(new JobKey(rq.getJobId()));
+					log.debug("Inside expiry Time from dataBase is "
+							+ rq.getExpiryTime());
+					
+					if (rq.getExpiryTime() != null) {
+						log.debug("Inside expiry Time from dataBase is "
+								+ rq.getExpiryTime().getTime());
+						if (rq.getExpiryTime().getTime() > expirySchedule
+								&& eventType.equals(rq.getLifeCycleEvent()
+										.name())) {
+							isJobToBeScheduled = false;
+							break;
+						}
+					}
 				}
-				scheduler.deleteJobs(jobKeys);
-				scheduledRequest.setStatus(ScheduledRequestStatus.REMOVED);
-				SefCoreServiceResolver.getScheduleRequestService().upadteScheduledRequestStatus(scheduledRequest);
-			}
-			
-			List<PreparedMessage> preparedMessages = new ArrayList<ExpiryNotificationCommand.PreparedMessage>();
+				if (isJobToBeScheduled) {
+					for (ScheduledRequest rq : requests) {
+						jobKeys.add(new JobKey(rq.getJobId()));
+						log.debug("Inside ExpiryNotificationCommand checking whether the schedule with Job ID"
+								+ rq.getJobId() +" can be deleted or not");
+						if (rq.getExpiryTime() != null) {
+							
+							if (rq.getExpiryTime().getTime() > expirySchedule
+									&& eventType.equals(rq.getLifeCycleEvent()
+											.name())) {
+								
+								scheduler.deleteJob(rq.getJobId());
 
-			for (SubscriptionNotificationEvent event : events) {
-				List<NotificationMessage> filteredMessages = new ArrayList<NotificationMessage>();
-				List<NotificationMessage> messages = event.getMessages();
-				for (NotificationMessage message : messages) {
-					if (message.getLang() == language) {
-						filteredMessages.add(message);
-					}
-				}
-				
-				List<Meta> placeholderMetas = new ArrayList<Meta>();
-				placeholderMetas.add(new Meta(HelperConstant.RESOURCE_ID, resourceId));
-				placeholderMetas.add(new Meta(HelperConstant.PRODUCT_ID, productId));
-				placeholderMetas.add(new Meta(HelperConstant.EXPIRY_DATE, expirydate.toString()));
-				
-				switch (event.getEventType()) {
-				case EXPIRY:
-					PreparedMessage prep = new PreparedMessage();
-					prep.scheduleDate = expirydate;
-					prep.event = SubscriptionLifeCycleEvent.EXPIRY;
-					preparedMessages.add(prep);
-					for (NotificationMessage message : filteredMessages) {
-						prep.messages.add(StringUtils.prepareMessage(message.getMessage(), placeholderMetas));
-					}
-					break;
-				case PRE_EXPIRY:
-					for (Meta meta : event.getMetas()) {
-						if (meta.getKey().equals(SubscriptionLifeCycleEvent.PRE_EXPIRY.name())) {
-							Period period = Period.valueOf(meta.getValue());
-							PreparedMessage msg = new PreparedMessage();
-							msg.event = SubscriptionLifeCycleEvent.PRE_EXPIRY;
-							msg.scheduleDate = new Date(expirydate.getTime() - period.getPeriodInMills());
-							preparedMessages.add(msg);
-							for (NotificationMessage message : filteredMessages) {
-								List<Meta> list = new ArrayList<Meta>();
-								list.addAll(placeholderMetas);
-								list.add(new Meta(HelperConstant.VALIDITY_LEFT, period.toString()));
-								msg.messages.add(StringUtils.prepareMessage(message.getMessage(), list));
+								rq.setStatus(ScheduledRequestStatus.REMOVED);
+								SefCoreServiceResolver
+										.getScheduleRequestService()
+										.upadteScheduledRequestStatus(rq);
+							
+								log.debug("Job Deleted successfully "
+										+ rq.getJobId());
+								
 							}
 						}
 					}
-					break;
-				default:
-					break;
 				}
 			}
+
+			//Added only for Testing START
+			Calendar cal1 = Calendar.getInstance();
+			cal1.add(Calendar.MINUTE,3);
+			expirySchedule = cal1.getTimeInMillis();
+			//Added only for Testing START
 			
-			for (PreparedMessage preparedMessage : preparedMessages) {
-				scheduleEvent(preparedMessage.scheduleDate, preparedMessage.messages, preparedMessage.event,subscriberInfo);
+			if (isJobToBeScheduled)
+			{
+				SimpleDateFormat formatter = new SimpleDateFormat(
+						"yyyy-MM-dd HH:mm:ss.SSSZ");
+				log.debug("Expiry Scheudle to be called for Event Scheduling is " +formatter.format(new Date(expirySchedule)));
+				scheduleEvent(expirySchedule, eventType);
 			}
-			
-		}catch (SchedulerException e) {
-			log.error(e.getMessage(), e);
-			throw new SmException(e);
+			log.debug("Inside ExpiryNotificationCommand Completed  isJobToBeScheduled "
+					+ isJobToBeScheduled);
+
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			log.error(
+					"Excpetion in ExpiryNotification Command" + e.getMessage(),
+					e);
 			throw new SmException(e);
 		}
 		return null;
 	}
-
-	private void scheduleEvent(Date scheduleTime, final List<String> messages, SubscriptionLifeCycleEvent event,SubscriberInfo subscriberInfo)
+	private void scheduleEvent(long scheduleTimeInMillis1, String eventType)
 			throws SmException {
 		try {
-			
-				//List<com.ericsson.sef.bes.api.entities.Meta> metaList = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
-				//metaList.add(new com.ericsson.sef.bes.api.entities.Meta("READ_SUBSCRIBER", "ENTIRE_READ_SUBSCRIBER"));
-			
+			log.debug("Inside scheduleEvent scheduleTimeInMillis = "
+					+ scheduleTimeInMillis1 + "  ,eventType =" + eventType);
 
-			
 			final ScheduleRequestService mapper = SefCoreServiceResolver
 					.getScheduleRequestService();
-			ObsoleteCodeDbSequence sequence = mapper.scheduledRequestSequence(UUID.randomUUID().toString());
+			ObsoleteCodeDbSequence sequence = mapper
+					.scheduledRequestSequence(UUID.randomUUID().toString());
 			final long id = sequence.getSeq();
 			final ScheduledRequest request = new ScheduledRequest();
 			request.setCreated(new Date());
 			request.setId(id);
-			request.setLifeCycleEvent(event);
 			request.setMsisdn(msisdn);
-			request.setUserId(subscriberInfo.getMsisdn());
+			request.setUserId(msisdn);
 			request.setResourceId(resourceId);
-			request.setOfferId(productId);
+			request.setOfferId(offerId);
 			request.setStatus(ScheduledRequestStatus.SCHEDLUED);
-			request.setScheduleTime(scheduleTime);
 
-			String jobId = event.name() + '-' + String.valueOf(id);
-			request.setJobId(jobId);
-			JobDetail job = newJob(ExpiryNotificationJob.class).withIdentity(jobId).build();
+			request.setExpiryTime(new Date(scheduleTimeInMillis1));
+			long preExpiryOffset = 0;
+			if (HelperConstant.NOTIFICATION_PRE_EXPIRY.equals(eventType)) {
 
-			Trigger trigger = newTrigger().withIdentity(jobId).startAt(scheduleTime).build();
+				preExpiryOffset = Long.parseLong(SefCoreServiceResolver
+						.getConfigService().getValue("GLOBAL",
+								HelperConstant.PRE_EXPIRY_OFFSET));
+				preExpiryOffset = 60000; // To be commented out
+				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.NOTIFICATION_PRE_EXPIRY);
 
-			mapper.insertScheduledRequest(request);
-			int i = 1;
-			for (String msg : messages) {
-				ScheduledRequestMeta meta = new ScheduledRequestMeta();
-				meta.setScheduledRequestId(id);
-				meta.setKey(HelperConstant.NOTIFICATION_MESSAGE+ "" + i++);
-				meta.setValue(msg);
-				mapper.insertScheduledRequestMeta(meta);
+			} else if (HelperConstant.NOTIFICATION_ON_EXPIRY.equals(eventType)) {
+
+				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.NOTIFICATION_ON_EXPIRY);
 			}
 
+			Date date1 = new Date((scheduleTimeInMillis1 - preExpiryOffset));
+
+			SimpleDateFormat formatter = new SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss.SSSZ");
+
+			request.setScheduleTime(date1);
+
+			String jobId = eventType + '-' + String.valueOf(id);
+			log.debug("Inside ExpiryNotification Command scheduling for = "
+					+ formatter.format(date1) + " Job Id is " + jobId);
+
+			request.setJobId(jobId);
+
+			JobDetail job = newJob(ExpiryNotificationJob.class).withIdentity(
+					jobId).build();
+
+			SimpleTrigger trigger = (SimpleTrigger) newTrigger()
+					.withIdentity(jobId).startAt(date1).forJob(job.getKey())
+					.build();
+
+			mapper.insertScheduledRequest(request);
+
+			/*
+			 * ScheduledRequestMeta meta = null;
+			 * 
+			 * log.debug("Inside ExpiryNotification Insering the metats  ");
+			 * 
+			 * Iterator<Entry<String, Object>> it = metas.entrySet().iterator();
+			 * while (it.hasNext()) { Map.Entry<String, Object> pairs =
+			 * (Map.Entry<String, Object>) it .next(); meta = new
+			 * ScheduledRequestMeta(); meta.setScheduledRequestId(id);
+			 * meta.setKey(pairs.getKey()); meta.setValue((String)
+			 * pairs.getValue()); mapper.insertScheduledRequestMeta(meta); }
+			 */
 			SchedulerService scheduler = SchedulerContext.getSchedulerService();
 			scheduler.scheduleJob(job, trigger);
+			log.debug("Inside ExpiryNotification Job Scheduled Successfully  ");
 		} catch (Exception e) {
 			log.error("error creating expiry notification job.", e);
 			throw new SmException(e);
 		}
 	}
-	
-	public static class PreparedMessage {
-		Date scheduleDate;
-		SubscriptionLifeCycleEvent event;
-		List<String> messages = new ArrayList<String>();
-	}
-	
+
 }

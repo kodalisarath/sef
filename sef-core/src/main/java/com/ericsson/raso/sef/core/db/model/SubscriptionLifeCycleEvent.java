@@ -7,5 +7,8 @@ public enum SubscriptionLifeCycleEvent implements Serializable {
 	RENEWAL,
 	EXPIRY,
 	TERMINATION,
-	PRE_EXPIRY;
+	PRE_EXPIRY,
+	NOTIFICATION_ON_EXPIRY,
+	NOTIFICATION_PRE_EXPIRY;
+	
 }

@@ -20,5 +20,17 @@ public interface HelperConstant {
 	public static final int AIRTIME_DA_ID = 1;
 	public static final String EVENT_ID = "eventId";
 	public static final String RESOURCE_NAME = "QUARTZ";
-
+	public static final String RECHARGE ="recharge";
+	public static final String UNLI ="unli";
+	public static final String PREDEFINED ="predefined";
+	public static final String FLEXI ="flexi";
+	public static final String EVENT_NAME = "eventName";
+	public static final String EVENT_OFFER_SECTION_NAME = "SMART_preOnExpNoti";
+	public static final String WALLET_NAME ="walletName";
+	public static final String ACC_AFTER_OFFER= "ACC_AFTER_OFFER";
+	public static final String PRE_EXPIRY_OFFSET = "preExpiryOffset";
+	public static final String ON_EXPIRY_PREFIX ="OnExpiry";
+	public static final String PRE_EXPIRY_PREFIX =" Pre";
+	public static final String NOTIFICATION_PRE_EXPIRY ="NOTIFICATION_PRE_EXPIRY";
+	public static final String  NOTIFICATION_ON_EXPIRY ="NOTIFICATION_ON_EXPIRY";
 }
