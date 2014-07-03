@@ -7,6 +7,7 @@ public class ConfigParams {
 	String password;
 	String userAgent;
 	int connectionTimeout;
+	int replyTimeout;
 	int maxTotalConnections;
 	int maxConnectionsPerHost;
 	boolean staleCheckingEnabled;
@@ -54,6 +55,14 @@ public class ConfigParams {
 
 	public void setConnectionTimeout(int connectionTimeout) {
 		this.connectionTimeout = connectionTimeout;
+	}
+	
+	public int getReplyTimeout() {
+		return replyTimeout;
+	}
+
+	public void setReplyTimeout(int replyTimeout) {
+		this.replyTimeout = replyTimeout;
 	}
 
 	public int getMaxTotalConnections() {

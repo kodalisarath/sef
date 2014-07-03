@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.smart.processor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -51,7 +52,12 @@ public class CreateOrWriteRop implements Processor {
 
 
 		metas.add(new Meta("PreActiveEndDate", DateUtil.convertISOToSimpleDateFormat(request.getPreActiveEndDate())));
-		metas.add(new Meta("FirstCallDate", DateUtil.convertISOToSimpleDateFormat(request.getFirstCallDate())));
+		if (request.getFirstCallDate() != null) {
+			if (request.getFirstCallDate().equals("NOW"))
+				metas.add(new Meta("FirstCallDate", DateUtil.convertDateToString(new Date())));
+			else
+				metas.add(new Meta("FirstCallDate", DateUtil.convertISOToSimpleDateFormat(request.getFirstCallDate())));
+		}
 		metas.add(new Meta("IsFirstCallPassed", String.valueOf(request.getIsFirstCallPassed())));
 		metas.add(new Meta("LastKnownPeriod", (request.getLastKnownPeriod())));
 		metas.add(new Meta("category", (request.getCategory())));
