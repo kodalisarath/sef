@@ -73,7 +73,7 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 	 	String pack = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_welcomePackMapping", packag);
 	 	
 		// service class
-		LOGGER.debug("Invoking service class");
+		LOGGER.debug("Invoking service class - pack: " + pack + " & default: " + defaultServiceClass);
 		UpdateServiceClassRequest scRequest = new UpdateServiceClassRequest();
 		scRequest.setSubscriberNumber(msisdn);
 		scRequest.setServiceClassAction(this.serviceClassAction);
