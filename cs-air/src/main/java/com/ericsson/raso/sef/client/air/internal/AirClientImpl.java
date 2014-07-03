@@ -134,6 +134,20 @@ public class AirClientImpl implements AirClient {
 		}
 		params.setConnectionTimeout(connectionTimeout);
 		
+		String replyTimeout = config.getValue(sectionName, "replyTimeout");
+		int rpcReplyTimeout;
+		if (replyTimeout !=null) {
+			rpcReplyTimeout = Integer.parseInt(replyTimeout);
+		} else {
+			//default to 30000
+			rpcReplyTimeout = 3000;
+		}
+		params.setReplyTimeout(rpcReplyTimeout);
+		
+		
+		
+		
+		
 		String idleTimeout = config.getValue(sectionName, "idleConnctionTimeout");
 		int idleConnectionTimeout;
 		if(idleTimeout != null) {
