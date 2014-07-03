@@ -62,4 +62,11 @@ public abstract class NotificationEvent implements Serializable {
 		this.senderAddr = senderAddr;
 	}
 
+	@Override
+	public String toString() {
+		return "NotificationEvent [description=" + description + ", messages="
+				+ messages + ", senderAddr=" + senderAddr + ", metas=" + metas
+				+ ", chargeAmount=" + chargeAmount + "]";
+	}
+
 }

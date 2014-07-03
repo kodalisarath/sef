@@ -32,4 +32,11 @@ public class ExternalNotifcationEvent extends NotificationEvent {
 	public void setAction(NotificationAction action) {
 		this.action = action;
 	}
+
+	@Override
+	public String toString() {
+		
+		return super.toString() + "ExternalNotifcationEvent [eventId=" + eventId + ", wsClientId="
+				+ wsClientId + ", action=" + action + "]";
+	}
 }
