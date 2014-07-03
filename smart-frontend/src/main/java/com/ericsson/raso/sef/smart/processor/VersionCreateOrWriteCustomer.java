@@ -33,6 +33,7 @@ public class VersionCreateOrWriteCustomer implements Processor {
 
 		// get the method signature of web service [Standard]
 		logger.debug("Getting exchange body....");
+		Thread.sleep(200); // hold on!!
 		VersionCreateOrWriteCustomerRequest versionCreateOrWriteCustomerRequest = (VersionCreateOrWriteCustomerRequest) exchange.getIn().getBody();
 		logger.debug("Got it!");
 		List<com.ericsson.sef.bes.api.entities.Meta> metas = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();

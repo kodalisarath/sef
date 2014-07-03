@@ -63,7 +63,7 @@ public class CreateOrWriteCustomerProcessor implements Processor {
 		}
 		logger.debug("Response purchase received.. now creating front end response");
 		
-		Thread.sleep(60); // bcos i am too fast??
+		Thread.sleep(20); // bcos i am too fast??
 		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER");
 		
 		
