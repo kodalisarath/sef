@@ -29,6 +29,12 @@ public class NotificationMessage implements Serializable {
 		this.lang = lang;
 	}
 
+	@Override
+	public String toString() {
+		return "NotificationMessage [id=" + id + ", lang=" + lang
+				+ ", message=" + message + "]";
+	}
+
 	public String getMessage() {
 		return message;
 	}

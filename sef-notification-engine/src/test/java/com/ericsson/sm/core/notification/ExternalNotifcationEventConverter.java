@@ -1,6 +1,5 @@
 package com.ericsson.sm.core.notification;
 
-import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jsmpp.bean.MessageClass;
 import org.springframework.core.io.FileSystemResource;
 
 import com.ericsson.raso.sef.core.db.model.ChargeAmount;
@@ -22,14 +20,38 @@ import com.ericsson.sm.core.db.model.CurrencyCode;
 public class ExternalNotifcationEventConverter {
 
 	public final static void main (String args[]) throws Exception{
-		FileSystemResource resource = new FileSystemResource("C:\\tmp\\external-notifications.ccem");
+		FileSystemResource resource = new FileSystemResource("/home/ejosayr/Documents/Projects/SMART-IN/external-notifications.ccem");
 		if(resource.exists())  {
 			ObjectInputStream stream = new ObjectInputStream(resource.getInputStream());
 			Map<String, ExternalNotifcationEvent> externalNotifications = (Map<String, ExternalNotifcationEvent>) stream.readObject();
 			stream.close();
 			Map<String, com.ericsson.raso.sef.core.ne.ExternalNotifcationEvent> newresult = new HashMap<String, com.ericsson.raso.sef.core.ne.ExternalNotifcationEvent>();
-			//System.out.println(externalNotifications);
+		//	System.out.println(externalNotifications);
+		
+			Set<String> keySet = externalNotifications.keySet();
+			String key = null;
+			for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
+				key = i.next();
+				ExternalNotifcationEvent oldEvent = externalNotifications.get(key);
+				System.out.println(oldEvent);
+			//	System.out.println(oldEvent.getEventId()+"-"+oldEvent.getDescription()+"-"+oldEvent.getAction()+"-"+oldEvent.getMessages().get(0).getMessage() );
+				com.ericsson.raso.sef.core.ne.ExternalNotifcationEvent newEvent = new com.ericsson.raso.sef.core.ne.ExternalNotifcationEvent();
+				newEvent.setAction(toAction(oldEvent.getAction()));
+				newEvent.setChargeAmount(new ChargeAmount(oldEvent.getChargeAmount().getAmount(), toCurrencyCode(oldEvent.getChargeAmount().getCurrencyCode())));
+				newEvent.setDescription(oldEvent.getDescription());
+				newEvent.setEventId(oldEvent.getEventId());
+				newEvent.setMessages(toMessageList(oldEvent.getMessages()));
+				newEvent.setMetas(toMetaList(oldEvent.getMetas()));
+				newEvent.setSenderAddr(oldEvent.getSenderAddr());
+				newEvent.setWsClientId(oldEvent.getWsClientId());
+				System.out.println(newEvent);
+				newresult.put(key, newEvent);
 			
+			}
+			//System.out.println(newresult);
+			
+			
+	/*		
 			Set<String> keys = externalNotifications.keySet();
 			Iterator<String> it = keys.iterator();
 			
@@ -37,9 +59,11 @@ public class ExternalNotifcationEventConverter {
 				
 				String next = it.next();
 				ExternalNotifcationEvent oldEvent = externalNotifications.get(next);
+			//System.out.println(oldEvent);
 				com.ericsson.raso.sef.core.ne.ExternalNotifcationEvent newEvent = new com.ericsson.raso.sef.core.ne.ExternalNotifcationEvent();
-				if (oldEvent.getMessages().size()>0)
-				System.out.println(oldEvent.getEventId()+"-"+oldEvent.getDescription()+"-"+oldEvent.getMessages().get(0).getMessage());
+				//if (oldEvent.getMessages().size()>0)
+				//System.out.println(oldEvent.getEventId()+"-"+oldEvent.getDescription()+"-"+oldEvent.getAction()+"-"+oldEvent.getMessages().get(0).getMessage() );
+				
 				newEvent.setAction(toAction(oldEvent.getAction()));
 				newEvent.setChargeAmount(new ChargeAmount(oldEvent.getChargeAmount().getAmount(), toCurrencyCode(oldEvent.getChargeAmount().getCurrencyCode())));
 				newEvent.setDescription(oldEvent.getDescription());
@@ -49,11 +73,13 @@ public class ExternalNotifcationEventConverter {
 				newEvent.setSenderAddr(oldEvent.getSenderAddr());
 				newEvent.setWsClientId(oldEvent.getWsClientId());
 				newresult.put(next, newEvent);
-				 
-			}
-			//System.out.println(newresult);
+				
+				//System.out.println(newEvent.getEventId()+"----------"+newEvent.getDescription()+"----------"+newEvent.getAction()+"---------"+ toMessageList(oldEvent.getMessages()).get(0) );
 			
-			FileSystemResource fyr = new FileSystemResource("C:\\tmp\\external-notifications-new.ccem");
+			}
+	*/		//System.out.println(newresult);
+			
+			FileSystemResource fyr = new FileSystemResource("/home/ejosayr/Documents/Projects/SMART-IN/external-notifications-new.ccem");
 			if(!fyr.exists()) {
 				fyr.getFile().createNewFile();
 			}
@@ -104,6 +130,7 @@ public class ExternalNotifcationEventConverter {
 		com.ericsson.raso.sef.core.ne.NotificationMessage newMessage = new com.ericsson.raso.sef.core.ne.NotificationMessage();
 		newMessage.setId(message.getId());
 		newMessage.setLang(toLanguage(message.getLang()));
+	
 		newMessage.setMessage(message.getMessage());
 		return newMessage;
 	}
@@ -113,9 +140,16 @@ public class ExternalNotifcationEventConverter {
 		List<com.ericsson.raso.sef.core.ne.NotificationMessage> result = 
 				new ArrayList<com.ericsson.raso.sef.core.ne.NotificationMessage>();
 		
+		//System.out.println("Old List is "+oldList);
 		for (NotificationMessage notificationMessage : oldList) {
-			result.add(toNotificationMessage(notificationMessage));
+			com.ericsson.raso.sef.core.ne.NotificationMessage str = toNotificationMessage(notificationMessage);
+			//System.out.println("Old notificationMessage is  "+notificationMessage +" New Message "+str);
+			
+			result.add(str);
 		}
+		
+		//System.out.println("New List is"+result);
+		
 		return result;
 	}
 	
