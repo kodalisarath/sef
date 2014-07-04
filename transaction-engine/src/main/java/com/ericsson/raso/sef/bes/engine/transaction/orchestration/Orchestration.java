@@ -535,6 +535,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
 		}
+		
 
 	}
 

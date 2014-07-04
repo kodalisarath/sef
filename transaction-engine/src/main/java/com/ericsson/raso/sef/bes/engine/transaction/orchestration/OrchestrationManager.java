@@ -19,10 +19,8 @@ public class OrchestrationManager {
 	private static final Logger logger = LoggerFactory.getLogger(OrchestrationManager.class); 
 
 	private ExecutorService						grinder					= SefCoreServiceResolver.getExecutorService(Constants.ORCHESTRATION.name());
-	private Map<String, AbstractTransaction>	nbUseCaseStore			= SefCoreServiceResolver.getCloudAwareCluster().getMap(
-																				Constants.USECASES.name());
-	private Map<String, Orchestration>			nbTransactionStore		= SefCoreServiceResolver.getCloudAwareCluster().getMap(
-																				Constants.ORCHESTRATION.name());
+	private Map<String, AbstractTransaction>	nbUseCaseStore			= SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.USECASES.name());
+	private Map<String, Orchestration>			nbTransactionStore		= SefCoreServiceResolver.getCloudAwareCluster().getMap(Constants.ORCHESTRATION.name());
 
 	private Map<String, Orchestration>			sbOrchestrationTaskMapper	= SefCoreServiceResolver.getCloudAwareCluster().getMap(
 																				Constants.ORCHESTRATION_TASK_MAPPER.name());
@@ -63,6 +61,7 @@ public class OrchestrationManager {
 		
 		logger.debug("Sanity Check FFE: SBCorrelator=" + southboundCorrelator + ", fulfillmentResult=" + fulfillmentResult);
 		this.sbRequestResultMapper.put(southboundCorrelator, fulfillmentResult);
+		
 		if (fulfillmentResult.getResultantFault() != null)
 			this.sbExecutionStatus.put(southboundCorrelator, Status.DONE_FAULT);
 		else
@@ -103,7 +102,8 @@ public class OrchestrationManager {
 		usecase.setMetas(orchestration.getMetas());
 		usecase.sendResponse();
 		
-		nbTransactionStore.remove(nbCorrelator);
+		this.nbUseCaseStore.remove(nbCorrelator);
+		this.nbTransactionStore.remove(nbCorrelator);
 	}
 
 	
