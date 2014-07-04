@@ -52,7 +52,7 @@ public class UnsubscribePackageItem implements Processor {
 		metas.add(new Meta("Package",request.getPackaze()));
 		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 		metas.add(new Meta("msisdn",request.getCustomerId()));
-		//metas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
+		metas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
 
 		List<Meta> workflowMetas= new ArrayList<Meta>();
 		workflowMetas.add(new Meta("Package", String.valueOf(request.getPackaze())));
@@ -70,8 +70,7 @@ public class UnsubscribePackageItem implements Processor {
 
 		logger.info("Collected SOAP parameters");
 		logger.info("Going for DB check and AIR call");
-		logger.info("Before read subscriber call");
-
+	
 		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metaSubscriber);
 
 		logger.info("subscriber call done");

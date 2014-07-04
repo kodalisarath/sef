@@ -56,9 +56,7 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 		String defaultServiceClass = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "defaultServiceClass");
 		
 		
-		// get account details
-	 	
-		
+		// fetch meta from db 
 	 	List<String> metaKeys = new ArrayList<String>();
 	 	metaKeys.add("packaze");
 	 	List<Meta> metas;
@@ -87,17 +85,17 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getMessage()));	
 		}
 		
-		// subscriber segmentation
-		LOGGER.info("Going ahead wtih subscriber segmentation...");
-		UpdateSubscriberSegmentRequest request = new UpdateSubscriberSegmentRequest();
-		request.setSubscriberNumber(msisdn);
-		request.setServiceOfferings(serviceOfferings);
-		try {
-			new UpdateSubscriberSegmentationCmd(request).execute();
-		} catch (SmException e) {
-			LOGGER.error("Failed SubscriberSegmentation. Code: " + e.getStatusCode().getCode() + e.getStatusCode().getMessage(), e);
-			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage()));
-		} 
+//		// subscriber segmentation
+//		LOGGER.info("Going ahead wtih subscriber segmentation...");
+//		UpdateSubscriberSegmentRequest request = new UpdateSubscriberSegmentRequest();
+//		request.setSubscriberNumber(msisdn);
+//		request.setServiceOfferings(serviceOfferings);
+//		try {
+//			new UpdateSubscriberSegmentationCmd(request).execute();
+//		} catch (SmException e) {
+//			LOGGER.error("Failed SubscriberSegmentation. Code: " + e.getStatusCode().getCode() + e.getStatusCode().getMessage(), e);
+//			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage()));
+//		} 
 		
 		p.setMetas(map);
 		products.add(p);

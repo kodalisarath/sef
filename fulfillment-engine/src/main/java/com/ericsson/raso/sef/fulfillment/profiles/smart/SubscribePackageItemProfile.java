@@ -83,8 +83,13 @@ public class SubscribePackageItemProfile extends BlockingFulfillment<Product>{
 			AddPeriodicAccountManagementDataRes pamResponse = pamCommand.execute();
 			LOGGER.debug("Service Class updated...");
 		} catch (SmException e1) {
-			LOGGER.debug("Exception Service Class. Code: " + e1.getStatusCode().getCode() + e1.getStatusCode().getMessage());
-			throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getMessage()));	
+			int airFault = e1.getStatusCode().getCode(); 
+			if ( airFault == 190) {
+				LOGGER.debug("Can ignore fault: " + airFault + ". childish...");
+			} else {
+				LOGGER.debug("Exception Service Class. Code: " + e1.getStatusCode().getCode() + e1.getStatusCode().getMessage());
+				throw new FulfillmentException(e1.getComponent(), new ResponseCode(e1.getStatusCode().getCode(), e1.getMessage()));
+			}
 		}
 		
 		
