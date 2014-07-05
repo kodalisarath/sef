@@ -24,7 +24,7 @@ public class FloodGate {
 		try {
 			this.highWaterMark = Integer.parseInt(configured);
 		} catch (Exception e) {
-			logger.error("FloodGate watermark is not configured... Please contact Ericsson!!");
+			logger.error("FloodGate watermark is not configured properly... Please contact Ericsson!!");
 			this.highWaterMark = 150;
 		}
 		
@@ -49,6 +49,7 @@ public class FloodGate {
 	
 	public void exgress() {
 		logger.error("Exgress time: Current watermark: " + this.gatedThreshold.intValue());
+		if (this.gatedThreshold.intValue() > 0)
 		this.gatedThreshold.decrementAndGet();
 	}
 
