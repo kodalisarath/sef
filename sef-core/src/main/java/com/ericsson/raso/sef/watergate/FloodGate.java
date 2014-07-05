@@ -44,6 +44,7 @@ public class FloodGate {
 			this.gatedThreshold.incrementAndGet();
 			return true;
 		}
+		logger.error("Ingress: REJECT WATEMARK BREACH: "  + this.gatedThreshold.intValue());
 		return false;
 	}
 	
