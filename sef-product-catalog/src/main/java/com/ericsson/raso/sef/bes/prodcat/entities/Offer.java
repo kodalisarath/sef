@@ -329,8 +329,8 @@ public class Offer implements Serializable {
 	}
 	
 	public Subscription createPurchaseSubscription(String subscriberId, long timestamp) {
-		Offer clone = CloneHelper.deepClone(this);
-		Subscription purchaseSubscription = new Subscription(clone);
+		//Offer clone = CloneHelper.deepClone(this);
+		Subscription purchaseSubscription = new Subscription(this);
 		purchaseSubscription.setSubscriberId(subscriberId);
 		purchaseSubscription.addSubscriptionHistory(SubscriptionLifeCycleState.IN_ACTIVATION, timestamp);
 		LOGGER.debug("Subscription Purchase created: " + purchaseSubscription);
