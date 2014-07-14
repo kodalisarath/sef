@@ -1,10 +1,10 @@
 package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
@@ -18,15 +18,15 @@ public final class PolicyTree implements Serializable {
 	
 	public void setPolicy(SubscriberType subscriberType, SubscriptionLifeCycleEvent lifeCycle, Action action) {
 		if (this.policyChain == null)
-			this.policyChain = new TreeMap<SubscriberType, Map<SubscriptionLifeCycleEvent, Set<Action>>>();
+			this.policyChain = new ConcurrentHashMap<SubscriberType, Map<SubscriptionLifeCycleEvent, Set<Action>>>();
 		
 		Map<SubscriptionLifeCycleEvent, Set<Action>> lifeCycleActions = this.policyChain.get(subscriberType);
 		if (lifeCycleActions == null)
-			lifeCycleActions = new TreeMap<SubscriptionLifeCycleEvent, Set<Action>>();
+			lifeCycleActions = new ConcurrentHashMap<SubscriptionLifeCycleEvent, Set<Action>>();
 		
 		Set<Action> actions = lifeCycleActions.get(lifeCycle);
 		if (actions == null) 
-			actions = new TreeSet<Action>();
+			actions = new HashSet<Action>();
 		
 		actions.add(action);
 		lifeCycleActions.put(lifeCycle, actions);
@@ -35,15 +35,15 @@ public final class PolicyTree implements Serializable {
 	
 	public void setPolicies(SubscriberType subscriberType, SubscriptionLifeCycleEvent lifeCycle, Set<Action> actions) {
 		if (this.policyChain == null)
-			this.policyChain = new TreeMap<SubscriberType, Map<SubscriptionLifeCycleEvent, Set<Action>>>();
+			this.policyChain = new ConcurrentHashMap<SubscriberType, Map<SubscriptionLifeCycleEvent, Set<Action>>>();
 		
 		Map<SubscriptionLifeCycleEvent, Set<Action>> lifeCycleActions = this.policyChain.get(subscriberType);
 		if (lifeCycleActions == null)
-			lifeCycleActions = new TreeMap<SubscriptionLifeCycleEvent, Set<Action>>();
+			lifeCycleActions = new ConcurrentHashMap<SubscriptionLifeCycleEvent, Set<Action>>();
 		
 		Set<Action> fromChain = lifeCycleActions.get(lifeCycle);
 		if (fromChain == null) 
-			fromChain = new TreeSet<Action>();
+			fromChain = new HashSet<Action>();
 		
 		fromChain.addAll(actions);
 		lifeCycleActions.put(lifeCycle, fromChain);

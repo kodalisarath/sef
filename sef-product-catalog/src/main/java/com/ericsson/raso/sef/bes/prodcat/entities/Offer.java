@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,6 @@ import com.ericsson.raso.sef.bes.prodcat.policies.AbstractAccumulationPolicy;
 import com.ericsson.raso.sef.bes.prodcat.policies.AbstractSwitchPolicy;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Charging;
 import com.ericsson.raso.sef.bes.prodcat.tasks.ChargingMode;
-import com.ericsson.raso.sef.bes.prodcat.tasks.FetchSubscription;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Fulfillment;
 import com.ericsson.raso.sef.bes.prodcat.tasks.FulfillmentMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Future;
@@ -35,7 +34,6 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.Meta;
-import com.ericsson.raso.sef.core.RequestContext;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 
@@ -767,7 +765,7 @@ public class Offer implements Serializable {
 			return;
 
 		if (this.externalHandles == null)
-			this.externalHandles = new TreeSet<String>();
+			this.externalHandles = new HashSet<String>();
 
 		this.externalHandles.add(handle); // since String is immutable, it is ok to attempt duplicate since this will be replaced anyway.
 	}
@@ -884,7 +882,7 @@ public class Offer implements Serializable {
 			throw new CatalogException("Given Product was null");
 
 		if (this.products == null)
-			this.products = new TreeSet<Product>();
+			this.products = new HashSet<Product>();
 
 		this.products.add(product);
 	}

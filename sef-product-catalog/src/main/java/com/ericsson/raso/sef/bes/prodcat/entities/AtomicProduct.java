@@ -3,7 +3,9 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
+
+
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.bes.prodcat.SubscriptionLifeCycleEvent;
 
@@ -31,7 +33,7 @@ public final class AtomicProduct extends Product implements Serializable, Compar
 
 	public void setMeta(String metaName, Object value) {
 		if (this.metas == null)
-			this.metas = new TreeMap<String, Object>();
+			this.metas = new ConcurrentHashMap<String, Object>();
 
 		this.metas.put(metaName, value);
 	}

@@ -2,7 +2,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ericsson.raso.sef.bes.prodcat.tasks.Charging;
@@ -14,7 +14,7 @@ import com.ericsson.raso.sef.core.Task;
 public final class EventProfile implements Serializable {
 	private static final long serialVersionUID = 3520970207251399960L;
 
-	private TreeMap<Integer, TransactionTask> profile = null;
+	private ConcurrentHashMap<Integer, TransactionTask> profile = null;
 	private int currentSequence = 0;
 	private AtomicInteger sequence = new AtomicInteger(0);
 
@@ -35,7 +35,7 @@ public final class EventProfile implements Serializable {
 	 */
 	public void addEvent(TransactionTask event) {
 		if (this.profile == null) {
-			this.profile = new TreeMap<Integer, TransactionTask>();
+			this.profile = new ConcurrentHashMap<Integer, TransactionTask>();
 		} 
 		this.profile.put(sequence.incrementAndGet(), event);
 	}

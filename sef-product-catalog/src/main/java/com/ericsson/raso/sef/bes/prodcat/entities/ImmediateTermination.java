@@ -2,7 +2,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class ImmediateTermination implements Serializable {
 	private static final long serialVersionUID = -8061909838812195544L;
@@ -14,7 +14,7 @@ public final class ImmediateTermination implements Serializable {
 			return;
 		
 		if (this.isAllowed == null)
-			this.isAllowed = new TreeMap<SubscriberType, Boolean>();
+			this.isAllowed = new ConcurrentHashMap<SubscriberType, Boolean>();
 		
 		this.isAllowed.put(subscriberType, allowed);
 	}

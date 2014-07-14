@@ -3,7 +3,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public final class Price extends MonetaryUnit {
 	
 	public Map<String, MonetaryUnit> getPrintableAdviceOfCharge() {
 		LOGGER.debug("Inside getPrintableAdviceOfCharge method");
-		Map<String, MonetaryUnit> costElements = new TreeMap<String, MonetaryUnit>();
+		Map<String, MonetaryUnit> costElements = new ConcurrentHashMap<String, MonetaryUnit>();
 
 		context = RequestContextLocalStore.get().getInProcess();
 
@@ -93,7 +93,7 @@ public final class Price extends MonetaryUnit {
 	}
 	
 	public Map<String, MonetaryUnit> getPenalty() {
-		Map<String, MonetaryUnit> costElements = new TreeMap<String, MonetaryUnit>();
+		Map<String, MonetaryUnit> costElements = new ConcurrentHashMap<String, MonetaryUnit>();
 		LOGGER.debug("Inside getPenalty method");
 		for (PricingPolicy rating: this.ratingRules) {
 			rating.setCost(this.cost);

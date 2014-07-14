@@ -2,7 +2,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 
@@ -76,7 +76,7 @@ public abstract class Owner implements Serializable {
 			throw new CatalogException("Specified Opco was null");
 		
 		if (this.members == null) 
-			this.members = new TreeMap<String, Owner>();
+			this.members = new ConcurrentHashMap<String, Owner>();
 		
 		if (this.members.containsKey(opco.getName()))
 			throw new CatalogException("Specified Opco (" + opco + ") is duplicate!!");
@@ -90,7 +90,7 @@ public abstract class Owner implements Serializable {
 			throw new CatalogException("Specified Partner was null");
 		
 		if (this.members == null) 
-			this.members = new TreeMap<String, Owner>();
+			this.members = new ConcurrentHashMap<String, Owner>();
 		
 		if (this.members.containsKey(partner.getName()))
 			throw new CatalogException("Specified Partner (" + partner + ") is duplicate!!");
@@ -104,7 +104,7 @@ public abstract class Owner implements Serializable {
 			throw new CatalogException("Specified Market was null");
 		
 		if (this.members == null) 
-			this.members = new TreeMap<String, Owner>();
+			this.members = new ConcurrentHashMap<String, Owner>();
 		
 		if (this.members.containsKey(market.getName()))
 			throw new CatalogException("Specified Market (" + market + ") is duplicate!!");
@@ -118,7 +118,7 @@ public abstract class Owner implements Serializable {
 			throw new CatalogException("Specified TenantMvno was null");
 		
 		if (this.members == null) 
-			this.members = new TreeMap<String, Owner>();
+			this.members = new ConcurrentHashMap<String, Owner>();
 		
 		if (this.members.containsKey(mvno.getName()))
 			throw new CatalogException("Specified TenantMvno (" + mvno + ") is duplicate!!");
