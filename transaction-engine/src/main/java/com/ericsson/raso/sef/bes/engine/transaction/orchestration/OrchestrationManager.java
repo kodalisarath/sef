@@ -98,6 +98,7 @@ public class OrchestrationManager {
 		logger.debug("Use case response to be sent");
 		
 		usecase.setMetas(orchestration.getMetas());
+		usecase.getResponse().setReturnFault(orchestration.getExecutionFault());
 		usecase.sendResponse();
 		orchestration.cleanupTransaction();
 		

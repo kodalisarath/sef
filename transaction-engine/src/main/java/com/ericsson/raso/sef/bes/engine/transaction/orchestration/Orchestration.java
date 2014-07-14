@@ -146,7 +146,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 					} catch (Exception e) {
 						logger.error("Exception while preparation, Exception:" + e);
 						this.status = Status.DONE_FAULT;
-						this.executionFault = new TransactionException("txe", new ResponseCode(999, "Chargng Failed: " + e.getMessage()));
+						this.setExecutionFault(new TransactionException("txe", new ResponseCode(999, "Chargng Failed: " + e.getMessage())));
 					}
 					break;
 				case PROCESSING:
@@ -163,7 +163,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 								}
 								else {
 									this.status = Status.DONE_FAULT;
-									this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED");
+									this.setExecutionFault(new TransactionException(northBoundCorrelator, "FULFILLMENT PREPARATION FAILED"));
 								}
 								logger.debug("Seems to have completed PREP_FULFILLMENT. State: " + this.printPhasingProgress());
 							} 
@@ -184,7 +184,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 								} else {
 									if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
 										this.status = Status.DONE_FAULT;
-										this.executionFault = new TransactionException(northBoundCorrelator, "FULFILLMENT FAILED");
+										this.setExecutionFault(new TransactionException(northBoundCorrelator, "FULFILLMENT FAILED"));
 										this.currentPhase = this.currentPhase.getNextPhase();
 										this.phasingProgress.put(currentPhase, Status.PROCESSING);
 										break;
@@ -237,13 +237,13 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 		} catch(Exception e) {
 			logger.error("Exception in orchestration. Exception Message: " + e.getMessage() + "Exception: " + e, e);
 			this.status = Status.DONE_FAULT;
-			this.executionFault = new TransactionException(northBoundCorrelator, "Exception occured during orchestration");
+			this.setExecutionFault(new TransactionException(northBoundCorrelator, "Exception occured during orchestration"));
 			OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
 			throw e;
 		} catch(Error e) {
 			logger.error("Error in orchestration. Message: " + e.getMessage() + "Error: " + e, e);
 			this.status = Status.DONE_FAULT;
-			this.executionFault = new TransactionException(northBoundCorrelator, "Runtime Fault occured during orchestration");
+			this.setExecutionFault(new TransactionException(northBoundCorrelator, "Runtime Fault occured during orchestration"));
 			this.cleanupTransaction();
 			throw e;
 		}
@@ -1010,6 +1010,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 				this.metas = new HashMap<String, String>();
 
 			this.metas.putAll(metas);
+		}
+
+		public TransactionException getExecutionFault() {
+			return executionFault;
+		}
+
+		public void setExecutionFault(TransactionException executionFault) {
+			this.executionFault = executionFault;
 		}
 
 		enum Mode implements Serializable {
