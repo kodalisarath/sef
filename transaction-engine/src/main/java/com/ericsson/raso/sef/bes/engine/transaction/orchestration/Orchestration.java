@@ -238,7 +238,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			logger.error("Exception in orchestration. Exception Message: " + e.getMessage() + "Exception: " + e, e);
 			this.status = Status.DONE_FAULT;
 			this.setExecutionFault(new TransactionException(northBoundCorrelator, "Exception occured during orchestration"));
-			OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
+			this.cleanupTransaction();
 			throw e;
 		} catch(Error e) {
 			logger.error("Error in orchestration. Message: " + e.getMessage() + "Error: " + e, e);
