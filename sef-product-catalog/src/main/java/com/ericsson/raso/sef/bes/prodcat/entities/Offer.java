@@ -2,6 +2,7 @@ package com.ericsson.raso.sef.bes.prodcat.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
+import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.RequestContext;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
@@ -529,7 +531,9 @@ public class Offer implements Serializable {
 		}
 		
 		// Fetch the subscriber entity
-		Subscriber subscriber = null;	
+		Subscriber subscriber = new Subscriber();
+		subscriber.setMsisdn(subscriberId);
+		subscriber.setMetas(this.getMetas(metas));
 //		try {
 //			subscriber = new FetchSubscriber(subscriberId).execute();
 //			context.put(Constants.SUBSCRIBER_ENTITY.name(), subscriber);
@@ -719,6 +723,18 @@ public class Offer implements Serializable {
 		return tasks;
 	}
 	
+	private static Collection<Meta> getMetas(Map<String, Object> metaMap) {
+		List<Meta> metas = new ArrayList<Meta>();
+		if (metaMap != null) {
+			for (String key : metaMap.keySet()) {
+				Meta meta = new Meta();
+				meta.setKey(key);
+				meta.setValue(String.valueOf(metaMap.get(key)));
+				metas.add(meta);
+			}
+		}
+		return metas;
+	}
 	
 	public List<AtomicProduct> getAllAtomicProducts() {
 		List<AtomicProduct> atomicProducts = new ArrayList<AtomicProduct>();

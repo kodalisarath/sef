@@ -505,6 +505,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
+			this.sbExecutionStatus.remove(cleanupKey.stepCorrelator);
 
 		}
 
@@ -514,6 +515,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
+			this.sbExecutionStatus.remove(cleanupKey.stepCorrelator);
 		}
 
 		Iterator  iterator2 = this.fulfillment.iterator();
@@ -522,24 +524,28 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
+			this.sbExecutionStatus.remove(cleanupKey.stepCorrelator);
 		}
 
 		for (Step<NotificationStepResult> cleanupKey: this.notification) { 
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
+			this.sbExecutionStatus.remove(cleanupKey.stepCorrelator);
 		}
 
 		for (Step<SchedulingStepResult> cleanupKey: this.schedules) { 
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
+			this.sbExecutionStatus.remove(cleanupKey.stepCorrelator);
 		}
 
 		for (Step<PersistenceStepResult> cleanupKey: this.persistence) { 
 			this.sbRequestResultMapper.remove(cleanupKey);
 			this.sbRequestStepMapper.remove(cleanupKey.getStepCorrelator());
 			this.orchestrationTaskMapper.remove(cleanupKey.getStepCorrelator());
+			this.sbExecutionStatus.remove(cleanupKey.stepCorrelator);
 		}
 		
 
