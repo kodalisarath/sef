@@ -87,7 +87,7 @@ public class BalanceAdjustment implements Processor {
 
 
 		logger.info("check pre_active");			
-		if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
+		if(ContractState.PREACTIVE.name().equals(subscriberObj.getSubscriber().getContractState())) {
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
 		else {

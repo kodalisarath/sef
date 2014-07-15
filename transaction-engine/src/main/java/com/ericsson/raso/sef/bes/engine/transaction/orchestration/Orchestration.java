@@ -160,6 +160,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 									this.currentPhase = this.currentPhase.getNextPhase();
 									this.phasingProgress.put(currentPhase, Status.PROCESSING);
 									this.promote2Fulfill();
+									if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
+										this.currentPhase = this.currentPhase.getNextPhase();
+										this.phasingProgress.put(currentPhase, Status.PROCESSING);
+										this.promote2Schedule();
+										this.promote2Persist();
+										//this.processNotification();
+									}
+
 								}
 								else {
 									this.status = Status.DONE_FAULT;
@@ -193,6 +201,13 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 									if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.PROCESSING) {
 										this.promote2Fulfill();
+										if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
+											this.currentPhase = this.currentPhase.getNextPhase();
+											this.phasingProgress.put(currentPhase, Status.PROCESSING);
+											logger.debug("after fulfillment(): currentPhase: " + this.currentPhase);
+											this.promote2Schedule();
+											this.promote2Persist();
+										}
 									}
 								}
 							} 
@@ -238,8 +253,8 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			logger.error("Exception in orchestration. Exception Message: " + e.getMessage() + "Exception: " + e, e);
 			this.status = Status.DONE_FAULT;
 			this.setExecutionFault(new TransactionException(northBoundCorrelator, "Exception occured during orchestration"));
-			this.cleanupTransaction();
-			throw e;
+			OrchestrationManager.getInstance().sendResponse(northBoundCorrelator, this);
+			return null;
 		} catch(Error e) {
 			logger.error("Error in orchestration. Message: " + e.getMessage() + "Error: " + e, e);
 			this.status = Status.DONE_FAULT;
@@ -588,6 +603,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			}
 		}
 		if (isAllChargingComplete) {
+			this.currentPhase = Phase.TX_PHASE_CHARGING;
 			this.phasingProgress.put(Phase.TX_PHASE_CHARGING, Status.DONE_SUCCESS);
 			logger.debug("Charging phase complete");
 		} else {
@@ -609,6 +625,14 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 			this.currentPhase = this.currentPhase.getNextPhase();
 			this.phasingProgress.put(currentPhase, Status.PROCESSING);
 			promote2Fulfill();
+			if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_SUCCESS) {
+				this.currentPhase = this.currentPhase.getNextPhase();
+				this.phasingProgress.put(currentPhase, Status.PROCESSING);
+				logger.debug("after fulfillment(): currentPhase: " + this.currentPhase);
+				this.promote2Schedule();
+				this.promote2Persist();
+				//this.processNotification();
+			}
 		}
 
 		Iterator iterator = this.prepareFulfillment.iterator();

@@ -21,8 +21,10 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.UniqueIdGenerator;
 import com.ericsson.raso.sef.core.config.IConfig;
 import com.ericsson.raso.sef.core.db.model.ContractState;
+import com.ericsson.raso.sef.smart.SmartServiceResolver;
 import com.ericsson.raso.sef.smart.commons.SmartConstants;
 import com.ericsson.raso.sef.smart.commons.read.Customer;
 import com.ericsson.raso.sef.smart.commons.read.CustomerBucketRead;
@@ -41,7 +43,12 @@ import com.ericsson.raso.sef.smart.commons.read.WelcomePack;
 import com.ericsson.raso.sef.smart.commons.read.WelcomePackBucketRead;
 import com.ericsson.raso.sef.smart.commons.read.WelcomePackRead;
 import com.ericsson.raso.sef.smart.commons.read.WelcomePackVersionRead;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
+import com.ericsson.raso.sef.smart.subscriber.response.SubscriberResponseStore;
+import com.ericsson.sef.bes.api.entities.Meta;
 import com.ericsson.sef.bes.api.entities.Subscriber;
+import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
+import com.hazelcast.core.ISemaphore;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.BooleanParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.ByteParameter;
 import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.DateTimeParameter;
@@ -58,8 +65,7 @@ import com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1.SymbolicParameter;
 
 public class EntireReadUtil {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(EntireReadUtil.class);
+	private static Logger logger = LoggerFactory.getLogger(EntireReadUtil.class);
 
 	public static Object symbolicOrDateParameter(String name, String value) {
 		logger.debug("Check for value: " + value);
@@ -75,7 +81,7 @@ public class EntireReadUtil {
 			dateTimeParameter.setName(name);
 			if ( value != null && !"null".equals(value)) {
 				try {
-					SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					SimpleDateFormat storeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 					Date date = storeFormat.parse(value);
 					logger.debug("Formmatter acepted procesing of " + value + ", dateTime: " + date);
 					GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
@@ -347,7 +353,7 @@ public class EntireReadUtil {
 	}
 
 	private static String toSmartEnumerated(String lastKnownPeriod) {
-		switch(ContractState.apiValue(lastKnownPeriod)) {
+		switch(ContractState.valueOf(lastKnownPeriod)) {
 			case ACTIVE:
 				return "Active";
 			case BARRED:
@@ -395,13 +401,11 @@ public class EntireReadUtil {
 		}
 
 		if (ropBucketRead.getbInvalidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"bInvalidFrom", ropBucketRead.getbInvalidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", ropBucketRead.getbInvalidFrom()));
 		}
 
 		if (ropBucketRead.getbValidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"bValidFrom", ropBucketRead.getbValidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", ropBucketRead.getbValidFrom()));
 		}
 
 		if (ropBucketRead.getOnPeakFuBalance() != null) {
@@ -433,32 +437,27 @@ public class EntireReadUtil {
 		}
 
 		if (ropVersionRead.getvInvalidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"vInvalidFrom", ropVersionRead.getvInvalidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", ropVersionRead.getvInvalidFrom()));
 		}
 
 		if (ropVersionRead.getvValidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"vValidFrom", ropVersionRead.getvValidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", ropVersionRead.getvValidFrom()));
 		}
 
 		if (ropVersionRead.getOfferProfileKey() != null) {
-			parameterList.add(EntireReadUtil.intParameter("OfferProfileKey",
-					ropVersionRead.getOfferProfileKey()));
+			parameterList.add(EntireReadUtil.intParameter("OfferProfileKey", ropVersionRead.getOfferProfileKey()));
 		}
 
 		if (ropVersionRead.getOnPeakAccountExpiryDate() != null) {
 			StructParameter parameter = new StructParameter();
 			parameter.setName("OnPeakAccountID");
-			parameter.getParameterOrBooleanParameterOrByteParameter().add(
-					EntireReadUtil.symbolicOrDateParameter("ExpiryDate",
-							ropVersionRead.getOnPeakAccountExpiryDate()));
+			parameter.getParameterOrBooleanParameterOrByteParameter()
+			.add(EntireReadUtil.symbolicOrDateParameter("ExpiryDate", ropVersionRead.getOnPeakAccountExpiryDate()));
 			parameterList.add(parameter);
 		}
 
 		if (ropVersionRead.getsOfferId() != null) {
-			parameterList.add(EntireReadUtil.stringParameter("s_OfferId",
-					ropVersionRead.getsOfferId()));
+			parameterList.add(EntireReadUtil.stringParameter("s_OfferId", ropVersionRead.getsOfferId()));
 		}
 		return operation;
 	}
@@ -596,7 +595,7 @@ public class EntireReadUtil {
 			StructParameter parameter = new StructParameter();
 			parameter.setName("s_PeriodicBonus_FU");
 			parameter.getParameterOrBooleanParameterOrByteParameter().add(EntireReadUtil.longParameter("Balance",
-																						rppBucketRead.getsPeriodicBonusBalance()));
+					rppBucketRead.getsPeriodicBonusBalance()));
 			parameterList.add(parameter);
 		}
 
@@ -635,13 +634,13 @@ public class EntireReadUtil {
 			parameterList.add(parameter);
 
 			if (rppVersionRead.getsPeriodicBonusExpiryDate() != null) {
-				parameter.getParameterOrBooleanParameterOrByteParameter().add(EntireReadUtil.symbolicOrDateParameter("ExpiryDate",
-																						rppVersionRead.getsPeriodicBonusExpiryDate()));
+				parameter.getParameterOrBooleanParameterOrByteParameter()
+				.add(EntireReadUtil.symbolicOrDateParameter("ExpiryDate", rppVersionRead.getsPeriodicBonusExpiryDate()));
 			}
 
 			if (rppVersionRead.getsPeriodicBonusCreditLimit() != null) {
-				parameter.getParameterOrBooleanParameterOrByteParameter().add(EntireReadUtil.longParameter("CreditLimit",
-																					rppVersionRead.getsPeriodicBonusCreditLimit()));
+				parameter.getParameterOrBooleanParameterOrByteParameter()
+				.add(EntireReadUtil.longParameter("CreditLimit", rppVersionRead.getsPeriodicBonusCreditLimit()));
 			}
 		}
 
@@ -689,7 +688,7 @@ public class EntireReadUtil {
 
 		if (read.getKey() != null) {
 			parameterList
-					.add(EntireReadUtil.intParameter("Key", read.getKey()));
+			.add(EntireReadUtil.intParameter("Key", read.getKey()));
 		}
 
 		if (read.getOfferProfileKey() != null) {
@@ -748,7 +747,7 @@ public class EntireReadUtil {
 
 		if (read.getKey() != null) {
 			parameterList
-					.add(EntireReadUtil.intParameter("Key", read.getKey()));
+			.add(EntireReadUtil.intParameter("Key", read.getKey()));
 		}
 
 		if (read.getsPackageId() != null) {
@@ -772,8 +771,7 @@ public class EntireReadUtil {
 		}
 
 		if (read.getbInvalidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"bInvalidFrom", read.getbInvalidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", read.getbInvalidFrom()));
 		}
 
 		if (read.getbSeriesId() != null) {
@@ -782,8 +780,7 @@ public class EntireReadUtil {
 		}
 
 		if (read.getbValidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"bValidFrom", read.getbValidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", read.getbValidFrom()));
 		}
 
 		if (read.getOfferProfileKey() != null) {
@@ -832,7 +829,7 @@ public class EntireReadUtil {
 
 		if (read.getKey() != null) {
 			parameterList
-					.add(EntireReadUtil.intParameter("Key", read.getKey()));
+			.add(EntireReadUtil.intParameter("Key", read.getKey()));
 		}
 
 		if (read.getOfferProfileKey() != null) {
@@ -841,13 +838,11 @@ public class EntireReadUtil {
 		}
 
 		if (read.getvInvalidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"vInvalidFrom", read.getvInvalidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", read.getvInvalidFrom()));
 		}
 
 		if (read.getvValidFrom() != null) {
-			parameterList.add(EntireReadUtil.symbolicOrDateParameter(
-					"vValidFrom", read.getvValidFrom()));
+			parameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", read.getvValidFrom()));
 		}
 
 		return operation;
@@ -873,10 +868,9 @@ public class EntireReadUtil {
 	}
 
 	private static CustomerVersionRead createCustomerVersionRead(Subscriber subcriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-		
+		//		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		//		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 		CustomerVersionRead versionRead = new CustomerVersionRead();
 		versionRead.setCustomerId(subcriber.getMsisdn());
 		versionRead.setCategory("ONLINE");
@@ -886,46 +880,32 @@ public class EntireReadUtil {
 		if (date == null)
 			versionRead.setvValidFrom("NOW");
 		else
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				versionRead.setvValidFrom(nsnResponseFormat.format(dateField));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(vValidFrom): " + date);
-				logger.debug("Setting bValidFrom to 'NOW'");
-				versionRead.setvValidFrom("NOW");
-			}
-		
+			versionRead.setvValidFrom(date);
+
 		logger.debug("versionRead. vValidFrom : " + versionRead.getvValidFrom());
 
-		
+
 		versionRead.setvValidFrom(DateUtil.convertDateToString(currentTime));
 		return versionRead;
 	}
 
 	private static CustomerBucketRead createCustomerBucketRead(Subscriber subscriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+		//		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		//		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 		CustomerBucketRead bucketRead = new CustomerBucketRead();
 		bucketRead.setCustomerId(subscriber.getMsisdn());
 		bucketRead.setbCategory("ONLINE");
 		bucketRead.setbSeriesId(0);
 		IConfig config = SefCoreServiceResolver.getConfigService();
-		
+
 		bucketRead.setbValidFrom(subscriber.getMetas().get("bValidFrom"));
 		String date = subscriber.getMetas().get("bValidFrom");
 		if (date == null)
 			bucketRead.setbValidFrom("NOW");
 		else
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				bucketRead.setbValidFrom(nsnResponseFormat.format(dateField));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bValidFrom): " + date);
-				logger.debug("Setting bValidFrom to 'NOW'");
-				bucketRead.setbValidFrom("NOW");
-			}
-		
+			bucketRead.setbValidFrom(date);
+
 		logger.debug("bucketRead. bValidFrom : " + bucketRead.getbValidFrom());
 		bucketRead.setbInvalidFrom(SmartConstants.MAX_DATETIME);
 		return bucketRead;
@@ -940,30 +920,24 @@ public class EntireReadUtil {
 	}
 
 	private static RopRead createRopRead(Subscriber subscriber) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-		
+		//		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		//		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
 		RopRead ropRead = new RopRead();
 		ropRead.setCustomerId(subscriber.getMsisdn());
 		ropRead.setKey(1);
 		ropRead.setCategory("ONLINE");
 		ropRead.setPrefetchFilter(-1);
-		
-		
-		
+
+
+
 		String activeEndDate = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE);
 		if (activeEndDate == null)
 			ropRead.setActiveEndDate(null);
 		else
-			try {
-				Date date = metaStoreFormat.parse(activeEndDate);
-				ropRead.setActiveEndDate(nsnResponseFormat.format(date));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(activeEndDate): " + activeEndDate);
-				//ropRead.setActiveEndDate(null);
-			}
-		
+			ropRead.setActiveEndDate(activeEndDate);
+
 		ropRead.setAnnoFirstWarningPeriodSent(false);
 		ropRead.setAnnoSecondWarningPeriodSent(false);
 
@@ -984,29 +958,16 @@ public class EntireReadUtil {
 		if (firstCallDate == null)
 			ropRead.setFirstCallDate(null);
 		else
-			try {
-				Date date = metaStoreFormat.parse(firstCallDate);
-				ropRead.setFirstCallDate(nsnResponseFormat.format(date));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(firstCallDate): " + firstCallDate);
-				//ropRead.setFirstCallDate(null);
-			}
-		
-		
+			ropRead.setFirstCallDate(firstCallDate);
+
 
 		String graceEndDate = getGraceEndDate(subscriber);
 		if (graceEndDate == null)
 			ropRead.setGraceEndDate(null);
 		else
-			try {
-				Date date = metaStoreFormat.parse(graceEndDate);
-				ropRead.setGraceEndDate(nsnResponseFormat.format(date));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(graceEndDate): " + graceEndDate);
-				//ropRead.setGraceEndDate(null);
-			}
-		
-		
+			ropRead.setGraceEndDate(graceEndDate);
+
+
 		ropRead.setIsBalanceClearanceOnOutpayment(true);
 
 		String isCFMOC = subscriber.getMetas().get("IsCFMOC");
@@ -1053,27 +1014,94 @@ public class EntireReadUtil {
 
 		String preActiveEndDate = subscriber.getMetas().get("PreActiveEndDate");
 		if (preActiveEndDate != null) {
-			try {
-				Date date = metaStoreFormat.parse(preActiveEndDate);
-				ropRead.setPreActiveEndDate(nsnResponseFormat.format(date));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(preActiveEndDate): " + preActiveEndDate);
-				ropRead.setPreActiveEndDate("NOW");
-			}
+			ropRead.setPreActiveEndDate(preActiveEndDate);
 		}
-	
-		ropRead.setLastKnownPeriod(subscriber.getContractState());
+
+		ropRead.setLastKnownPeriod(getContractState(subscriber));
 		ropRead.setS_CRMTitle("-");
-		
+
 		ropRead.setIsLocked(Boolean.parseBoolean(subscriber.getMetas().get("IsLocked")));
 
 		return ropRead;
 	}
 
+	private static String getContractState(Subscriber subscriber) {
+		String currentContractStateInDb = subscriber.getContractState();
+		String activationStatusFlagInCs = subscriber.getMetas().get("READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG");
+
+		logger.debug("CS Status: " + activationStatusFlagInCs);
+		boolean isActive = Boolean.parseBoolean(activationStatusFlagInCs);
+		boolean isGrace = false;
+		boolean isRecycle = false;
+		String contractState = null;
+
+
+		Map<String, String> subscriberMetas = subscriber.getMetas();
+		for (String key: subscriberMetas.keySet()) {
+			if (key.startsWith("READ_SUBSCRIBER_OFFER") || key.startsWith("OFFER_INFO")) {
+				String offerForm = subscriberMetas.get(key);
+				String offerParts[] = offerForm.split(",");
+				String offerId = offerParts[0];
+
+				if (offerId.equals("2"))
+					isGrace = true;
+
+				if (offerId.equals("4"))
+					isRecycle = true;
+			}
+		}
+
+		if (!isActive) {
+			logger.debug("updating subscibe with PREACTIVE");
+			subscriber.setContractState(ContractState.PREACTIVE.name());
+		} else {
+			if (isGrace && !isRecycle) {
+				logger.debug("updating subscibe with GRACE");
+				subscriber.setContractState(ContractState.GRACE.name());
+			} else if (isRecycle && !isGrace) {
+				logger.debug("updating subscibe with RECYCLED");
+				subscriber.setContractState(ContractState.RECYCLED.name());
+			} else if (isRecycle && isGrace){
+				logger.error("Subscriber (" + subscriber.getMsisdn() + ") is in both GRACE & RECYCLED state!!!!");
+			} else {
+				logger.debug("updating subscibe with ACTIVE");
+				subscriber.setContractState(ContractState.ACTIVE.name());
+			}
+		}
+
+
+		// update the IL DB
+		logger.debug("DB State: " + currentContractStateInDb + ", CS State: " + subscriber.getContractState());
+		if (!currentContractStateInDb.equals(subscriber.getContractState())) {
+			List<Meta> metas = new ArrayList<Meta>();
+			ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
+
+			logger.debug("Updating DB now with :" + subscriber.getContractState());
+			String resultId=iSubscriberRequest.handleLifeCycle(UniqueIdGenerator.generateId(), subscriber.getMsisdn(), subscriber.getContractState(), metas);
+			SubscriberInfo response = new SubscriberInfo();
+			SubscriberResponseStore.put(resultId, response);
+			ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(resultId);
+
+			try {
+				semaphore.init(0);
+				semaphore.acquire();
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+				logger.debug("Exception while sleep     :"+e.getMessage());
+			}
+			semaphore.destroy();
+
+		}
+
+		return toSmartEnumerated(subscriber.getContractState());
+	}
+
+
+
 	private static RopBucketRead createRopBucketRead(Subscriber subscriber) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+		//		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		//		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 		RopBucketRead read = new RopBucketRead();
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setbCategory("ONLINE");
@@ -1083,19 +1111,11 @@ public class EntireReadUtil {
 		String date = subscriber.getMetas().get("bValidFrom");
 		if (date == null) {
 			//read.setbValidFrom("NOW");
-		} else {
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				read.setbValidFrom(nsnResponseFormat.format(dateField));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bValidFrom): " + date);
-				logger.debug("Setting bValidFrom to 'NOW'");
-				//read.setbValidFrom("NOW");
-			}
-		}
-		
+		} else 
+			read.setbValidFrom(date);
+
 		logger.debug("bucketRead. bValidFrom : " + read.getbValidFrom());
-		
+
 		String peakFullBalance = getDedicatedAccount(subscriber, "1");
 		if (peakFullBalance != null)
 			read.setOnPeakFuBalance(Long.parseLong(peakFullBalance));
@@ -1104,9 +1124,9 @@ public class EntireReadUtil {
 	}
 
 	private static RopVersionRead createRopVersionRead(Subscriber subscriber, Date currentTime) {
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+		//		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		//		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 		RopVersionRead read = new RopVersionRead();
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setCategory("ONLINE");
@@ -1125,26 +1145,17 @@ public class EntireReadUtil {
 			read.setvValidFrom(DateUtil.convertDateToString(new Date(subscriber.getActiveDate())));
 
 		String date = subscriber.getMetas().get("vValidFrom");
-		if (date == null) {
-			//read.setvValidFrom("NOW");
-		} else {
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				read.setvValidFrom(nsnResponseFormat.format(dateField));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(vValidFrom): " + date);
-				logger.debug("Setting bValidFrom to 'NOW'");
-				//read.setvValidFrom("NOW");
-			}
-		}
+		if (date != null) 
+			read.setvValidFrom(date);
+
 		logger.debug("versionRead. vValidFrom : " + read.getvValidFrom());
-		
-		
+
+
 
 		return read;
 	}
 
-	
+
 	private static Tag getSmartTagging(Subscriber subscriber) {
 
 		Map<String, String> metaMap = subscriber.getMetas();
@@ -1153,7 +1164,7 @@ public class EntireReadUtil {
 			tagging = metaMap.get("c_TaggingStatus");
 		logger.debug("SUBSCRIBER TAGGING IN SMART FORMAT: "  + tagging);
 		return Tag.getTagBySmartId(Integer.parseInt(tagging));
-		
+
 	}
 
 
@@ -1189,7 +1200,7 @@ public class EntireReadUtil {
 					if ("1".equals(offerId)) {
 						graceEndDate = ((expiryDate.equals("null")?expiryDateTime:expiryDate));
 						long dateMillis = Long.parseLong(graceEndDate);
-						
+
 						SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
 						return metaStoreFormat.format(new Date(dateMillis));
 					}
@@ -1197,7 +1208,7 @@ public class EntireReadUtil {
 			}
 		}
 
-		return null;
+		return graceEndDate;
 	}
 
 	private static String getDedicatedAccount(Subscriber subscriber,
@@ -1219,7 +1230,7 @@ public class EntireReadUtil {
 							.length()) {
 						temp = key.substring(
 								Constants.READ_BALANCES_DEDICATED_ACCOUNT_ID
-										.length(), key.length());
+								.length(), key.length());
 
 						logger.debug(" Temp Value identified as  " + temp);
 					}
@@ -1267,7 +1278,7 @@ public class EntireReadUtil {
 
 				if ("1001".equals(offerId)) {
 					if(expiryDateTime !=null)
-					return expiryDateTime;
+						return expiryDateTime;
 					else return expiryDate;
 				}
 
@@ -1320,9 +1331,9 @@ public class EntireReadUtil {
 
 				if (offerId.equals(offerIdTemp)) {
 					if(expiryDate !=null && !expiryDate.equals("null"))
-					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(expiryDate)));
-						else
-					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(expiryDateTime)));
+						return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(expiryDate)));
+					else
+						return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(expiryDateTime)));
 				}
 
 			}
@@ -1359,15 +1370,15 @@ public class EntireReadUtil {
 
 				if (offerId.equals(offerIdTemp)) {
 					if(startDate !=null && !startDate.equals("null"))
-					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(startDate)));
-						else
-					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(startDateTime)));
+						return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(startDate)));
+					else
+						return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(Long.parseLong(startDateTime)));
 				}
 
 			}
 		}
 
-	
+
 		return null;
 	}
 
@@ -1433,7 +1444,7 @@ public class EntireReadUtil {
 	}
 
 	private static RppRead createRppRead(Subscriber subscriber, String key, String offerId, String walletName) {
-		
+
 		RppRead read = new RppRead();
 		read.setCustomerId(subscriber.getMsisdn());
 		read.setCategory("ONLINE");
@@ -1444,12 +1455,12 @@ public class EntireReadUtil {
 
 		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
 		logger.debug("createRppRead offerExpiryDateString  is "+ offerExpiryDateString);
-		
-		
+
+
 		String offerStartTime = getOfferStartDateTime(subscriber, offerId);
 		logger.debug("createRppRead offerStartTime  is "+ offerStartTime);
 		if(offerStartTime !=null)
-		read.setsActivationStartTime(offerStartTime);
+			read.setsActivationStartTime(offerStartTime);
 		read.setsCanBeSharedByMultipleRops(false);
 		read.setsCRMTitle("-");
 		read.setsInsertedViaBatch(false);
@@ -1467,11 +1478,10 @@ public class EntireReadUtil {
 			} catch (ParseException e) {
 				logger.error("Unable to handle offerExpiryDate (" + offerExpiryDateString + ") for Offer: " + offerId);
 			}
-			
+
 		}
 		read.setsPeriodStartPoint(-1);
-		if (ContractState.PREACTIVE.name().equals(
-				ContractState.apiValue(subscriber.getContractState()))) {
+		if (ContractState.PREACTIVE.name().equals(subscriber.getContractState())) {
 			read.setsPreActive(true);
 		} else {
 			read.setsPreActive(false);
@@ -1499,7 +1509,7 @@ public class EntireReadUtil {
 		} else {
 			logger.error("STRANGE: Offer: " + offerId + " has no start date!!");
 		}
-		
+
 		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
 		if (offerExpiryDateString != null) {
 			IConfig config = SefCoreServiceResolver.getConfigService();
@@ -1529,7 +1539,7 @@ public class EntireReadUtil {
 		} else {
 			logger.error("STRANGE: Offer: " + offerId + " has no expiry date!!");
 		}
-		
+
 		read.setsError((byte) 0);
 		read.setsInfo(0);
 		read.setsValid(true);
@@ -1582,11 +1592,11 @@ public class EntireReadUtil {
 
 		String offerStartDateString = getOfferStartDateTime(subscriber, offerId);
 		logger.debug("createRppVersionRead offerStartDateString is "+offerStartDateString);
-		
+
 		String offerExpiryDateString = getOfferExpiryDateTime(subscriber, offerId);
 		logger.debug("createRppVersionRead offerExpiryDateString is "+offerExpiryDateString);
 		if (offerExpiryDateString != null) {
-			
+
 			read.setsPeriodicBonusExpiryDate(offerExpiryDateString);
 			read.setvInvalidFrom(offerExpiryDateString);
 
@@ -1626,7 +1636,7 @@ public class EntireReadUtil {
 
 			read.setsPackageId(welcomePack);
 		}
-		read.setsPreActive(ContractState.PREACTIVE.getName().equals(subscriber.getContractState()));
+		read.setsPreActive(ContractState.PREACTIVE.name().equals(subscriber.getContractState()));
 		if (subscriber.getActiveDate() != null)
 			read.setsActivationStartTime(subscriber.getActiveDate());
 		read.setsPeriodStartPoint(-1);

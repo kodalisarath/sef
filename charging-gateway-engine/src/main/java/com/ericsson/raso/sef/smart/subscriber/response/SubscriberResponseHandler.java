@@ -42,9 +42,9 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		}
 
 		else if (subscriber.getMsisdn() == null || 
-				subscriber.getUserId() == null|| 
-				subscriber.getCustomerId() == null|| 
-				subscriber.getContractId() == null || 
+//				subscriber.getUserId() == null|| 
+//				subscriber.getCustomerId() == null|| 
+//				subscriber.getContractId() == null || 
 				subscriber.getContractState() == null ||
 				subscriber.getMetas() == null ) {
 
@@ -55,7 +55,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 
 		try {
 			subscriberInfo.setMsisdn(subscriber.getMsisdn());
-			subscriberInfo.setLocalState(ContractState.apiValue(subscriber.getContractState()));
+			subscriberInfo.setLocalState(ContractState.valueOf(subscriber.getContractState()));
 			Map<String, String> subscriberMetas = subscriber.getMetas();
 
 			//get the subscriber status from back end

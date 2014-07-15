@@ -56,6 +56,15 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
+	<bean id="chargingSessionMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ericsson.raso.sef.core.db.mapper.smart.ChargingSessionMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="chargingSessionService" class="com.ericsson.raso.sef.core.db.service.internal.ChargingSessionServiceImpl">
+ 		<property name="chargingSessionMapper" ref="chargingSessionMapper"/> 
+ 	</bean> 
+	
 	<!-- <bean id="ticketMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.TicketMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />

@@ -59,7 +59,7 @@ public class ModifyCustomerPreActive implements Processor {
 		logger.info("Recieved a SubscriberInfo Object and it is not null");
 		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 		
-		if( ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())){
+		if( ContractState.PREACTIVE.name().equals(subscriberObj.getSubscriber().getContractState())){
 			logger.info("In pre-active method");
 			String date=subscriberObj.getSubscriber().getMetas().get("PreActiveEndDate");
 			if(date != null){

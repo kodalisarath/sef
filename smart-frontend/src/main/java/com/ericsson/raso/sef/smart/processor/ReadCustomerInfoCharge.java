@@ -41,7 +41,7 @@ public class ReadCustomerInfoCharge implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		 logger.info("Customer Info Charge: process()");
+		logger.info("Customer Info Charge: process()");
 		ReadCustomerInfoChargeRequest request = (ReadCustomerInfoChargeRequest) exchange.getIn().getBody();
 		IConfig config = SefCoreServiceResolver.getConfigService();
 		String channel = String.valueOf(request.getChannel());
@@ -51,50 +51,56 @@ public class ReadCustomerInfoCharge implements Processor {
 		}
 		int channelValue = Integer.parseInt(config.getValue("SMART_customerInfoChannel",channel));
 		logger.info("ChannelName: "+channel+", ChannelValue: "+channelValue);
-	     String requestId = RequestContextLocalStore.get().getRequestId();
-	     logger.info("Collecting SOAP parameters");
-	     List<Meta> workflowMetas= new ArrayList<Meta>();
-	     workflowMetas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
-	     workflowMetas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
-	     workflowMetas.add(new Meta("channelName", String.valueOf(request.getChannel())));
-	     workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
+		String requestId = RequestContextLocalStore.get().getRequestId();
+		logger.info("Collecting SOAP parameters");
+		List<Meta> workflowMetas= new ArrayList<Meta>();
+		workflowMetas.add(new Meta("msisdn", String.valueOf(request.getCustomerId())));
+		workflowMetas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
+		workflowMetas.add(new Meta("channelName", String.valueOf(request.getChannel())));
+		workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 
-	     //List<Meta> metaSubscriber=new ArrayList<Meta>();
-	     if(channelValue > 0){
-	    	 workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE")); 
-	     }
-	     else{
-	    	 workflowMetas.add(new Meta("READ_SUBSCRIBER","READ_BALANCES"));
-	     }
-	     workflowMetas.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
-	     
-	     
-	     logger.info("Collected SOAP parameters");
-	     logger.info("Going for Customer Info Charge Call");
-	     logger.info("Before read subscriber call");
-	     SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), workflowMetas);
-	     String value = String.valueOf(subscriberObj);
-	     logger.info("subscriber call "+value);
-	     if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0 && subscriberObj.getLocalState()== null){
-				logger.debug("Inside the if condition for status check");
-				throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
-			 }
-	     if(subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0 && subscriberObj.getLocalState().getName().equalsIgnoreCase(ContractState.PREACTIVE.getName())){
-	    	 logger.info("PRE_ACTIVE state");
-	    	 throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
-	     }
-	     if(subscriberObj!=null && subscriberObj.getLocalState().getName().equalsIgnoreCase(ContractState.RECYCLED.getName())){
-	    	 logger.info("DE_ACTIVE state");
-	    	 throw ExceptionUtil.toSmException(ErrorCode.invalidLifecycleError1);
-	     }
-         logger.info("Recieved a SubscriberInfo Object and it is not null");
-		 logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
-		 logger.info("Billing Metas: " + subscriberObj.getMetas());
-		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+		//List<Meta> metaSubscriber=new ArrayList<Meta>();
+		if(channelValue > 0){
+			workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE")); 
+		}
+		else{
+			workflowMetas.add(new Meta("READ_SUBSCRIBER","READ_BALANCES"));
+		}
+		workflowMetas.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
+
+
+		logger.info("Collected SOAP parameters");
+		logger.info("Going for Customer Info Charge Call");
+		logger.info("Before read subscriber call");
+		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), workflowMetas);
+		String value = String.valueOf(subscriberObj);
+		logger.info("subscriber call "+value);
+		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() > 0) {
+			logger.error("DB response: " + subscriberObj.getStatus());
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		}
 		
+		if (subscriberObj.getLocalState() == null || subscriberObj.getSubscriber() == null) {
+			logger.error("seems like subscriber was not found!!!");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
+		}
+
+		if(subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0 && subscriberObj.getLocalState().name().equalsIgnoreCase(ContractState.PREACTIVE.name())){
+			logger.info("PRE_ACTIVE state");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+		}
+		if(subscriberObj!=null && subscriberObj.getLocalState().name().equalsIgnoreCase(ContractState.RECYCLED.name())){
+			logger.info("DE_ACTIVE state");
+			throw ExceptionUtil.toSmException(ErrorCode.invalidLifecycleError1);
+		}
+		logger.info("Recieved a SubscriberInfo Object and it is not null");
+		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
+		logger.info("Billing Metas: " + subscriberObj.getMetas());
+		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+
 		logger.error("FloodGate acknowledging exgress...");
 		FloodGate.getInstance().exgress();
-		
+
 		exchange.getOut().setBody(readAccountInfo(request.getCustomerId(),request.isTransactional(), subscriberObj.getSubscriber().getMetas()));
 		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
 	}
@@ -120,16 +126,16 @@ public class ReadCustomerInfoCharge implements Processor {
 		logger.debug("Hi HERE I AM::: Result " + subscriberInfo.getStatus() );
 		return subscriberInfo;
 	}
-	
+
 	class OfferInfo {
 		private Integer offerID;
 		private long offerExpiry;
 		private long offerStart;
 		private String daID;
 		private String walletName;
-		
+
 		public OfferInfo() {}
-		
+
 		public OfferInfo(Integer offerID, long offerExpiry, long offerStart, String daID, String walletName) {
 			super();
 			this.offerID = offerID;
@@ -144,11 +150,11 @@ public class ReadCustomerInfoCharge implements Processor {
 		public String toString() {
 			return "OfferInfo [offerID=" + offerID + ", offerExpiry=" + offerExpiry + ", daID=" + daID + ", walletName=" + walletName + "]";
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 	private CommandResponseData readAccountInfo(String msisdn,boolean isTransactional, Map<String, String> metas) throws SmException {
 		CommandResponseData responseData = new CommandResponseData();
 		CommandResult result = new CommandResult();
@@ -171,13 +177,13 @@ public class ReadCustomerInfoCharge implements Processor {
 		operationResult.getOperation().add(operation);
 		ParameterList parameterList = new ParameterList();
 		operation.setParameterList(parameterList);
-		
-	// Process Balances & Offers...
-		
+
+		// Process Balances & Offers...
+
 		Map<Integer, DAInfo> daList = new HashMap<Integer, ReadCustomerInfoCharge.DAInfo>();
 		Map<Integer, OfferInfo> offerList = new HashMap<Integer, ReadCustomerInfoCharge.OfferInfo>();
 		for (String key : metas.keySet()) {
-			
+
 			if (key.startsWith("DA")) {
 				logger.debug("CIC:: meta: " + key + " = " + metas.get(key));
 				String daForm = metas.get(key);
@@ -187,7 +193,7 @@ public class ReadCustomerInfoCharge implements Processor {
 				int i=0; for (String part: daPart) {
 					logger.debug("daPart[" + i++ +"]" + part);
 				}
-				
+
 				// first part is main DA...
 				logger.debug("Main DA: " + daPart[0]);
 				String mainDaElements[] = daPart[0].split(",");
@@ -211,11 +217,11 @@ public class ReadCustomerInfoCharge implements Processor {
 				String daActiveValue2 = (("null").equals(mainDaElements[16]))?null:mainDaElements[16];
 				Integer daUnitType = (("null").equals(mainDaElements[17]))?null:Integer.parseInt(mainDaElements[17]);
 				Boolean isCompositeDAFlag = (("null").equals(mainDaElements[18]))?null:Boolean.parseBoolean(mainDaElements[18]);
-				
+
 				DAInfo daInfo = new DAInfo(daID, daVal1, daVal2, startDate, expiryDate, pamServiceID, offerID, productID, isRealMoney, 
 						closestExpiryDate, closestExpiryValue1, closestExpiryValue2, closestAccessibleDate, closestAccessibleValue1, 
 						closestAccessibleValue2, daActiveValue1, daActiveValue2, daUnitType, isCompositeDAFlag);
-				
+
 				// second part is subDA list...
 				if (daPart.length > 1) {
 					logger.debug("All SubDA list: " + daPart[1]);
@@ -263,80 +269,69 @@ public class ReadCustomerInfoCharge implements Processor {
 					logger.debug("FLEXI:: Offer listed in omission case. Ignoring...");
 					continue;
 				}
-				
+
 				if (daID == null) {
 					logger.debug("OfferID: " + offerId + " is not configure with a DA. Ignoring...");
 					continue;
 				}
 				OfferInfo oInfo = new OfferInfo(offerID, Long.parseLong(expiry), Long.parseLong(start), daID, walletName);
 				offerList.put(offerID, oInfo);
-				
+
 			}
 		} // end of for loop... 
 		logger.debug("Size of offerList "+offerList.size()+" offerList.keyset: "+offerList.keySet());
 		logger.debug("Size of daList "+daList.size()+" daList.keyset: "+daList.keySet());
-	/*// End of Get Balances & Dates processing....
-		
+
+
 		String accountsEntry = ""; String subscriptionsEntry = "";
-		
+
 		for (int offerID: offerList.keySet()) {
 			OfferInfo oinfo = offerList.get(offerID);
 			logger.debug("OfferId: "+offerID+" OfferInfo: "+oinfo);
+			String convertedDate = convertDateToReadableFormat(oinfo.offerExpiry+"");
 			if (offerID > 2000) {
-				
-				DAInfo daInfo = daList.get(oinfo.daID);
-				logger.info("DaInfo is: "+daInfo);
-				String nullString = "null";
-				if(daInfo != null)
-					subscriptionsEntry += ((subscriptionsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + String.valueOf(oinfo.offerExpiry) + ";" + String.valueOf(daList.get(oinfo.daID).daVal1);
-				else{
-					subscriptionsEntry += ((subscriptionsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + String.valueOf(oinfo.offerExpiry) + ";" + nullString;
-				}				
-				
-			} else {
-				accountsEntry += ((accountsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + oinfo.offerExpiry;
-				
+				subscriptionsEntry += ((subscriptionsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + convertedDate;			
+			} else {	
+				if(oinfo.daID != null){
+					accountsEntry += ((accountsEntry.isEmpty())?"":"|") + oinfo.walletName + ";"+ this.applyConversion(oinfo.walletName, (daList.get(Integer.parseInt(oinfo.daID))).daVal1)+ ";" + convertedDate;				}
 			}
 		}
-		logger.info("SubscriptionENtry: "+subscriptionsEntry);
-		
-	// End of Get Balances & Dates processing....
-	 
-*/	//Modifications by Chandra
-		// End of Get Balances & Dates processing....
-				String accountsEntry = ""; String subscriptionsEntry = "";
-				
-				for (int offerID: offerList.keySet()) {
-					OfferInfo oinfo = offerList.get(offerID);
-					logger.debug("OfferId: "+offerID+" OfferInfo: "+oinfo);
-					String convertedDate = convertDateToReadableFormat(oinfo.offerExpiry+"");
-					if (offerID > 2000) {
-							subscriptionsEntry += ((subscriptionsEntry.isEmpty())?"":"|") + oinfo.walletName + ";" + convertedDate;			
-					} else {	
-						if(oinfo.daID != null){
-						accountsEntry += ((accountsEntry.isEmpty())?"":"|") + oinfo.walletName + ";"+ (daList.get(Integer.parseInt(oinfo.daID))).daVal1+ ";" + convertedDate;
-						}
-					}
-				}
-				logger.info("accountsEntry: "+accountsEntry);				
-			// End of Get Balances & Dates processing....
-				
-		
-		
-		StringParameter accounts = new StringParameter();
-		accounts.setName("Accounts");
-		accounts.setValue(accountsEntry);
-		parameterList.getParameterOrBooleanParameterOrByteParameter().add(accounts);
-		
-		
-		StringParameter subscriptions = new StringParameter();
-		subscriptions.setName("Subscriptions");
-		subscriptions.setValue(subscriptionsEntry);
-		parameterList.getParameterOrBooleanParameterOrByteParameter().add(subscriptions);
-		
+
+
+		logger.info("accountsEntry: "+accountsEntry);				
+		if (!accountsEntry.isEmpty()) {
+			StringParameter accounts = new StringParameter();
+			accounts.setName("Accounts");
+			accounts.setValue(accountsEntry);
+			parameterList.getParameterOrBooleanParameterOrByteParameter().add(accounts);
+		}
+
+		logger.info("subscriptionsEntry: "+subscriptionsEntry);				
+		if (!subscriptionsEntry.isEmpty())  {
+			StringParameter subscriptions = new StringParameter();
+			subscriptions.setName("Subscriptions");
+			subscriptions.setValue(subscriptionsEntry);
+			parameterList.getParameterOrBooleanParameterOrByteParameter().add(subscriptions);
+		}
 		return responseData;
 	}
-	
+
+	private String applyConversion(String walletName, String daVal1) {
+		String conversionFactor = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
+		if (conversionFactor == null)
+			return daVal1;
+
+		try {
+			int conversion = Integer.parseInt(conversionFactor);
+			int value = Integer.parseInt(daVal1);
+			return "" + (value/conversion);
+		} catch (Exception e) {
+			logger.warn("Cannot convert '" + daVal1 + "'. Cause: " + e.getMessage(), e);
+			return daVal1;
+		}
+	}
+
+
 	private String convertDateToReadableFormat(String expiryDate) {
 		logger.debug("ExpirtyDate : "+expiryDate);
 		if(!expiryDate.equals("null")){
@@ -347,14 +342,14 @@ public class ReadCustomerInfoCharge implements Processor {
 		return expiryDate;
 	}
 
-	
-	
+
+
 	class SubDAInfo {
 		String subDAValue1;
 		String subDAValue2;
 		Long subDAStartDate;
 		Long subDAExpiryDate;
-		
+
 		public SubDAInfo(String subDAValue1, String subDAValue2, Long subDAStartDate, Long subDAExpiryDate) {
 			this.subDAValue1 = subDAValue1;
 			this.subDAValue2 = subDAValue2;
@@ -367,9 +362,9 @@ public class ReadCustomerInfoCharge implements Processor {
 			return "SubDAInfo [subDAValue1=" + subDAValue1 + ", subDAValue2=" + subDAValue2 + ", subDAStartDate=" + subDAStartDate
 					+ ", subDAExpiryDate=" + subDAExpiryDate + "]";
 		}
-		
+
 	}
-	
+
 	class DAInfo {
 		Integer daID;
 		String daVal1;
@@ -391,8 +386,8 @@ public class ReadCustomerInfoCharge implements Processor {
 		Integer daUnitType;
 		Boolean isComposite;
 		List<SubDAInfo> subDAList;
-		
-		
+
+
 		public DAInfo(Integer daID, String daVal1, String daVal2, Long startDate, Long expiryDate, Integer pamServiceID, Integer offerID,
 				Integer productID, Boolean isRealMoney, Long closestExpiryDate, String closestExpiryValue1, String closestExpiryValue2,
 				Long closestAccessibleDate, String closestAccessibleValue1, String closestAccessibleValue2, String daActiveValue1,
@@ -417,16 +412,16 @@ public class ReadCustomerInfoCharge implements Processor {
 			this.daUnitType = daUnitType;
 			this.isComposite = isComposite;
 		}
-		
+
 		public void addSubDA(SubDAInfo subDA) {
 			if (this.subDAList == null)
 				this.subDAList = new ArrayList<SubDAInfo>();
 			this.subDAList.add(subDA);
 		}
-		
-		
-		
-		
+
+
+
+
 
 		@Override
 		public String toString() {
@@ -438,10 +433,10 @@ public class ReadCustomerInfoCharge implements Processor {
 					+ closestAccessibleValue2 + ", daActiveValue1=" + daActiveValue1 + ", daActiveValue2=" + daActiveValue2
 					+ ", daUnitType=" + daUnitType + ", isComposite=" + isComposite + "]";
 		}
-		
-		
-		
+
+
+
 	}
-	
+
 }
-	
+

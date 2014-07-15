@@ -47,11 +47,9 @@ public class DateUtil {
 		return simpleDateStr;
 	}
 
-	public static final String convertISOToSimpleDateFormat(
-			XMLGregorianCalendar date) {
+	public static final String convertISOToSimpleDateFormat(XMLGregorianCalendar date) {
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss.SSS");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 			GregorianCalendar gc = date.toGregorianCalendar();
 			return sdf.format(gc.getTime());
 
@@ -63,8 +61,7 @@ public class DateUtil {
 
 	public static XMLGregorianCalendar convertDateToUTCtime(Date date) {
 		try {
-			GregorianCalendar gc = (GregorianCalendar) GregorianCalendar
-					.getInstance();
+			GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
 			gc.setTime(date);
 			gc.setTimeZone(TimeZone.getTimeZone("UTC"));
 			return DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);

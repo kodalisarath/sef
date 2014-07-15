@@ -15,15 +15,19 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.ResultCodeAvp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.VendorIdAvp;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
-import com.ericsson.raso.sef.cg.engine.ChargingSession;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
+import com.ericsson.raso.sef.cg.engine.SmartChargingSession;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
 import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
 import com.ericsson.raso.sef.core.cg.nsn.avp.PPIInformationAvp;
 import com.ericsson.raso.sef.core.cg.nsn.avp.ServiceInfoAvp;
 import com.ericsson.raso.sef.core.cg.nsn.avp.TransactionStatusAvp;
 import com.ericsson.raso.sef.core.cg.nsn.avp.TransparentDataAvp;
+import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
+import com.google.gson.Gson;
 
 public class GetTAStateProcessor implements Processor {
 	
@@ -45,25 +49,37 @@ public class GetTAStateProcessor implements Processor {
 		response.setUniqueMessageId(request.getMessageId());
 		response.setSessionId(request.getSessionId());
 
-		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(response.getSessionId());
+		ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(response.getSessionId());
+		SmartChargingSession smartSession = null;
+		if (session == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new SmException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID);
+
+		}
+		
+		smartSession = this.getSmartSession(session.getSessionInfo());
+		if (smartSession == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new SmException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID);
+		}
+		
 
 		long resultCode = ResponseCode.DIAMETER_SUCCESS.getCode();
-		if (session == null) {
+		if (smartSession == null) {
 			resultCode = ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getCode();
 		}
 		
 		if(session != null) {
 			//long messageTimeout = CgEngineContext.getChargingApi().getDiameterConfig().getMessageTimeout();
 			long messageTimeout = Long.parseLong(CgEngineContext.getConfig().getValue("scapClient", Constants.MESSAGETIMEOUT));
-			long sessionPeriod = System.currentTimeMillis() - session.getCreationTime();
+			long sessionPeriod = System.currentTimeMillis() - smartSession.getCreationTime();
 			if (sessionPeriod >= messageTimeout) {
-				session.setTransactionStatus(TransactionStatus.TIMEDOUT);
+				smartSession.setTransactionStatus(TransactionStatus.TIMEDOUT);
 			}
 		}
 
 		TransactionStatusAvp transactionStatusAvp = null;
-		switch (session.getTransactionStatus()) {
+		switch (smartSession.getTransactionStatus()) {
 		case AUTHORIZED:
 			transactionStatusAvp = new TransactionStatusAvp(TransactionStatusAvp.AUTHORIZED);
 			break;
@@ -86,7 +102,7 @@ public class GetTAStateProcessor implements Processor {
 		answerAvp.add(resultCodeAvp);
 
 		long experimentalResultCode = 1;
-		if(session.getTransactionStatus() == TransactionStatus.FAILED) {
+		if(smartSession.getTransactionStatus() == TransactionStatus.FAILED) {
 			experimentalResultCode = 3;
 		}
 		ExperimentalResultAvp experimentalResultAvp = new ExperimentalResultAvp();
@@ -109,4 +125,11 @@ public class GetTAStateProcessor implements Processor {
 		log.debug("End GetTAStateProcessor.process");
 	
 	}
+	
+	
+	private SmartChargingSession getSmartSession(String sessionInfo) {
+		Gson gson = new Gson();
+		return gson.fromJson(sessionInfo, SmartChargingSession.class);		
+	}
+
 }

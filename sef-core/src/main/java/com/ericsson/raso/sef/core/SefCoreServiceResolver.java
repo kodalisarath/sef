@@ -6,6 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -19,6 +20,7 @@ import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
 import com.ericsson.raso.sef.core.db.service.SubscriberService;
 import com.ericsson.raso.sef.core.db.service.UserManagementService;
 import com.ericsson.raso.sef.core.db.service.smart.CallingCircleService;
+import com.ericsson.raso.sef.core.db.service.smart.ChargingSessionService;
 import com.ericsson.raso.sef.watergate.IWatergate;
 
 public class SefCoreServiceResolver implements ApplicationContextAware {
@@ -30,9 +32,12 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 	
 	
 	@Override
-	public void setApplicationContext(ApplicationContext context)
-			throws BeansException {
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		SefCoreServiceResolver.context = context;
+	}
+
+	public static SqlSessionFactory getSqlSessionFactory() {
+		return SefCoreServiceResolver.context.getBean(SqlSessionFactory.class);
 	}
 
 	public static UserManagementService getUserManagementService() {
@@ -68,7 +73,7 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 		String logMessage = "JVM Threads: " + jvmThreads;
 		if (jvmThreads <= maxThreadsForCurrentOs) {
 			if (localExecutor == null) {
-				localExecutor = new ThreadPoolExecutor(50, 400, 30000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(20));
+				localExecutor = new ThreadPoolExecutor(350, 900, 30000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(5));
 				logMessage += " creating new local executor...";
 			}
 			logMessage += " returning local executor...";
@@ -115,5 +120,9 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 		return SefCoreServiceResolver.context.getBean(CallingCircleService.class);
 	}
 	
+	public static ChargingSessionService getChargingSessionService() {
+		return SefCoreServiceResolver.context.getBean(ChargingSessionService.class);
+	}
 	
+
 }

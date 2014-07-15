@@ -10,10 +10,8 @@ public class ExchangeHeaderProcessor implements Processor {
 	private static Logger log = LoggerFactory.getLogger(ExchangeHeaderProcessor.class);
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		exchange.getIn().setHeader(Exchange.HTTP_METHOD,
-				org.apache.camel.component.http4.HttpMethods.POST);
-		exchange.getIn().setHeader(Exchange.HTTP_QUERY,
-				"connectionsPerRoute=100");
+		exchange.getIn().setHeader(Exchange.HTTP_METHOD, org.apache.camel.component.http4.HttpMethods.POST);
+		exchange.getIn().setHeader(Exchange.HTTP_QUERY, "connectionsPerRoute=100");
 		log.debug("Adding the HTTP Method and HTTP Query Param");
 	}
 }

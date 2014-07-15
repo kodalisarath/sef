@@ -28,7 +28,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 		if(subscriber!=null){
 			logger.debug("Subscriber Status: "+subscriber.getContractState());
 			subscriberInfo.setMsisdn(subscriber.getMsisdn());
-			subscriberInfo.setLocalState(ContractState.apiValue(subscriber.getContractState()));
+			subscriberInfo.setLocalState(ContractState.valueOf(subscriber.getContractState()));
 		}
 		try {
 			if (fault != null && fault.getCode() !=0) {
@@ -45,9 +45,9 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			} else { 
 				
 				if (subscriber.getMsisdn() == null || 
-					subscriber.getUserId() == null|| 
-					subscriber.getCustomerId() == null|| 
-					subscriber.getContractId() == null || 
+//					subscriber.getUserId() == null|| 
+//					subscriber.getCustomerId() == null|| 
+//					subscriber.getContractId() == null || 
 					subscriber.getContractState() == null ||
 					subscriber.getMetas() == null) {
 
@@ -60,7 +60,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			
 			//get the subscriber status from back end
 			subscriberInfo.setMsisdn(subscriber.getMsisdn());
-			subscriberInfo.setLocalState(ContractState.apiValue(subscriber.getContractState()));
+			subscriberInfo.setLocalState(ContractState.valueOf(subscriber.getContractState()));
 			Map<String, String> subscriberMetas = subscriber.getMetas();
 			String activationStatus = subscriberMetas.get(Constants.READ_SUBSCRIBER_ACTIVATION_STATUS_FLAG);
 			logger.debug("Subscriber activationStatus: " +  activationStatus);

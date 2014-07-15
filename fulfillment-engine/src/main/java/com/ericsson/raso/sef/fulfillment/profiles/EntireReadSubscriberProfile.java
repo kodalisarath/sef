@@ -172,22 +172,10 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 	}
 
 	private void processUsageThreadholdAndCountersResponse(HashMap<String, String> details, GetUsageThresholdsAndCountersResponse response) {
-//		String availableCapabilities = "";
-//		for (int asCap: response.getAvailableServerCapabilities()) {
-//			availableCapabilities += (availableCapabilities.isEmpty()?"":",") + asCap;
-//		}
-//		details.put("AVAILABLE_SERVER_CAPABILITIES", availableCapabilities);
-//		LOGGER.debug("Available Server Capabilities: " + availableCapabilities);
 		
 		details.put("CURRENCY1", response.getCurrency1());
 		details.put("CURRENCY2", response.getCurrency2());
 		
-//		String negotiatedCapabilities = "";
-//		for (int asCap: response.getNegotiatedCapabilities()) {
-//			negotiatedCapabilities += (negotiatedCapabilities.isEmpty()?"":",") + asCap;
-//		}
-//		details.put("NEGOTIATED_SERVER_CAPABILITIES", negotiatedCapabilities);
-//		LOGGER.debug("Negotiated Capabilities: " + negotiatedCapabilities);
 		
 		String usageInfo = "";
 		for (UsageCounterUsageThresholdInformation uct: response.getUsageCounterUsageThresholdInformation()) {
@@ -352,6 +340,39 @@ public class EntireReadSubscriberProfile extends BlockingFulfillment<Product> {
 					}
 				}
 			}
+			
+			String daInfo ="" + daInformation.getDedicatedAccountID() 
+  					+ "," + daInformation.getDedicatedAccountValue1()
+  					+ "," + daInformation.getDedicatedAccountValue2()
+  					+ "," + ((daInformation.getStartDate()==null)?"null":daInformation.getStartDate().getTime())
+  					+ "," + ((daInformation.getExpiryDate()==null)?"null":daInformation.getExpiryDate().getTime())
+  					+ "," + ((daInformation.getPamServiceID()==null)?"null":daInformation.getPamServiceID())
+  					+ "," + ((daInformation.getOfferID()==null)?"null":daInformation.getOfferID())
+  					+ "," + ((daInformation.getProductID()==null)?"null":daInformation.getProductID())
+  					+ "," + daInformation.isDedicatedAccountRealMoneyFlag()
+  					+ "," + ((daInformation.getClosestExpiryDate()==null)?"null":daInformation.getClosestExpiryDate().getTime())
+  					+ "," + ((daInformation.getClosestExpiryValue1()==null)?"null":daInformation.getClosestExpiryValue1())
+  					+ "," + ((daInformation.getClosestExpiryValue2()==null)?"null":daInformation.getClosestExpiryValue2())
+  					+ "," + ((daInformation.getClosestAccessibleDate()==null)?"null":daInformation.getClosestAccessibleDate())
+  					+ "," + ((daInformation.getClosestAccessibleValue1()==null)?"null":daInformation.getClosestAccessibleValue1())
+  					+ "," + ((daInformation.getClosestAccessibleValue2()==null)?"null":daInformation.getClosestAccessibleValue2())
+  					+ "," + ((daInformation.getDedicatedAccountActiveValue1()==null)?"null":daInformation.getDedicatedAccountActiveValue1())
+  					+ "," + ((daInformation.getDedicatedAccountActiveValue2()==null)?"null":daInformation.getDedicatedAccountActiveValue2())
+  					+ "," + ((daInformation.getDedicatedAccountUnitType()==null)?"null":daInformation.getDedicatedAccountUnitType())
+  					+ "," + daInformation.isCompositeDedicatedAccountFlag()	+ ":+:";
+  			
+  			if(daInformation.getSubDedicatedAccountInformation() != null) {
+  				String subDA = "";
+  				for (SubDedicatedInfo subDedicatedInfo: daInformation.getSubDedicatedAccountInformation()) {
+  					subDA += (subDA.isEmpty()?"":"|||");
+  					subDA += ((subDedicatedInfo.getDedicatedAccountValue1()==null)?"null":subDedicatedInfo.getDedicatedAccountValue1())
+  							+ "," + ((subDedicatedInfo.getDedicatedAccountValue2()==null)?"null":subDedicatedInfo.getDedicatedAccountValue2())
+  							+ "," + ((subDedicatedInfo.getStartDate()==null)?"null":subDedicatedInfo.getStartDate().getTime())
+  							+ "," + ((subDedicatedInfo.getExpiryDate()==null)?"null":subDedicatedInfo.getExpiryDate().getTime());
+  					daInfo += subDA; 
+  				}
+  			}
+  			balanceAndDateInfo.put("DA" + "." + ++index, daInfo); 
 		}
 		LOGGER.debug("Packed all dedicated accounts...");
 		// offer info...

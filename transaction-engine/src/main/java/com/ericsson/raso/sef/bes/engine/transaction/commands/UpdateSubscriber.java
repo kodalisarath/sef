@@ -52,204 +52,238 @@ public class UpdateSubscriber extends AbstractTransaction {
 			//Differentiated use cases for updating  subscriber and metas
 			switch(useCaseProcess){
 
-			case Constants.CreateOrWriteROP: 
-			case Constants.CreateOrWriteServiceAccessKey:
-			case Constants.VersionCreateOrWriteRop:
-			case Constants.BucketCreateOrWriteRop:
-			case Constants.VersionCreateOrWriteCustomer:
+				case Constants.CreateOrWriteROP: 
+				case Constants.CreateOrWriteServiceAccessKey:
+				case Constants.VersionCreateOrWriteRop:
+				case Constants.BucketCreateOrWriteRop:
+				case Constants.VersionCreateOrWriteCustomer:
 
-				LOGGER.debug("called createorwrite case in transaction manager");
-				// This entity must contains the subscriber and his meta from the DB
-				
-				LOGGER.debug("Getting the request: " + this.getRequest());
-				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+					LOGGER.debug("called createorwrite case in transaction manager");
+					// This entity must contains the subscriber and his meta from the DB
+
+					LOGGER.debug("Getting the request: " + this.getRequest());
+					subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
 
 
-				if (subscriberEntity == null) {
-					LOGGER.error("Subscriber not found in database");
-					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
-					sendResponse();
-				} else {
-					LOGGER.debug("Printing Subscriber entity "+subscriberEntity.toString());
-					LOGGER.debug("Subscriber exists and checking for the preactive state");
-					LOGGER.debug("checking if this equals working fine ");
-					if (ContractState.PREACTIVE.getName().equals(subscriberEntity.getContractState().getName())) {
-						LOGGER.debug("It is PRE_ACTIVE state");
-						for (Meta meta : listMetas) {
-							LOGGER.debug("Printing the metas in the loop "+meta.getKey()+" "+meta.getValue()+""+subscriberEntity.getMsisdn());
-							if (subscriberEntity.getMetas().contains(meta)) {
-								try {																																									
-									//subscriberStore.updateMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
-									subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-								} catch (PersistenceError e) {
-									LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
-								}
-							} else {
-								try {
-									LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
-									subscriberStore.createMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-									//subscriberStore.createMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
-								} catch (PersistenceError e) {
-									LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
-								}
-							}
-
-						}
-
-					} else {
-						this.getResponse().setReturnFault(
-								new TransactionException("tx-engine",new ResponseCode(4020,"Invalid Operation State")));
+					if (subscriberEntity == null) {
+						LOGGER.error("Subscriber not found in database");
+						this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
 						sendResponse();
-					}
-				}
-				break;
-				
-			case Constants.RetrieveDelete:
-				LOGGER.debug("Invoked RetrieveDelete Case");
-				// This entity must contains the subscriber and his meta from the DB
-				
-				LOGGER.debug("Getting the request: " + this.getRequest());
-				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
-
-
-				if (subscriberEntity == null) {
-					LOGGER.error("Subscriber not found in database");
-					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
-					sendResponse();
-				}
-						subscriberStore.deleteSubscriber(this.getRequestId(),subscriberEntity);
-				break;
-				
-			case Constants.ModifyCustomerPreActive:	
-			case Constants.ModifyCustomerGrace:
-				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
-				LOGGER.debug("Invoked ModifyCustomer Case");
-				for(Meta meta:listMetas){
-                  LOGGER.debug("In the for loop ");
-					if(meta.getKey().equalsIgnoreCase("PreActiveEndDate")){
-						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
-						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-						
-					}
-					else if(meta.getKey().equalsIgnoreCase("GraceEndDate")){
-						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
-						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-						
-					}
-					else if(meta.getKey().equalsIgnoreCase("MessageId")){
-						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
-						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-						
-					}
-					else if(meta.getKey().equalsIgnoreCase("EventInfo")){
-						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
-						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-						
-					}
-					else if(meta.getKey().equalsIgnoreCase("AccessKey")){
-						LOGGER.debug("SK SK HERE" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
-						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-						
-					}
-					else
-					{
-						LOGGER.debug("META PREACTIVENDDATE IS" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
-						subscriberStore.createMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-					}
-					
-					
-				}
-				break;
-			case Constants.SubscribePackageItem:
-				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
-				LOGGER.debug("Invoked SubscribePackageItem ");
-				for(Meta meta:listMetas){
-					subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-
-				}
-				break;
-
-			case Constants.UnSubscribePackageItem:
-				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
-				LOGGER.debug("Invoked SubscribePackageItem ");
-				for(Meta meta:listMetas){
-					subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-				}
-				break;
-
-			case Constants.ModifyTagging:
-				//subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
-				LOGGER.debug("Invoked ModifyTagging Case");
-				// This entity must contains the subscriber and his meta from the DB for modify tagging
-				subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
-				if (subscriberEntity == null) {
-					LOGGER.error("Subscriber not found in database");
-					this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
-					sendResponse();
-					return true;
-				} else {
-					listMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
-					LOGGER.debug("Update Subscriber Metas are :", listMetas);
-					if(!listMetas.isEmpty()){
-						if(ContractState.apiValue("PREACTIVE").toString().equals(subscriberEntity.getContractState().toString()) 
-								|| ContractState.apiValue("ACTIVE").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString()) 
-								|| ContractState.apiValue("GRACE").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
-							LOGGER.debug("Subscriber Contract State for Tagging is :", subscriberEntity.getContractState().toString());
-							// if subscriber state is active,preActive,grace then tagging required
-							// get segmentation code for Subscriber based on tag value
-							LOGGER.debug("Subscriber Contract State for Tagging is :", subscriberEntity.getContractState().toString());
-							LOGGER.debug("Check for the metas from processors :"+ listMetas.size());
-							String modifyTaggingCodeKey = null;
-							String modifyTaggingCodeValue = null;
-							String validTagKey = null;
-							String validTagValue = null;
-							boolean tagCode = Boolean.FALSE;
-							for (Meta metas : listMetas) {
-								modifyTaggingCodeKey = metas.getKey();
-								modifyTaggingCodeValue = metas.getValue();
-								if(modifyTaggingCodeValue != null){
-									if(modifyTaggingCodeValue.equalsIgnoreCase("invalidBit")){
-										tagCode = Boolean.TRUE;
+					} else {
+						LOGGER.debug("Printing Subscriber entity "+subscriberEntity.toString());
+						LOGGER.debug("Subscriber exists and checking for the preactive state");
+						LOGGER.debug("checking if this equals working fine ");
+						if (ContractState.PREACTIVE.name().equals(subscriberEntity.getContractState().name())) {
+							LOGGER.debug("It is PRE_ACTIVE state");
+							for (Meta meta : listMetas) {
+								LOGGER.debug("Printing the metas in the loop "+meta.getKey()+" "+meta.getValue()+""+subscriberEntity.getMsisdn());
+								if (subscriberEntity.getMetas().contains(meta)) {
+									try {																																									
+										//subscriberStore.updateMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
+										subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+									} catch (PersistenceError e) {
+										LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
+									}
+								} else {
+									try {
+										LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
+										subscriberStore.createMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+										//subscriberStore.createMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
+									} catch (PersistenceError e) {
+										LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
 									}
 								}
+
 							}
-							if(tagCode){
-								if(ContractState.apiValue("GRACE").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
-									this.getResponse().setReturnFault(
-											new TransactionException("tx-engine", new ResponseCode(
-													504, "Invalid Operation State GRACE")));
-								}else if(ContractState.apiValue("ACTIVE").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
-									this.getResponse().setReturnFault(
-											new TransactionException("tx-engine", new ResponseCode(
-													4020, "Invalid Operation State ACTIVE")));
-								}else{
-									this.getResponse().setReturnFault(
-											new TransactionException("tx-engine", new ResponseCode(
-													4020, "Invalid Operation State PRE-ACTIVE")));
-								}
-								sendResponse();
-								return false;
-							}else{
-								this.sendResponse();
-								return true;
+
+						} else {
+							this.getResponse().setReturnFault(
+									new TransactionException("tx-engine",new ResponseCode(4020,"Invalid Operation State")));
+							sendResponse();
+						}
+					}
+					break;
+
+				case Constants.RetrieveDelete:
+					LOGGER.debug("Invoked RetrieveDelete Case");
+					// This entity must contains the subscriber and his meta from the DB
+
+					LOGGER.debug("Getting the request: " + this.getRequest());
+					subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+
+
+					if (subscriberEntity == null) {
+						LOGGER.error("Subscriber not found in database");
+						this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
+						sendResponse();
+					}
+					subscriberStore.deleteSubscriber(this.getRequestId(),subscriberEntity);
+					break;
+
+				case Constants.ModifyCustomerPreActive:	
+				case Constants.ModifyCustomerGrace:
+					subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+					LOGGER.debug("Invoked ModifyCustomer Case");
+					for(Meta meta:listMetas){
+						
+						//
+						LOGGER.debug("Working on meta: " + meta);
+						if (meta.getKey().equalsIgnoreCase("userId"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("accountId"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("msisdn"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("contractState"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("customerId"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("contractId"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("pin"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("email"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("imsi"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("imeiSv"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("paymentType"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("paymentResponsible"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("paymentParent"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("billCycleDay"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("dateOfBirth"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("gender"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("prefferedLanguage"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("registrationDate"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("activeDate"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("ratePlan"))
+							continue;
+						if (meta.getKey().equalsIgnoreCase("customerSegment"))
+							continue;
+						//
+
+
+						if (subscriberEntity.getMetas().contains(meta)) {
+							try {																																									
+								//subscriberStore.updateMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
+								subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+							} catch (PersistenceError e) {
+								LOGGER.error("Error in the updatemeta at UpdateSubscriber",e);
+							}
+						} else {
+							LOGGER.debug("META PREACTIVENDDATE IS" + this.getRequestId() + " " + ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta );
+							subscriberStore.createMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+							try {
+								LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
+								subscriberStore.createMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+								//subscriberStore.createMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
+							} catch (PersistenceError e) {
+								LOGGER.error("Error in the createmeta at UpdateSubscriber",e);
 							}
 						}
 
-						// for Subscriber Recycle state and Unknown Subscriber State tagging not required
-						else{
-							if(ContractState.apiValue("RECYCLED").toString().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
-								LOGGER.error("Subscriber State is Recycled");
-								this.getResponse().setReturnFault(
-										new TransactionException("tx-engine", new ResponseCode(
-												504, "Invalid Operation State RECYCLED")));
-								sendResponse();
-								return false;
+					}
+					break;
+				case Constants.SubscribePackageItem:
+					subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+					LOGGER.debug("Invoked SubscribePackageItem ");
+					for(Meta meta:listMetas){
+						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+
+					}
+					break;
+
+				case Constants.UnSubscribePackageItem:
+					subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+					LOGGER.debug("Invoked SubscribePackageItem ");
+					for(Meta meta:listMetas){
+						subscriberStore.updateMeta(this.getRequestId(),((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+					}
+					break;
+
+				case Constants.ModifyTagging:
+					//subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+					LOGGER.debug("Invoked ModifyTagging Case");
+					// This entity must contains the subscriber and his meta from the DB for modify tagging
+					subscriberEntity = ((UpdateSubscriberRequest) this.getRequest()).persistableEntity();
+					if (subscriberEntity == null) {
+						LOGGER.error("Subscriber not found in database");
+						this.getResponse().setReturnFault(new TransactionException("tx-engine", new ResponseCode(504, "Subscriber not found")));
+						sendResponse();
+						return true;
+					} else {
+						listMetas = ((UpdateSubscriberRequest) this.getRequest()).getRequestMetas();
+						LOGGER.debug("Update Subscriber Metas are :", listMetas);
+						if(!listMetas.isEmpty()){
+							if(ContractState.PREACTIVE.name().equals(subscriberEntity.getContractState().toString()) 
+									|| ContractState.ACTIVE.name().equalsIgnoreCase(subscriberEntity.getContractState().toString()) 
+									|| ContractState.GRACE.name().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
+								LOGGER.debug("Subscriber Contract State for Tagging is :", subscriberEntity.getContractState().toString());
+								// if subscriber state is active,preActive,grace then tagging required
+								// get segmentation code for Subscriber based on tag value
+								LOGGER.debug("Subscriber Contract State for Tagging is :", subscriberEntity.getContractState().toString());
+								LOGGER.debug("Check for the metas from processors :"+ listMetas.size());
+								String modifyTaggingCodeKey = null;
+								String modifyTaggingCodeValue = null;
+								String validTagKey = null;
+								String validTagValue = null;
+								boolean tagCode = Boolean.FALSE;
+								for (Meta metas : listMetas) {
+									modifyTaggingCodeKey = metas.getKey();
+									modifyTaggingCodeValue = metas.getValue();
+									if(modifyTaggingCodeValue != null){
+										if(modifyTaggingCodeValue.equalsIgnoreCase("invalidBit")){
+											tagCode = Boolean.TRUE;
+										}
+									}
+								}
+								if(tagCode){
+									if(ContractState.GRACE.name().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
+										this.getResponse().setReturnFault(
+												new TransactionException("tx-engine", new ResponseCode(
+														504, "Invalid Operation State GRACE")));
+									}else if(ContractState.ACTIVE.name().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
+										this.getResponse().setReturnFault(
+												new TransactionException("tx-engine", new ResponseCode(
+														4020, "Invalid Operation State ACTIVE")));
+									}else{
+										this.getResponse().setReturnFault(
+												new TransactionException("tx-engine", new ResponseCode(
+														4020, "Invalid Operation State PRE-ACTIVE")));
+									}
+									sendResponse();
+									return false;
+								}else{
+									this.sendResponse();
+									return true;
+								}
+							}
+
+							// for Subscriber Recycle state and Unknown Subscriber State tagging not required
+							else{
+								if(ContractState.RECYCLED.name().equalsIgnoreCase(subscriberEntity.getContractState().toString())){
+									LOGGER.error("Subscriber State is Recycled");
+									this.getResponse().setReturnFault(
+											new TransactionException("tx-engine", new ResponseCode(
+													504, "Invalid Operation State RECYCLED")));
+									sendResponse();
+									return false;
+								}
 							}
 						}
 					}
-				}
 
-				break;
+					break;
 			}
 
 			LOGGER.debug("Got Persistable Entity: Subscriber: "

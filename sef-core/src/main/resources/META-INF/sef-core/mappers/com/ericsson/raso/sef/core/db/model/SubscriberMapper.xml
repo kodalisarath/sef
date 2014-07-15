@@ -10,7 +10,7 @@
 		<id property="userId" column="user_id" />
 		<result property="accountId" column="account_id" />
 		<result property="msisdn" column="msisdn" />
-		<result property="contractState" column="contract_state" />
+		<result property="contractState" column="contract_state" typeHandler="com.ericsson.raso.sef.core.db.model.ContractStateTypeHandler"/>
 		<result property="customerId" column="customer_id" />
 		<result property="contractId" column="contract_id" />
 		<result property="pin" column="pin" />
@@ -42,7 +42,7 @@
 		(user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment)
 		values
 		(#{userId},#{accountId},#{msisdn},#{registrationDate
-		jdbcType=TIMESTAMP},#{contractState.name},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment})
+		jdbcType=TIMESTAMP},#{contractState},#{customerId},#{contractId},#{pin},#{email},#{imsi},#{imeiSv},#{paymentType},#{paymentResponsible},#{paymentParent},#{billCycleDay},#{dateOfBirth},#{gender},#{prefferedLanguage},#{activeDate},#{ratePlan},#{customerSegment})
 	</insert>
 	
 	<resultMap id="SubscriberHistoryResult" type="SubscriberAuditTrial">
@@ -68,7 +68,7 @@
 
 	<select id="getSubscriber" resultMap="SubscriberResult"
 		parameterType="String">
-		select *
+		select user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment
 		from subscriber
 		where user_id = #{userId}
 	</select>
@@ -78,7 +78,7 @@
 
 	<select id="getSubscriberByUserId" resultMap="SubscriberResult"
 		parameterType="String">
-		select *
+		select user_id,account_id,msisdn,registration_date,contract_state,customer_id,contract_id,pin,email,imsi,imei_sv,payment_type,paymentresponsible,paymentparent,billcycle_day,date_of_birth,gender,preferred_language,active_date,rate_plan,customer_segment
 		from subscriber s
 		where s.user_id = #{userId}
 	</select>
@@ -94,24 +94,18 @@
 		and attribute_name = #{key}
 	</update>
 	<update id="changeContractStatus" parameterType="Subscriber">
-	update subscriber set contract_state=#{contractState.name} where user_id=#{userId}
+	update subscriber set contract_state=#{contractState} where user_id=#{userId}
 	</update>
-	<!-- <update id="updateSubscriberTable" >
-	update subscriber
-	<set>
-      <if test="activeDate != null">active_date=#{activeDate},</if>
-      <if test="registrationDate != null">registrationDate=#{registration_date}</if>
-    </set>
-     where user_id=#{userId}
-	</update> -->
 	
+
 	<select id="getContractState" parameterType="String">
 	select contract_state from subscriber where user_id=#{userId}
 	</select>
+	
 	<update id="updateSubscriber" parameterType="Subscriber">
 		update subscriber
 		set
-			contract_state=#{contractState jdbcType=VARCHAR},
+			contract_state=#{contractState},
 			account_id=#{accountId jdbcType=VARCHAR},
 			customer_id=#{customerId
 			jdbcType=VARCHAR},
@@ -145,7 +139,7 @@
 	</insert>
 	<select id="getAllSubscriberMetas" resultMap="MetaResult"
 		parameterType="String">
-		select *
+		select user_id, attribute_name, attribute_value
 		from
 		subscriber_meta s
 		where user_id = #{subscriberId}

@@ -4,13 +4,17 @@
 	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:q0="http://nsn.com/ossbss/charge.once/wsdl/entity/Tis/xsd/1"
 	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:osgi="http://www.springframework.org/schema/osgi"
 	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:cxfcore="http://cxf.apache.org/core"
+	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
-       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+       http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd">
 
 	<import resource="classpath:META-INF/sef-core/beans.xml" />
 	<import resource="classpath:META-INF/sef-api/beans.xml" />
@@ -34,8 +38,17 @@
 			value="com.ericsson.raso.sef.core.cg.diameter.ChargingInfo" />
 	</bean>
 
-	<cxf:cxfEndpoint id="subscriberResponse"
-		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
+
+	<cxfcore:bus name="subscriber" />
+
+ 	<httpj:engine-factory bus="subscriber">
+		<httpj:engine port="8080">
+			<httpj:threadingParameters minThreads="50" maxThreads="450" />
+			<httpj:sessionSupport>true</httpj:sessionSupport>
+		</httpj:engine>
+	</httpj:engine-factory>
+	
+	<cxf:cxfEndpoint id="subscriberResponse" bus="subscriber"		serviceClass="com.ericsson.sef.bes.api.subscriber.ISubscriberResponse">
 		<cxf:properties>
 			<entry key="address"
 				value="http://0.0.0.0:8080/services/ws/iSubscriberResponse" />

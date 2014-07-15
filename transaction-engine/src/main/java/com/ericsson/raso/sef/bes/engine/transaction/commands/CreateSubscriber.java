@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,26 +25,29 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
+import com.ericsson.sef.scheduler.command.RecycleJobCommand;
 
 public class CreateSubscriber extends AbstractTransaction {
 	private static final long	serialVersionUID	= 8085575039162225609L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateSubscriber.class);
-	
-	
+
+
 	public CreateSubscriber(String requestId, Subscriber subscriber) {
 		super(requestId, new CreateSubscriberRequest(requestId, subscriber));
 		this.setResponse(new CreateSubscriberResponse(requestId));
 	}
-	
-	
+
+
 	@Override
 	public Boolean execute() throws TransactionException {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>(); 
-		
-		
+
+
 		com.ericsson.raso.sef.core.db.model.Subscriber subscriberEntity = null;
 		try {
 			LOGGER.debug("In execute method before getting persistable Entity");
@@ -65,14 +69,14 @@ public class CreateSubscriber extends AbstractTransaction {
 						this.getResponse().setReturnFault(new TransactionException("txe", new ResponseCode(999, "Unable to pack the workflow tasks"), e));
 					}
 					tasks.add(new Persistence<com.ericsson.raso.sef.core.db.model.Subscriber>(PersistenceMode.SAVE, subscriberEntity, subscriberEntity.getMsisdn()));
-					
+
 				}
-				
+
 				Orchestration execution = OrchestrationManager.getInstance().createExecutionProfile(this.getRequestId(), tasks);
-				
+
 				OrchestrationManager.getInstance().submit(this, execution);
 			}
-			
+
 		} catch (FrameworkException e1) {
 			this.getResponse().setReturnFault(new TransactionException(this.getRequestId(), new ResponseCode(11614, "Unable to pack the workflow tasks for this use-case"), e1));
 			sendResponse();
@@ -80,7 +84,7 @@ public class CreateSubscriber extends AbstractTransaction {
 		sendResponse();
 		return true;
 	}
-	
+
 	@Override
 	public void sendResponse() {
 		// TODO: implement this logic
@@ -94,49 +98,46 @@ public class CreateSubscriber extends AbstractTransaction {
 		 * 3. once the response pojo entity is packed, the client for response interface must be invoked. the assumption is that response
 		 * interface will notify the right JVM waiting for this response thru a Object.wait
 		 */
-		
-		
+
+
 		LOGGER.debug("Invoking create subscriber response!!");
 		boolean result = true;
 		TransactionStatus txnStatus = new TransactionStatus();
 		if (this.getResponse() != null) {
-			   if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
-			    TransactionException fault = this.getResponse().getReturnFault();
-			    if (fault != null) {
-			     txnStatus.setCode(fault.getStatusCode().getCode());
-			     txnStatus.setDescription(fault.getStatusCode().getMessage());
-			     txnStatus.setComponent(fault.getComponent());
-			    }
-			   }
-		} else
-			result = false;
-		/*if (this.getResponse() != null) {
-			if (this.getResponse().getAtomicStepResults() != null) {
-				for (Step<?> step: this.getResponse().getAtomicStepResults().keySet()) {
-					AbstractStepResult stepResult = this.getResponse().getAtomicStepResults().get(step);
-					if (stepResult == null) {
-						if (step instanceof PersistenceStep) //TODO: this is temporary fix until DB Tier is fixed. Vinay is working on the same.  
-							continue;
-						else {
-							LOGGER.debug("quick check for type:" + step);
-						}
-					} else if (stepResult.getResultantFault() != null) {
-						txnStatus.setComponent(stepResult.getResultantFault().getComponent());
-						txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
-						txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
-						LOGGER.debug("CreateSubscriber::=> Transaction Status: " + txnStatus);
-						result = false;
-						break;
+			if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
+				TransactionException fault = this.getResponse().getReturnFault();
+				if (fault != null) {
+					txnStatus.setCode(fault.getStatusCode().getCode());
+					txnStatus.setDescription(fault.getStatusCode().getMessage());
+					txnStatus.setComponent(fault.getComponent());
+					result = false;
+				} else {
+					//TODO: SMART specific hack on subscriber lifecycle
+					String recycleDays = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "preActivePeriod");
+					long recycleSchedule = 0;
+					try {
+						recycleSchedule = System.currentTimeMillis() + Integer.parseInt(recycleDays) * 86400000L;
+					} catch(Exception e) {
+						LOGGER.error("Recycle Period was not/badly configured. Assuming 1 year!!");
+						recycleSchedule = System.currentTimeMillis() + 31536000000L;
+					}
+					try {
+						new RecycleJobCommand(((CreateSubscriberRequest)this.getRequest()).getSubscriber(), new Date(recycleSchedule)).execute();
+					} catch (SmException e) {
+						txnStatus.setCode(e.getStatusCode().getCode());
+						txnStatus.setDescription(e.getStatusCode().getMessage());
+						txnStatus.setComponent(e.getComponent());
 					}
 				}
 			}
-		}*/
-		
-		if (result != false)
-			result = true;
+		} else
+			result = false;
+
+
+
 		LOGGER.debug("CreateSubscriber::=> Functional Result: " + result);
-		
-		
+
+
 		LOGGER.debug("About to send request...");
 		ISubscriberResponse subscriberClient = ServiceResolver.getSubscriberResponseClient();
 		if (subscriberClient != null) {
@@ -149,7 +150,7 @@ public class CreateSubscriber extends AbstractTransaction {
 			LOGGER.error("Unable to acquire client access to response interface. Request will time-out in the consumer side!!");
 		}
 
-		
+
 	}
 
 }

@@ -17,7 +17,7 @@ public class ContractStateTypeHandler extends BaseTypeHandler<ContractState> {
     @Override
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, ContractState status, JdbcType jdbcType) throws SQLException {
         if ((jdbcType == null) || (jdbcType.equals(JdbcType.VARCHAR))) {
-            preparedStatement.setString(i, status.name());
+            preparedStatement.setString(i, status.getName());
         } else {
             throw new UnsupportedOperationException("Unable to convert Subscriber Status to " + jdbcType.toString());
         }

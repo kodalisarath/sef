@@ -7,14 +7,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.client.air.command.GetAccountDetailsCommand;
 import com.ericsson.raso.sef.client.air.command.UpdateServiceClassCommand;
-import com.ericsson.raso.sef.client.air.command.UpdateSubscriberSegmentationCmd;
-import com.ericsson.raso.sef.client.air.request.GetAccountDetailsRequest;
 import com.ericsson.raso.sef.client.air.request.ServiceOffering;
 import com.ericsson.raso.sef.client.air.request.UpdateServiceClassRequest;
-import com.ericsson.raso.sef.client.air.request.UpdateSubscriberSegmentRequest;
-import com.ericsson.raso.sef.client.air.response.GetAccountDetailsResponse;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
@@ -58,7 +53,7 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 		
 		// fetch meta from db 
 	 	List<String> metaKeys = new ArrayList<String>();
-	 	metaKeys.add("packaze");
+	 	metaKeys.add("Package");
 	 	List<Meta> metas;
 		try {
 			SubscriberService subscriberService = SefCoreServiceResolver.getSusbcriberStore();
@@ -67,7 +62,12 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 			LOGGER.debug("Failed Get Account Details. Code: " + e.getStatusCode().getCode() + e.getStatusCode().getMessage());
 			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getMessage()));	
 		}
-	 	String packag = metas.get(0).getValue();
+	 	
+		String packag = this.getMetaValue(metas, "Package");
+	 	if (packag == null) {
+	 		LOGGER.warn("Unable to fetch welcome pack from user profile!!");
+	 		throw new FulfillmentException("ffe", new ResponseCode(11614, "Unable to get existing package from user profile!!"));
+	 	}
 	 	String pack = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_welcomePackMapping", packag);
 	 	
 		// service class
@@ -85,23 +85,20 @@ public class UnsubscribePackageItemProfile extends BlockingFulfillment<Product> 
 			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getMessage()));	
 		}
 		
-//		// subscriber segmentation
-//		LOGGER.info("Going ahead wtih subscriber segmentation...");
-//		UpdateSubscriberSegmentRequest request = new UpdateSubscriberSegmentRequest();
-//		request.setSubscriberNumber(msisdn);
-//		request.setServiceOfferings(serviceOfferings);
-//		try {
-//			new UpdateSubscriberSegmentationCmd(request).execute();
-//		} catch (SmException e) {
-//			LOGGER.error("Failed SubscriberSegmentation. Code: " + e.getStatusCode().getCode() + e.getStatusCode().getMessage(), e);
-//			throw new FulfillmentException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage()));
-//		} 
 		
 		p.setMetas(map);
 		products.add(p);
 		return products;
 	}
 
+	private String getMetaValue(List<Meta> metas, String metaName) {
+		for (Meta meta: metas) {
+			if (meta.getKey() != null && meta.getKey().equalsIgnoreCase(metaName))
+				return meta.getValue();
+		}
+		return null;
+	}
+	
 	@Override
 	public List<Product> prepare(Product e, Map<String, String> map) throws FulfillmentException {
 		List<Product> products = new ArrayList<Product>();

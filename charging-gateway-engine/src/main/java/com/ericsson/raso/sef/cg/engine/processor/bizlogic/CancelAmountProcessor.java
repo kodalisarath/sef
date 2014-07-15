@@ -16,14 +16,15 @@ import com.ericsson.pps.diameter.dccapi.command.Cca;
 import com.ericsson.pps.diameter.dccapi.command.Ccr;
 import com.ericsson.pps.diameter.rfcapi.base.avp.Avp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.AvpDataException;
-import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
-import com.ericsson.raso.sef.cg.engine.ChargingSession;
-import com.ericsson.raso.sef.cg.engine.IpcCluster;
 import com.ericsson.raso.sef.cg.engine.Operation.Type;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
+import com.ericsson.raso.sef.cg.engine.SmartChargingSession;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
+import com.google.gson.Gson;
 
 public class CancelAmountProcessor extends AbstractChargingProcessor {
 	
@@ -36,9 +37,20 @@ public class CancelAmountProcessor extends AbstractChargingProcessor {
 	@Override
 	protected void preProcess(ChargingRequest request, Ccr scapCcr) throws AvpDataException {
 		logger.debug(String.format("Enter CancelAmountProcessor.preProcess, request is %s, scapCcr is %s", request, scapCcr));
-		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
-		List<Avp> responseAvps = session.getResponseAvp(Type.TRANSACATION_START);
+		ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
+		SmartChargingSession smartSession = null;
+		if (session == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+
+		}
+		
+		smartSession = this.getSmartSession(session.getSessionInfo());
+		if (smartSession == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+		}
+		List<Avp> responseAvps = smartSession.getResponseAvp(Type.TRANSACATION_START);
 
 		UsedServiceUnitAvp usedServiceUnitAvp = getUsedServiceUnitAvp(responseAvps,scapCcr);
 		scapCcr.addAvp(usedServiceUnitAvp);
@@ -49,15 +61,29 @@ public class CancelAmountProcessor extends AbstractChargingProcessor {
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
 		logger.debug(String.format("Enter CancelAmountProcessor.preProcess, request is %s, response is %s, cca is %s", 
 				request, response, cca));
-//		/IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
-		
-		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
-			session.setTransactionStatus(TransactionStatus.PROCESSED);
-		} else {
-			session.setTransactionStatus(TransactionStatus.FAILED);
+
+		ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
+		SmartChargingSession smartSession = null;
+		if (session == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+
 		}
-		CgEngineContext.getIpcCluster().updateChargingSession(response.getSessionId(), session);
+		
+		smartSession = this.getSmartSession(session.getSessionInfo());
+		if (smartSession == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+		}
+
+		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
+			smartSession.setTransactionStatus(TransactionStatus.PROCESSED);
+		} else {
+			smartSession.setTransactionStatus(TransactionStatus.FAILED);
+		}
+		
+		session.setSessionInfo(this.getSessionInfo(smartSession));
+		SefCoreServiceResolver.getChargingSessionService().put(session);
 		logger.debug("End CancelAmountProcessor.postProcess");
 	}
 
@@ -90,5 +116,15 @@ public class CancelAmountProcessor extends AbstractChargingProcessor {
 
 
 		return usedServiceUnitAvp;
+	}
+	
+	private SmartChargingSession getSmartSession(String sessionInfo) {
+		Gson gson = new Gson();
+		return gson.fromJson(sessionInfo, SmartChargingSession.class);		
+	}
+	
+	private String getSessionInfo(SmartChargingSession session) {
+		Gson gson = new Gson();
+		return gson.toJson(session);
 	}
 }

@@ -90,7 +90,7 @@ public class ModifyCustomerGrace implements Processor {
 		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
 
 		logger.info("check pre_active");	
-		if(ContractState.PREACTIVE.getName().equals(subscriberObj.getSubscriber().getContractState())) {
+		if(ContractState.PREACTIVE.name().equals(subscriberObj.getSubscriber().getContractState())) {
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
 		else {
@@ -157,7 +157,7 @@ public class ModifyCustomerGrace implements Processor {
 
 				metas.add(new Meta("GraceEndDate", metaStoreFormat.format(newExpiryDate)));
 				logger.debug("There is a new GraceEndDate entered and adding days to it now "+ newExpiry);
-				String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.getName(), metas);
+				String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.GRACE.name(), metas);
 				SubscriberInfo response = new SubscriberInfo();
 				logger.debug("Got past event class....SK");
 				SubscriberResponseStore.put(resultId, response);

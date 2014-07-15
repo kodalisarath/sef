@@ -53,6 +53,27 @@ public abstract class TransactionEngineHelper {
 		return subscriberInfo;
 	}
 
+	public static void updateSusbcriberContractState(String subscriber, String contractState) {
+		logger.debug("Entering TransactionEngineHelper.....update contract ");
+		List<Meta> metas = new ArrayList<Meta>();
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getBean(ISubscriberRequest.class);
+		String requestId = UniqueIdGenerator.generateId();
+		SubscriberInfo subscriberInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subscriberInfo);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		logger.debug("Subscriber being activated: " + subscriber + ", contract: " + contractState);
+		requestId = subscriberRequest.handleLifeCycle(requestId, subscriber, contractState, metas);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			logger.debug("Exception while sleep     :" + e.getMessage());
+		}
+		semaphore.destroy();
+		logger.debug("DB Updated with subscriber cotnract state!!!!");
+	}
+	
 	public static PurchaseResponse purchase(String offerId, String subscriberId, List<Meta> metas) throws SmException {
 
 		logger.debug("Entering TransactionEngineHelper.....purchase ");

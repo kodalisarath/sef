@@ -25,8 +25,7 @@ import com.hazelcast.core.ISemaphore;
 
 public class VersionCreateOrWriteCustomer implements Processor {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(VersionCreateOrWriteCustomer.class);
+	private static final Logger logger = LoggerFactory.getLogger(VersionCreateOrWriteCustomer.class);
 
 	@Override
 	public void process(Exchange exchange) throws Exception {

@@ -27,8 +27,17 @@ public class UsecaseProcessor implements Processor {
 		
 		logger.debug("Entering SMFE frontend request received");
 		CommandRequestData commandRequestData = exchange.getIn().getBody(CommandRequestData.class);
-		logger.debug("Exchange in UseCaseProcessor: " + exchange);
-		boolean isTRansactional = commandRequestData.getCommand().getTransaction()!=null;
+		if (commandRequestData == null) {
+			logger.error("Could not read the request. Badly formed!! Exchange: " + exchange);
+			throw ExceptionUtil.toTisException(ErrorCode.structTypeError);
+		}
+		
+		if (commandRequestData != null && commandRequestData.getCommand() == null) {
+			logger.error("Could not read the command in the request. Badly formed!! Request: " + commandRequestData);
+			throw ExceptionUtil.toTisException(ErrorCode.missingParameterError);
+		}
+		
+		boolean isTRansactional = ((commandRequestData.getCommand().getTransaction()!=null)?true:false);
 		Operation operation = commandRequestData.getCommand().getOperation();
 		if(isTRansactional) {
 			operation = (Operation) commandRequestData.getCommand().getTransaction().getAssignmentOrOperation().get(0);

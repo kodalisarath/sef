@@ -8,10 +8,13 @@ import com.ericsson.pps.diameter.dccapi.command.Ccr;
 import com.ericsson.pps.diameter.rfcapi.base.avp.AvpDataException;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
-import com.ericsson.raso.sef.cg.engine.ChargingSession;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
+import com.ericsson.raso.sef.cg.engine.SmartChargingSession;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
+import com.google.gson.Gson;
 
 public class ChargeAmountProcessor extends AbstractChargingProcessor {
 
@@ -31,16 +34,40 @@ public class ChargeAmountProcessor extends AbstractChargingProcessor {
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
 		logger.debug(String.format("Enter ChargeAmountProcessor.postProcess request is %s, response is %s, cca is %s", 
 				request, response, cca));
-		//IpcCluster cluster = CgEngineContext.getIpcCluster();
+		ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
+		SmartChargingSession smartSession = null;
+		if (session == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+
+		}
 		
-		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(response.getSessionId());
+		smartSession = this.getSmartSession(session.getSessionInfo());
+		if (smartSession == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+		}
+		
 		
 		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
-			session.setTransactionStatus(TransactionStatus.PROCESSED);
+			smartSession.setTransactionStatus(TransactionStatus.PROCESSED);
 		} else {
-			session.setTransactionStatus(TransactionStatus.FAILED);
+			smartSession.setTransactionStatus(TransactionStatus.FAILED);
 		}
-		CgEngineContext.getIpcCluster().updateChargingSession(response.getSessionId(), session);
+		session.setSessionInfo(this.getSessionInfo(smartSession));
+		SefCoreServiceResolver.getChargingSessionService().put(session);
 		logger.debug("End ChargeAmountProcessor.postProcess");
  	}
+	
+	
+	private SmartChargingSession getSmartSession(String sessionInfo) {
+		Gson gson = new Gson();
+		return gson.fromJson(sessionInfo, SmartChargingSession.class);		
+	}
+	
+	private String getSessionInfo(SmartChargingSession session) {
+		Gson gson = new Gson();
+		return gson.toJson(session);
+	}
+
 }

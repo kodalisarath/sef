@@ -7,14 +7,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
-import com.ericsson.raso.sef.bes.prodcat.CloneHelper;
 import com.ericsson.raso.sef.bes.prodcat.Constants;
 import com.ericsson.raso.sef.bes.prodcat.OfferCatalog;
 import com.ericsson.raso.sef.bes.prodcat.ServiceResolver;
@@ -34,6 +31,7 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.NotificationMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.Persistence;
 import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
+import com.ericsson.raso.sef.core.CloneHelper;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
@@ -168,6 +166,9 @@ public class Subscription extends Offer {
 	protected List<TransactionTask> renewal(String subscriberId, boolean override, Map<String, Object> metas) throws CatalogException {
 		List<TransactionTask> tasks = new ArrayList<TransactionTask>();
 		Map<String, Object> context = RequestContextLocalStore.get().getInProcess();
+		
+		metas.put("lifeCycleEvent", "renewal");
+		
 		
 		OfferCatalog catalog = new OfferCatalog();
 		Offer relevantOffer =catalog.getOfferById(this.getName());

@@ -17,6 +17,7 @@
 		<typeAlias alias="ScheduledRequest" type="com.ericsson.raso.sef.core.db.model.ScheduledRequest"/>
 		<typeAlias alias="ScheduledRequestMeta" type="com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta" />
 		<typeAlias alias="CallingCircle" type="com.ericsson.raso.sef.core.db.model.smart.CallingCircle" />
+		<typeAlias alias="ChargingSession" type="com.ericsson.raso.sef.core.db.model.smart.ChargingSession" />
 	</typeAliases>
 
 	<typeHandlers>

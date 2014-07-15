@@ -44,7 +44,6 @@ public class CgRequestListener implements ApplicationRequestListener {
 
 	private Map<String, ResponseLock> locks = new HashMap<String, ResponseLock>();
 
-
 	@Override
 	public DiameterAnswer processRequest(DiameterRequest request) {
 		long startTime = System.currentTimeMillis();
@@ -52,28 +51,26 @@ public class CgRequestListener implements ApplicationRequestListener {
 		ChargingInfo chargingRequest = new ChargingInfo();
 		DiameterAnswer answer = null;
 		try {
-			chargingRequest.setUniqueMessageId(RequestContextLocalStore.get()
-					.getRequestId());
+			chargingRequest.setUniqueMessageId(RequestContextLocalStore.get().getRequestId());
+
+			if (request.getAvp(263) != null) {
+				chargingRequest.setSessionId(request.getAvp(263).getAsUTF8String());
+			}
 
 			chargingRequest.setAvpList(request.getAvps());
 
 			log.debug("CgiRequestListener  ..Set the AVp.");
-			ChargingInfo response = producerTemplate.requestBody(
-					"seda:charging-gateway", chargingRequest,
-					ChargingInfo.class);
+			ChargingInfo response = producerTemplate.requestBody("seda:charging-gateway", chargingRequest, ChargingInfo.class);
 
-			answer = createAnswer(request, response.getResultCodeAvp()
-					.getAsInt());
+			answer = createAnswer(request, response.getResultCodeAvp().getAsInt());
 			answer.addAll(response.getAvpList());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {
 			if (answer == null) {
-				answer = createAnswer(request,
-						DiameterErrorCode.DIAMETER_UNABLE_TO_COMPLY.getCode());
+				answer = createAnswer(request, DiameterErrorCode.DIAMETER_UNABLE_TO_COMPLY.getCode());
 			}
-			PerformanceStatsLogger.log("CG", System.currentTimeMillis()
-					- startTime, chargingRequest.getUniqueMessageId());
+			PerformanceStatsLogger.log("CG", System.currentTimeMillis() - startTime, chargingRequest.getUniqueMessageId());
 		}
 		return answer;
 	}
@@ -81,11 +78,8 @@ public class CgRequestListener implements ApplicationRequestListener {
 	public void sendResponse(@Body ChargingInfo response) {
 		ResponseLock lock = locks.get(response.getUniqueMessageId());
 		if (lock == null) {
-			log.error("lock does not exist for the response with messageID: "
-					+ response.getUniqueMessageId());
-			throw new RuntimeException(
-					"lock does not exist for the response with messageID: "
-							+ response.getUniqueMessageId());
+			log.error("lock does not exist for the response with messageID: " + response.getUniqueMessageId());
+			throw new RuntimeException("lock does not exist for the response with messageID: " + response.getUniqueMessageId());
 		}
 		locks.remove(response.getUniqueMessageId());
 		lock.setResponse(response);
@@ -112,8 +106,7 @@ public class CgRequestListener implements ApplicationRequestListener {
 		log.info("Creating the snapshot of the request.");
 		try {
 			String smHome = System.getenv("SEF_HOME");
-			FileOutputStream stream = new FileOutputStream(smHome
-					+ File.separator + chargingInfo.getUniqueMessageId());
+			FileOutputStream stream = new FileOutputStream(smHome + File.separator + chargingInfo.getUniqueMessageId());
 			ObjectOutputStream os = new ObjectOutputStream(stream);
 			os.writeObject(chargingInfo);
 			os.close();

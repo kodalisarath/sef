@@ -13,14 +13,15 @@ import com.ericsson.pps.diameter.dccapi.avp.ValueDigitsAvp;
 import com.ericsson.pps.diameter.dccapi.command.Cca;
 import com.ericsson.pps.diameter.dccapi.command.Ccr;
 import com.ericsson.pps.diameter.rfcapi.base.avp.AvpDataException;
-import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
-import com.ericsson.raso.sef.cg.engine.ChargingSession;
-import com.ericsson.raso.sef.cg.engine.IpcCluster;
 import com.ericsson.raso.sef.cg.engine.Operation.Type;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
+import com.ericsson.raso.sef.cg.engine.SmartChargingSession;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
+import com.google.gson.Gson;
 
 public class ReserveAmountProcessor extends AbstractChargingProcessor {
 
@@ -31,30 +32,56 @@ public class ReserveAmountProcessor extends AbstractChargingProcessor {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void preProcess(ChargingRequest request, Ccr scapCcr) {
+	protected void preProcess(ChargingRequest request, Ccr scapCcr) throws AvpDataException {
 		logger.debug(String.format("Enter ReserveAmountProcessor.preProcess, request is %s, scapCcr is %s", request, scapCcr));
-		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(request.getSessionId());
-		session.addRequestAvp(Type.TRANSACATION_START, scapCcr.getDiameterMessage().getAvps());
-		CgEngineContext.getIpcCluster().updateChargingSession(request.getSessionId(), session);
+		ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
+		SmartChargingSession smartSession = null;
+		if (session == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+
+		}
+		
+		smartSession = this.getSmartSession(session.getSessionInfo());
+		if (smartSession == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+		}
+		
+
+		smartSession.addRequestAvp(Type.TRANSACATION_START, scapCcr.getDiameterMessage().getAvps());
+		session.setSessionInfo(this.getSessionInfo(smartSession));
+		SefCoreServiceResolver.getChargingSessionService().put(session);
 		logger.debug("End ReserveAmountProcessor.preProcess");
 	}
 
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
-		//IpcCluster cluster = CgEngineContext.getIpcCluster();
-		logger.debug(String.format("Enter ReserveAmountProcessor.postProcess request is %s, response is %s, cca is %s", 
-				request, response, cca));
-		ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(response.getSessionId());
-		session.addResponseAvp(Type.TRANSACATION_START, response.getAvpList());
-		
-		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
-			response.getAvpList().add(createCreditControlAvp(cca, request));
-			session.setTransactionStatus(TransactionStatus.AUTHORIZED);
-		} else {
-			session.setTransactionStatus(TransactionStatus.FAILED);
+		ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
+		SmartChargingSession smartSession = null;
+		if (session == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+
 		}
 		
-		CgEngineContext.getIpcCluster().updateChargingSession(response.getSessionId(), session);
+		smartSession = this.getSmartSession(session.getSessionInfo());
+		if (smartSession == null) {
+			log.error("Invalid request with session ID: " + request.getSessionId());
+			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
+		}
+		
+
+		smartSession.addResponseAvp(Type.TRANSACATION_START, response.getAvpList());
+	
+		if(cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
+			response.getAvpList().add(createCreditControlAvp(cca, request));
+			smartSession.setTransactionStatus(TransactionStatus.AUTHORIZED);
+		} else {
+			smartSession.setTransactionStatus(TransactionStatus.FAILED);
+		}
+		
+		session.setSessionInfo(this.getSessionInfo(smartSession));
+		SefCoreServiceResolver.getChargingSessionService().put(session);
 		logger.debug("End ReserveAmountProcessor.postProcess");
 	}
 
@@ -84,6 +111,15 @@ public class ReserveAmountProcessor extends AbstractChargingProcessor {
 		return ccAvp;
 	}
 
+	private SmartChargingSession getSmartSession(String sessionInfo) {
+		Gson gson = new Gson();
+		return gson.fromJson(sessionInfo, SmartChargingSession.class);		
+	}
+	
+	private String getSessionInfo(SmartChargingSession session) {
+		Gson gson = new Gson();
+		return gson.toJson(session);
+	}
 
 
 }

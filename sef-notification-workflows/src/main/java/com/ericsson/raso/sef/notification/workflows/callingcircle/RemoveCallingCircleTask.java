@@ -6,18 +6,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.notification.workflows.NotificationContext;
-import com.ericsson.raso.sef.notification.workflows.task.ActivateSubscriberTask;
+import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.Task;
-import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.sef.scheduler.command.ScheduleRemoveCallingCircleCmd;
-import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
 
 public class RemoveCallingCircleTask implements Task<Void> {
 
 	private List<Meta> metas;
-	private static Logger log = LoggerFactory.getLogger(ActivateSubscriberTask.class);
+	private static Logger log = LoggerFactory.getLogger(RemoveCallingCircleTask.class);
 	public RemoveCallingCircleTask(List<Meta> metas) {
 		this.metas = metas;
 	}

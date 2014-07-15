@@ -105,6 +105,7 @@ public class UnsubscribePackageItem implements Processor {
 			logger.info("check pre_active");			
 			metas.add(new Meta("HANDLE_LIFE_CYCLE","UnsubscribePackageItem"));
 			metas.add(new Meta("ServiceClass",originalWelcomePackSC));
+			metas.add(new Meta("Package", "initialSC"));
 			String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
 			SubscriberInfo response = new SubscriberInfo();
 			SubscriberResponseStore.put(resultId, response);

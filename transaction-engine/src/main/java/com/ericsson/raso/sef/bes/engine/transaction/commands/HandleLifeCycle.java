@@ -71,16 +71,18 @@ public class HandleLifeCycle extends AbstractTransaction{
 			// Find workflow...
 			String workflowId = ((HandleLifeCycleRequest)this.getRequest()).getMetas().get(Constants.HANDLE_LIFE_CYCLE.name());
 			LOGGER.debug("Workflow requested: " + workflowId);
-			IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
-			Offer workflow = catalog.getOfferById(workflowId);
-			if (workflow != null) {
-				LOGGER.debug("Workflow found in store: " + workflow);
-				String subscriberId = ((HandleLifeCycleRequest)this.getRequest()).getSubscriberId();
-				try {
-					tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, 
-							this.getProdCatMap(((HandleLifeCycleRequest)this.getRequest()).getMetas())));
-				} catch (CatalogException e) {
-					this.getResponse().setReturnFault(new TransactionException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage())));
+			if (workflowId != null) {
+				IOfferCatalog catalog = ServiceResolver.getOfferCatalog();
+				Offer workflow = catalog.getOfferById(workflowId);
+				if (workflow != null) {
+					LOGGER.debug("Workflow found in store: " + workflow);
+					String subscriberId = ((HandleLifeCycleRequest)this.getRequest()).getSubscriberId();
+					try {
+						tasks.addAll(workflow.execute(subscriberId, SubscriptionLifeCycleEvent.PURCHASE, true, 
+								this.getProdCatMap(((HandleLifeCycleRequest)this.getRequest()).getMetas())));
+					} catch (CatalogException e) {
+						this.getResponse().setReturnFault(new TransactionException(e.getComponent(), new ResponseCode(e.getStatusCode().getCode(), e.getStatusCode().getMessage())));
+					}
 				}
 			}
 			
@@ -103,13 +105,7 @@ public class HandleLifeCycle extends AbstractTransaction{
 		
 		
 		Map<String, String> existingMetas = TransactionServiceHelper.getMap(subscriberEntity.getMetas());
-		//List<Meta> toUpdate = TransactionServiceHelper.getSefCoreList(map);
-		
-//		for (String newMeta: existingMetas.keySet()) {
-//			if (map.containsKey(newMeta)) {
-//				existingMetas.remove(newMeta);
-//			}
-//		}
+
 		existingMetas.putAll(map);
 		
 		subscriberEntity.setMetas(TransactionServiceHelper.getSefCoreList(existingMetas));

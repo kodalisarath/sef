@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
-import com.ericsson.raso.sef.core.FetchRequestContextTask;
-import com.ericsson.raso.sef.core.ReqContext;
+	import com.ericsson.raso.sef.core.RequestContext;
+import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.SmException;
 
 
@@ -18,7 +18,7 @@ public class CaExceptionHandler implements Processor {
 	@Override
 	public void process(Exchange exchange) throws Exception {
 
-		ReqContext requestContext = new FetchRequestContextTask().execute();
+		RequestContext requestContext = RequestContextLocalStore.get();
 		
 		Throwable error = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
 		log.error(error.getMessage(), error);
@@ -32,7 +32,8 @@ public class CaExceptionHandler implements Processor {
 		}
 		
 		
-		requestContext.put(Constants.EXCEPTION, resultCode);
+		requestContext.getInProcess().put(Constants.EXCEPTION, resultCode);
+		String sessionId = (String) requestContext.getInProcess().get("sessionId");
 		throw (Exception)error;
 	}
 }

@@ -53,7 +53,7 @@ public class EntireReadSubscriber implements Processor {
 		Subscriber subscriber = this.simpleRead(request.getCustomerId());
 		
 		logger.debug("contract state: " + subscriber.getContractState());
-		if (subscriber.getContractState().equals(ContractState.PREACTIVE.getName())) {
+		if (subscriber.getContractState().trim().equals(ContractState.PREACTIVE.name())) {
 		
 			String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
 			exchange.getOut().setBody(createPreactiveResponse(subscriber, request.isTransactional()));
@@ -155,34 +155,19 @@ public class EntireReadSubscriber implements Processor {
 		
 		readCustomerBucketParameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		readCustomerBucketParameterList.add(EntireReadUtil.enumerationValueParameter("bCategory", "ONLINE"));
-		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		//SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000'Z'");
-		SimpleDateFormat nsnResponseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
+		SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		String date = subscriber.getMetas().get("bInValidFrom");
 		if (date == null)
 			readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
 		else
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", nsnResponseFormat.format(dateField)));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bInvalidFrom): " + date);
-				readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
-			}
+			readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", date));
 
 		date = subscriber.getMetas().get("bValidFrom");
 		if (date == null)
 			readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", metaStoreFormat.format(new Date())));
 		else
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", nsnResponseFormat.format(dateField)));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bValidFrom): " + date);
-				logger.debug("Setting bValidFrom to 'NOW'");
-				readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", "NOW"));
-			}
+			readCustomerBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bValidFrom", date));
 		readCustomerBucketParameterList.add(EntireReadUtil.intParameter("bSeriesId", 0));
 		operationResult.getOperation().add(readCustomerBucketOperation);
 		
@@ -201,28 +186,15 @@ public class EntireReadSubscriber implements Processor {
 		logger.debug("Checking for vValidFrom: " + date);
 		if (date == null)
 			readCustomerVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", "NOW"));
-		else {
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				readCustomerVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", nsnResponseFormat.format(dateField)));
-			} catch(ParseException e) {
-				logger.debug("Unparseable Date from DB: " + date);
-				readCustomerVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", "NOW"));
-			}			
-		}
+		else 
+			readCustomerVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", date));
 			
 		date = subscriber.getMetas().get("vInvalidFrom");
 		logger.debug("Checking for vInvalidFrom: " + date);
 		if (date == null)
 			readCustomerVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATEANDTIME")); 
-		else {
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				readCustomerVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(dateField)));
-			} catch (ParseException e) {
-				readCustomerVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATEANDTIME")); 
-			}
-		}
+		else 
+			readCustomerVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", date));
 		operationResult.getOperation().add(readCustomerVersionOperation);
 		
 		
@@ -287,12 +259,7 @@ public class EntireReadSubscriber implements Processor {
 		if (date == null)
 			readRopBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
 		else
-			try {
-				readRopBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", nsnResponseFormat.format(metaStoreFormat.parse(date))));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bInvalidFrom): " + date);
-				readRopBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", "MAX_DATEANDTIME"));
-			}
+			readRopBucketParameterList.add(EntireReadUtil.symbolicOrDateParameter("bInvalidFrom", date));
 		// skipping bValidFrom - since preactive users are not activated yet....
 		operationResult.getOperation().add(readRopBucketOperation);
 	
@@ -311,26 +278,13 @@ public class EntireReadSubscriber implements Processor {
 		if (date == null)
 			readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", "NOW"));
 		else
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", nsnResponseFormat.format(dateField)));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bInvalidFrom): " + date);
-				readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", "NOW"));
-			}
+			readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vValidFrom", date));
 
 		date = subscriber.getMetas().get("vInvalidFrom");
 		if (date == null)
 			readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATEANDTIME"));
 		else
-			try {
-				Date dateField = metaStoreFormat.parse(date);
-				readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", nsnResponseFormat.format(dateField)));
-			} catch (ParseException e) {
-				logger.error("Unparseable date(bInvalidFrom): " + date);
-				readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", "MAX_DATEANDTIME"));
-			}
-
+			readRopVersionParameterList.add(EntireReadUtil.symbolicOrDateParameter("vInvalidFrom", date));
 		
 		readRopVersionParameterList.add(EntireReadUtil.stringParameter("s_OfferId", "TnT"));
 		operationResult.getOperation().add(readRopVersionOperation);

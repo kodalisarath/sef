@@ -79,7 +79,6 @@ public class UseCaseProcessor implements Processor {
 		List<FulfillmentProfile> profiles = new ArrayList<FulfillmentProfile>();
 
 		try {
-			logger.debug("Profile Registry contents: " + FulfillmentServiceResolver.getProfileRegistry().getAllProfiles());
 			for (String profile : fulfillmentProfileIds) {
 				if (FulfillmentServiceResolver.getProfileRegistry() != null) {
 					logger.debug("Checking for Profile: " + profile);

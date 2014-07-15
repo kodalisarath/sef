@@ -25,9 +25,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UniqueIdGenerator {
 	
 	private static AtomicInteger counter = new AtomicInteger();
-	private static String node = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "hostname");
+	private static String node = (String) System.getenv("HOSTNAME");
+
 	
 	public static String generateId() {
+		if (node == null) {
+			node = (String) System.getenv("HOSTNAME");
+		}
 		if(node == null) node="SEF_HOST";
 		long time = System.nanoTime();
 		String id = node + counter.incrementAndGet() + getTime_low(time) + getTime_high(time);

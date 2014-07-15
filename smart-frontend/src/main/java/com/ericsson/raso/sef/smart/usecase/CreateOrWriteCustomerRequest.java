@@ -47,9 +47,6 @@ public class CreateOrWriteCustomerRequest extends SmartRequest {
 	public void setMessageId(long messageId) {
 		this.messageId = messageId;
 	}
-	
-	
-	
 
 	@Override
 	public void prepareRequest(Operation operation) {
@@ -57,37 +54,40 @@ public class CreateOrWriteCustomerRequest extends SmartRequest {
 		for (Object param : parameters) {
 			if (param instanceof StringParameter) {
 				StringParameter parameter = (StringParameter) param;
-				if(parameter.getName().equalsIgnoreCase(CUSTOMERID)) {
+				if (parameter.getName().equalsIgnoreCase(CUSTOMERID)) {
 					this.setCustomerId(parameter.getValue().trim());
 				}
-		    	} else if (param instanceof LongParameter) {
-				LongParameter parameter = (LongParameter) param;
-				if(parameter.getName().equalsIgnoreCase("MessageId")){
-					this.setMessageId(parameter.getValue());
-				}
-				
-			}else if (param instanceof IntParameter) {
-				IntParameter parameter = (IntParameter) param;
-				if(parameter.getName().equalsIgnoreCase("billCycleId")){
-					this.setBillCycleId(parameter.getValue());
-				}
-				 
-			}else if(param instanceof EnumerationValueParameter){
-				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
-				if(parameter.getName().equalsIgnoreCase("category")){
+
+				if (parameter.getName().equalsIgnoreCase("category")) {
 					this.setCategory(parameter.getValue());
 				}
-				
+			} else if (param instanceof LongParameter) {
+				LongParameter parameter = (LongParameter) param;
+				if (parameter.getName().equalsIgnoreCase("MessageId")) {
+					this.setMessageId(parameter.getValue());
+				}
+
+			} else if (param instanceof IntParameter) {
+				IntParameter parameter = (IntParameter) param;
+				if (parameter.getName().equalsIgnoreCase("billCycleId")) {
+					this.setBillCycleId(parameter.getValue());
+				}
+
+			} else if (param instanceof EnumerationValueParameter) {
+				EnumerationValueParameter parameter = (EnumerationValueParameter) param;
+				if (parameter.getName().equalsIgnoreCase("category")) {
+					this.setCategory(parameter.getValue());
+				}
+
 			}
-			
+
 		}
 
 	}
 
 	@Override
 	public String toString() {
-		return "CreateOrWriteCustomerRequest [customerId=" + customerId
-				+ ", category=" + category + ", billCycleId=" + billCycleId
+		return "CreateOrWriteCustomerRequest [customerId=" + customerId + ", category=" + category + ", billCycleId=" + billCycleId
 				+ ", messageId=" + messageId + "]";
 	}
 

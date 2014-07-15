@@ -10,6 +10,8 @@ import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
 import com.ericsson.raso.sef.cg.engine.Operation;
 import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.RequestContext;
+import com.ericsson.raso.sef.core.RequestContextLocalStore;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
 import com.ericsson.raso.sef.core.cg.nsn.avp.MethodNameAvp;
 import com.ericsson.raso.sef.core.cg.nsn.avp.PPIInformationAvp;
@@ -22,6 +24,9 @@ public class RequestEntryProcessor implements Processor {
 		exchange.getIn().setHeader("stopwatch", System.currentTimeMillis());
 		ChargingInfo chargingInfo = (ChargingInfo) exchange.getIn().getBody();
 		
+		RequestContext requestContext = RequestContextLocalStore.get();
+		requestContext.getInProcess().put("sessionId", chargingInfo.getSessionId());
+
 		ChargingRequest request = new ChargingRequest();
 		request.setMessageId(chargingInfo.getUniqueMessageId());
 

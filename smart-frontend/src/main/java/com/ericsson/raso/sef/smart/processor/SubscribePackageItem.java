@@ -118,7 +118,7 @@ public class SubscribePackageItem implements Processor {
 			if(isWelcomePack(request.getPackaze())) {
 				metas.add(new Meta("HANDLE_LIFE_CYCLE","SUBSCRIBE_PACKAGE_ITEM_WelcomePackServiceClass"));
 				metas.add(new Meta("ServiceClass",requestedWelcomePackSC));
-				String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
+				String resultId=iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), ContractState.PREACTIVE.name(), metas);
 				SubscriberInfo response = new SubscriberInfo();
 				logger.debug("Got past event class....SK");
 				SubscriberResponseStore.put(resultId, response);

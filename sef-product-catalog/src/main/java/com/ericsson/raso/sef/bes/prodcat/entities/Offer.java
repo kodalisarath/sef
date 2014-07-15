@@ -696,14 +696,14 @@ public class Offer implements Serializable {
 			}
 		}
 		
-		if (this.autoTermination != null && !(this.autoTermination instanceof NoTermination)) {
+		if (this.autoTermination != null && !(this.autoTermination instanceof NoTermination) && !(this.renewalPeriod instanceof InfiniteTime)) {
 			long scheduledFinalExpiry = this.autoTermination.getTerminationTime(System.currentTimeMillis(), purchase.getRenewalPeriod().getExpiryTimeInMillis());
 			//TODO: This hack is need for SMART.. please remove this shit before it goes to any other good customer....
 			if (metas == null) 
 				metas = new HashMap<String, Object>();
 			metas.put("SUBSCRIPTION_ID", purchase.getSubscriberId());
 			
-			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, this.name, subscriberId, purchase.getRenewalPeriod().getExpiryTimeInMillis(), metas));
+			tasks.add(new Future(FutureMode.SCHEDULE, SubscriptionLifeCycleEvent.EXPIRY, this.name, subscriberId, scheduledFinalExpiry - 5000, metas));
 			LOGGER.debug("Placing final expiry date to auto-termination case: ");
 		}
 		

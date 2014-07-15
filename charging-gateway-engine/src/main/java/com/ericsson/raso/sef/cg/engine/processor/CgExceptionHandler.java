@@ -14,14 +14,15 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.ExperimentalResultCodeAvp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.ResultCodeAvp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.VendorIdAvp;
 import com.ericsson.raso.sef.cg.engine.CgConstants;
-import com.ericsson.raso.sef.cg.engine.CgEngineContext;
-import com.ericsson.raso.sef.cg.engine.ChargingSession;
-import com.ericsson.raso.sef.cg.engine.IpcCluster;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.ResponseCodeUtil;
+import com.ericsson.raso.sef.cg.engine.SmartChargingSession;
 import com.ericsson.raso.sef.cg.engine.TransactionStatus;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
+import com.google.gson.Gson;
 
 public class CgExceptionHandler implements Processor {
 
@@ -58,14 +59,26 @@ public class CgExceptionHandler implements Processor {
 
 		chargingInfo.setAvpList(errorAvps);
 
-		//IpcCluster cluster = CgEngineContext.getIpcCluster();
 		if (sessionId != null) {
-			ChargingSession session = CgEngineContext.getIpcCluster().getChargingSession(sessionId);
+			ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(sessionId);
 			if (session != null) {
-				session.setTransactionStatus(TransactionStatus.FAILED);
-				CgEngineContext.getIpcCluster().updateChargingSession(sessionId, session);
-			}
+				SmartChargingSession smartSession = this.getSmartSession(session.getSessionInfo());
+				smartSession.setTransactionStatus(TransactionStatus.FAILED);
+				session.setSessionInfo(this.getSessionInfo(smartSession));
+				SefCoreServiceResolver.getChargingSessionService().put(session);
+			}		
 		}
 		exchange.getOut().setBody(chargingInfo);
 	}
+		
+		
+		private SmartChargingSession getSmartSession(String sessionInfo) {
+			Gson gson = new Gson();
+			return gson.fromJson(sessionInfo, SmartChargingSession.class);		
+		}
+		
+		private String getSessionInfo(SmartChargingSession session) {
+			Gson gson = new Gson();
+			return gson.toJson(session);
+		}
 }

@@ -51,7 +51,7 @@ public class FloodGate {
 	public void exgress() {
 		logger.error("Exgress time: Current watermark: " + this.gatedThreshold.intValue());
 		if (this.gatedThreshold.intValue() > 0)
-		this.gatedThreshold.decrementAndGet();
+			this.gatedThreshold.decrementAndGet();
 	}
 
 }
