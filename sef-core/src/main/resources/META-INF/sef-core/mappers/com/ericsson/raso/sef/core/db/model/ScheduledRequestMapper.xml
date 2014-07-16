@@ -6,10 +6,10 @@
 
 <mapper namespace="com.ericsson.raso.sef.core.db.mapper.ScheduledRequestMapper">
 
-	<resultMap id="SequenceResult" type="SmSequence">
+	<!-- <resultMap id="SequenceResult" type="SmSequence">
 		<result property="seq" column="seq" />
 		<result property="rand" column="rand" />
-	</resultMap>
+	</resultMap> -->
 
 	<resultMap id="ScheduledRequestResult" type="ScheduledRequest">
 		<id property="id" column="id" />
@@ -34,9 +34,9 @@
 		<result property="value" column="attribute_value" />
 	</resultMap>
 	
-	<select id="scheduledRequestSequence" resultMap="SequenceResult" parameterType="String">
+	<!-- <select id="scheduledRequestSequence" resultMap="SequenceResult" parameterType="String">
 		select scheduled_request_sequence.nextval as seq, #{rand} as rand from dual
-	</select>
+	</select> -->
 	
 	<insert id="insertScheduledRequest" parameterType="ScheduledRequest">
 		insert into scheduled_request (id,userid,msisdn,jobid,requestid,offerid,purchaseid,created,updated,status,resourceid,lifecycle_event,recurrenttime,expirytime)

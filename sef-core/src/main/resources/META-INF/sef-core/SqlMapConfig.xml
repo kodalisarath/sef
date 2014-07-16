@@ -12,8 +12,8 @@
 		<typeAlias alias="SubscriberMeta" type="com.ericsson.raso.sef.core.db.model.SubscriberMeta" />
 		<typeAlias alias="Subscriber" type="com.ericsson.raso.sef.core.db.model.Subscriber" />
 		<typeAlias alias="Meta" type="com.ericsson.raso.sef.core.Meta"/>
-		<typeAlias alias="SmSequence" type="com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence" />
-		<typeAlias alias="SubscriberAuditTrial" type="com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial"/>
+	<!-- 	<typeAlias alias="SmSequence" type="com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence" />
+	 -->	<typeAlias alias="SubscriberAuditTrial" type="com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial"/>
 		<typeAlias alias="ScheduledRequest" type="com.ericsson.raso.sef.core.db.model.ScheduledRequest"/>
 		<typeAlias alias="ScheduledRequestMeta" type="com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta" />
 		<typeAlias alias="CallingCircle" type="com.ericsson.raso.sef.core.db.model.smart.CallingCircle" />

@@ -15,9 +15,7 @@ import com.ericsson.sef.scheduler.ErrorCode;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
 import com.ericsson.sef.scheduler.common.TransactionEngineHelper;
-//import com.ericsson.sm.api.subscriber.Subscriber;
-//import com.ericsson.sm.core.Command;
-//import com.ericsson.sm.core.SmException;
+
 
 public class AbortRecycleCommand implements Command<Void> {
 	

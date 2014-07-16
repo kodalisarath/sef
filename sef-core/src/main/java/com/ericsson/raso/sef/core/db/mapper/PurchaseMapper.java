@@ -6,7 +6,6 @@ import java.util.Map;
 import com.ericsson.raso.sef.core.Meta;
 import com.ericsson.raso.sef.core.db.model.Purchase;
 import com.ericsson.raso.sef.core.db.model.PurchaseMeta;
-import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 
 public interface PurchaseMapper {
 	
@@ -26,6 +25,6 @@ public interface PurchaseMapper {
 	
 	void deletePurchaseMeta(String purchaseId);
 	
-	ObsoleteCodeDbSequence purchaseSequence(String rand);
+	Long purchaseSequence(String rand);
 
 }

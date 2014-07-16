@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.ibatis.exceptions.PersistenceException;
 
 import com.ericsson.raso.sef.core.Meta;
-import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.Subscriber;
 import com.ericsson.raso.sef.core.db.model.SubscriberAuditTrial;
 import com.ericsson.raso.sef.core.db.model.SubscriberMeta;
@@ -41,7 +40,7 @@ public interface SubscriberMapper {
 	
 	void insertSubscriberHistory(SubscriberAuditTrial subscriberHistory) throws PersistenceException;
 	Collection<SubscriberAuditTrial> getSubscriberHistory(Map<String, Object> map) throws PersistenceException;
-	ObsoleteCodeDbSequence userSequence(String rand) throws PersistenceException;
+	//ObsoleteCodeDbSequence userSequence(String rand) throws PersistenceException;
 	void bulkInsertSubscriberMeta(List<Meta> list) throws PersistenceException;
 	void bulkInsertSubscriber(List<Subscriber> list) throws PersistenceException;
 	

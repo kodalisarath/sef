@@ -1,6 +1,7 @@
 package com.ericsson.raso.sef.bes.engine.transaction.commands;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,9 +25,12 @@ import com.ericsson.raso.sef.bes.prodcat.tasks.PersistenceMode;
 import com.ericsson.raso.sef.bes.prodcat.tasks.TransactionTask;
 import com.ericsson.raso.sef.core.FrameworkException;
 import com.ericsson.raso.sef.core.ResponseCode;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
+import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.entities.TransactionStatus;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberResponse;
+import com.ericsson.sef.scheduler.command.RecycleJobCommand;
 
 public class CreateSubscriber extends AbstractTransaction {
 	private static final long	serialVersionUID	= 8085575039162225609L;
@@ -100,40 +104,37 @@ public class CreateSubscriber extends AbstractTransaction {
 		boolean result = true;
 		TransactionStatus txnStatus = new TransactionStatus();
 		if (this.getResponse() != null) {
-			   if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
-			    TransactionException fault = this.getResponse().getReturnFault();
-			    if (fault != null) {
-			     txnStatus.setCode(fault.getStatusCode().getCode());
-			     txnStatus.setDescription(fault.getStatusCode().getMessage());
-			     txnStatus.setComponent(fault.getComponent());
-			    }
-			   }
-		} else
-			result = false;
-		/*if (this.getResponse() != null) {
-			if (this.getResponse().getAtomicStepResults() != null) {
-				for (Step<?> step: this.getResponse().getAtomicStepResults().keySet()) {
-					AbstractStepResult stepResult = this.getResponse().getAtomicStepResults().get(step);
-					if (stepResult == null) {
-						if (step instanceof PersistenceStep) //TODO: this is temporary fix until DB Tier is fixed. Vinay is working on the same.  
-							continue;
-						else {
-							LOGGER.debug("quick check for type:" + step);
-						}
-					} else if (stepResult.getResultantFault() != null) {
-						txnStatus.setComponent(stepResult.getResultantFault().getComponent());
-						txnStatus.setCode(stepResult.getResultantFault().getStatusCode().getCode());
-						txnStatus.setDescription(stepResult.getResultantFault().getStatusCode().getMessage());
-						LOGGER.debug("CreateSubscriber::=> Transaction Status: " + txnStatus);
-						result = false;
-						break;
+			if (this.getResponse() != null && this.getResponse().getReturnFault() != null) {
+				TransactionException fault = this.getResponse().getReturnFault();
+				if (fault != null) {
+					txnStatus.setCode(fault.getStatusCode().getCode());
+					txnStatus.setDescription(fault.getStatusCode().getMessage());
+					txnStatus.setComponent(fault.getComponent());
+					result = false;
+				} else {
+					//TODO: SMART specific hack on subscriber lifecycle
+					String recycleDays = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "preActivePeriod");
+					long recycleSchedule = 0;
+					try {
+						recycleSchedule = System.currentTimeMillis() + Integer.parseInt(recycleDays) * 86400000L;
+					} catch(Exception e) {
+						LOGGER.error("Recycle Period was not/badly configured. Assuming 1 year!!");
+						recycleSchedule = System.currentTimeMillis() + 31536000000L;
+					}
+					try {
+						new RecycleJobCommand(((CreateSubscriberRequest)this.getRequest()).getSubscriber(), new Date(recycleSchedule)).execute();
+					} catch (SmException e) {
+						txnStatus.setCode(e.getStatusCode().getCode());
+						txnStatus.setDescription(e.getStatusCode().getMessage());
+						txnStatus.setComponent(e.getComponent());
 					}
 				}
 			}
-		}*/
+		} else
+			result = false;
+
 		
-		if (result != false)
-			result = true;
+
 		LOGGER.debug("CreateSubscriber::=> Functional Result: " + result);
 		
 		

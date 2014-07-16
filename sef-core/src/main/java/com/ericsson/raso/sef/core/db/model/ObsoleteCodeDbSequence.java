@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.core.db.model;
+/*package com.ericsson.raso.sef.core.db.model;
 
 public class ObsoleteCodeDbSequence {
 
@@ -21,4 +21,4 @@ public class ObsoleteCodeDbSequence {
 		this.rand = rand;
 	}
 
-}
+}*/

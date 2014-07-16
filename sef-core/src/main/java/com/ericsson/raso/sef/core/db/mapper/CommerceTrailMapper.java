@@ -3,7 +3,6 @@ package com.ericsson.raso.sef.core.db.mapper;
 import java.util.Collection;
 
 import com.ericsson.raso.sef.core.db.model.CommerceTrail;
-import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 
 
 public interface CommerceTrailMapper {
@@ -18,6 +17,6 @@ public interface CommerceTrailMapper {
 	
 	void updateCommerceTrail(CommerceTrail commerceTrail);
 	
-	ObsoleteCodeDbSequence commerceTrailSequence(String rand);
+	//ObsoleteCodeDbSequence commerceTrailSequence(String rand);
 	
 }

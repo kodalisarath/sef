@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.UUID;
 
 import org.quartz.JobDetail;
 import org.quartz.SimpleTrigger;
@@ -24,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.Command;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus;
@@ -74,9 +72,10 @@ public class SubscriptionLifeCycleCommand implements Command<Void> {
 			final ScheduleRequestService mapper = SefCoreServiceResolver
 					.getScheduleRequestService();
 
-			ObsoleteCodeDbSequence sequence = mapper
+			/*ObsoleteCodeDbSequence sequence = mapper
 					.scheduledRequestSequence(UUID.randomUUID().toString());
-			final long id = sequence.getSeq();
+			final long id = sequence.getSeq();*/
+			final long id = Calendar.getInstance().getTimeInMillis();
 			// Date scheduleTime = new Date(schedule);
 			Calendar scheduledTime = Calendar.getInstance();
 			// scheduledTime.add(Calendar.SECOND, 20);

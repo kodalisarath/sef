@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.core.Constants;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.UniqueIdGenerator;
@@ -19,6 +20,7 @@ import com.ericsson.raso.sef.smart.subscription.response.PurchaseResponse;
 import com.ericsson.raso.sef.smart.subscription.response.RequestCorrelationStore;
 import com.ericsson.raso.sef.smart.subscription.response.SubscriptionEventResponse;
 import com.ericsson.sef.bes.api.entities.Meta;
+import com.ericsson.sef.bes.api.entities.Subscriber;
 import com.ericsson.sef.bes.api.subscriber.ISubscriberRequest;
 import com.ericsson.sef.bes.api.subscription.ISubscriptionRequest;
 import com.hazelcast.core.ISemaphore;
@@ -27,6 +29,48 @@ public abstract class TransactionEngineHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(TransactionEngineHelper.class);
 
+	public static void updateSusbcriberContractState(Subscriber subscriber) {
+		logger.debug("Entering TransactionEngineHelper.....update contract ");
+		List<Meta> metas = new ArrayList<Meta>();
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getBean(ISubscriberRequest.class);
+		String requestId = UniqueIdGenerator.generateId();
+		SubscriberInfo subscriberInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subscriberInfo);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		logger.debug("Subscriber being activated: " + subscriber.getMsisdn() + ", contract: " + subscriber.getContractState());
+		requestId = subscriberRequest.handleLifeCycle(requestId, subscriber.getMsisdn(), subscriber.getContractState(), metas);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			logger.debug("Exception while sleep     :" + e.getMessage());
+		}
+		semaphore.destroy();
+		logger.debug("DB Updated with subscriber cotnract state!!!!");
+	}
+	
+	public static void updateSusbcriberContractState(String subscriber, String contractState) {
+		logger.debug("Entering TransactionEngineHelper.....update contract ");
+		List<Meta> metas = new ArrayList<Meta>();
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getBean(ISubscriberRequest.class);
+		String requestId = UniqueIdGenerator.generateId();
+		SubscriberInfo subscriberInfo = new SubscriberInfo();
+		SubscriberResponseStore.put(requestId, subscriberInfo);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		logger.debug("Subscriber being activated: " + subscriber + ", contract: " + contractState);
+		requestId = subscriberRequest.handleLifeCycle(requestId, subscriber, contractState, metas);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			logger.debug("Exception while sleep     :" + e.getMessage());
+		}
+		semaphore.destroy();
+		logger.debug("DB Updated with subscriber cotnract state!!!!");
+	}
+	
 	public static SubscriberInfo getSubscriberInfo(String msisdn) throws SmException {
 
 		logger.debug("Entering TransactionEngineHelper.....getSubscriberInfo ");
@@ -49,8 +93,40 @@ public abstract class TransactionEngineHelper {
 		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
 
 		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
+		
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0)
+			throw new SmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
 
 		return subscriberInfo;
+	}
+	
+	public static Subscriber getSubscriber(String msisdn) throws SmException {
+
+		logger.debug("Entering TransactionEngineHelper.....getSubscriberInfo ");
+		String requestId = UniqueIdGenerator.generateId();
+		logger.debug("Generated TransactionEngineHelper Request ID..... " + requestId);
+		SubscriberInfo subscriberInfo = new SubscriberInfo();
+		logger.debug("Entering SchedulerServiceHelper.....");
+		ISubscriberRequest subscriberRequest = SmartServiceResolver.getBean(ISubscriberRequest.class);
+		String correlationId = subscriberRequest.readSubscriber(requestId, msisdn, null);
+		SubscriberResponseStore.put(correlationId, subscriberInfo);
+		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
+		try {
+			semaphore.init(0);
+			semaphore.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			logger.debug("Exception while sleep     :" + e.getMessage());
+		}
+		semaphore.destroy();
+		logger.debug("Awake from sleep.. going to check subscriber response in store with id: " + correlationId);
+
+		subscriberInfo = (SubscriberInfo) SubscriberResponseStore.get(correlationId);
+		
+		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0)
+			throw new SmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
+
+		return subscriberInfo.getSubscriber();
 	}
 
 	public static PurchaseResponse purchase(String offerId, String subscriberId, List<Meta> metas) throws SmException {

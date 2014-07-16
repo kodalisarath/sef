@@ -2,6 +2,8 @@ package com.ericsson.raso.sef.core;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ericsson.raso.sef.core.config.IConfig;
+
 /**
  * Generates a unique ID based on the following algorithm <br/><br/>
  * 
@@ -25,9 +27,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UniqueIdGenerator {
 	
 	private static AtomicInteger counter = new AtomicInteger();
-	private static String node = SefCoreServiceResolver.getConfigService().getValue("GLOBAL", "hostname");
+	private static String node = null; 
 	
 	public static String generateId() {
+//		if (node == null) {
+//			IConfig config = SefCoreServiceResolver.getConfigService();
+//			if (config != null)
+//				node = config.getValue("GLOBAL", "hostname");
+//		}
+		if (node == null) {
+			node = (String) System.getenv("HOSTNAME");
+		}
+		
 		if(node == null) node="SEF_HOST";
 		long time = System.nanoTime();
 		String id = node + counter.incrementAndGet() + getTime_low(time) + getTime_high(time);

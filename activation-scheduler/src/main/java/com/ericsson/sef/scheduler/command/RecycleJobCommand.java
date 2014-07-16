@@ -18,9 +18,7 @@ import com.ericsson.sef.scheduler.ErrorCode;
 import com.ericsson.sef.scheduler.RecycleSubscriberJob;
 import com.ericsson.sef.scheduler.SchedulerContext;
 import com.ericsson.sef.scheduler.SchedulerService;
-//import com.ericsson.sm.api.subscriber.Subscriber;
-//import com.ericsson.sm.core.Command;
-//import com.ericsson.sm.core.SmException;
+
 
 public class RecycleJobCommand implements Command<Void> {
 
@@ -37,11 +35,11 @@ public class RecycleJobCommand implements Command<Void> {
 	@Override
 	public Void execute() throws SmException {
 		try {
-			JobDetail job = newJob(RecycleSubscriberJob.class)
-					.withIdentity(SchedulerContext.RECYCLE + subscriber.getUserId())
-					.usingJobData(SchedulerContext.MSISDN, subscriber.getMsisdn()).build();
+			
+			JobDetail job = newJob(RecycleSubscriberJob.class).withIdentity(SchedulerContext.RECYCLE + subscriber.getMsisdn())
+																.usingJobData(SchedulerContext.MSISDN, subscriber.getMsisdn()).build();
 
-			Trigger trigger = newTrigger().withIdentity(SchedulerContext.RECYCLE + subscriber.getUserId()+"Trigger").startAt(executionTime).build();
+			Trigger trigger = newTrigger().withIdentity(SchedulerContext.RECYCLE + subscriber.getMsisdn()+"Trigger").startAt(executionTime).build();
 
 			SchedulerService scheduler = SchedulerContext.getSchedulerService();
 			scheduler.scheduleJob(job, trigger);

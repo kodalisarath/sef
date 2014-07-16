@@ -8,11 +8,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -23,9 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.ericsson.raso.sef.core.Command;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
-import com.ericsson.raso.sef.core.db.model.ObsoleteCodeDbSequence;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequest;
-import com.ericsson.raso.sef.core.db.model.ScheduledRequestMeta;
 import com.ericsson.raso.sef.core.db.model.ScheduledRequestStatus;
 import com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent;
 import com.ericsson.raso.sef.core.db.service.ScheduleRequestService;
@@ -160,9 +155,10 @@ public class ExpiryNotificationCommand implements Command<Void> {
 
 			final ScheduleRequestService mapper = SefCoreServiceResolver
 					.getScheduleRequestService();
-			ObsoleteCodeDbSequence sequence = mapper
+			/*ObsoleteCodeDbSequence sequence = mapper
 					.scheduledRequestSequence(UUID.randomUUID().toString());
-			final long id = sequence.getSeq();
+			final long id = sequence.getSeq();*/
+			final long id = Calendar.getInstance().getTimeInMillis();
 			final ScheduledRequest request = new ScheduledRequest();
 			request.setCreated(new Date());
 			request.setId(id);
@@ -179,7 +175,7 @@ public class ExpiryNotificationCommand implements Command<Void> {
 				preExpiryOffset = Long.parseLong(SefCoreServiceResolver
 						.getConfigService().getValue("GLOBAL",
 								HelperConstant.PRE_EXPIRY_OFFSET));
-				preExpiryOffset = 60000; // To be commented out
+				//preExpiryOffset = 60000; // To be commented out
 				request.setLifeCycleEvent(SubscriptionLifeCycleEvent.NOTIFICATION_PRE_EXPIRY);
 
 			} else if (HelperConstant.NOTIFICATION_ON_EXPIRY.equals(eventType)) {
