@@ -48,10 +48,18 @@ public class SefScapChargingApi implements ScapChargingApi {
 		log.debug("Starting DCC STACK");
 		IConfig config = SefCoreServiceResolver.getConfigService();	
 		DiameterStackBuilder builder = new DiameterStackBuilder(Stack.SCAPV2);
+		
+		String fqdn = System.getenv("SCAPFQDN");
+		
+		if (fqdn.isEmpty() || fqdn == null) {
+			fqdn = SefCoreUtil.getServerIP(config.getValue("scapClient", Constants.ETHINTERFACE));
+		}
+		log.debug("FQDN: " + fqdn);
+		
 		log.debug("Value getting picked from properties file: "+config.getValue("scapClient",Constants.PRODUCTID));
 		builder.ownProductId(config.getValue("scapClient",Constants.PRODUCTID));
 		builder.ownRealm(config.getValue("scapClient",Constants.REALM));
-		builder.fqdn(config.getValue("scapClient",Constants.FQDN));
+		builder.fqdn(fqdn.trim());
 		builder.tcpPort(Integer.valueOf(config.getValue("scapClient",Constants.OWNTCPPORT)));
 		//builder.ownIpAddress(SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE)));
 		String ownIpAddress =  SefCoreUtil.getServerIP(config.getValue("scapClient","ethInterface"));
