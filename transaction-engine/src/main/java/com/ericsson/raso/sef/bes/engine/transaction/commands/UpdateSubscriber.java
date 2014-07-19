@@ -131,6 +131,8 @@ public class UpdateSubscriber extends AbstractTransaction {
 
 						//
 						LOGGER.debug("Working on meta: " + meta);
+						if (meta.getKey() == null || meta.getValue() == null)
+							continue;
 						if (meta.getKey().equalsIgnoreCase("userId"))
 							continue;
 						if (meta.getKey().equalsIgnoreCase("accountId"))
@@ -177,9 +179,7 @@ public class UpdateSubscriber extends AbstractTransaction {
 
 						if (subscriberEntity.getMetas().contains(meta)) {
 							try {
-								// subscriberStore.updateMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
-								subscriberStore.updateMeta(this.getRequestId(),
-										((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+								subscriberStore.updateMeta(this.getRequestId(), ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 							} catch (PersistenceError e) {
 								LOGGER.error("Error in the updatemeta at UpdateSubscriber", e);
 							}
