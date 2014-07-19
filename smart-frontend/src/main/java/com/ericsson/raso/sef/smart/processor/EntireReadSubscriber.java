@@ -143,7 +143,7 @@ public class EntireReadSubscriber implements Processor {
 		readCustomerParameterList.add(EntireReadUtil.symbolicOrDateParameter("billCycleSwitch", "MAX_DATEANDTIME"));
 		readCustomerParameterList.add(EntireReadUtil.shortParameter("billCycleIdAfterSwitch", -1));
 		readCustomerParameterList.add(EntireReadUtil.intParameter("prefetchFilter", -1));
-		readCustomerParameterList.add(EntireReadUtil.enumerationValueParameter("category", "ONLINE"));
+		readCustomerParameterList.add(EntireReadUtil.enumerationValueParameter("Category", "ONLINE"));
 		operationResult.getOperation().add(readCustomerOperation);
 		
 		//// customer read bucket
@@ -179,7 +179,7 @@ public class EntireReadSubscriber implements Processor {
 		List<Object> readCustomerVersionParameterList = readCustomerVersionOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		
 		readCustomerVersionParameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
-		readCustomerVersionParameterList.add(EntireReadUtil.enumerationValueParameter("category", "ONLINE"));
+		readCustomerVersionParameterList.add(EntireReadUtil.enumerationValueParameter("Category", "ONLINE"));
 		
 	
 		date = subscriber.getMetas().get("vValidFrom");
@@ -209,7 +209,7 @@ public class EntireReadSubscriber implements Processor {
 		List<Object> readRopParameterList = readRopOperation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		readRopParameterList.add(EntireReadUtil.stringParameter("CustomerId", subscriber.getMsisdn()));
 		readRopParameterList.add(EntireReadUtil.intParameter("Key", 1));
-		readRopParameterList.add(EntireReadUtil.enumerationValueParameter("category", "ONLINE"));
+		readRopParameterList.add(EntireReadUtil.enumerationValueParameter("Category", "ONLINE"));
 		readRopParameterList.add(EntireReadUtil.intParameter("prefetchFilter", -1));
 		readRopParameterList.add(EntireReadUtil.booleanParameter("AnnoFirstWarningPeriodSent", false));
 		readRopParameterList.add(EntireReadUtil.booleanParameter("AnnoSecondWarningPeriodSent", false));
@@ -300,7 +300,7 @@ public class EntireReadSubscriber implements Processor {
 		readRppParameterList.add(EntireReadUtil.booleanParameter("s_CanBeSharedByMultipleRops", false));
 		readRppParameterList.add(EntireReadUtil.booleanParameter("s_InsertedViaBatch", false));
 		readRppParameterList.add(EntireReadUtil.booleanParameter("s_PreActive", true));
-		readRppParameterList.add(EntireReadUtil.enumerationValueParameter("category", "ONLINE"));
+		readRppParameterList.add(EntireReadUtil.enumerationValueParameter("Category", "ONLINE"));
 		readRppParameterList.add(EntireReadUtil.intParameter("Key", 1));
 		readRppParameterList.add(EntireReadUtil.intParameter("OfferProfileKey", 1));
 		readRppParameterList.add(EntireReadUtil.intParameter("prefetchFilter", -1));

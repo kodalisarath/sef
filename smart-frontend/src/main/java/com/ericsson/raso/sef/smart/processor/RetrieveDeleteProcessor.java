@@ -86,7 +86,7 @@ public class RetrieveDeleteProcessor implements Processor {
 		EnumerationValueElement ev = new  EnumerationValueElement ();
 		ev.setValue("ONLINE");
 		EnumerationValueParameter evp = new EnumerationValueParameter();
-		evp.setName("category");
+		evp.setName("Category");
 		evp.setValue("ONLINE");
 		ListParameter listParameter = new ListParameter();
 		listParameter.getElementOrBooleanElementOrByteElement().add(evp);
@@ -155,7 +155,7 @@ public class RetrieveDeleteProcessor implements Processor {
 			metaList.add(new Meta("Key",null));
 			metaList.add(new Meta("KeyType",null));
 			metaList.add(new Meta("vValidFrom",null));
-			metaList.add(new Meta("category",null));
+			metaList.add(new Meta("Category",null));
 			metaList.add(new Meta("vInvalidFrom",null));
 			metaList.add(new Meta("OwningCustomerId",null));
 		
@@ -202,11 +202,11 @@ public class RetrieveDeleteProcessor implements Processor {
 			}
 			
 			
-			if(metaMap.containsKey("category"))
+			if(metaMap.containsKey("Category"))
 			{
 				StringParameter key = new StringParameter();
-				key.setName("category");
-				key.setValue(metaMap.get("category"));
+				key.setName("Category");
+				key.setValue(metaMap.get("Category"));
 				paramList.getParameterOrBooleanParameterOrByteParameter().add(key);
 			}
 			
@@ -269,9 +269,9 @@ public class RetrieveDeleteProcessor implements Processor {
 					paramList.getParameterOrBooleanParameterOrByteParameter().add(vValidFrom);
 					
 				}
-				if(meta.getKey().equals("category")) {
+				if(meta.getKey().equals("Category")) {
 					EnumerationValueParameter category = new EnumerationValueParameter();
-					category.setName("category");
+					category.setName("Category");
 					category.setValue(meta.getValue());
 					paramList.getParameterOrBooleanParameterOrByteParameter().add(category);
 				}
