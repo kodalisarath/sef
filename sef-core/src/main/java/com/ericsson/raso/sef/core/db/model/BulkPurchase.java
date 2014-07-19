@@ -2,9 +2,9 @@ package com.ericsson.raso.sef.core.db.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class BulkPurchase extends TreeMap<String, Object> {
+public class BulkPurchase extends ConcurrentHashMap<String, Object> {
 	
 	private static final long serialVersionUID = 1L;
 

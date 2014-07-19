@@ -19,7 +19,7 @@
     <bean id="dataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
           <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
           <property name="url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=10.202.144.76)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.202.144.77)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=vltnt1.smart.com.ph)))" />
-          <property name="username" value="tnt" />
+          <property name="username" value="TNT" />
           <property name="password" value="3r1c5s0n" />
           <property name="testWhileIdle" value="true"/>
           <property name="testOnReturn" value="false"/>
@@ -51,6 +51,7 @@
 		<property name="mapperInterface" value="com.ericsson.raso.sef.core.db.mapper.SubscriberMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
+	
 	<bean id="callingCircleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.ericsson.raso.sef.core.db.mapper.smart.CallingCircleMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
@@ -61,10 +62,6 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
-	<bean id="chargingSessionService" class="com.ericsson.raso.sef.core.db.service.internal.ChargingSessionServiceImpl">
- 		<property name="chargingSessionMapper" ref="chargingSessionMapper"/> 
- 	</bean> 
-	
 	<!-- <bean id="ticketMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.TicketMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
@@ -109,6 +106,10 @@
  		<property name="callingCircleMapper" ref="callingCircleMapper"/> 
  	</bean> 
 	
+<!-- 	<bean id="chargingSessionService" class="com.ericsson.raso.sef.core.db.service.internal.ChargingSessionServiceImpl"> -->
+<!--  		<property name="chargingSessionMapper" ref="chargingSessionMapper"/>  -->
+<!--  	</bean>  -->
+	
 	
 	<!-- <bean id="roleManagerMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.ericsson.sm.core.db.mapper.RoleManagerMapper" />
@@ -117,6 +118,10 @@
  	 -->
 	<bean id="scheduleRequestService" class="com.ericsson.raso.sef.core.db.service.internal.ScheduleRequestServiceImpl">
 		<property name="scheduledRequestMapper" ref="scheduledRequestMapper" />
+	</bean>
+	
+	<bean id="chargingSessionService" class="com.ericsson.raso.sef.core.db.service.internal.ChargingSessionServiceImpl">
+		<property name="chargingSessionMapper" ref="chargingSessionMapper" />
 	</bean>
 	
 <!-- 	<bean id="callingCircleService" class="com.ericsson.raso.sef.core.db.service.internal.CallingCircleServiceImpl"> -->

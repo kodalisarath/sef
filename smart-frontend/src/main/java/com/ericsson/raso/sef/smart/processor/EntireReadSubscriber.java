@@ -349,7 +349,7 @@ public class EntireReadSubscriber implements Processor {
 		operationResult.getOperation().add(readRppVersionOperation);
 		
 		
-		return responseData;
+		return responseData;	
 	}
 
 	private CommandResponseData createResponse(EntireRead entireRead, boolean isTransactional) {

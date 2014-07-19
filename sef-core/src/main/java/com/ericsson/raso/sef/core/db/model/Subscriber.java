@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.core.Meta;
 
@@ -223,7 +223,7 @@ public class Subscriber implements Serializable{
 		this.contractState = contractState;
 	}
 
-	private Map<String, String> metaMap = new TreeMap<String, String>();
+	private Map<String, String> metaMap = new ConcurrentHashMap<String, String>();
 
 	public String getMetaValue(String key) {
 		if (metaMap.size() == 0 && metas != null) {

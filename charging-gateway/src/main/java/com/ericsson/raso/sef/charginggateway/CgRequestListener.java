@@ -22,6 +22,7 @@ import com.ericsson.pps.diameter.rfcapi.base.message.DiameterAnswer;
 import com.ericsson.pps.diameter.rfcapi.base.message.DiameterRequest;
 import com.ericsson.raso.sef.core.PerformanceStatsLogger;
 import com.ericsson.raso.sef.core.RequestContextLocalStore;
+import com.ericsson.raso.sef.core.UniqueIdGenerator;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
 import com.ericsson.raso.sef.core.cg.diameter.DiameterErrorCode;
 
@@ -44,33 +45,40 @@ public class CgRequestListener implements ApplicationRequestListener {
 
 	private Map<String, ResponseLock> locks = new HashMap<String, ResponseLock>();
 
+
 	@Override
-	public DiameterAnswer processRequest(DiameterRequest request) {
-		long startTime = System.currentTimeMillis();
-		log.debug("CgiRequestListener  ..processRequest  Reached inside the method");
-		ChargingInfo chargingRequest = new ChargingInfo();
+	public DiameterAnswer processRequest(DiameterRequest diameterRequest) {
+		//long startTime = System.currentTimeMillis();
+		if(log.isDebugEnabled())
+		log.debug("CgiRequestListener  ..processRequest  Reached inside the method, DiamterRequest is "+diameterRequest);
+		ChargingInfo chargingInfoRequest = new ChargingInfo();
 		DiameterAnswer answer = null;
 		try {
-			chargingRequest.setUniqueMessageId(RequestContextLocalStore.get().getRequestId());
-
-			if (request.getAvp(263) != null) {
-				chargingRequest.setSessionId(request.getAvp(263).getAsUTF8String());
+			chargingInfoRequest.setUniqueMessageId(UniqueIdGenerator.generateId());
+			
+			if (diameterRequest.getAvp(263) != null) {
+				chargingInfoRequest.setSessionId(diameterRequest.getAvp(263).getAsUTF8String());
 			}
+			chargingInfoRequest.setAvpList(diameterRequest.getAvps());
+			if(log.isDebugEnabled())
+			log.debug("CgiRequestListener  ..Set the AVp. and the ChargingInfoRequest is "+chargingInfoRequest);
+			ChargingInfo chargingInfoResponse = producerTemplate.requestBody(
+					"seda:charging-gateway", chargingInfoRequest,
+					ChargingInfo.class);
 
-			chargingRequest.setAvpList(request.getAvps());
-
-			log.debug("CgiRequestListener  ..Set the AVp.");
-			ChargingInfo response = producerTemplate.requestBody("seda:charging-gateway", chargingRequest, ChargingInfo.class);
-
-			answer = createAnswer(request, response.getResultCodeAvp().getAsInt());
-			answer.addAll(response.getAvpList());
+			answer = createAnswer(diameterRequest, chargingInfoResponse.getResultCodeAvp()
+					.getAsInt());
+			answer.addAll(chargingInfoResponse.getAvpList());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {
 			if (answer == null) {
-				answer = createAnswer(request, DiameterErrorCode.DIAMETER_UNABLE_TO_COMPLY.getCode());
+				answer = createAnswer(diameterRequest,
+						DiameterErrorCode.DIAMETER_UNABLE_TO_COMPLY.getCode());
 			}
-			PerformanceStatsLogger.log("CG", System.currentTimeMillis() - startTime, chargingRequest.getUniqueMessageId());
+			
+			/*PerformanceStatsLogger.log("CG", System.currentTimeMillis()
+					- startTime, chargingInfoRequest.getUniqueMessageId());*/
 		}
 		return answer;
 	}
@@ -78,8 +86,11 @@ public class CgRequestListener implements ApplicationRequestListener {
 	public void sendResponse(@Body ChargingInfo response) {
 		ResponseLock lock = locks.get(response.getUniqueMessageId());
 		if (lock == null) {
-			log.error("lock does not exist for the response with messageID: " + response.getUniqueMessageId());
-			throw new RuntimeException("lock does not exist for the response with messageID: " + response.getUniqueMessageId());
+			log.error("lock does not exist for the response with messageID: "
+					+ response.getUniqueMessageId());
+			throw new RuntimeException(
+					"lock does not exist for the response with messageID: "
+							+ response.getUniqueMessageId());
 		}
 		locks.remove(response.getUniqueMessageId());
 		lock.setResponse(response);
@@ -106,7 +117,8 @@ public class CgRequestListener implements ApplicationRequestListener {
 		log.info("Creating the snapshot of the request.");
 		try {
 			String smHome = System.getenv("SEF_HOME");
-			FileOutputStream stream = new FileOutputStream(smHome + File.separator + chargingInfo.getUniqueMessageId());
+			FileOutputStream stream = new FileOutputStream(smHome
+					+ File.separator + chargingInfo.getUniqueMessageId());
 			ObjectOutputStream os = new ObjectOutputStream(stream);
 			os.writeObject(chargingInfo);
 			os.close();

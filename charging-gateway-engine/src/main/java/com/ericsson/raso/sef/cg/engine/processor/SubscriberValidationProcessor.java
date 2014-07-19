@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.raso.sef.cg.engine.CgConstants;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
-import com.ericsson.raso.sef.cg.engine.Operation;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
 import com.ericsson.raso.sef.cg.engine.common.CGEngineServiceHelper;
 import com.ericsson.raso.sef.core.SmException;
+import com.ericsson.raso.sef.core.cg.model.Operation;
 import com.ericsson.raso.sef.smart.subscriber.response.SubscriberInfo;
 
 public class SubscriberValidationProcessor implements Processor {
@@ -49,7 +49,7 @@ public class SubscriberValidationProcessor implements Processor {
 			} else throw e;
 		}
 		
-		log.error("SubscriberInfo in charging gateway engine: "+subscriberInfo  +" & msisdn: "+msisdn);
+		//log.error("SubscriberInfo in charging gateway engine: "+subscriberInfo  +" & msisdn: "+msisdn);
 		if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0){
 			log.error("Inside the if condition for status check" + msisdn);
 			throw new SmException(ResponseCode.SUBSCRIBER_NOT_FOUND);

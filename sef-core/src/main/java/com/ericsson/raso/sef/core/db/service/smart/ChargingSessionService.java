@@ -4,11 +4,13 @@ import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
 
 public interface ChargingSessionService {
 	
-	public void put(ChargingSession session);
+	public void create(ChargingSession session);
 	
-	public void remove(String sessionId);
+	public void delete(String sessionId);
 	
-	public ChargingSession get(String sessionId);
+	public ChargingSession read(String sessionId);
+	
+	public void update( ChargingSession session);
 	
 
 }

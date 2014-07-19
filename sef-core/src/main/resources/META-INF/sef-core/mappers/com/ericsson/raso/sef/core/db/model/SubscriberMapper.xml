@@ -29,6 +29,7 @@
 		<result property="ratePlan" column="rate_plan" />
 		<result property="customerSegment" column="customer_segment" />
 	</resultMap>
+
 	
 	<select id="isSubscriberExists" parameterType="String" resultType="int" >
 		select 1 from subscriber where msisdn = #{msisdn}
@@ -96,12 +97,11 @@
 	<update id="changeContractStatus" parameterType="Subscriber">
 	update subscriber set contract_state=#{contractState} where user_id=#{userId}
 	</update>
-	
 
+	
 	<select id="getContractState" parameterType="String">
 	select contract_state from subscriber where user_id=#{userId}
 	</select>
-	
 	<update id="updateSubscriber" parameterType="Subscriber">
 		update subscriber
 		set

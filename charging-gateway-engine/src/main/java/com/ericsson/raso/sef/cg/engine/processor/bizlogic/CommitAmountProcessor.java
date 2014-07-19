@@ -19,18 +19,17 @@ import com.ericsson.pps.diameter.rfcapi.base.avp.Avp;
 import com.ericsson.pps.diameter.rfcapi.base.avp.AvpDataException;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
-import com.ericsson.raso.sef.cg.engine.Operation.Type;
 import com.ericsson.raso.sef.cg.engine.ResponseCode;
-import com.ericsson.raso.sef.cg.engine.SmartChargingSession;
-import com.ericsson.raso.sef.cg.engine.TransactionStatus;
+import com.ericsson.raso.sef.cg.engine.util.SefCoreUtil;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
+import com.ericsson.raso.sef.core.cg.model.Operation.Type;
+import com.ericsson.raso.sef.core.cg.model.TransactionStatus;
 import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
-import com.google.gson.Gson;
 
 public class CommitAmountProcessor extends AbstractChargingProcessor {
 
-	private final static Logger logger = LoggerFactory.getLogger(CancelAmountProcessor.class);
+	private final static Logger logger = LoggerFactory.getLogger(CommitAmountProcessor.class);
 	
 	@Override
 	protected Integer getRequestNumber() {
@@ -39,60 +38,78 @@ public class CommitAmountProcessor extends AbstractChargingProcessor {
 
 	@Override
 	protected void preProcess(ChargingRequest request, Ccr scapCcr) throws AvpDataException {
+		if(logger.isDebugEnabled())
 		logger.debug(String.format("Enter CommitAmountProcessor.preProcess, request is %s, scapCcr is %s",  request, scapCcr));
-		ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
-		SmartChargingSession smartSession = null;
+		//ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
+		ChargingSession session = request.getChargingSession();
+		//SmartChargingSession smartSession = null;
 		if (session == null) {
 			log.error("Invalid request with session ID: " + request.getSessionId());
 			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
 
 		}
 		
-		smartSession = this.getSmartSession(session.getSessionInfo());
+	/*	smartSession = this.getSmartSession(session.getSessionInfo());
 		if (smartSession == null) {
 			log.error("Invalid request with session ID: " + request.getSessionId());
 			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
 		}
+	*/	
+		session = SefCoreUtil.convertFromGSONFormat(session);
+		if(logger.isDebugEnabled())
+			logger.debug(String.format("Inside CommitAmountProcessor.preProcess, session after  JSON conversion is %s", session));
 		
-
-		List<Avp> responseAvps = smartSession.getResponseAvp(Type.TRANSACATION_START);
-		List<Avp> reqAvps = smartSession.getRequestAvp(Type.TRANSACATION_START);
+		List<Avp> responseAvps = session.getResponseAvp(Type.TRANSACATION_START);
+		if(logger.isDebugEnabled())
+			logger.debug(String.format("Inside CommitAmountProcessor.preProcess, responseAvps for TRANSACATION_START is %s", responseAvps));
+	
+		List<Avp> reqAvps = session.getRequestAvp(Type.TRANSACATION_START);
+		
+		if(logger.isDebugEnabled())
+			logger.debug(String.format("Inside CommitAmountProcessor.preProcess, reqAvps for TRANSACATION_START is %s", reqAvps));
+	
+		
 		UsedServiceUnitAvp usedServiceUnitAvp = getUsedServiceUnitAvpre(responseAvps, reqAvps, scapCcr);
 		scapCcr.addAvp(usedServiceUnitAvp);
-		logger.debug(String.format("End CommitAmountProcessor.preProcess, response avp is %s", responseAvps));
+		request.setChargingSession(session);
+		if(logger.isDebugEnabled())
+		logger.debug(String.format("End CommitAmountProcessor.preProcess, response avp is %s, Modified request is %s", responseAvps,request));
 	}
 
 	@Override
 	protected void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException {
+		if(logger.isDebugEnabled())
 		logger.debug(String.format("Enter CommitAmountProcessor.preProcess, request is %s, response is %s, cca is %s", request, response, cca));
-		ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
-		SmartChargingSession smartSession = null;
+		//ChargingSession session = SefCoreServiceResolver.getChargingSessionService().get(request.getSessionId());
+		ChargingSession session = request.getChargingSession();
+		//SmartChargingSession smartSession = null;
 		if (session == null) {
 			log.error("Invalid request with session ID: " + request.getSessionId());
 			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
 
 		}
 		
-		smartSession = this.getSmartSession(session.getSessionInfo());
+	/*	smartSession = this.getSmartSession(session.getSessionInfo());
 		if (smartSession == null) {
 			log.error("Invalid request with session ID: " + request.getSessionId());
 			throw new AvpDataException(ResponseCode.DIAMETER_UNKNOWN_SESSION_ID.getMessage());
-		}
+		}*/
 		
-
 		if (cca.getResultCode().intValue() == ResponseCode.DIAMETER_SUCCESS.getCode()) {
-			smartSession.setTransactionStatus(TransactionStatus.PROCESSED);
+			session.setTransactionStatus(TransactionStatus.PROCESSED);
 		} else {
-			smartSession.setTransactionStatus(TransactionStatus.FAILED);
+			session.setTransactionStatus(TransactionStatus.FAILED);
 		}
-		session.setSessionInfo(this.getSessionInfo(smartSession));
-		SefCoreServiceResolver.getChargingSessionService().put(session);
-		logger.debug("End CommitAmountProcessor.postProcess");
+		//session.setSessionInfo(this.getSessionInfo(smartSession));
+		//SefCoreServiceResolver.getChargingSessionService().put(session);
+		request.setChargingSession(session);
+		if(logger.isDebugEnabled())
+		logger.debug("End CommitAmountProcessor.postProcess, modified request is "+request);
 	}
 
 	private UsedServiceUnitAvp getUsedServiceUnitAvpre(List<Avp> resAvps, List<Avp> reqAvps, Ccr scapCcr)
 			throws AvpDataException {
-	
+		if(logger.isDebugEnabled())
 		logger.debug(String.format("Enter CommitAmountProcessor.getUsedServiceUnitAvpre, resAvps is %s, reqAvps is %s, scapCcr is %s", 
 				resAvps, reqAvps, scapCcr));
 		
@@ -171,13 +188,13 @@ public class CommitAmountProcessor extends AbstractChargingProcessor {
 		return usedServiceUnitAvp;
 	}
 	
-	private SmartChargingSession getSmartSession(String sessionInfo) {
+/*	private  Map<Type, List<Avp>> getAVPMapFromGSONString(String sessionInfo) {
 		Gson gson = new Gson();
-		return gson.fromJson(sessionInfo, SmartChargingSession.class);		
+		return gson.fromJson(sessionInfo,  Map.class);		
 	}
 	
-	private String getSessionInfo(SmartChargingSession session) {
+	private String getGSONStringFromAVPMap( Map<Type, List<Avp>> avpMap) {
 		Gson gson = new Gson();
-		return gson.toJson(session);
+		return gson.toJson( avpMap);
 	}
-}
+*/}

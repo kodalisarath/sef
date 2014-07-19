@@ -20,7 +20,7 @@ public class SmartExceptionHandler implements Processor {
 		TisException exception = null;
 
 		Throwable error = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-		log.error("Recieved error of Type Throwable "+error.getMessage(), error);
+		log.error("Recieved error of Type Throwable " + error.getMessage(), error);
 
 		if (error instanceof TisException) {
 			log.debug("just to ensure any translation does not happen to premapped exceptions...");

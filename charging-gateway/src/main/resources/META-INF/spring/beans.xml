@@ -39,10 +39,20 @@
 		<!-- we want to unmarshal to ChargingInfo pojo -->
 		<property name="unmarshalType" value="com.ericsson.raso.sef.core.cg.diameter.ChargingInfo" />
 	</bean>
+	
+	<bean id="http4" class="org.apache.camel.component.http4.HttpComponent">
+		<property name="camelContext" ref="com.ericsson.raso.sef.charginggateway" />
+		<property name="maxTotalConnections" value="500" />
+		<property name="connectionsPerRoute" value="500" />
+		<!-- <property name="connectionTimeToLive" value="1000" /> -->
+	</bean>
 
 	<camelContext id="com.ericsson.raso.sef.charginggateway"
 		xmlns="http://camel.apache.org/schema/spring">
 		<propertyPlaceholder id="properties" location="ref:cgProperties" />
+		<threadPoolProfile id="defaultProfile" defaultProfile="true" poolSize="1200" maxPoolSize="1200" maxQueueSize="10" />
+		<threadPool id="charging-gateway" poolSize="1200" maxPoolSize="1200" threadName="charging-gateway"
+			camelContextId="com.ericsson.raso.sef.charginggateway" />
 		<route id="cg-engine-route-dispatch">
 			<from uri="seda:charging-gateway?concurrentConsumers=500" />
 			<camel:marshal ref="gson"/>
@@ -56,7 +66,11 @@
 			</setHeader> -->
 			<!-- <camel:bean
 					beanType="com.ericsson.raso.sef.charginggateway.ExchangeHeaderProcessor" /> -->
-			<camel:to uri="{{chargingGatewayEngineUrl}}" />
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<camel:to uri="{{chargingGatewayEngineUrl}}">
+			</camel:to>
 			<camel:unmarshal ref="gson"/>
 		</route>
 	</camelContext>

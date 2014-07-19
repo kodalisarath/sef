@@ -6,6 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		SefCoreServiceResolver.context = context;
 	}
-
+	
 	public static SqlSessionFactory getSqlSessionFactory() {
 		return SefCoreServiceResolver.context.getBean(SqlSessionFactory.class);
 	}
@@ -124,5 +125,5 @@ public class SefCoreServiceResolver implements ApplicationContextAware {
 		return SefCoreServiceResolver.context.getBean(ChargingSessionService.class);
 	}
 	
-
+	
 }

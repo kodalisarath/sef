@@ -9,11 +9,16 @@ import java.io.ObjectOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rits.cloning.Cloner;
+
 public final class CloneHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CloneHelper.class);
 	
+	private static Cloner cloner = new Cloner();
+	
 	public static <T> T deepClone(T object) {
-		T cloned = null;
+		return cloner.deepClone(object);
+		/*T cloned = null;
 		
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -45,7 +50,7 @@ public final class CloneHelper {
 			LOGGER.error("Unable to clone" + object, e);
 		}
 
-		return cloned;
+		return cloned;*/
 	}
 
 }

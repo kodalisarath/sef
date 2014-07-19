@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.core.cg.diameter;
+package com.ericsson.sm.core.diameter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -49,12 +49,4 @@ public class ChargingInfo implements Serializable {
 	public void setResultCodeAvp(ResultCodeAvp resultCodeAvp) {
 		this.resultCodeAvp = resultCodeAvp;
 	}
-
-	@Override
-	public String toString() {
-		return "ChargingInfo [uniqueMessageId=" + uniqueMessageId + ", sessionId=" + sessionId + ", avpList=" + avpList
-				+ ", resultCodeAvp=" + resultCodeAvp + "]";
-	}
-	
-	
 }

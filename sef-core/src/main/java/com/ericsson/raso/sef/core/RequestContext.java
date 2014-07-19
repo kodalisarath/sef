@@ -1,7 +1,7 @@
 package com.ericsson.raso.sef.core;
 
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.auth.Actor;
 
@@ -34,7 +34,7 @@ public class RequestContext {
 	}
 	public Map<String, Object> getRequestParameters() {
 		if (this.requestParameters == null)
-			requestParameters = new TreeMap<String, Object>();
+			requestParameters = new ConcurrentHashMap<String, Object>();
 		return requestParameters;
 	}
 	public void setRequestParameters(Map<String, Object> requestParameters) {
@@ -42,7 +42,7 @@ public class RequestContext {
 	}
 	public Map<String, Object> getInProcess() {
 		if (this.inProcess == null)
-			this.inProcess = new TreeMap<String, Object>();
+			this.inProcess = new ConcurrentHashMap<String, Object>();
 		return inProcess;
 	}
 	public void setInProcess(Map<String, Object> inProcess) {

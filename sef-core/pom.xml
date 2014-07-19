@@ -43,6 +43,7 @@
 			org.apache.ibatis.type,
 			org.apache.ibatis.exceptions,
 			org.apache.ibatis.exceptions.*,
+			org.apache.ibatis.session.*,
 			org.mybatis.spring.mapper,
 			org.springframework.aop,
 			org.springframework.aop.framework,
@@ -50,9 +51,9 @@
 			org.slf4j,
 			javax.crypto,
 			javax.xml.namespace,
-			 org.opensaml.ws,
-			 
-			 com.ericsson.pps.diameter.dccapi,
+			org.opensaml.ws,
+			com.rits.cloning,
+			com.ericsson.pps.diameter.dccapi,
  			com.ericsson.pps.diameter.dccapi.avp,
  			com.ericsson.pps.diameter.dccapi.command,
  			com.ericsson.pps.diameter.dccapi.avp.avpdatatypes,
@@ -79,6 +80,7 @@
 			com.ericsson.raso.sef.core.db,
 			com.ericsson.raso.sef.core.db.service,
 			com.ericsson.raso.sef.core.db.model,
+			com.ericsson.raso.sef.core.db.model.*,
 			com.ericsson.raso.sef.core.db.mapper,
 			com.ericsson.raso.sef.core.lb,
 			com.ericsson.raso.sef.diameter,
@@ -95,7 +97,8 @@
 			com.ericsson.raso.sef.core.cg.diameter,
 			com.ericsson.raso.sef.core.db.model.smart,
 			com.ericsson.raso.sef.core.db.service.smart,
-			com.ericsson.raso.sef.watergate
+			com.ericsson.raso.sef.watergate,
+			com.ericsson.raso.sef.core.cg.model
 		</osgi-export-package>
 	</properties>
 
@@ -306,7 +309,18 @@
 			<groupId>org.apache.ws.commons.util</groupId>
 			<artifactId>ws-commons-util</artifactId>
 			<version>1.0.2</version>
-		</dependency>		
+		</dependency>
+		
+		<dependency>
+			<groupId>uk.com.robust-it</groupId>
+        	<artifactId>cloning</artifactId>
+        	<version>1.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>2.1</version>
+		</dependency>
 
 	</dependencies>
 

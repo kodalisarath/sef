@@ -17,26 +17,36 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
 	}
 	
 	@Override
-	public void put(ChargingSession session) {
-		if (chargingSessionMapper.get(session.getSessionId()) != null) {
+	public void create(ChargingSession session) {
+/*		if (chargingSessionMapper.get(session.getSessionId()) != null) {
 			logger.debug("Will update the charging Session: " + session.getSessionId());
 			chargingSessionMapper.putExisting(session);
 		} else {
 			logger.debug("Will make new charging Session: " + session.getSessionId());
 			chargingSessionMapper.putNew(session);
-		}
+		}*/
+		
+		logger.debug("adding the charging Session: " + session);
+		chargingSessionMapper.create(session);
 	}
 
 	@Override
-	public void remove(String sessionId) {
+	public void delete(String sessionId) {
 		logger.debug("removing the charging Session: " + sessionId);
-		chargingSessionMapper.remove(sessionId);		
+		chargingSessionMapper.delete(sessionId);		
 	}
 
 	@Override
-	public ChargingSession get(String sessionId) {
+	public ChargingSession read(String sessionId) {
 		logger.debug("fetching charging Session: " + sessionId);
-		return chargingSessionMapper.get(sessionId);
+		return chargingSessionMapper.read(sessionId);
+	}
+
+	@Override
+	public void update(ChargingSession session) {
+		logger.debug("update  charging Session: " + session);
+		 chargingSessionMapper.update(session);
+		
 	}
 
 }

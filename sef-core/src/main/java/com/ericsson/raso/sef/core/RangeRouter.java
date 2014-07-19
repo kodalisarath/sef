@@ -2,13 +2,10 @@ package com.ericsson.raso.sef.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ericsson.raso.sef.core.config.Config;
 import com.ericsson.raso.sef.core.config.Range;
 import com.ericsson.raso.sef.core.config.Router;
 import com.ericsson.raso.sef.core.config.Section;

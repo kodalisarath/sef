@@ -189,17 +189,15 @@
 	</build>
 	<modules>
 		<module>../sef-core</module>
-		<module>../sef-product-catalog</module>
 		<module>../cs-af</module>
 		<module>../cs-air</module>
+		<module>../sef-product-catalog</module>
 		<module>../sef-api</module>
 		<module>../smart-frontend</module>
 		<module>../activation-scheduler</module>
 		<module>../transaction-engine</module>
 		<module>../transformation-engine</module>
 		<module>../fulfillment-engine</module>
-		<module>../smart-il-features</module>
-		<!-- <module>../charging-adapter-api</module> -->
 		<module>../sef-smpp-gateway</module>
 		<module>../charging-adapter</module>
 		<module>../charging-gateway</module>

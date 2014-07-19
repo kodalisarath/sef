@@ -60,6 +60,7 @@
 		com.nsn.ossbss.charge_once.wsdl.entity.tis.wsdl._1,
 		com.nsn.ossbss.charge_once.wsdl.entity.tis.xsd._1,
 		com.ericsson.sef.scheduler.common,
+		com.ericsson.raso.sef.smart.commons.*,
 		</osgi-export-package>
   </properties>
 

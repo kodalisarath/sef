@@ -2,7 +2,7 @@ package com.ericsson.raso.sef.core.db.service.internal;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.core.db.mapper.AgreementMapper;
 import com.ericsson.raso.sef.core.db.model.AgreementDto;
@@ -18,7 +18,7 @@ public class ProviderServiceImpl implements ProviderService {
 	
 	@Override
 	public Map<String, Integer> getSLAAllowedRequestsForProvider() {
-		Map<String, Integer> providerRequestsMap = new TreeMap<String, Integer>();
+		Map<String, Integer> providerRequestsMap = new ConcurrentHashMap<String, Integer>();
 		Collection<AgreementDto> agreements = agreementMapper.getAllAgreementsWithMeta();
 		for (AgreementDto agreementDto : agreements) {
 			try {

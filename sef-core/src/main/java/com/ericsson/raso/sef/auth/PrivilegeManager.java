@@ -53,7 +53,7 @@ import static com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple.SERV
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.auth.permissions.AuthorizationPrinciple;
 import com.ericsson.raso.sef.auth.permissions.Permission;
@@ -107,7 +107,7 @@ public class PrivilegeManager implements IPrivilegeManager {
 	@Override
 	public boolean createPermission(Privilege privilege) throws AuthAdminException {
 		if (this.privileges == null) 
-			this.privileges = new TreeMap<AuthorizationPrinciple, Privilege>();
+			this.privileges = new ConcurrentHashMap<AuthorizationPrinciple, Privilege>();
 		
 		if (this.privileges.containsKey(privilege.getName()))
 			throw new AuthAdminException("Duplicate Privilege [" + privilege + "] cannot be created.");
@@ -355,7 +355,7 @@ public class PrivilegeManager implements IPrivilegeManager {
 				
 		// Load up the store with defaults....
 		if (this.privileges == null)
-			this.privileges = new TreeMap<AuthorizationPrinciple, Privilege>();
+			this.privileges = new ConcurrentHashMap<AuthorizationPrinciple, Privilege>();
 		
 		this.privileges.put(ACCESS_READ_ONLY, readOnly);
 		this.privileges.put(ACCESS_CREATE_NEW, create);

@@ -50,12 +50,19 @@ public class SefScapChargingApi implements ScapChargingApi {
 		IConfig config = SefCoreServiceResolver.getConfigService();	
 		DiameterStackBuilder builder = new DiameterStackBuilder(Stack.SCAPV2);
 		
+		String fqdn = System.getenv("SCAPFQDN");
+		
+		if (fqdn.isEmpty() || fqdn == null) {
+			fqdn = SmCoreUtil.getServerIP(config.getValue("scapClient", Constants.ETHINTERFACE));
+		}
+		log.error("Discovered fqdn: " + fqdn);
+		
 		log.debug("Value getting picked from properties file: "+config.getValue("scapClient",Constants.PRODUCTID));
 		builder.ownProductId(config.getValue("scapClient",Constants.PRODUCTID));
 		builder.ownRealm(config.getValue("scapClient",Constants.REALM));
-		builder.fqdn(config.getValue("scapClient",Constants.FQDN));
+		builder.fqdn(fqdn.trim());
 		builder.tcpPort(Integer.valueOf(config.getValue("scapClient",Constants.OWNTCPPORT)));
-		builder.ownIpAddress(SmCoreUtil.getServerIP(config.getValue("scapClient",Constants.ETHINTERFACE)));
+		builder.ownIpAddress(SmCoreUtil.getServerIP(config.getValue("scapClient", Constants.ETHINTERFACE)));
 		List<Member> routes = StaticRoutes();
 		for (Member staticRoute : routes) {
 			builder.addStaticRoute(staticRoute.getRealm(), staticRoute.getAddress());

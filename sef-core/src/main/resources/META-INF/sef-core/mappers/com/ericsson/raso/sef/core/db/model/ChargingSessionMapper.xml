@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ericsson.raso.sef.core.db.mapper.smart.ChargingSessionMapper">
+
+	<resultMap id="ChargingSessionResult" type="ChargingSession">
+		<id property="sessionId" column="session_id" />
+		<result property="hostId" column="host_id" />
+		<result property="msisdn" column="msisdn" />
+		<result property="creationTime" column="creation_Time" />
+		<result property="requestAVPMapInJSONFormat" column="request_AVP" />
+		<result property="responseAvpMapInJSONFormat" column="response_AVP" />
+		<result property="transactionStatus" column="transaction_Status" />
+	</resultMap>
+
+	<insert id="create" parameterType="ChargingSession">
+		insert into
+		charging_session
+		(session_id,msisdn,host_id,creation_time)
+		values
+		(#{sessionId},#{msisdn},#{hostId},#{creationTime
+		jdbcType=TIMESTAMP})
+	</insert>
+
+
+	<select id="read" resultMap="ChargingSessionResult"
+		parameterType="String">
+		select host_id,msisdn,creation_Time,request_AVP,response_AVP,transaction_Status
+		from charging_session
+		where session_id = #{sessionId}
+	</select>
+	
+	
+	<!-- <select id="read" resultMap="ChargingSessionResult"
+		parameterType="String">
+		select host_id,msisdn,creation_Time
+		from charging_session
+		where session_id = #{sessionId}
+	</select> -->
+	
+	<delete id="delete" parameterType="String" flushCache="true" >
+	delete from charging_session where session_id=#{sessionId}
+	</delete>
+	
+	<update id="update" parameterType="ChargingSession" flushCache="true">
+		update charging_session set request_AVP = #{requestAVPMapInJSONFormat}, response_AVP=#{responseAvpMapInJSONFormat},transaction_Status=#{transactionStatus} where session_id = #{sessionId}
+	</update>
+
+</mapper>

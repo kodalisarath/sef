@@ -2,6 +2,7 @@ package com.ericsson.raso.sef.core.lb;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +10,10 @@ import org.slf4j.LoggerFactory;
 public class RoundRobinLoadBalancer implements LoadBalancer {
 
 	private String name;
-	private int counter = -1;
+	private AtomicInteger counter = new AtomicInteger(0);
 	private final List<Member> pool = new CopyOnWriteArrayList<Member>();
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	public RoundRobinLoadBalancer(String name) {
 		this.name = name;
 	}
@@ -38,20 +40,35 @@ public class RoundRobinLoadBalancer implements LoadBalancer {
 	@Override
 	public Member getRoute() {
 		int size = pool.size();
-		if (++counter >= size) {
-			counter = 0;
+		logger.debug("Pool Size: {}", size);
+		if (size <= 0) {
+			throw new IllegalStateException("[RoundRobinLoadBalancer] Pool is empty!.");
 		}
-		return pool.get(counter);
+
+		int target = counter.getAndIncrement();
+		while (target >= size) {
+			counter.set(0); // reset counter
+			target = counter.getAndIncrement();
+		}
+
+		return pool.get(target);
 	}
 
 	@Override
 	public Member chooseRoute() {
 		int size = pool.size();
-		logger.debug("Pool Size: "+size);
-		if (++counter >= size) {
-			counter = 0;
+		logger.debug("Pool Size: {}", size);
+		if (size <= 0) {
+			throw new IllegalStateException("[RoundRobinLoadBalancer] Pool is empty!.");
 		}
-		return pool.get(counter);
+
+		int target = counter.getAndIncrement();
+		while (target >= size) {
+			counter.set(0); // reset counter
+			target = counter.getAndIncrement();
+		}
+
+		return pool.get(target);
 	}
 
 }

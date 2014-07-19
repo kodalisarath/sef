@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.auth.permissions.Privilege;
 
@@ -44,7 +44,7 @@ public class Actor implements Serializable {
 
 	private String name = null;
 	private Map<String, User> identities = null;
-	private Map<String, Group> memberships = new TreeMap<String, Group>();
+	private Map<String, Group> memberships = new ConcurrentHashMap<String, Group>();
 	private Map<String, Object> metas = null;
 
 	public Actor(String name) {
@@ -145,7 +145,7 @@ public class Actor implements Serializable {
 
 	public boolean addIdentity(User userIdentity) throws AuthAdminException {
 		if (this.identities == null) {
-			this.identities = new TreeMap<String, User>();
+			this.identities = new ConcurrentHashMap<String, User>();
 		}
 
 		if (this.identities.containsKey(userIdentity.getName())) {
@@ -209,9 +209,9 @@ public class Actor implements Serializable {
 			return false;
 
 		if (this.memberships == null)
-			this.memberships = new TreeMap<String, Group>();
+			this.memberships = new ConcurrentHashMap<String, Group>();
 
-		this.memberships = new TreeMap<String, Group>();
+		this.memberships = new ConcurrentHashMap<String, Group>();
 
 		if (!this.memberships.containsKey(group.getName()))
 			this.memberships.put(group.getName(), group);
@@ -305,7 +305,7 @@ public class Actor implements Serializable {
 	public void addMeta(String metaName, Object value)
 			throws AuthAdminException {
 		if (this.metas == null)
-			this.metas = new TreeMap<String, Object>();
+			this.metas = new ConcurrentHashMap<String, Object>();
 
 		if (this.metas.containsKey(metaName))
 			throw new AuthAdminException("Duplicate Meta: " + metaName + " = "

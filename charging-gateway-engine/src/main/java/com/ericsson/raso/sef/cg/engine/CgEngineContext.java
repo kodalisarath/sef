@@ -30,9 +30,9 @@ public class CgEngineContext implements ApplicationContextAware {
 		return "charging-gateway";
 	}
 	
-	public static IpcCluster getIpcCluster() {
+/*	public static IpcCluster getIpcCluster() {
 		return context.getBean(IpcCluster.class);
-	}
+	}*/
 	
 /*	public static SubscriberManagement getSubscriberManagement() {
 		return context.getBean(SubscriberManagement.class);

@@ -51,13 +51,13 @@ public class DirectDebitTask implements Task<Void> {
 
 	@Override
 	public Void execute() throws SmException, PersistenceError {
-		log.debug("...Processing DirectDebitTask....");
+		log.error("...Processing DirectDebitTask....");
 		Map<String, String> metas = toMap(chargingInformation.getDescription());
 		/*Subscriber subscriber = CaContext.getSubscriberService().getSubscriber(requestId, msisdn);
 		String site = subscriber.getMetaValue(Subscriber.subscriberSite);*/
 		String site = "MANILA";
 		Member route = CaContext.getChargingApi().getLoadBalancerPool().getMemberBySite(site);
-		log.debug("HostId: "+route.getHostId());
+		log.error("HostId: " + route.getHostId());
 		Ccr ccr = CaContext.getChargingApi().createScapCcr(requestId, route.getHostId());
 		ccr.setEventTimestamp(new Time(new Date(System.currentTimeMillis())));
 		ccr.setCCRequestNumber(0);
@@ -71,7 +71,7 @@ public class DirectDebitTask implements Task<Void> {
 
 		ServiceParameterInfoAvp spinfo = new ServiceParameterInfoAvp();
 		spinfo.addSubAvp(new ServiceParameterTypeAvp(203));
-		log.debug("Channel Name :"+metas.get(Constants.CHANNEL_NAME));
+		log.error("Channel Name :" + metas.get(Constants.CHANNEL_NAME));
 		spinfo.addSubAvp(new ServiceParameterValueAvp(metas.get(Constants.CHANNEL_NAME).getBytes()));
 		//spinfo.addSubAvp(new ServiceParameterValueAvp("MOBILE".getBytes()));
 		ccr.addAvp(spinfo);
@@ -100,7 +100,7 @@ public class DirectDebitTask implements Task<Void> {
 				throw new SmException(new ResponseCode(cca.getResultCode().intValue(), "Direct debit failure"));
 			}
 			else if(cca.getResultCode()==2001){
-				log.debug("Success DirectDebit request");
+				log.error("Success DirectDebit request");
 			}
 		} catch (SmException s) {
 			throw s;

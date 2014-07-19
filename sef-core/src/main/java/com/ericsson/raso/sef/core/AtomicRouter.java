@@ -1,8 +1,8 @@
 package com.ericsson.raso.sef.core;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,8 @@ public class AtomicRouter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AtomicRouter.class);
 	
 	private boolean isAvailable = false;
-	private TreeMap<String, Value> values = new TreeMap<String, Value>();
-	private TreeSet<Range> ranges = new TreeSet<Range>();
+	private ConcurrentHashMap<String, Value> values = new ConcurrentHashMap<String, Value>();
+	private HashSet<Range> ranges = new HashSet<Range>();
 	
 	protected Value locateRoute(long searched) {
 		for (Range range: this.ranges) {

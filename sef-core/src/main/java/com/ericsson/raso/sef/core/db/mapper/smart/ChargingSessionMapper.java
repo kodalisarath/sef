@@ -4,12 +4,17 @@ import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
 
 public interface ChargingSessionMapper {
 	
-	public void putNew(ChargingSession chargingSession);
+	/*public void putNew(ChargingSession chargingSession);
 	
-	public void putExisting(ChargingSession chargingSession);
+	public void putExisting(ChargingSession chargingSession);*/
 	
-	public void remove(String sessionId);
+	public void delete(String sessionId);
 	
-	public ChargingSession get(String sessionId);
+	public ChargingSession read(String sessionId);
+	
+	public void create(ChargingSession chargingSession);
+	
+	public void update(ChargingSession chargingSession);
+	
 	
 }

@@ -42,13 +42,14 @@ import com.ericsson.pps.diameter.scapv2.avp.TimeZoneAvp;
 import com.ericsson.pps.diameter.scapv2.avp.TrafficCaseAvp;
 import com.ericsson.raso.sef.cg.engine.CgEngineContext;
 import com.ericsson.raso.sef.cg.engine.ChargingRequest;
-import com.ericsson.raso.sef.cg.engine.Operation;
-import com.ericsson.raso.sef.cg.engine.Operation.Type;
 import com.ericsson.raso.sef.cg.engine.ResponseCodeUtil;
 import com.ericsson.raso.sef.core.PerformanceStatsLogger;
+import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.core.cg.diameter.ChargingInfo;
 import com.ericsson.raso.sef.core.cg.diameter.DiameterErrorCode;
+import com.ericsson.raso.sef.core.cg.model.Operation;
+import com.ericsson.raso.sef.core.cg.model.Operation.Type;
 import com.ericsson.raso.sef.core.cg.nsn.avp.AccessFrontendIdAvp;
 import com.ericsson.raso.sef.core.cg.nsn.avp.CalculatedAmountAvp;
 import com.ericsson.raso.sef.core.cg.nsn.avp.ConsumerAccountIdAvp;
@@ -70,20 +71,32 @@ public abstract class AbstractChargingProcessor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-log.debug("AbstractChargingProcessor process");
+		
+		try
+		{
+			if(log.isDebugEnabled())
+		log.debug("AbstractChargingProcessor process");
 		ChargingRequest request = (ChargingRequest) exchange.getIn().getBody();
-		log.debug("AbstractChargingProcessor ChargingRequest "+request);
+		if(log.isDebugEnabled())
+		log.debug("AbstractChargingProcessor ChargingRequest " + request);
 		Ccr sourceCcr = request.getSourceCcr();
-		log.debug("AbstractChargingProcessor sourceCcr "+sourceCcr);
+		if(log.isDebugEnabled())
+		log.debug("AbstractChargingProcessor sourceCcr " + sourceCcr);
 		Ccr scapCcr = toScapCcr(sourceCcr, request);
-		log.debug("AbstractChargingProcessor sourceCcr "+scapCcr);
+		if(log.isDebugEnabled())
+		log.debug("AbstractChargingProcessor sourceCcr " + scapCcr);
 		preProcess(request, scapCcr);
-
+		if(log.isDebugEnabled())
+		log.debug("AbstractChargingProcessor request after preProcess " + request);
+		if(log.isDebugEnabled())
+		log.debug("AbstractChargingProcessor scapCcr REQ.OUT: " + scapCcr);
 		long startTime = System.currentTimeMillis();
 		Cca cca = scapCcr.send();
-		log.debug("AbstractChargingProcessor cca "+cca);
-		PerformanceStatsLogger.log("CCN", System.currentTimeMillis()
-				- startTime);
+		if(log.isDebugEnabled())
+		log.debug("AbstractChargingProcessor cca " + cca);
+		PerformanceStatsLogger.log("CCN", System.currentTimeMillis() - startTime);
+		if(log.isDebugEnabled())
+		log.debug("RES.IN: cca " + cca);
 
 		ChargingInfo response = new ChargingInfo();
 		response.setUniqueMessageId(request.getMessageId());
@@ -94,14 +107,37 @@ log.debug("AbstractChargingProcessor process");
 		response.setAvpList(resultAvps);
 
 		postProcess(request, response, cca);
+		if(log.isDebugEnabled())
+		log.debug("AbstractChargingProcessor request after postProcess " + request);
+		
 
+		if(request.getOperation().getType() != Type.NO_TRANSACTION)
+		{
+		
+			SefCoreServiceResolver.getChargingSessionService().update(request.getChargingSession());
+			if(log.isDebugEnabled())
+				log.debug("AbstractChargingProcessor DB update successfully ");
+				
+		}
+		else
+		{
+			if(log.isDebugEnabled())
+				log.debug("AbstractChargingProcessor No DB update requred: Operation is "+request.getOperation());
+			
+		}
+		
 		exchange.getOut().setBody(response);
+
+		}
+	 catch (Exception e) {
+
+		log.error("Exception caught in AbstractChargingProcessor", e);
+		throw e;}
+	
 	}
 
-	protected Ccr toScapCcr(Ccr sourceCcr, ChargingRequest request)
-			throws AvpDataException, SmException {
-		Ccr scapCcr = CgEngineContext.getChargingApi().createScapCcr(
-				sourceCcr.getSessionId(), request.getHostId());
+	protected Ccr toScapCcr(Ccr sourceCcr, ChargingRequest request) throws AvpDataException, SmException {
+		Ccr scapCcr = CgEngineContext.getChargingApi().createScapCcr(sourceCcr.getSessionId(), request.getHostId());
 
 		String handle = "";
 		scapCcr.addAvp(new CCRequestNumberAvp(getRequestNumber()));
@@ -111,11 +147,9 @@ log.debug("AbstractChargingProcessor process");
 		if (sourceCcr.getRequestedAction() != null)
 			scapCcr.setRequestedAction(sourceCcr.getRequestedAction());
 
-		if (sourceCcr.getRequestedAction() != null
-				&& sourceCcr.getRequestedAction() != 0) {
+		if (sourceCcr.getRequestedAction() != null && sourceCcr.getRequestedAction() != 0) {
 			if (sourceCcr.getMultipleServicesIndicator() != null) {
-				scapCcr.addAvp(new MultipleServicesIndicatorAvp(sourceCcr
-						.getMultipleServicesIndicator()));
+				scapCcr.addAvp(new MultipleServicesIndicatorAvp(sourceCcr.getMultipleServicesIndicator()));
 			}
 		}
 
@@ -128,55 +162,42 @@ log.debug("AbstractChargingProcessor process");
 		scapCcr.addAvp(new TimeZoneAvp((byte) 11, (byte) 0, (byte) 0));
 
 		MerchantIdAvp merchantIdAvp = null;
-		ServiceInfoAvp serviceInfoAvp = new ServiceInfoAvp(
-				sourceCcr.getAvp(ServiceInfoAvp.AVP_CODE));
+		ServiceInfoAvp serviceInfoAvp = new ServiceInfoAvp(sourceCcr.getAvp(ServiceInfoAvp.AVP_CODE));
 		if (serviceInfoAvp != null) {
 			PPIInformationAvp ppi = serviceInfoAvp.getPpiInformationAvp();
 			if (ppi != null) {
-				AccessFrontendIdAvp accessFrontendIdAvp = ppi
-						.getAccessFrontendIdAvp();
+				AccessFrontendIdAvp accessFrontendIdAvp = ppi.getAccessFrontendIdAvp();
 				if (accessFrontendIdAvp != null) {
-					scapCcr.addAvp(accessFrontendIdAvp
-							.convertToServiceParameterInfoAvp());
+					scapCcr.addAvp(accessFrontendIdAvp.convertToServiceParameterInfoAvp());
 				}
 
-				TransparentDataAvp transparentDataAvp = ppi
-						.getTransparentData();
+				TransparentDataAvp transparentDataAvp = ppi.getTransparentData();
 				if (transparentDataAvp != null) {
-					scapCcr.addAvp(transparentDataAvp
-							.convertToServiceParameterInfoAvp());
+					scapCcr.addAvp(transparentDataAvp.convertToServiceParameterInfoAvp());
 				}
 
-				ConsumerAccountIdAvp consumerAccountIdAvp = ppi
-						.getConsumerAccountIdAvp();
+				ConsumerAccountIdAvp consumerAccountIdAvp = ppi.getConsumerAccountIdAvp();
 				if (consumerAccountIdAvp != null) {
-					scapCcr.addAvp(consumerAccountIdAvp
-							.convertToServiceParameterInfoAvp());
+					scapCcr.addAvp(consumerAccountIdAvp.convertToServiceParameterInfoAvp());
 				}
 
 				merchantIdAvp = ppi.getMerchantIdAvp();
 				if (merchantIdAvp != null) {
-					scapCcr.addAvp(merchantIdAvp
-							.convertToServiceParameterInfoAvp());
+					scapCcr.addAvp(merchantIdAvp.convertToServiceParameterInfoAvp());
 				}
 
 				ProductIdAvp productIdAvp = ppi.getProductdIdAvp();
 				if (productIdAvp != null) {
-					scapCcr.addAvp(productIdAvp
-							.convertToServiceParameterInfoAvp());
+					scapCcr.addAvp(productIdAvp.convertToServiceParameterInfoAvp());
 					handle = productIdAvp.getValue();
-					
-					log.debug("ProductIdAvp Value:" + productIdAvp.getValue()
-							+ " ProductIdAvp Code " + productIdAvp.getAvpCode()
-							+ " ProductIdAvp name " + productIdAvp.getName()
-							+ " ProductIdAvp  " + productIdAvp);
+
+					log.debug("ProductIdAvp Value:" + productIdAvp.getValue() + " ProductIdAvp Code " + productIdAvp.getAvpCode()
+							+ " ProductIdAvp name " + productIdAvp.getName() + " ProductIdAvp  " + productIdAvp);
 				}
-				
 
 				PurposeAvp purposeAvp = ppi.getPurposeAvp();
 				if (purposeAvp != null) {
-					scapCcr.addAvp(purposeAvp
-							.convertToServiceParameterInfoAvp());
+					scapCcr.addAvp(purposeAvp.convertToServiceParameterInfoAvp());
 					if (purposeAvp.getAsUTF8String().contains("predefined")) {
 						scapCcr.addAvp(new ServiceIdentifierAvp(7001));
 					} else {
@@ -190,36 +211,29 @@ log.debug("AbstractChargingProcessor process");
 			}
 		}
 
-		Avp multipleServiceCreditControlAvp = sourceCcr
-				.getAvp(MultipleServicesCreditControlAvp.AVP_CODE);
+		Avp multipleServiceCreditControlAvp = sourceCcr.getAvp(MultipleServicesCreditControlAvp.AVP_CODE);
 		CreditControl control = new CreditControl();
 		if (multipleServiceCreditControlAvp != null) {
-			control = createCreditControlAvp(multipleServiceCreditControlAvp,
-					scapCcr, request);
-			scapCcr.addAvp(control.getAvp().getSubAvp(
-					RequestedServiceUnitAvp.AVP_CODE));
+			control = createCreditControlAvp(multipleServiceCreditControlAvp, scapCcr, request);
+			scapCcr.addAvp(control.getAvp().getSubAvp(RequestedServiceUnitAvp.AVP_CODE));
 		}
 
-		if (merchantIdAvp != null
-				&& merchantIdAvp.getAsUTF8String().equalsIgnoreCase("pasaload")) {
-			PasaloadValidationTask pasaloadValidationTask = new PasaloadValidationTask(
-					request.getMsisdn(), control.getMoney(), handle);
+		if (merchantIdAvp != null && merchantIdAvp.getAsUTF8String().equalsIgnoreCase("pasaload")) {
+			PasaloadValidationTask pasaloadValidationTask = new PasaloadValidationTask(request.getMsisdn(), control.getMoney(), handle);
 			pasaloadValidationTask.execute();
 		}
 
 		return scapCcr;
 	}
 
-	protected List<Avp> toNsnAnswer(Cca cca, ChargingInfo response,
-			ChargingRequest chargingRequest) throws AvpDataException {
+	protected List<Avp> toNsnAnswer(Cca cca, ChargingInfo response, ChargingRequest chargingRequest) throws AvpDataException {
 		List<Avp> answerAvp = new ArrayList<Avp>();
 
 		try {
 			answerAvp.add(new CCRequestNumberAvp(getRequestNumber()));
 			answerAvp.add(new CCRequestTypeAvp(cca.getCCRequestType()));
 
-			Long resultCode = ResponseCodeUtil.getMappedResultCode(cca
-					.getResultCode());
+			Long resultCode = ResponseCodeUtil.getMappedResultCode(cca.getResultCode());
 			ResultCodeAvp resultCodeAvp = new ResultCodeAvp(resultCode);
 			response.setResultCodeAvp(resultCodeAvp);
 			answerAvp.add(resultCodeAvp);
@@ -228,8 +242,7 @@ log.debug("AbstractChargingProcessor process");
 
 			int extCode = 0;
 			if (cca.getAvp(ResultCodeExtensionAvp.AVP_CODE) != null) {
-				ResultCodeExtensionAvp codeExtensionAvp = new ResultCodeExtensionAvp(
-						cca.getAvp(ResultCodeExtensionAvp.AVP_CODE));
+				ResultCodeExtensionAvp codeExtensionAvp = new ResultCodeExtensionAvp(cca.getAvp(ResultCodeExtensionAvp.AVP_CODE));
 
 				if (codeExtensionAvp != null) {
 					extCode = codeExtensionAvp.getAsInt();
@@ -237,11 +250,9 @@ log.debug("AbstractChargingProcessor process");
 			}
 			ExperimentalResultAvp experimentalResultAvp = new ExperimentalResultAvp();
 			experimentalResultAvp.addSubAvp(new VendorIdAvp(28458));
-			Long experimentalResultCode = ResponseCodeUtil
-					.getMappedExperimentalResultCode(resultCode, extCode);
+			Long experimentalResultCode = ResponseCodeUtil.getMappedExperimentalResultCode(resultCode, extCode);
 			if (experimentalResultCode != null) {
-				experimentalResultAvp.addSubAvp(new ExperimentalResultCodeAvp(
-						experimentalResultCode));
+				experimentalResultAvp.addSubAvp(new ExperimentalResultCodeAvp(experimentalResultCode));
 				answerAvp.add(experimentalResultAvp);
 			}
 
@@ -264,24 +275,18 @@ log.debug("AbstractChargingProcessor process");
 			}
 
 			if (cca.getAvp(CostInformationAvp.AVP_CODE) != null) {
-				CostInformationAvp costInfoAvp = new CostInformationAvp(
-						cca.getAvp(CostInformationAvp.AVP_CODE));
+				CostInformationAvp costInfoAvp = new CostInformationAvp(cca.getAvp(CostInformationAvp.AVP_CODE));
 
 				if (costInfoAvp != null) {
-					UnitValueAvp unitValAvp = new UnitValueAvp(
-							costInfoAvp.getSubAvp(UnitValueAvp.AVP_CODE));
-					ValueDigitsAvp valueDigitsAvp = new ValueDigitsAvp(
-							unitValAvp.getSubAvp(ValueDigitsAvp.AVP_CODE));
+					UnitValueAvp unitValAvp = new UnitValueAvp(costInfoAvp.getSubAvp(UnitValueAvp.AVP_CODE));
+					ValueDigitsAvp valueDigitsAvp = new ValueDigitsAvp(unitValAvp.getSubAvp(ValueDigitsAvp.AVP_CODE));
 
-					ExponentAvp exponentAvp = new ExponentAvp(
-							unitValAvp.getSubAvp(ExponentAvp.AVP_CODE));
+					ExponentAvp exponentAvp = new ExponentAvp(unitValAvp.getSubAvp(ExponentAvp.AVP_CODE));
 
-					double val = valueDigitsAvp.getAsLong()
-							* (Math.pow(10, exponentAvp.getAsInt()));
+					double val = valueDigitsAvp.getAsLong() * (Math.pow(10, exponentAvp.getAsInt()));
 					long pesoInCents = (long) (val * 100);
 
-					CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(
-							pesoInCents);
+					CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(pesoInCents);
 
 					ppi.addSubAvp(calculatedAmountAvp);
 				}
@@ -290,36 +295,22 @@ log.debug("AbstractChargingProcessor process");
 
 					Avp avp = cca.getAvp(GrantedServiceUnitAvp.AVP_CODE);
 					if (avp != null) {
-						GrantedServiceUnitAvp grantedSerUnitAvp = new GrantedServiceUnitAvp(
-								avp);
+						GrantedServiceUnitAvp grantedSerUnitAvp = new GrantedServiceUnitAvp(avp);
 						if (grantedSerUnitAvp != null) {
-							if (grantedSerUnitAvp
-									.getSubAvp(CCMoneyAvp.AVP_CODE) != null) {
-								CCMoneyAvp ccMoneyAvp = new CCMoneyAvp(
-										grantedSerUnitAvp
-												.getSubAvp(CCMoneyAvp.AVP_CODE));
-								UnitValueAvp unitValAvp = new UnitValueAvp(
-										ccMoneyAvp
-												.getSubAvp(UnitValueAvp.AVP_CODE));
-								ValueDigitsAvp valueDigitsAvp = new ValueDigitsAvp(
-										unitValAvp
-												.getSubAvp(ValueDigitsAvp.AVP_CODE));
-								ExponentAvp exponentAvp = new ExponentAvp(
-										unitValAvp
-												.getSubAvp(ExponentAvp.AVP_CODE));
+							if (grantedSerUnitAvp.getSubAvp(CCMoneyAvp.AVP_CODE) != null) {
+								CCMoneyAvp ccMoneyAvp = new CCMoneyAvp(grantedSerUnitAvp.getSubAvp(CCMoneyAvp.AVP_CODE));
+								UnitValueAvp unitValAvp = new UnitValueAvp(ccMoneyAvp.getSubAvp(UnitValueAvp.AVP_CODE));
+								ValueDigitsAvp valueDigitsAvp = new ValueDigitsAvp(unitValAvp.getSubAvp(ValueDigitsAvp.AVP_CODE));
+								ExponentAvp exponentAvp = new ExponentAvp(unitValAvp.getSubAvp(ExponentAvp.AVP_CODE));
 
-								double val = valueDigitsAvp.getAsLong()
-										* (Math.pow(10, exponentAvp.getAsInt()));
+								double val = valueDigitsAvp.getAsLong() * (Math.pow(10, exponentAvp.getAsInt()));
 								long pesoInCents = (long) (val * 100);
-								CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(
-										pesoInCents);
+								CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(pesoInCents);
 								ppi.addSubAvp(calculatedAmountAvp);
 							} else {
 								CCServiceSpecificUnitsAvp ccSerSpecUnitsAvp = new CCServiceSpecificUnitsAvp(
-										grantedSerUnitAvp
-												.getSubAvp(CCServiceSpecificUnitsAvp.AVP_CODE));
-								CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(
-										ccSerSpecUnitsAvp.getAsLong() / 100);
+										grantedSerUnitAvp.getSubAvp(CCServiceSpecificUnitsAvp.AVP_CODE));
+								CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(ccSerSpecUnitsAvp.getAsLong() / 100);
 								ppi.addSubAvp(calculatedAmountAvp);
 							}
 						}
@@ -328,34 +319,23 @@ log.debug("AbstractChargingProcessor process");
 				if (chargingRequest.getOperation() == Operation.COMMIT) {
 					Avp avp = cca.getAvp(UsedServiceUnitAvp.AVP_CODE);
 					if (avp != null) {
-						UsedServiceUnitAvp usedServiceUnitAvp = new UsedServiceUnitAvp(
-								avp);
+						UsedServiceUnitAvp usedServiceUnitAvp = new UsedServiceUnitAvp(avp);
 						if (usedServiceUnitAvp.getSubAvp(CCMoneyAvp.AVP_CODE) != null) {
-							CCMoneyAvp ccMoneyAvp = new CCMoneyAvp(
-									usedServiceUnitAvp
-											.getSubAvp(CCMoneyAvp.AVP_CODE));
-							UnitValueAvp unitValAvp = new UnitValueAvp(
-									ccMoneyAvp.getSubAvp(UnitValueAvp.AVP_CODE));
-							ValueDigitsAvp valueDigitsAvp = new ValueDigitsAvp(
-									unitValAvp
-											.getSubAvp(ValueDigitsAvp.AVP_CODE));
+							CCMoneyAvp ccMoneyAvp = new CCMoneyAvp(usedServiceUnitAvp.getSubAvp(CCMoneyAvp.AVP_CODE));
+							UnitValueAvp unitValAvp = new UnitValueAvp(ccMoneyAvp.getSubAvp(UnitValueAvp.AVP_CODE));
+							ValueDigitsAvp valueDigitsAvp = new ValueDigitsAvp(unitValAvp.getSubAvp(ValueDigitsAvp.AVP_CODE));
 
-							ExponentAvp exponentAvp = new ExponentAvp(
-									unitValAvp.getSubAvp(ExponentAvp.AVP_CODE));
+							ExponentAvp exponentAvp = new ExponentAvp(unitValAvp.getSubAvp(ExponentAvp.AVP_CODE));
 
-							double val = valueDigitsAvp.getAsLong()
-									* (Math.pow(10, exponentAvp.getAsInt()));
+							double val = valueDigitsAvp.getAsLong() * (Math.pow(10, exponentAvp.getAsInt()));
 							long pesoInCents = (long) (val * 100);
 
-							CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(
-									pesoInCents);
+							CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(pesoInCents);
 							ppi.addSubAvp(calculatedAmountAvp);
 						} else {
 							CCServiceSpecificUnitsAvp ccSerSpecUnitsAvp = new CCServiceSpecificUnitsAvp(
-									usedServiceUnitAvp
-											.getSubAvp(CCServiceSpecificUnitsAvp.AVP_CODE));
-							CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(
-									ccSerSpecUnitsAvp.getAsLong() / 100);
+									usedServiceUnitAvp.getSubAvp(CCServiceSpecificUnitsAvp.AVP_CODE));
+							CalculatedAmountAvp calculatedAmountAvp = new CalculatedAmountAvp(ccSerSpecUnitsAvp.getAsLong() / 100);
 							ppi.addSubAvp(calculatedAmountAvp);
 						}
 					}
@@ -368,14 +348,12 @@ log.debug("AbstractChargingProcessor process");
 		} catch (AvpDataException e) {
 			log.error("error during iterating AVP", e);
 			answerAvp.clear();
-			answerAvp.add(new ResultCodeAvp(
-					DiameterErrorCode.DIAMETER_UNABLE_TO_COMPLY.getCode()));
+			answerAvp.add(new ResultCodeAvp(DiameterErrorCode.DIAMETER_UNABLE_TO_COMPLY.getCode()));
 		}
 		return answerAvp;
 	}
 
-	private CreditControl createCreditControlAvp(Avp cc, Ccr scapCcr,
-			ChargingRequest request) throws AvpDataException {
+	private CreditControl createCreditControlAvp(Avp cc, Ccr scapCcr, ChargingRequest request) throws AvpDataException {
 		CreditControl control = new CreditControl();
 		MultipleServicesCreditControlAvp ccAvp = new MultipleServicesCreditControlAvp();
 		control.setAvp(ccAvp);
@@ -383,52 +361,40 @@ log.debug("AbstractChargingProcessor process");
 			List<Avp> avps = cc.getDataAsGroup();
 			for (Avp rsu : avps) {
 				if (rsu.getAvpCode() == RequestedServiceUnitAvp.AVP_CODE) {
-					RequestedServiceUnitAvp su = new RequestedServiceUnitAvp(
-							rsu);
+					RequestedServiceUnitAvp su = new RequestedServiceUnitAvp(rsu);
 					RequestedServiceUnitAvp requestedServiceUnitAvp = new RequestedServiceUnitAvp();
 
 					CCServiceSpecificUnitsAvp avpCcServiceSpecificUnitsAvp = null;
 					CCMoneyAvp moneyAvp = null;
 
 					if (request.getOperation() == Operation.CANCEL)
-						avpCcServiceSpecificUnitsAvp = new CCServiceSpecificUnitsAvp(
-								0);
+						avpCcServiceSpecificUnitsAvp = new CCServiceSpecificUnitsAvp(0);
 					else {
 						Avp money = su.getSubAvp(CCMoneyAvp.AVP_CODE);
 						if (money != null) {
 							for (Avp avp : money.getDataAsGroup()) {
 								if (avp.getAvpCode() == UnitValueAvp.AVP_CODE) {
 									UnitValueAvp unit = new UnitValueAvp(avp);
-									ValueDigitsAvp value = new ValueDigitsAvp(
-											unit.getSubAvp(ValueDigitsAvp.AVP_CODE));
+									ValueDigitsAvp value = new ValueDigitsAvp(unit.getSubAvp(ValueDigitsAvp.AVP_CODE));
 									control.setMoney(value.getAsLong());
 									if (request.getOperation() == Operation.DIRECT_DEBIT
-											&& scapCcr
-													.getAvp(ServiceIdentifierAvp.AVP_CODE)
-													.getAsInt() == 7002) {
+											&& scapCcr.getAvp(ServiceIdentifierAvp.AVP_CODE).getAsInt() == 7002) {
 										moneyAvp = new CCMoneyAvp();
-										moneyAvp.addSubAvp(new CurrencyCodeAvp(
-												608));
+										moneyAvp.addSubAvp(new CurrencyCodeAvp(608));
 										UnitValueAvp unitValueAvp = new UnitValueAvp();
-										unitValueAvp
-												.addSubAvp(unit
-														.getSubAvp(ValueDigitsAvp.AVP_CODE));
+										unitValueAvp.addSubAvp(unit.getSubAvp(ValueDigitsAvp.AVP_CODE));
 										unitValueAvp.addExponent(-2);
 										moneyAvp.addSubAvp(unitValueAvp);
 									} else
-										avpCcServiceSpecificUnitsAvp = new CCServiceSpecificUnitsAvp(
-												value.getAsLong());
+										avpCcServiceSpecificUnitsAvp = new CCServiceSpecificUnitsAvp(value.getAsLong());
 								}
 							}
 						}
 						if (avpCcServiceSpecificUnitsAvp != null) {
-							if (scapCcr.getAvp(ServiceIdentifierAvp.AVP_CODE)
-									.getAsInt() == 7001) {
-								scapCcr.addAvp(convertToServiceParameterInfoAvp(
-										1, avpCcServiceSpecificUnitsAvp));
+							if (scapCcr.getAvp(ServiceIdentifierAvp.AVP_CODE).getAsInt() == 7001) {
+								scapCcr.addAvp(convertToServiceParameterInfoAvp(1, avpCcServiceSpecificUnitsAvp));
 							}
-							requestedServiceUnitAvp
-									.addSubAvp(avpCcServiceSpecificUnitsAvp);
+							requestedServiceUnitAvp.addSubAvp(avpCcServiceSpecificUnitsAvp);
 						} else
 							requestedServiceUnitAvp.addSubAvp(moneyAvp);
 					}
@@ -464,14 +430,11 @@ log.debug("AbstractChargingProcessor process");
 
 	protected abstract Integer getRequestNumber();
 
-	protected abstract void preProcess(ChargingRequest request, Ccr scapCcr)
-			throws AvpDataException;
+	protected abstract void preProcess(ChargingRequest request, Ccr scapCcr) throws AvpDataException;
 
-	protected abstract void postProcess(ChargingRequest request,
-			ChargingInfo response, Cca cca) throws AvpDataException;
+	protected abstract void postProcess(ChargingRequest request, ChargingInfo response, Cca cca) throws AvpDataException;
 
-	public ServiceParameterInfoAvp convertToServiceParameterInfoAvp(int type,
-			CCServiceSpecificUnitsAvp avp) throws AvpDataException {
+	public ServiceParameterInfoAvp convertToServiceParameterInfoAvp(int type, CCServiceSpecificUnitsAvp avp) throws AvpDataException {
 		ServiceParameterInfoAvp info = new ServiceParameterInfoAvp();
 		Avp avp2 = new Avp();
 		avp2.setData((int) avp.getAsLong());

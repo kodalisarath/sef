@@ -52,7 +52,9 @@ public class SMSChargingProcessor implements Processor {
 		Ccr sourceCcr = request.getSourceCcr();
 		Ccr scapCcr = toScapCcr(sourceCcr, request);
 
+		log.error("REQ.OUT: " + scapCcr);
 		Cca cca = scapCcr.send();
+		log.error("RES.IN: " + cca);
 
 		ChargingInfo response = new ChargingInfo();
 		response.setUniqueMessageId(request.getMessageId());
@@ -61,6 +63,7 @@ public class SMSChargingProcessor implements Processor {
 		List<Avp> resultAvps = toNsnAnswer(cca, response, request);
 		response.setAvpList(resultAvps);
 
+		log.error("RES.OUT: " + response);
 		exchange.getOut().setBody(response);
 		log.debug("End SMSChargingProcessor.process");
 	}

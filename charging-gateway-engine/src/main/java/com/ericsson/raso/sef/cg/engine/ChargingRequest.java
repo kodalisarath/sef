@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.ericsson.pps.diameter.dccapi.command.Ccr;
 import com.ericsson.pps.diameter.rfcapi.base.avp.Avp;
+import com.ericsson.raso.sef.core.cg.model.Operation;
+import com.ericsson.raso.sef.core.db.model.smart.ChargingSession;
 
 public class ChargingRequest {
 
@@ -16,6 +18,15 @@ public class ChargingRequest {
 	private String msisdn;
 	private Operation operation;
 	private String hostId;
+	private ChargingSession chargingSession;
+
+	public ChargingSession getChargingSession() {
+		return chargingSession;
+	}
+
+	public void setChargingSession(ChargingSession chargingSession) {
+		this.chargingSession = chargingSession;
+	}
 
 	public String getMessageId() {
 		return messageId;
@@ -87,5 +98,15 @@ public class ChargingRequest {
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	@Override
+	public String toString() {
+		return "ChargingRequest [messageId=" + messageId + ", sessionId="
+				+ sessionId + ", sourceCcr=" + sourceCcr + ", scapCcr="
+				+ scapCcr + ", scapResult=" + scapResult + ", nsnResult="
+				+ nsnResult + ", msisdn=" + msisdn + ", operation=" + operation
+				+ ", hostId=" + hostId + ", chargingSession=" + chargingSession
+				+ "]";
 	}
 }

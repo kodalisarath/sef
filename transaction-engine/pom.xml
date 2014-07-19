@@ -31,6 +31,7 @@
 			com.ericsson.raso.sef.bes.prodcat.tasks,
 			com.ericsson.sef.bes.api.subscriber,
 			com.ericsson.sef.bes.api.fulfillment,
+			com.ericsson.raso.sef.smart.commons.*,
 			org.springframework.aop,
 			org.springframework.aop.framework,
 			org.aopalliance.aop,

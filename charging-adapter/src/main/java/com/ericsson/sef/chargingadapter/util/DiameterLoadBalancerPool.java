@@ -22,13 +22,13 @@ public class DiameterLoadBalancerPool extends SefLoadBalancerPool implements Pee
 	@Override
 	public void peerConnected(String uri) {
 		logger.info("Peer connected :: " + uri);
-		addToPool(uri);
+		//addToPool(uri);
 	}
 
 	@Override
 	public void peerDisconnected(String uri,  int reason, int dprCause) {
 		logger.info("Peer disconnected :: " + uri + " || Reason : " + reason + " || DPR Cause " + dprCause);
-		removeFromPool(uri);
+		//removeFromPool(uri);
 	}
 	
 	@Override

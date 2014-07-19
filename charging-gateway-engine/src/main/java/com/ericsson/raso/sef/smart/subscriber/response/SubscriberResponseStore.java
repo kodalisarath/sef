@@ -6,8 +6,6 @@ import java.util.Map;
 
 public class SubscriberResponseStore {
 
-	//private static Map<String, AbstractSubscriberResponse> store = new TreeMap<String, AbstractSubscriberResponse>();
-	//private static Map<String, AbstractSubscriberResponse> store = SefCoreServiceResolver.getCloudAwareCluster().getMap(HelperConstant.SMFE_CORRELATION_STORE);
 	private static Map<String, AbstractSubscriberResponse> store = new HashMap<String, AbstractSubscriberResponse>();
 	
 	

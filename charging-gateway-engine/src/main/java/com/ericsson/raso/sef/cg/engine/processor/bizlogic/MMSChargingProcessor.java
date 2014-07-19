@@ -45,12 +45,16 @@ public class MMSChargingProcessor implements Processor {
 		log.debug(String.format("Enter MMSChargingProcessor.process. exchange is %s", exchange));
 		log.debug("MMSChargingProcessor  Inside ProcessMethod");
 		ChargingRequest request = (ChargingRequest) exchange.getIn().getBody();	
+		
 		Ccr sourceCcr = request.getSourceCcr();
 		log.debug("MMSChargingProcessor  Inside sourceCcr "+sourceCcr);
 		Ccr scapCcr = toScapCcr(sourceCcr,request);
 		log.debug("MMSChargingProcessor  Inside scapCcr "+scapCcr);
 
+		log.error("REQ.OUT: " + scapCcr);
 		Cca cca = scapCcr.send();
+		log.error("RES.IN: " + cca);
+
 		log.debug("MMSChargingProcessor  Inside cca received is "+cca);
 		ChargingInfo response = new ChargingInfo();
 		response.setUniqueMessageId(request.getMessageId());

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.auth.permissions.Privilege;
 
@@ -77,7 +77,7 @@ public abstract class Identity implements Serializable {
 	
 	public void addMeta(String metaName, Object value) throws AuthAdminException {
 		if (this.metas == null)
-			this.metas = new TreeMap<String, Object>();
+			this.metas = new ConcurrentHashMap<String, Object>();
 		
 		if (this.metas.containsKey(metaName))
 			throw new AuthAdminException("Duplicate Meta: " + metaName + " = " + value);

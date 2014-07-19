@@ -31,9 +31,7 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			this.triggerResponse(requestCorrelator, subscriberInfo);
 			return;
 		}
-	/*	if (fault != null) {
-			
-		} */
+
 		if (subscriber == null) {
 			subscriberInfo.setStatus(new TransactionStatus("txe", 504, "Invalid Account - Subscriber canot be found!!"));
 			this.triggerResponse(requestCorrelator, subscriberInfo);
@@ -41,10 +39,9 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			return;
 		}
 
-		else if (subscriber.getMsisdn() == null || 
-//				subscriber.getUserId() == null|| 
-//				subscriber.getCustomerId() == null|| 
-//				subscriber.getContractId() == null || 
+		logger.debug("Subscriber.msisdn: " + subscriber.getMsisdn() + ", \t\tcontract state: " + subscriber.getContractState() + ", \t\tmetas: " + subscriber.getMetas());
+		//TODO: temporariy disabled this logic to test
+	if (subscriber.getMsisdn() == null || 
 				subscriber.getContractState() == null ||
 				subscriber.getMetas() == null ) {
 
@@ -52,10 +49,9 @@ public class SubscriberResponseHandler implements ISubscriberResponse {
 			this.triggerResponse(requestCorrelator, subscriberInfo);
 			return;
 		}
-
 		try {
 			subscriberInfo.setMsisdn(subscriber.getMsisdn());
-			subscriberInfo.setLocalState(ContractState.valueOf(subscriber.getContractState()));
+			subscriberInfo.setLocalState(ContractState.apiValue(subscriber.getContractState()));
 			Map<String, String> subscriberMetas = subscriber.getMetas();
 
 			//get the subscriber status from back end

@@ -11,8 +11,6 @@ import com.ericsson.raso.sef.smart.subscriber.response.HelperConstant;
 
 public class RequestCorrelationStore {
 	private static final Logger logger = LoggerFactory.getLogger(RequestCorrelationStore.class);
-	//private static Map<String, AbstractSubscriptionResponse> store = new TreeMap<String, AbstractSubscriptionResponse>();
-	//private static Map<String, AbstractSubscriptionResponse> store = SefCoreServiceResolver.getCloudAwareCluster().getMap(HelperConstant.SMFE_CORRELATION_STORE);
 	private static Map<String, AbstractSubscriptionResponse> store = new HashMap<String, AbstractSubscriptionResponse>();
 	
 	public static void put(String requestId, AbstractSubscriptionResponse response) {

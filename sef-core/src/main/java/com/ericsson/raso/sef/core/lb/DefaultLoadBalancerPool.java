@@ -3,14 +3,15 @@ package com.ericsson.raso.sef.core.lb;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 public class DefaultLoadBalancerPool implements LoadBalancerPool {
 	
-	private Map<String, Member> hostMap = new TreeMap<String, Member>();
-	private Map<String, List<Member>> siteMap = new TreeMap<String, List<Member>>();
+	private Map<String, Member> hostMap = new ConcurrentHashMap<String, Member>();
+	private Map<String, List<Member>> siteMap = new ConcurrentHashMap<String, List<Member>>();
 	
-	private Map<String, LoadBalancer> loadBalancerMap = new TreeMap<String, LoadBalancer>();
+	private Map<String, LoadBalancer> loadBalancerMap = new ConcurrentHashMap<String, LoadBalancer>();
 	
 	public DefaultLoadBalancerPool(List<Member> members) {
 		init(members);

@@ -39,19 +39,19 @@ public class FloodGate {
 	}
 	
 	public boolean isAllowed() {
-		logger.error("Ingress time: Current watermark: " + this.gatedThreshold.intValue());
+		logger.debug("Ingress time: Current watermark: {}", this.gatedThreshold);
 		if (this.gatedThreshold.intValue() < this.highWaterMark) {
 			this.gatedThreshold.incrementAndGet();
 			return true;
 		}
-		logger.error("Ingress: REJECT WATEMARK BREACH: "  + this.gatedThreshold.intValue());
+		logger.debug("Ingress: REJECT WATEMARK BREACH: {}", this.gatedThreshold);
 		return false;
 	}
 	
 	public void exgress() {
-		logger.error("Exgress time: Current watermark: " + this.gatedThreshold.intValue());
+		logger.debug("Exgress time: Current watermark: {}", this.gatedThreshold);
 		if (this.gatedThreshold.intValue() > 0)
-			this.gatedThreshold.decrementAndGet();
+		this.gatedThreshold.decrementAndGet();
 	}
 
 }

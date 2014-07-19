@@ -3,7 +3,7 @@ package com.ericsson.raso.sef.watergate;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ericsson.raso.sef.core.SecureSerializationHelper;
 
@@ -187,7 +187,7 @@ public class WatergateService implements IWatergate, IWatergateAdmin {
 	public boolean loadLicenseFile(String licenseUri) {
 		Map<String, TrafficSla> slaThresholds = this.readFromFile(licenseUri);
 		if (slaThresholds == null) {
-			this.watergateStore = new TreeMap<String, TrafficSla>();
+			this.watergateStore = new ConcurrentHashMap<String, TrafficSla>();
 			return false;
 		}
 		

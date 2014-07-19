@@ -1,4 +1,4 @@
-package com.ericsson.raso.sef.cg.engine;
+/*package com.ericsson.raso.sef.cg.engine;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ericsson.pps.diameter.rfcapi.base.avp.Avp;
-import com.ericsson.raso.sef.cg.engine.Operation.Type;
+import com.ericsson.raso.sef.core.cg.model.Operation;
+import com.ericsson.raso.sef.core.cg.model.Operation.Type;
 
 public class SmartChargingSession implements Serializable {
 
@@ -90,3 +91,4 @@ public class SmartChargingSession implements Serializable {
 		return creationTime;
 	}
 }
+*/

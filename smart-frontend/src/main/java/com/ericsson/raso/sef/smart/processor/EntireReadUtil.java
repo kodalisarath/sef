@@ -342,7 +342,7 @@ public class EntireReadUtil {
 		}
 
 		if (ropRead.getLastKnownPeriod() != null) {
-			parameterList.add(EntireReadUtil.stringParameter("LastKnownPeriod", toSmartEnumerated(ropRead.getLastKnownPeriod())));
+			parameterList.add(EntireReadUtil.stringParameter("LastKnownPeriod", ropRead.getLastKnownPeriod()));
 		}
 
 		if (ropRead.getPreActiveEndDate() != null) {
@@ -1674,5 +1674,4 @@ public class EntireReadUtil {
 
 		return read;
 	}
-
 }
