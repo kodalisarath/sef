@@ -36,7 +36,7 @@ public class VersionCreateOrWriteRop implements Processor {
 			List<Meta> metas = new ArrayList<Meta>();
 			metas.add(new Meta("CustomerId", request.getCustomerId()));
 			metas.add(new Meta("Key", String.valueOf(request.getKey())));
-			metas.add(new Meta("vValidFrom", String.valueOf(request.getvInvalidFrom())));
+			metas.add(new Meta("vValidFrom", String.valueOf(request.getvValidFrom())));
 			metas.add(new Meta("vInvalidFrom", String.valueOf(request.getvInvalidFrom())));
 			metas.add(new Meta("s_OfferId", String.valueOf(request.getS_OfferId())));
 			metas.add(new Meta("category", request.getCategory()));
