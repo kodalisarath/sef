@@ -39,14 +39,19 @@ public class VersionCreateOrWriteCustomer implements Processor {
 		List<com.ericsson.sef.bes.api.entities.Meta> metas = new ArrayList<com.ericsson.sef.bes.api.entities.Meta>();
 		metas.add(new com.ericsson.sef.bes.api.entities.Meta("CustomerId", versionCreateOrWriteCustomerRequest.getCustomerId()));
 		metas.add(new com.ericsson.sef.bes.api.entities.Meta("Category", versionCreateOrWriteCustomerRequest.getCategory()));
-//		if (versionCreateOrWriteCustomerRequest.getvValidFrom() != null) {
+		if (versionCreateOrWriteCustomerRequest.getvValidFrom() != null) {
 			metas.add(new com.ericsson.sef.bes.api.entities.Meta("vValidFrom", DateUtil
 					.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest.getvValidFrom())));
-//		}
-//		if (versionCreateOrWriteCustomerRequest.getvInvalidFrom() != null) {
+		} else {
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("vValidFrom", "NOW"));
+		}
+		
+		if (versionCreateOrWriteCustomerRequest.getvInvalidFrom() != null) {
 			metas.add(new com.ericsson.sef.bes.api.entities.Meta("vInvalidFrom", DateUtil
 					.convertISOToSimpleDateFormat(versionCreateOrWriteCustomerRequest.getvInvalidFrom())));
-//		}
+		} else {
+			metas.add(new com.ericsson.sef.bes.api.entities.Meta("vInvalidFrom", "MAX_DATEANDTIME"));
+		}
 		metas.add(new com.ericsson.sef.bes.api.entities.Meta("MessageId",
 				String.valueOf(versionCreateOrWriteCustomerRequest.getMessageId())));
 		String requestId = RequestContextLocalStore.get().getRequestId();
