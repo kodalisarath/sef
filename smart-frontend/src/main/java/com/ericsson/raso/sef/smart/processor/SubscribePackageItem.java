@@ -207,12 +207,10 @@ public class SubscribePackageItem implements Processor {
 				}
 			}
 			
-			if (IsGrace || IsRecycle) {
+			if (IsRecycle) {
 				logger.debug("Customer is in Grace or Recycle. Rejecting with 'InvalidCustomerLifeCycleState'");
 				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
-			}
-			
-			if (IsRecycle==false)  {
+			} else {
 				ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 				String correlationId = subscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 				PurchaseResponse response = new PurchaseResponse();
@@ -237,7 +235,11 @@ public class SubscribePackageItem implements Processor {
 				//PurchaseResponse purchaseResponse = (PurchaseResponse) RequestCorrelationStore.get(correlationId);
 				logger.debug("PurchaseResponse recieved here is "+purchaseResponse);
 				if(purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0) {
-					logger.debug("No response arrived???");
+					logger.debug("Check response...");
+					if (purchaseResponse.getFault().getCode() == 999) {
+						logger.debug("Seems like invliad package... lets throw 13400");
+						throw new SmException(ErrorCode.internalSystemError);
+					}
 					throw new SmException(ErrorCode.internalServerError);
 				}
 				else if (purchaseResponse.getFault() != null && purchaseResponse.getFault().getCode() >0 )
@@ -258,9 +260,7 @@ public class SubscribePackageItem implements Processor {
 					//exchange.getOut().setBody(cr);
 				}	
 			}
-			else {
-				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
-			}
+			
 		}
 
 	}
