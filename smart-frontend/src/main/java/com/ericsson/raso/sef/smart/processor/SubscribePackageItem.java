@@ -176,7 +176,7 @@ public class SubscribePackageItem implements Processor {
 			OfferInfo oInfo = null;
 			Map<String, OfferInfo> subscriberOffers = new HashMap<String, SubscribePackageItem.OfferInfo>(); 
 			boolean IsGrace = false;
-			boolean NotRecycle = false;
+			boolean IsRecycle = false;
 			for (String key: subscriberMetas.keySet()) {
 				logger.debug("FLEXI:: processing meta:" + key + "=" + subscriberMetas.get(key));
 				if (key.startsWith(READ_SUBSCRIBER_OFFER_INFO_OFFER)) {
@@ -202,11 +202,17 @@ public class SubscribePackageItem implements Processor {
 					}
 					if (oInfo.offerID.equals("4")) {
 						logger.debug("FLEXI:: CUSTOMER IN RECYCLE!!!");
-						NotRecycle=true;
+						IsRecycle=true;
 					}
 				}
 			}
-			if (NotRecycle==false)  {
+			
+			if (IsGrace || IsRecycle) {
+				logger.debug("Customer is in Grace or Recycle. Rejecting with 'InvalidCustomerLifeCycleState'");
+				throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
+			}
+			
+			if (IsRecycle==false)  {
 				ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 				String correlationId = subscriptionRequest.purchase(requestId, request.getPackaze(), request.getCustomerId(), true, workflowMetas);
 				PurchaseResponse response = new PurchaseResponse();
