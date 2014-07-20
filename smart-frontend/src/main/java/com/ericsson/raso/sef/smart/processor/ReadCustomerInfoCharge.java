@@ -49,8 +49,7 @@ public class ReadCustomerInfoCharge implements Processor {
 			logger.debug("Channel is null/empty");
 			throw ExceptionUtil.toSmException(ErrorCode.invalidOperation);
 		}
-		int channelValue = Integer.parseInt(config.getValue("SMART_customerInfoChannel",channel));
-		logger.info("ChannelName: "+channel+", ChannelValue: "+channelValue);
+		
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		logger.info("Collecting SOAP parameters");
 		List<Meta> workflowMetas= new ArrayList<Meta>();
