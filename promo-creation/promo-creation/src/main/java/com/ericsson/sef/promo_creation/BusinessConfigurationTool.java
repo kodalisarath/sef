@@ -3319,7 +3319,6 @@ public class BusinessConfigurationTool {
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 
-
 			System.out.println("Offer, Resource & Profile - Regular Refill Reversal...");
 			daReversals = new ArrayList<DedicatedAccountReversal>();
 
