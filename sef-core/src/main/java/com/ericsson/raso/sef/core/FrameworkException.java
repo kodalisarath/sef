@@ -21,8 +21,7 @@ public class FrameworkException extends Exception {
 		this.statusCode = code;
 	}
 
-	public FrameworkException(String arg0, Throwable arg1, boolean arg2,
-			boolean arg3) {
+	public FrameworkException(String arg0, Throwable arg1, boolean arg2, boolean arg3) {
 		super(arg0, arg1, arg2, arg3);
 	}
 

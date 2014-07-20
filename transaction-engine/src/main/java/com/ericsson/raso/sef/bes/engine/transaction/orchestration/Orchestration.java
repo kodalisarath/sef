@@ -192,7 +192,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 								} else {
 									if (this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAULT || this.phasingProgress.get(Phase.TX_PHASE_FULFILLMENT) == Status.DONE_FAILED) {
 										this.status = Status.DONE_FAULT;
-										this.setExecutionFault(new TransactionException(northBoundCorrelator, "FULFILLMENT FAILED"));
+										//this.setExecutionFault(new TransactionException(northBoundCorrelator, "FULFILLMENT FAILED"));
 										this.currentPhase = this.currentPhase.getNextPhase();
 										this.phasingProgress.put(currentPhase, Status.PROCESSING);
 										break;
@@ -383,8 +383,12 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 						if (executionStatus == Status.DONE_FAULT)
 							anyFault = true;
 
-						if (result != null)
+						if (result != null) {
 							step.setFault(result.getResultantFault());
+							if (result.getResultantFault() != null)
+								this.setExecutionFault(new TransactionException(result.getResultantFault().getComponent(), result.getResultantFault().getStatusCode()));
+							
+						}
 
 						logger.debug("Confirming the state of completed step: " + fulfillmentStep.stepCorrelator + " = " 
 								+ this.sbExecutionStatus.put(fulfillmentStep.stepCorrelator, Status.DONE_FAILED)
@@ -867,21 +871,7 @@ public class Orchestration implements Serializable, Callable<AbstractResponse> {
 
 		}
 
-		//		Iterator itr3 = this.reverseFulfillment.iterator();
-		//		while(itr3.hasNext()) {
-		//			Step step = (Step) itr3.next();
-		//			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
-		//		}
-		//			
-		//		
-		//		for (Step step: this.schedules)
-		//			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
-		//		
-		//		for (Step step: this.persistence)
-		//			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
-		//		
-		//		for (Step step: this.notification)
-		//			results.put(step, this.sbRequestResultMapper.get(step.getStepCorrelator()));
+
 
 		return results;
 	}
