@@ -874,7 +874,7 @@ public class CARecharge implements Processor {
 				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
 				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
 				
-			} else if (beforeDA == null && afterDA == null && beforeOffer != null && afterOffer != null) {
+			} else if (beforeDA == null && afterDA == null && beforeOffer == null && afterOffer != null) {
 				// This is a different case, which was not featuring in Navneet's Truth Table, but put in here to handle the situation.
 				logger.debug("CASE 6: Only afterOffer is present. Check BeforeDA: " + beforeDA + ", AfterDA: " + afterDA 
 						+ ", BeforeOffer: " + beforeOffer + ", AfterOffer: " + afterOffer);
