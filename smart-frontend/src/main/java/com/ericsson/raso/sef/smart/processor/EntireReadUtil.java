@@ -883,9 +883,12 @@ public class EntireReadUtil {
 		String activeEndDate = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_SERVICE_FEE_EXPIRY_DATE);
 		if (activeEndDate == null)
 			ropRead.setActiveEndDate(null);
-		else
-			ropRead.setActiveEndDate(activeEndDate);
-
+		else {
+			long dateField = Long.parseLong(activeEndDate);
+			SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			ropRead.setActiveEndDate(metaStoreFormat.format(new Date(dateField)));
+		}
+		
 		ropRead.setAnnoFirstWarningPeriodSent(false);
 		ropRead.setAnnoSecondWarningPeriodSent(false);
 
@@ -905,9 +908,11 @@ public class EntireReadUtil {
 		String firstCallDate = subscriber.getMetas().get(Constants.READ_SUBSCRIBER_ACTIVATION_DATE);
 		if (firstCallDate == null)
 			ropRead.setFirstCallDate(null);
-		else
-			ropRead.setFirstCallDate(firstCallDate);
-
+		else {
+			long dateField = Long.parseLong(firstCallDate);
+			SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			ropRead.setFirstCallDate(metaStoreFormat.format(new Date(dateField)));
+		}
 		String graceEndDate = getGraceEndDate(subscriber);
 		if (graceEndDate == null)
 			ropRead.setGraceEndDate(null);
