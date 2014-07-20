@@ -83,8 +83,6 @@ public class RetrieveDeleteProcessor implements Processor {
 		operation.setModifier("ServiceAccessKey");
 		operationResult.getOperation().add(operation);
 		ParameterList parameterList = new ParameterList();
-		EnumerationValueElement ev = new  EnumerationValueElement ();
-		ev.setValue("ONLINE");
 		EnumerationValueParameter evp = new EnumerationValueParameter();
 		evp.setName("Category");
 		evp.setValue("ONLINE");
