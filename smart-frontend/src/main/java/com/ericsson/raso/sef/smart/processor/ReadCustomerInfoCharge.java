@@ -59,13 +59,7 @@ public class ReadCustomerInfoCharge implements Processor {
 		workflowMetas.add(new Meta("channelName", String.valueOf(request.getChannel())));
 		workflowMetas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
 
-		//List<Meta> metaSubscriber=new ArrayList<Meta>();
-		if(channelValue > 0){
-			workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE")); 
-		}
-		else{
-			workflowMetas.add(new Meta("READ_SUBSCRIBER","READ_BALANCES"));
-		}
+		workflowMetas.add(new Meta("READ_SUBSCRIBER","CUSTOMER_INFO_CHARGE")); 
 		workflowMetas.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));
 
 
@@ -244,7 +238,7 @@ public class ReadCustomerInfoCharge implements Processor {
 				daList.put(daID, daInfo);
 				logger.debug("Packed DA: " + daInfo);
 			} // end of if for DA handling 
-			if (key.startsWith("OFFER_INFO")) {
+			if (key.startsWith("OFFER_INFO") || key.startsWith("READ_SUBSCRIBER_OFFER_INFO")) {
 				logger.debug("FLEXI:: OFFER_ID...." + metas.get(key));
 				String offerForm = metas.get(key);
 				logger.debug("Check before split - offerForm: " + offerForm);
