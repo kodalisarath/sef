@@ -870,7 +870,10 @@ public class CARecharge implements Processor {
 				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
 				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
 				
-			} 
+			} else {
+				logger.debug("DEFAULT CASE: None of the above cases was matching. Check BeforeDA: " + beforeDA + ", AfterDA: " + afterDA 
+						+ ", BeforeOffer: " + beforeOffer + ", AfterOffer: " + afterOffer);
+			}
 			
 			
 			//================= Case Ladder for Predefined & Unli - END
