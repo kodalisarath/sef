@@ -47,6 +47,7 @@ public class PurchaseProcessor implements Processor{
 		for(Meta meta: metas){
 			metaMap.put(meta.getKey(), meta.getValue());
 		}
+		logger.debug("List Metas converted to Map Metas... Contents: " + metaMap);
 		return metaMap;
 		
 	}

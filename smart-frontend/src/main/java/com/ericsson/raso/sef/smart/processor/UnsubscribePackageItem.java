@@ -46,6 +46,8 @@ public class UnsubscribePackageItem implements Processor {
 
 		UnSubscribePackageItemRequest request = (UnSubscribePackageItemRequest) exchange.getIn().getBody();
 		String requestId = RequestContextLocalStore.get().getRequestId();
+		
+		Meta newMeta = null;
 		List<Meta> metas = new ArrayList<Meta>();
 		logger.info("Collecting SOAP parameters");
 		metas.add(new Meta("AccessKey", request.getAccessKey()));
@@ -54,12 +56,6 @@ public class UnsubscribePackageItem implements Processor {
 		metas.add(new Meta("msisdn", request.getCustomerId()));
 		metas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
 
-		List<Meta> workflowMetas = new ArrayList<Meta>();
-		workflowMetas.add(new Meta("Package", String.valueOf(request.getPackaze())));
-		workflowMetas.add(new Meta("msisdn", request.getCustomerId()));
-		workflowMetas.add(new Meta(Constants.EX_DATA1, request.getPackaze()));
-		workflowMetas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
-		workflowMetas.add(new Meta("AccessKey", request.getAccessKey()));
 		List<Meta> metaSubscriber = new ArrayList<Meta>();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
@@ -103,7 +99,12 @@ public class UnsubscribePackageItem implements Processor {
 			logger.info("check pre_active");
 			metas.add(new Meta("HANDLE_LIFE_CYCLE", "UnsubscribePackageItem"));
 			metas.add(new Meta("ServiceClass", originalWelcomePackSC));
-			metas.add(new Meta("Package", "initialSC"));
+			
+			newMeta = new Meta("Package", "initialSC");
+			if (metas.contains(newMeta)) 
+				metas.remove(newMeta);
+			metas.add(newMeta);
+			
 			String resultId = iSubscriberRequest.handleLifeCycle(requestId, request.getCustomerId(), null, metas);
 			SubscriberInfo response = new SubscriberInfo();
 			SubscriberResponseStore.put(resultId, response);
@@ -176,27 +177,27 @@ public class UnsubscribePackageItem implements Processor {
 						inRecycle = true;
 					} else {
 						logger.debug("FLEXI:: CUSTOMER IN ACTIVE!!!");
-						workflowMetas.add(new Meta("Package", "Rev" + String.valueOf(request.getPackaze())));
+						metas.add(new Meta("Package", "Rev" + String.valueOf(request.getPackaze())));
 
 					}
 				}
 			}
 			if (inRecycle == false) {
 
-				workflowMetas.add(new Meta("msisdn", request.getCustomerId()));
-				workflowMetas.add(new Meta("SUBSCRIBER_ID", request.getCustomerId()));
+				metas.add(new Meta("msisdn", request.getCustomerId()));
+				metas.add(new Meta("SUBSCRIBER_ID", request.getCustomerId()));
 
-				workflowMetas.add(new Meta(Constants.CHANNEL_NAME, "UREG"));
-				workflowMetas.add(new Meta(Constants.EX_DATA3, "UREG"));
+				metas.add(new Meta(Constants.CHANNEL_NAME, "UREG"));
+				metas.add(new Meta(Constants.EX_DATA3, "UREG"));
 
-				workflowMetas.add(new Meta(Constants.EX_DATA1, "Rev" + request.getPackaze()));
-				workflowMetas.add(new Meta("eventName", "Rev" + request.getPackaze()));
-				workflowMetas.add(new Meta(Constants.EX_DATA2, request.getEventInfo()));
-				workflowMetas.add(new Meta("eventInfo", request.getEventInfo()));
+				metas.add(new Meta(Constants.EX_DATA1, "Rev" + request.getPackaze()));
+				metas.add(new Meta("eventName", "Rev" + request.getPackaze()));
+				metas.add(new Meta(Constants.EX_DATA2, request.getEventInfo()));
+				metas.add(new Meta("eventInfo", request.getEventInfo()));
 
 				ISubscriptionRequest subscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
 				String correlationId = subscriptionRequest.purchase(requestId, "Rev" + request.getPackaze(), request.getCustomerId(), true,
-						workflowMetas);
+						metas);
 				PurchaseResponse response = new PurchaseResponse();
 				logger.debug("Got past event class in subscription for grace and active....");
 				RequestCorrelationStore.put(correlationId, response);
