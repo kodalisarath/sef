@@ -152,11 +152,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 				}
 			}
 			
-			// now do the reversal of all other impacted offers...
-			///impactedOffer.setExpiryDate(new Date(newExpiryDate));
 			impactedOffer.setExpiryDateTime(new Date(newExpiryDate));
-			///impactedOffer.setStartDate(new Date(impactedExpiry - toReversal.hoursToReverse));
-			//impactedOffer.setStartDateTime(new Date(impactedOffer.getStartDateTime().getTime() - (long)(toReversal.hoursToReverse)));
 
 			offersToUpdate.add(impactedOffer);
 
@@ -177,12 +173,15 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		
 		UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
 		request.setDedicatedAccountUpdateInformation(dasToUpdate);
-		request.setExternalData1(externalData1);
-		request.setExternalData2(externalData2);
 		request.setSubscriberNumber(msisdn);
 		request.setSubscriberNumberNAI(1);
-		//request.setTransactionType(channel);
 		request.setTransactionCurrency(this.transactionCurrency);
+
+		if (externalData1 != null)
+			request.setExternalData1(externalData1);
+		if (externalData2 != null)
+			request.setExternalData2(externalData2);
+		//request.setTransactionType(channel);
 		//request.setTransactionCode(externalData1);
 		
 		if (supervisionPeriodExpiryDate < toLongestDate)

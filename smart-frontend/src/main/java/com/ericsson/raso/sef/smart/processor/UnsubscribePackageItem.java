@@ -58,8 +58,7 @@ public class UnsubscribePackageItem implements Processor {
 
 		List<Meta> metaSubscriber = new ArrayList<Meta>();
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
-		ISubscriptionRequest iSubscriptionRequest = SmartServiceResolver.getSubscriptionRequest();
-
+		
 		metaSubscriber.add(new Meta("SUBSCRIBER_ID", request.getCustomerId()));
 		metaSubscriber.add(new Meta("READ_SUBSCRIBER", "PARTIAL_READ_SUBSCRIBER"));
 
