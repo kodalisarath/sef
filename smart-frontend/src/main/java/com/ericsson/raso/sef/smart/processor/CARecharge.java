@@ -759,6 +759,10 @@ public class CARecharge implements Processor {
 			 * - check for offer in after and before but changes in expiry, then select for handling
 			 * - check for offer which have no DA and ignore them...
 			 * 
+			 * On 20-Jul-2014 21:51, testing encountered a CASE 6, which was not present Navneet's Truth Table...
+			 * - When only afterOffer is present, handle similar to CASE 3 as OfferID>2000 - Suggested by Sathya & hence no responsibility 
+			 *   to unforeseen consequences.
+			 * 
 			 */
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); String responseEntry;
@@ -870,6 +874,17 @@ public class CARecharge implements Processor {
 				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
 				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
 				
+			} else if (beforeDA == null && afterDA == null && beforeOffer != null && afterOffer != null) {
+				// This is a different case, which was not featuring in Navneet's Truth Table, but put in here to handle the situation.
+				logger.debug("CASE 6: Only afterOffer is present. Check BeforeDA: " + beforeDA + ", AfterDA: " + afterDA 
+						+ ", BeforeOffer: " + beforeOffer + ", AfterOffer: " + afterOffer);
+	
+				responseEntry = balanceId + ":s_PeriodicBonus" + ";" + 1 + ";" + 1 + ";" + format.format(new Date(afterOffer.offerExpiry));
+				StringElement stringElement = new StringElement();
+				stringElement.setValue(responseEntry);
+				listParameter.getElementOrBooleanElementOrByteElement().add(stringElement);
+				logger.debug("PREDEFINED::Adding response item to CARecharge: " + responseEntry);
+			
 			} else {
 				logger.debug("DEFAULT CASE: None of the above cases was matching. Check BeforeDA: " + beforeDA + ", AfterDA: " + afterDA 
 						+ ", BeforeOffer: " + beforeOffer + ", AfterOffer: " + afterOffer);
