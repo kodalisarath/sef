@@ -143,4 +143,9 @@ public class SymbolicElement {
         this.notification = value;
     }
 
+	@Override
+	public String toString() {
+		return "SymbolicElement [value=" + value + ", index=" + index + ", modifier=" + modifier + ", notification=" + notification + "]";
+	}
+
 }

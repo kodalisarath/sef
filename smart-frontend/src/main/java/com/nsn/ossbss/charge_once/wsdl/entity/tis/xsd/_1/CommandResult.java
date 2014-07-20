@@ -87,4 +87,9 @@ public class CommandResult {
         this.transactionResult = value;
     }
 
+	@Override
+	public String toString() {
+		return "CommandResult [operationResult=" + operationResult + ", transactionResult=" + transactionResult + "]";
+	}
+
 }

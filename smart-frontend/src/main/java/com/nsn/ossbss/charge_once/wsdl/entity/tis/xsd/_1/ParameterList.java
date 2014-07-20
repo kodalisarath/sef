@@ -123,4 +123,9 @@ public class ParameterList {
         return this.parameterOrBooleanParameterOrByteParameter;
     }
 
+	@Override
+	public String toString() {
+		return "ParameterList [parameterOrBooleanParameterOrByteParameter=" + parameterOrBooleanParameterOrByteParameter + "]";
+	}
+
 }

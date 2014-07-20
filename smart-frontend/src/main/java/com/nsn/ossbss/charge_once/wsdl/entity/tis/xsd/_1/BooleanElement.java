@@ -130,4 +130,9 @@ public class BooleanElement {
         this.notification = value;
     }
 
+	@Override
+	public String toString() {
+		return "BooleanElement [value=" + value + ", index=" + index + ", modifier=" + modifier + ", notification=" + notification + "]";
+	}
+
 }

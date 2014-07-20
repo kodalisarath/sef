@@ -164,5 +164,11 @@ public class StringElement {
         this.name = value;
     }
 
+	@Override
+	public String toString() {
+		return "StringElement [value=" + value + ", name=" + name + ", index=" + index + ", modifier=" + modifier + ", notification="
+				+ notification + "]";
+	}
+
 
 }

@@ -263,4 +263,10 @@ public class ListParameter {
         this.notification = value;
     }
 
+	@Override
+	public String toString() {
+		return "ListParameter [elementOrBooleanElementOrByteElement=" + elementOrBooleanElementOrByteElement + ", namespace=" + namespace
+				+ ", name=" + name + ", index=" + index + ", modifier=" + modifier + ", notification=" + notification + "]";
+	}
+
 }

@@ -141,4 +141,9 @@ public class DateElement {
         this.notification = value;
     }
 
+	@Override
+	public String toString() {
+		return "DateElement [value=" + value + ", index=" + index + ", modifier=" + modifier + ", notification=" + notification + "]";
+	}
+
 }

@@ -99,4 +99,9 @@ public class OperationResult {
         return this.warningInfo;
     }
 
+	@Override
+	public String toString() {
+		return "OperationResult [operation=" + operation + ", warningInfo=" + warningInfo + "]";
+	}
+
 }

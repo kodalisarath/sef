@@ -192,4 +192,10 @@ public class EnumerationValueParameter {
         this.notification = value;
     }
 
+	@Override
+	public String toString() {
+		return "EnumerationValueParameter [value=" + value + ", namespace=" + namespace + ", name=" + name + ", index=" + index
+				+ ", modifier=" + modifier + ", notification=" + notification + "]";
+	}
+
 }

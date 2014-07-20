@@ -66,4 +66,9 @@ public class TransactionResult {
         return this.operationResult;
     }
 
+	@Override
+	public String toString() {
+		return "TransactionResult [operationResult=" + operationResult + "]";
+	}
+
 }

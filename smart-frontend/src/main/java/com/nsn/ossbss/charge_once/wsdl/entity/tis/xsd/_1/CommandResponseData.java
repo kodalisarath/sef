@@ -61,4 +61,9 @@ public class CommandResponseData {
         this.commandResult = value;
     }
 
+	@Override
+	public String toString() {
+		return "CommandResponseData [commandResult=" + commandResult + "]";
+	}
+
 }
