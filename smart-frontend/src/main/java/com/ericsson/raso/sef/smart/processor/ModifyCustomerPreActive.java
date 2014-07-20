@@ -40,74 +40,67 @@ public class ModifyCustomerPreActive implements Processor {
 	@Override
 	public void process(Exchange exchange) throws Exception {
 
-		ModifyCustomerPreActiveRequest request = (ModifyCustomerPreActiveRequest) exchange
-				.getIn().getBody();
+		ModifyCustomerPreActiveRequest request = (ModifyCustomerPreActiveRequest) exchange.getIn().getBody();
 		String requestId = RequestContextLocalStore.get().getRequestId();
 		List<Meta> metas = new ArrayList<Meta>();
 		String newExpiry = new String();
 		metas.add(new Meta("CustomerId", request.getCustomerId()));
-		metas.add(new Meta("EventInfo",String.valueOf(request.getEventInfo())));
-		metas.add(new Meta("MessageId",String.valueOf(request.getMessageId())));
-		metas.add(new Meta("AccessKey",String.valueOf(request.getAccessKey())));
-		SubscriberInfo subscriberObj=readSubscriber(requestId, request.getCustomerId(), metas);
-		SubscriberInfo subscriberInfo=null;
-		
-		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() >0){
+		metas.add(new Meta("EventInfo", String.valueOf(request.getEventInfo())));
+		metas.add(new Meta("MessageId", String.valueOf(request.getMessageId())));
+		metas.add(new Meta("AccessKey", String.valueOf(request.getAccessKey())));
+		SubscriberInfo subscriberObj = readSubscriber(requestId, request.getCustomerId(), metas);
+		SubscriberInfo subscriberInfo = null;
+
+		if (subscriberObj.getStatus() != null && subscriberObj.getStatus().getCode() > 0) {
 			logger.debug("Inside the if condition for status check");
 			throw ExceptionUtil.toSmException(ErrorCode.invalidAccount);
 		}
 		logger.info("Recieved a SubscriberInfo Object and it is not null");
-		logger.info("Printing subscriber onject value "+subscriberObj.getSubscriber());
-		
-		if( ContractState.PREACTIVE.name().equals(subscriberObj.getSubscriber().getContractState())){
+		logger.info("Printing subscriber onject value " + subscriberObj.getSubscriber());
+
+		if (ContractState.PREACTIVE.name().equals(subscriberObj.getSubscriber().getContractState())) {
 			logger.info("In pre-active method");
-			String date=subscriberObj.getSubscriber().getMetas().get("PreActiveEndDate");
-			if(date != null){
-				logger.debug("There is a preActive end date entered and adding days to it now"+date);
-				//String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
-				
+			String date = subscriberObj.getSubscriber().getMetas().get("PreActiveEndDate");
+			if (date != null) {
+				logger.debug("There is a preActive end date entered and adding days to it now" + date);
+				// String newDate=DateUtil.addDaysToDate(date,request.getDaysOfExtension());
+
 				// handle the date extension
 				SimpleDateFormat metaStoreFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 				SimpleDateFormat smartDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 				Date currentExpiryDate = metaStoreFormat.parse(date);
-				Date newExpiryDate = new Date( currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000L));
+				Date newExpiryDate = new Date(currentExpiryDate.getTime() + (request.getDaysOfExtension() * 86400000L));
 				newExpiry = smartDateFormat.format(newExpiryDate);
-				
-				
-				
+
 				metas.add(new Meta("PreActiveEndDate", metaStoreFormat.format(newExpiryDate)));
-				logger.debug("There is a new preActive end date entered and adding days to it now"+ newExpiry);
+				logger.debug("There is a new preActive end date entered and adding days to it now" + newExpiry);
+			} else {
+				logger.debug("Preactive date could not be fetched from DB!!");
+				throw ExceptionUtil.toSmException(ErrorCode.internalErrorDatabaseAccessException);
 			}
-			else{
-				logger.debug("date is not found");
-			}
-			subscriberInfo= updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
+			subscriberInfo = updateSubscriber(requestId, request.getCustomerId(), metas, Constants.ModifyCustomerPreActive);
 			logger.info("Before read subscriber call");
-			if(subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() >0){
-				throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus().getDescription()));
+			if (subscriberInfo.getStatus() != null && subscriberInfo.getStatus().getCode() > 0) {
+				throw ExceptionUtil.toSmException(new ResponseCode(subscriberInfo.getStatus().getCode(), subscriberInfo.getStatus()
+						.getDescription()));
 			}
-			
-		}
-		else{
+
+		} else {
 			throw ExceptionUtil.toSmException(ErrorCode.invalidCustomerLifecycleState);
 		}
-		
-		
+
 		logger.error("FloodGate acknowledging exgress...");
 		FloodGate.getInstance().exgress();
-		
+
 		CommandResponseData responseData = createResponse(true, newExpiry);
-		
-		
-		String edrIdentifier = (String)exchange.getIn().getHeader("EDR_IDENTIFIER"); 
+
+		String edrIdentifier = (String) exchange.getIn().getHeader("EDR_IDENTIFIER");
 		exchange.getOut().setBody(responseData);
 		exchange.getOut().setHeader("EDR_IDENTIFIER", edrIdentifier);
-		//DummyProcessor.response(exchange);
-		//exchange.getOut().setBody(subscriberInfo);
-		
+
 	}
-	
-	private CommandResponseData createResponse(boolean isTransactional, String newDate ) {
+
+	private CommandResponseData createResponse(boolean isTransactional, String newDate) {
 		CommandResponseData responseData = new CommandResponseData();
 		CommandResult result = new CommandResult();
 		responseData.setCommandResult(result);
@@ -138,11 +131,10 @@ public class ModifyCustomerPreActive implements Processor {
 		operation.setParameterList(parameterList);
 
 		return responseData;
-	}	
-	
-	
-	private SubscriberInfo readSubscriber(String requestId,String customer_id, List<Meta> metas) {
-		//logger.info("Invoking update subscriber on tx-engine subscriber interface");
+	}
+
+	private SubscriberInfo readSubscriber(String requestId, String customer_id, List<Meta> metas) {
+		// logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
@@ -159,12 +151,13 @@ public class ModifyCustomerPreActive implements Processor {
 		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
-	private SubscriberInfo updateSubscriber(String requestId,String customer_id, List<Meta> metas,String useCase) {
+
+	private SubscriberInfo updateSubscriber(String requestId, String customer_id, List<Meta> metas, String useCase) {
 		logger.info("Invoking update subscriber on tx-engine subscriber interface");
 		ISubscriberRequest iSubscriberRequest = SmartServiceResolver.getSubscriberRequest();
 		SubscriberInfo subInfo = new SubscriberInfo();
 		SubscriberResponseStore.put(requestId, subInfo);
-		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas,useCase);
+		iSubscriberRequest.updateSubscriber(requestId, customer_id, metas, useCase);
 		ISemaphore semaphore = SefCoreServiceResolver.getCloudAwareCluster().getSemaphore(requestId);
 		try {
 			semaphore.init(0);
@@ -174,11 +167,8 @@ public class ModifyCustomerPreActive implements Processor {
 		}
 		semaphore.destroy();
 		logger.info("Check if response received for update subscriber");
-		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore
-				.remove(requestId);
+		SubscriberInfo subscriberInfo = (SubscriberInfo) SubscriberResponseStore.remove(requestId);
 		return subscriberInfo;
 	}
-
-	
 
 }

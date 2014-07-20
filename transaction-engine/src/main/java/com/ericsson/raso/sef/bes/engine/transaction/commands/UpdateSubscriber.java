@@ -179,20 +179,16 @@ public class UpdateSubscriber extends AbstractTransaction {
 
 						if (subscriberEntity.getMetas().contains(meta)) {
 							try {
+								LOGGER.debug("Meta exists... Updating Meta: " + meta);
 								subscriberStore.updateMeta(this.getRequestId(), ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 							} catch (PersistenceError e) {
 								LOGGER.error("Error in the updatemeta at UpdateSubscriber", e);
 							}
 						} else {
-							LOGGER.debug("META PREACTIVENDDATE IS" + this.getRequestId() + " "
-									+ ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId() + " " + meta);
-							subscriberStore.createMeta(this.getRequestId(),
-									((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
+							LOGGER.debug("Meta DOES NOT exist... Creating Meta: " + meta);
 							try {
 								LOGGER.debug("Metas doesnot contain in the DB,creating now!!!!");
-								subscriberStore.createMeta(this.getRequestId(),
-										((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
-								// subscriberStore.createMeta(this.getRequestId(),subscriberEntity.getMsisdn(), meta);
+								subscriberStore.createMeta(this.getRequestId(), ((UpdateSubscriberRequest) this.getRequest()).getSubscriberId(), meta);
 							} catch (PersistenceError e) {
 								LOGGER.error("Error in the createmeta at UpdateSubscriber", e);
 							}
