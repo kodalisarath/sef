@@ -58,7 +58,7 @@ public final class Price extends MonetaryUnit {
 				LOGGER.debug("Executing pricing policy: " + rating);
 				rating.setCost(this.cost);
 				if (rating.execute()) {
-					long ratedAmount = (long) context.get(Constants.RATED_AMOUNT.name());
+					Long ratedAmount = (Long) context.get(Constants.RATED_AMOUNT.name());
 					LOGGER.debug("PricePolicy True. Setting Amount: " + ratedAmount);
 					costElements.put(rating.getName(), new Cost(this.getIso4217CurrencyCode(), ratedAmount));
 					//this.setAmount(this.getAmount() + ratedAmount);

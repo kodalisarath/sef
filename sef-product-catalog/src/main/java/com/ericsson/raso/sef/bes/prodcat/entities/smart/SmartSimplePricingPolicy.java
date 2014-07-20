@@ -31,6 +31,8 @@ public class SmartSimplePricingPolicy extends PricingPolicy {
 			LOGGER.debug("rate: "+rate);
 			if (rate != null) {
 				context.put(Constants.RATED_AMOUNT.name(), Long.parseLong(rate));
+			} else {
+				context.put(Constants.RATED_AMOUNT.name(), 0);
 			}
 		}
 			
