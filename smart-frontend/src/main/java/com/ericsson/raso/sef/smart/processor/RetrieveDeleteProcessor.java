@@ -86,9 +86,7 @@ public class RetrieveDeleteProcessor implements Processor {
 		EnumerationValueParameter evp = new EnumerationValueParameter();
 		evp.setName("Category");
 		evp.setValue("ONLINE");
-		ListParameter listParameter = new ListParameter();
-		listParameter.getElementOrBooleanElementOrByteElement().add(evp);
-		parameterList.getParameterOrBooleanParameterOrByteParameter().add(listParameter);
+		parameterList.getParameterOrBooleanParameterOrByteParameter().add(evp);
 		operation.setParameterList(parameterList);
 		
 		if(isTransactional) {
