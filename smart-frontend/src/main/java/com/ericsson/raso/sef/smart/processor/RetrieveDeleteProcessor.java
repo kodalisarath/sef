@@ -99,6 +99,7 @@ public class RetrieveDeleteProcessor implements Processor {
 			result.setOperationResult(operationResult);
 		}
 		
+		logger.debug("responseData for RetrieveDelete: " + responseData);
 		return responseData;
 	}
 	
