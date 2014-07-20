@@ -623,8 +623,12 @@ public class Offer implements Serializable {
 		/*
 		 * 1. Evaluate Price and create Charging Task
 		 */
-		LOGGER.debug("COnfirming the metas: " + metas);
-		context.putAll(metas);
+		LOGGER.debug("Confirming the metas: " + metas);
+		for (String key: metas.keySet()) {
+			if (key == null || metas.get(key) == null)
+				continue;
+			context.put(key, metas.get(key));
+		}
 		LOGGER.debug("Trying to add CharingStep Task......");
 		if (this.isCommercial && !isTrialAllowed) 
 		{
