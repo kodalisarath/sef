@@ -95,10 +95,10 @@ public class BusinessConfigurationTool {
 			}
 			
 			System.out.println("Offer, Resource & Profile - CUSTOMER_INFO_CHARGE...");
-			resource = this.createSmartEntireReadProfile("CUSTOMER_INFO_CHARGE", "Entire Read Subscriber");
+			resource = this.createSmartReadBalancesProfile("CUSTOMER_INFO_CHARGE", "Entire Read Subscriber");
 			handles = new ArrayList<String>();
 			handles.add("CUSTOMER_INFO_CHARGE");
-			bizConfig = this.getSimpleOffer("CUSTOMER_INFO_CHARGE", "Entire Read SmartTnt Subsriber", handles, resource);
+			bizConfig = this.getSimpleBcWorkflow("CUSTOMER_INFO_CHARGE", "Entire Read SmartTnt Subsriber", handles, resource);
 			offerManager.createOffer(bizConfig);
 			serviceRegistry.createResource(resource);
 			
