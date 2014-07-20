@@ -7,7 +7,7 @@ public class TimerOfferReversal implements Serializable {
 
 	Integer offerID = null;
 	Integer dedicatedAccountInformationID = null;
-	Long hoursToReverse = null;
+	Long millisToReverse = null;
 	
 	public TimerOfferReversal() { }
 	
@@ -15,7 +15,7 @@ public class TimerOfferReversal implements Serializable {
 		super();
 		this.offerID = offerID;
 		this.dedicatedAccountInformationID = dedicatedAccountInformationID;
-		this.hoursToReverse = hoursToReverse;
+		this.millisToReverse = ((hoursToReverse * 3600000L));
 	}
 
 
@@ -34,22 +34,26 @@ public class TimerOfferReversal implements Serializable {
 	public void setDedicatedAccountInformationID(Integer dedicatedAccountInformationID) {
 		this.dedicatedAccountInformationID = dedicatedAccountInformationID;
 	}
+	
+	public Long getMillisToReverse() {
+		return this.millisToReverse;
+	}
 
 	public Long getHoursToReverse() {
-		return (hoursToReverse / 3600000L) & Long.MAX_VALUE;
+		return (this.millisToReverse / 3600000L);
 	}
 
 	public void setHoursToReverse(Integer hoursToReverse) {
-		this.hoursToReverse = (hoursToReverse * 3600000L) & Long.MAX_VALUE;
+		this.millisToReverse = (hoursToReverse * 3600000L);
 	}
 	
 	
 	public Long getMinutesToReverse() {
-		return (this.hoursToReverse / 60000L) & Long.MAX_VALUE;
+		return (this.millisToReverse / 60000L);
 	}
 
 	public void setMinutessToReverse(long minutesToReverse) {
-		this.hoursToReverse = (minutesToReverse * 60000L) & Long.MAX_VALUE;
+		this.millisToReverse = (minutesToReverse * 60000L);
 	}
 	
 	
@@ -57,7 +61,7 @@ public class TimerOfferReversal implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TimerOfferReversal [dedicatedAccountInformationID=" + dedicatedAccountInformationID + ", hoursToReverse=" + hoursToReverse
+		return "TimerOfferReversal [dedicatedAccountInformationID=" + dedicatedAccountInformationID + ", hoursToReverse=" + millisToReverse
 				+ "]";
 	}
 

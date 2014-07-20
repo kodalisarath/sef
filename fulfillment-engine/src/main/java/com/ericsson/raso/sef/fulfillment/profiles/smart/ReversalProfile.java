@@ -134,7 +134,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			
 			long impactedExpiry = ((impactedOffer.getExpiryDate() != null)?impactedOffer.getExpiryDate().getTime():impactedOffer.getExpiryDateTime().getTime());
 			LOGGER.debug("From Biz Config: " + toReversal.getHoursToReverse() + ", hours getter form: " + toReversal.getMinutesToReverse());
-			newExpiryDate = impactedExpiry - (toReversal.getHoursToReverse());
+			newExpiryDate = impactedExpiry - (toReversal.getMillisToReverse());
 			LOGGER.debug("New Expiry Calculated: " + newExpiryDate + ", date form: " + new Date(newExpiryDate));
 			LOGGER.debug("Check impactedExpiry: " + new Date(impactedExpiry) + " with longestDate: " + new Date(toLongestDate));
 			
