@@ -916,9 +916,14 @@ public class CARecharge implements Processor {
 				ReversalEntry entry = new ReversalEntry();
 				entry.offerID = rev[0];
 				entry.finalExpiryDate = rev[1];
-				entry.daID = rev[2];
-				entry.finalBalance = rev[3];
-				entry.reversedAmount = rev[4];
+				if (rev.length > 2) {
+					entry.daID = rev[2];
+					entry.finalBalance = rev[3];
+					entry.reversedAmount = rev[4];
+				} else {
+					entry.finalBalance = "1";
+					entry.reversedAmount = "1";
+				}
 				entry.walletName = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletMapping", entry.offerID);
 				logger.debug("created reversal entity: " + entry);
 				
