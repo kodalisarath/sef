@@ -156,15 +156,18 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 
 			offersToUpdate.add(impactedOffer);
 
-			DedicatedAccountInformation impactedDA =  this.getImpactedDA(toReversal.dedicatedAccountInformationID, balanceAndDateResponse.getDedicatedAccountInformation());
-			DedicatedAccountReversal daReversal = this.getRelevantReveralDA(toReversal.dedicatedAccountInformationID);
-			DedicatedAccountUpdateInformation daToUpdate = new DedicatedAccountUpdateInformation();
-			daToUpdate.setDedicatedAccountID(impactedDA.getDedicatedAccountID());
-			daToUpdate.setDedicatedAccountUnitType(impactedDA.getDedicatedAccountUnitType());
-			daToUpdate.setAdjustmentAmountRelative("-" + this.getAmountToReverse(impactedDA.getDedicatedAccountID()));
-			daToUpdate.setExpiryDate(new Date(newExpiryDate));
-			dasToUpdate.add(daToUpdate);
-			LOGGER.debug("Adding DA to update in the AIR UCIP Request: " + daToUpdate);
+			if (toReversal.dedicatedAccountInformationID != null) {
+				DedicatedAccountInformation impactedDA =  this.getImpactedDA(toReversal.dedicatedAccountInformationID, balanceAndDateResponse.getDedicatedAccountInformation());
+				DedicatedAccountReversal daReversal = this.getRelevantReveralDA(toReversal.dedicatedAccountInformationID);
+				DedicatedAccountUpdateInformation daToUpdate = new DedicatedAccountUpdateInformation();
+				daToUpdate.setDedicatedAccountID(impactedDA.getDedicatedAccountID());
+				daToUpdate.setDedicatedAccountUnitType(impactedDA.getDedicatedAccountUnitType());
+				daToUpdate.setAdjustmentAmountRelative("-" + this.getAmountToReverse(impactedDA.getDedicatedAccountID()));
+				daToUpdate.setExpiryDate(new Date(newExpiryDate));
+				dasToUpdate.add(daToUpdate);
+				LOGGER.debug("Adding DA to update in the AIR UCIP Request: " + daToUpdate);
+			} else
+				LOGGER.debug("offer (" + toReversal.offerID + ") had no DA linked to it... Skipping reversal part of DA");
 				
 		}
 		
