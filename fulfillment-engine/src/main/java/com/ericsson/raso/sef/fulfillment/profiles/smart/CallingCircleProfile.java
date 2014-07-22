@@ -413,7 +413,7 @@ public final class CallingCircleProfile extends RefillProfile {
 		logger.debug("DB updated");
 		
 		
-		this.updateFafAccumulator(subscriberId, fafAccumulatorId, 1);
+		//this.updateFafAccumulator(subscriberId, fafAccumulatorId, 1);
 
 
 		for (String member: members) {
