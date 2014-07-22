@@ -173,8 +173,8 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		
 		
 		// Now... send the reversal on DAs....
-		UpdateBalanceAndDateResponse updateBalanceAndDateResponse = null;
-		if (dasToUpdate != null && dasToUpdate.size() > 0) {
+		UpdateBalanceAndDateResponse updateBalanceAndDateResponse = null; // because we need to check if the update balane was called or not
+		if (dasToUpdate != null && dasToUpdate.size() > 0) { // because 2014-07-22 8:40pm, Navneet comes up with new requirements that BC will offers that may or may not be lined with DA... if none of the offers have DA linked then an updatebalance must not be called... all related situation is expected to be handled.
 			UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
 			request.setDedicatedAccountUpdateInformation(dasToUpdate);
 			request.setSubscriberNumber(msisdn);
