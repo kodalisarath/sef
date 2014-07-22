@@ -173,33 +173,33 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		
 		
 		// Now... send the reversal on DAs....
-		
-		UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
-		request.setDedicatedAccountUpdateInformation(dasToUpdate);
-		request.setSubscriberNumber(msisdn);
-		request.setSubscriberNumberNAI(1);
-		request.setTransactionCurrency(this.transactionCurrency);
-
-		if (externalData1 != null)
-			request.setExternalData1(externalData1);
-		if (externalData2 != null)
-			request.setExternalData2(externalData2);
-		
-		if (supervisionPeriodExpiryDate < toLongestDate)
-			request.setSupervisionExpiryDate(new Date(supervisionPeriodExpiryDate));
-		
-		if (serviceFeeExpiryDate < toLongestDate)
-			request.setServiceFeeExpiryDate(new Date(serviceFeeExpiryDate));
-		
-		UpdateBalanceAndDateCommand updateBalanceAndDateCommand = new UpdateBalanceAndDateCommand(request);
 		UpdateBalanceAndDateResponse updateBalanceAndDateResponse = null;
-		try {
-			updateBalanceAndDateResponse = updateBalanceAndDateCommand.execute();
-		} catch (SmException e) {
-			LOGGER.error("Failed RefillReveral - DA Update step. Cause: " + e.getMessage(), e);
-			throw new FulfillmentException(e.getComponent(), e.getStatusCode());
-		}
+		if (dasToUpdate != null && dasToUpdate.size() > 0) {
+			UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
+			request.setDedicatedAccountUpdateInformation(dasToUpdate);
+			request.setSubscriberNumber(msisdn);
+			request.setSubscriberNumberNAI(1);
+			request.setTransactionCurrency(this.transactionCurrency);
 
+			if (externalData1 != null)
+				request.setExternalData1(externalData1);
+			if (externalData2 != null)
+				request.setExternalData2(externalData2);
+
+			if (supervisionPeriodExpiryDate < toLongestDate)
+				request.setSupervisionExpiryDate(new Date(supervisionPeriodExpiryDate));
+
+			if (serviceFeeExpiryDate < toLongestDate)
+				request.setServiceFeeExpiryDate(new Date(serviceFeeExpiryDate));
+
+			UpdateBalanceAndDateCommand updateBalanceAndDateCommand = new UpdateBalanceAndDateCommand(request);
+			try {
+				updateBalanceAndDateResponse = updateBalanceAndDateCommand.execute();
+			} catch (SmException e) {
+				LOGGER.error("Failed RefillReveral - DA Update step. Cause: " + e.getMessage(), e);
+				throw new FulfillmentException(e.getComponent(), e.getStatusCode());
+			}
+		}
 		
 		//Now...send the reversal on DAs....
 		Map<String, String> responseMetas = new HashMap<String, String>();
@@ -207,10 +207,7 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 		for (OfferInformation updatedOffer: offersToUpdate) {
 
 			UpdateOfferRequest updateOfferRequest = new UpdateOfferRequest();
-			//updateOfferRequest.setExpiryDate(updatedOffer.getExpiryDate());
 			updateOfferRequest.setExpiryDateTime(new Date(newExpiryDate));
-			//updateOfferRequest.setStartDateTime(updatedOffer.getStartDate());
-			//updateOfferRequest.setStartDateTime(updatedOffer.getStartDateTime());
 			updateOfferRequest.setOfferID(updatedOffer.getOfferID());
 			updateOfferRequest.setOfferType(2);
 			updateOfferRequest.setSubscriberNumber(msisdn);
@@ -228,15 +225,17 @@ public class ReversalProfile extends BlockingFulfillment<Product> {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String reversalEntry = "" + updatedOffer.getOfferID() + "," + format.format(updatedOffer.getExpiryDateTime());
 			Integer associatedDaId = Integer.parseInt(SefCoreServiceResolver.getConfigService().getValue("Global_offerMapping", "" + updateOfferRequest.getOfferID()));
-			LOGGER.debug("associatedDA ID: " + associatedDaId);
-			for (DedicatedAccountChangeInformation daResultInfo: updateBalanceAndDateResponse.getDedicatedAccountInformation()) {
-				if (daResultInfo.getDedicatedAccountID().compareTo(associatedDaId)==0) {
-					reversalEntry += "," + associatedDaId 
-							+ "," + daResultInfo.getDedicatedAccountValue1() 
-							+ "," + this.getReversalDA(associatedDaId).getAmountToReverse();
+			if (updateBalanceAndDateResponse != null) {
+				LOGGER.debug("associatedDA ID: " + associatedDaId);
+				for (DedicatedAccountChangeInformation daResultInfo: updateBalanceAndDateResponse.getDedicatedAccountInformation()) {
+					if (daResultInfo.getDedicatedAccountID().compareTo(associatedDaId)==0) {
+						reversalEntry += "," + associatedDaId 
+								+ "," + daResultInfo.getDedicatedAccountValue1() 
+								+ "," + this.getReversalDA(associatedDaId).getAmountToReverse();
+					}
 				}
 			}
-			
+
 			responseMetas.put(REVERSAL_OFFER_ID + "." + ++index, reversalEntry);
 					 
 		}
