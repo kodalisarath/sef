@@ -385,6 +385,11 @@ public final class CallingCircleProfile extends RefillProfile {
 			CallingCircleEdr.generateEdr("ADD", this.prodcatOffer, this.callingCircleExpiry, edrEntry, this.fafIndicatorSponsorMember, "Could not assert existing members in this Calling Circle");
 			return false;
 		}
+		
+		if (members.contains(this.memberB)) {
+			logger.warn("B-Party member already exists in this calling circle");
+			return false;
+		}
 
 		CallingCircle ccRelationship = new CallingCircle(this.subscriberId, prodcatOffer, subscriberId, memberB, CallingCircleRelation.SPONSER_MEMBER, fafIndicatorSponsorMember, this.callingCircleExpiry);
 		logger.debug("Adding Member & relation: " + ccRelationship);
