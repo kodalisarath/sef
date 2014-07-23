@@ -456,7 +456,7 @@ public class EntireReadUtil {
 	public static Operation createRppRead(RppRead rppRead) {
 		Operation operation = new Operation();
 		operation.setName("Read");
-		operation.setModifier("RPP_s_subLifeIncentive");
+		operation.setModifier("RPP");
 
 		List<Object> parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
@@ -527,7 +527,7 @@ public class EntireReadUtil {
 	public static Operation createRppBucketRead(RppBucketRead rppBucketRead) {
 		Operation operation = new Operation();
 		operation.setName("BucketRead");
-		operation.setModifier("RPP_s_subLifeIncentive");
+		operation.setModifier("RPP");
 
 		List<Object> parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 
@@ -599,7 +599,7 @@ public class EntireReadUtil {
 	public static Operation createRppVersionRead(RppVersionRead rppVersionRead) {
 		Operation operation = new Operation();
 		operation.setName("VersionRead");
-		operation.setModifier("RPP_s_subLifeIncentive");
+		operation.setModifier("RPP");
 
 		List<Object> parameterList = operation.getParameterList().getParameterOrBooleanParameterOrByteParameter();
 		parameterList.add(EntireReadUtil.stringParameter("CustomerId", rppVersionRead.getCustomerId()));
