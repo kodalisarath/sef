@@ -14,6 +14,7 @@ import com.ericsson.raso.sef.client.air.request.DedicatedAccountUpdateInformatio
 import com.ericsson.raso.sef.client.air.request.UpdateBalanceAndDateRequest;
 import com.ericsson.raso.sef.client.air.response.DedicatedAccountChangeInformation;
 import com.ericsson.raso.sef.client.air.response.UpdateBalanceAndDateResponse;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
@@ -47,7 +48,8 @@ public class BalanceAdjustmentProfile extends BlockingFulfillment<Product> {
 		String msisdn = map.get("msisdn");
 		String externalData1 = map.get("eventName");
 		String externalData2 = map.get("eventInfo");
-		String amount = map.get("amountOfUnits");
+		String walletName = map.get("balanceId");
+		String amountOfUnits = map.get("amountOfUnits");
 		
 		UpdateBalanceAndDateRequest request = new UpdateBalanceAndDateRequest();
 		
@@ -55,8 +57,25 @@ public class BalanceAdjustmentProfile extends BlockingFulfillment<Product> {
 		DedicatedAccountUpdateInformation daUpdateInfo = new DedicatedAccountUpdateInformation();
 		daUpdateInfo.setDedicatedAccountID(this.dedicatedAccountID);
 		daUpdateInfo.setDedicatedAccountUnitType(dedicatedAccountUnitType);
-		daUpdateInfo.setAdjustmentAmountRelative(amount);
+		
+		String conFac = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
+		LOGGER.debug("Fetch conversion factor - walletName: " + walletName + ", conversionFator: " + conFac);
+		long transactionAmount = 1;
+		if (conFac != null) {
+			try {
+				transactionAmount = Long.parseLong(conFac);
+				transactionAmount = Integer.parseInt(amountOfUnits) * transactionAmount;
+			} catch (NullPointerException e) {
+				LOGGER.error("unable to get numeric value from config. NullPpointer for wallet config: " + walletName);
+				throw new FulfillmentException("ffe", new ResponseCode(13404, "Bad or missing config for the values in context"));
+			} catch (NumberFormatException e) {
+				LOGGER.error("unable to get numeric value from config. NullPpointer for wallet config: " + walletName, e);
+				throw new FulfillmentException("ffe", new ResponseCode(13404, "Bad or missing config for the values in context"));
+			}
+		}
+		daUpdateInfo.setAdjustmentAmountRelative("" + transactionAmount);
 		dedicatedAccountUpdateInformation.add(daUpdateInfo);
+		
 		
 		request.setDedicatedAccountUpdateInformation(dedicatedAccountUpdateInformation);
 		request.setExternalData1(externalData1);

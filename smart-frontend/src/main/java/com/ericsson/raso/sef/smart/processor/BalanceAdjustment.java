@@ -65,7 +65,6 @@ public class BalanceAdjustment implements Processor {
 		workflowMetas.add(new Meta("eventName", String.valueOf(request.getChargeCode())));
 		workflowMetas.add(new Meta("balanceId", String.valueOf(request.getBalanceId())));
 		workflowMetas.add(new Meta("eventInfo",request.getEventInfo()));
-
 		workflowMetas.add(new Meta("amountOfUnits", String.valueOf(FixedAmountOfUnits)));
 		List<Meta> metaSubscriber=new ArrayList<Meta>();
 		metaSubscriber.add(new Meta("SUBSCRIBER_ID",request.getCustomerId()));

@@ -19,6 +19,7 @@ import com.ericsson.raso.sef.client.air.request.UpdateOfferRequest;
 import com.ericsson.raso.sef.client.air.response.DedicatedAccountChangeInformation;
 import com.ericsson.raso.sef.client.air.response.UpdateBalanceAndDateResponse;
 import com.ericsson.raso.sef.client.air.response.UpdateOfferResponse;
+import com.ericsson.raso.sef.core.ResponseCode;
 import com.ericsson.raso.sef.core.SefCoreServiceResolver;
 import com.ericsson.raso.sef.core.SmException;
 import com.ericsson.raso.sef.fulfillment.commons.FulfillmentException;
@@ -78,7 +79,23 @@ public class FlexiRechargeProfile extends BlockingFulfillment<Product> {
 		
 		if (!expirationDatePolicy.equals("2")) 
 			daInfo.setExpiryDate(this.getDaDate(daEndTime));
-		daInfo.setAdjustmentAmountRelative(amountOfUnits);
+		
+		String conFac = SefCoreServiceResolver.getConfigService().getValue("GLOBAL_walletConversionFactor", walletName);
+		LOGGER.debug("Fetch conversion factor - walletName: " + walletName + ", conversionFator: " + conFac);
+		long transactionAmount = 1;
+		if (conFac != null) {
+			try {
+				transactionAmount = Long.parseLong(conFac);
+				transactionAmount = Integer.parseInt(amountOfUnits) * transactionAmount;
+			} catch (NullPointerException e) {
+				LOGGER.error("unable to get numeric value from config. NullPpointer for wallet config: " + walletName);
+				throw new FulfillmentException("ffe", new ResponseCode(13404, "Bad or missing config for the values in context"));
+			} catch (NumberFormatException e) {
+				LOGGER.error("unable to get numeric value from config. NullPpointer for wallet config: " + walletName, e);
+				throw new FulfillmentException("ffe", new ResponseCode(13404, "Bad or missing config for the values in context"));
+			}
+		}
+		daInfo.setAdjustmentAmountRelative("" + transactionAmount);
 		
 		String daUnitType = SefCoreServiceResolver.getConfigService().getValue("SMART_daUnitType", newDaID);
 		daInfo.setDedicatedAccountUnitType(Integer.parseInt((daUnitType==null)?"1":daUnitType));
