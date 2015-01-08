@@ -4,6 +4,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import com.ericsson.sef.promo_creation.BusinessConfigurationTool;
+
 /**
  * Unit test for simple App.
  */
@@ -33,6 +35,7 @@ public class AppTest
      */
     public void testApp()
     {
-        assertTrue( true );
+    	BusinessConfigurationTool bc = new BusinessConfigurationTool();
+    	bc.createSmartSpecificBusinessConfiguration();
     }
 }

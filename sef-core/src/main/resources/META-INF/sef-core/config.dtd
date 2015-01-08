@@ -6,6 +6,7 @@
 <!ELEMENT ranges (range+)>
 <!ELEMENT values (value+)>
 <!ELEMENT range EMPTY>
+<!ELEMENT value EMPTY>
 
 <!ATTLIST section
 	id 			ID 		#REQUIRED
@@ -20,11 +21,11 @@
 <!ATTLIST range
 	start CDATA #REQUIRED
 	end   CDATA #REQUIRED
-	value IDREF #REQURED
+	value IDREF #REQUIRED
 >
 
 <!ATTLIST value
-	id		ID		#REQURIED
+	id		ID		#REQUIRED
 	sdpId 	CDATA	#REQUIRED
 	siteId 	CDATA 	#REQUIRED
 >

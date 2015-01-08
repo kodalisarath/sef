@@ -410,7 +410,7 @@
       <property key="hostId" value="af02.smart.com.ph"/>
       <property key="site" value="CEBU"/>
    </section>
-   <section id="cs-air1">
+   <section id="cs-air1" description="">
       <property key="originNodeType" value="ADM"/>
       <property key="originHostName" value="IL"/>
       <property key="csair protocol" value="air"/>
@@ -559,93 +559,6 @@
       <property key="5030" value="504"/>
       <property key="5031" value="505"/>
       <property key="7601" value="7601"/>
-   </section>
-   <section id="GLOBAL_walletConversionFactor" description="smart wallet mapping conversion factor">
-      <property key="1030AutoFbc" value="100"/>
-      <property key="1030DataFbc" value="100"/>
-      <property key="AllTxtBcktSmsGbl" value="100"/>
-      <property key="AudioStreamFbc" value="1"/>
-      <property key="AudioStreamFbcCtl" value="100"/>
-      <property key="BBDataFbcCtl" value="100"/>
-      <property key="BrwsThroFbc" value="100"/>
-      <property key="BucketArawMoc" value="6000"/>
-      <property key="BucketIM6VolFbc " value="1"/>
-      <property key="BucketIntlCombo" value="100"/>
-      <property key="BucketIntlS1Cbo" value="100"/>
-      <property key="BucketIntlS2Cbo" value="100"/>
-      <property key="BucketIntlS3Moc" value="6000"/>
-      <property key="BucketIntlS4Sms" value="100"/>
-      <property key="BucketKamusTxtSms" value="100"/>
-      <property key="BucketMocGbl" value="6000"/>
-      <property key="BucketMocGblInt" value="6000"/>
-      <property key="BucketMocInt" value="6000"/>
-      <property key="BucketMocOn" value="6000"/>
-      <property key="BucketMocSun" value="6000"/>
-      <property key="BucketMocTri" value="6000"/>
-      <property key="BucketMocTriCc" value="6000"/>
-      <property key="BucketRoamMoc" value="6000"/>
-      <property key="BucketSmsGbl" value="100"/>
-      <property key="BucketSmsInt" value="100"/>
-      <property key="BucketSmsOn" value="100"/>
-      <property key="BucketSmsRoam" value="100"/>
-      <property key="BucketSmsTri" value="100"/>
-      <property key="BucketTkTpdMoc" value="100"/>
-      <property key="BucketTkTpdSms" value="100"/>
-      <property key="BucketTokMoc" value="100"/>
-      <property key="CallAllBucketMoc" value="6000"/>
-      <property key="ComDataFbc" value="1"/>
-      <property key="ComDataFbcCtl" value="100"/>
-      <property key="ConsWalletAcc" value="100"/>
-      <property key="DailyCapSms" value="100"/>
-      <property key="DataArawFbc" value="1"/>
-      <property key="DataMinFbc" value="1"/>
-      <property key="DataVolFbc" value="1"/>
-      <property key="EmailDataFbc" value="1"/>
-      <property key="EmailDataFbcCtl" value="100"/>
-      <property key="FlexiBckAcc" value="100"/>
-      <property key="GamesDataFbc" value="1"/>
-      <property key="GamesDataFbcCtl" value="100"/>
-      <property key="IMData2FbcCtl" value="100"/>
-      <property key="IMDataFbc" value="1"/>
-      <property key="IMDataFbcCtl" value="100"/>
-      <property key="Katok10" value="100"/>
-      <property key="Katok15" value="100"/>
-      <property key="KatokAtTex25" value="100"/>
-      <property key="KatokAtTex35" value="100"/>
-      <property key="KatokSubGrace" value="100"/>
-      <property key="LTEUnliSurfFbc" value="100"/>
-      <property key="OnPeakAccountID" value="1"/>
-      <property key="RoamFbcCtl" value="100"/>
-      <property key="RwdMocTri" value="6000"/>
-      <property key="RwdSmsGbl" value="100"/>
-      <property key="RwdVolDataFbc" value="1"/>
-      <property key="SnsData2Fbc" value="1"/>
-      <property key="SnsData2FbcCtl" value="100"/>
-      <property key="SnsDataFbc" value="1"/>
-      <property key="SnsDataFbcCtl" value="100"/>
-      <property key="UnivWalletAcc" value="1"/>
-      <property key="UnliAccessSmsCtl" value="100"/>
-      <property key="UnliBoost1FbcCtl" value="100"/>
-      <property key="UnliBrws1FbcCtl" value="100"/>
-      <property key="UnliEmail1FbcCtl" value="100"/>
-      <property key="UnliIM1FbcCtl" value="100"/>
-      <property key="UnliIM2FbcCtl" value="100"/>
-      <property key="UnliKonekFbcCtl" value="100"/>
-      <property key="UnliMocGblCtl" value="100"/>
-      <property key="UnliMocOnCtl" value="100"/>
-      <property key="UnliMocTriCtl" value="100"/>
-      <property key="UnliNxbFbcCtl" value="100"/>
-      <property key="UnliPhoto1FbcCtl" value="100"/>
-      <property key="UnliSmsGblCtl" value="100"/>
-      <property key="UnliSmsOnCtl" value="100"/>
-      <property key="UnliSmsTriCtl" value="100"/>
-      <property key="UnliSns1FbcCtl" value="100"/>
-      <property key="UnliSns2FbcCtl" value="100"/>
-      <property key="UnliSurfFbcCtl" value="100"/>
-      <property key="UnliSurfFbcCtlRen" value="100"/>
-      <property key="UnliThroFbcCtl" value="100"/>
-      <property key="VideoDataFbc" value="1"/>
-      <property key="VideoDataFbcCtl" value="100"/>
    </section>
    <section id="SMART_daUnitType" description="Unit Type for the Dedicated Account">
       <property key="1" value="1"/>

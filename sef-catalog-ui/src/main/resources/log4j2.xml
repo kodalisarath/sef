@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Appenders>
+		<Console name="CONSOLE" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<logger name="com.ericsson.raso.sef.management.controller" level="DEBUG" />
+		<logger name="com.ericsson.raso.sef.catalog.controller" level="DEBUG" />
+		<logger name="com.ericsson.raso.sef.rules.controller" level="DEBUG" />
+		<logger name="com.ericsson.raso.sef.notification.controller" level="DEBUG" />
+		<logger name="com.ericsson.raso.sef.authentication" level="DEBUG" />
+	</Loggers>
+</Configuration>

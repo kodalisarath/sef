@@ -1,0 +1,82 @@
+
+/* Accordion style */
+.cbp-ntaccordion {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.cbp-ntsubaccordion {
+	list-style: none;
+	border-left:2px dotted #3b72b1;
+	
+}
+
+.cbp-ntaccordion .cbp-nttrigger {
+	cursor: pointer;
+	list-style:disc;
+} 
+
+.cbp-ntaccordion h3 {
+	margin: 0 0 0.3em;
+	font-size: 13px;
+	font-weight: 300;
+}
+
+.cbp-ntaccordion h4 {
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	padding: 0.5em 0 0.5em;
+	margin: 0 0 0.5em;
+}
+
+.cbp-ntaccordion h5 {
+	font-size: 12px;
+	color: #000;
+	padding: 0.5em 0 0.5em;
+	margin: 0 0 0.5em;
+}
+
+.cbp-ntaccordion .cbp-ntcontent p {
+	color: #888;
+	font-size: 1.25em;
+	font-weight: 300;
+	line-height: 1.5;
+	padding: 0.2em 0 1.5em;
+	margin: 0;
+}
+
+/* Arrow icons */
+.cbp-ntaccordion > li > .cbp-nttrigger:before,
+.cbp-ntsubaccordion > li > .cbp-nttrigger:before {
+	font-family: 'icomoon';
+	speak: none;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	color: #ddd;
+	margin-right: 0.5em;
+	-webkit-font-smoothing: antialiased;
+	
+}
+
+
+
+/* Initial height is zero */
+.cbp-ntaccordion .cbp-ntcontent {
+	height: 0;
+	overflow: hidden;
+}
+
+/* When open, set height to auto */
+.cbp-ntaccordion .cbp-ntopen > .cbp-ntcontent,
+.cbp-ntsubaccordion .cbp-ntopen > .cbp-ntcontent,
+.no-js .cbp-ntaccordion .cbp-ntcontent {
+	height: auto;
+	width:100%;
+	float:left;
+}
+
+

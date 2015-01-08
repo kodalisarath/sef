@@ -19,7 +19,6 @@
 		<typeAlias alias="CallingCircle" type="com.ericsson.raso.sef.core.db.model.smart.CallingCircle" />
 		<typeAlias alias="ChargingSession" type="com.ericsson.raso.sef.core.db.model.smart.ChargingSession" />
 	</typeAliases>
-
 	<typeHandlers>
 		<typeHandler javaType="org.joda.time.DateTime" handler="com.ericsson.raso.sef.core.db.typehandler.DateTimeTypeHandler" />
 		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.ContractState" handler="com.ericsson.raso.sef.core.db.typehandler.ContractStateTypeHandler" />
@@ -27,6 +26,4 @@
 		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.SubscriptionLifeCycleEvent" handler="com.ericsson.raso.sef.core.db.typehandler.SubscriptionLifeCycleEventHandler" />
 		<typeHandler javaType="com.ericsson.raso.sef.core.db.model.CallingCircleRelation" handler="com.ericsson.raso.sef.core.db.typehandler.CallingCircleRelationHandler" />
 	</typeHandlers>
-	
-	
 </configuration>

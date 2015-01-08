@@ -18,9 +18,9 @@
 
     <bean id="dataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
           <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
-          <property name="url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=10.202.144.76)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.202.144.77)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=vltnt1.smart.com.ph)))" />
-          <property name="username" value="TNT" />
-          <property name="password" value="3r1c5s0n" />
+          <property name="url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)))" />
+          <property name="username" value="IL" />
+          <property name="password" value="er1c550n" />
           <property name="testWhileIdle" value="true"/>
           <property name="testOnReturn" value="false"/>
 <!--           <property name="validationQuery" value="select 1 from dual"/>

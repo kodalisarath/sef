@@ -1,9 +1,7 @@
 package com.ericsson.sef.promo_creation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 import com.ericsson.raso.sef.bes.prodcat.CatalogException;
 import com.ericsson.raso.sef.bes.prodcat.OfferManager;
 import com.ericsson.raso.sef.bes.prodcat.SecureSerializationHelper;
@@ -11,7 +9,6 @@ import com.ericsson.raso.sef.bes.prodcat.ServiceRegistry;
 import com.ericsson.raso.sef.bes.prodcat.entities.AtomicProduct;
 import com.ericsson.raso.sef.bes.prodcat.entities.CommitUntilNDays;
 import com.ericsson.raso.sef.bes.prodcat.entities.DaysTime;
-import com.ericsson.raso.sef.bes.prodcat.entities.HoursTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.InfiniteTime;
 import com.ericsson.raso.sef.bes.prodcat.entities.NoTermination;
 import com.ericsson.raso.sef.bes.prodcat.entities.Offer;
@@ -32,7 +29,6 @@ import com.ericsson.raso.sef.fulfillment.profiles.DedicatedAccountProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.DnsUpdateProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.EntireReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.OfferProfile;
-import com.ericsson.raso.sef.fulfillment.profiles.PamInformationList;
 import com.ericsson.raso.sef.fulfillment.profiles.PartialReadSubscriberProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.ProfileRegistry;
 import com.ericsson.raso.sef.fulfillment.profiles.ReadBalancesProfile;
@@ -50,6 +46,7 @@ import com.ericsson.raso.sef.fulfillment.profiles.smart.ReversalProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.SubscribePackageItemProfile;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.TimerOfferReversal;
 import com.ericsson.raso.sef.fulfillment.profiles.smart.UnsubscribePackageItemProfile;
+import com.ericsson.raso.sef.ruleengine.Rule;
 
 public class BusinessConfigurationTool {
 
@@ -7528,7 +7525,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setRenewalAmount(renewalAmount);
 		fulfillmentProfile.setPurchaseAmount(purchaseAmount);
 		
+		Rule rule = new Rule();
+		rule.setName("R1");
 
+		fulfillmentProfile.setCriteria(rule);
+		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
 
@@ -7549,6 +7550,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setPamIndicator(pamIndicator);
 		fulfillmentProfile.setPamServiceId(pamServiceId);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
 
@@ -7570,6 +7576,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setTransactionAmount(transactionAmount);
 		fulfillmentProfile.setTransactionCurrency(transactionCurrency);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
 
@@ -7589,6 +7600,11 @@ public class BusinessConfigurationTool {
 		OfferProfile fulfillmentProfile = new OfferProfile(name);
 		fulfillmentProfile.setOfferID(offerId);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
 
@@ -7613,6 +7629,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setDclass(1);
 		fulfillmentProfile.setTtl(100);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
 
@@ -7643,6 +7664,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setLanguageIDNew(null);
 		fulfillmentProfile.setTemporaryBlockedFlag(null);
 		fulfillmentProfile.setUssdEndOfCallNotificationID(null);
+
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
 		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
@@ -7676,6 +7702,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setTemporaryBlockedFlag(null);
 		fulfillmentProfile.setUssdEndOfCallNotificationID(null);
 				
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
 
@@ -7701,6 +7732,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setDclass(ttl);
 		fulfillmentProfile.setInsert(insertMode);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
 
@@ -7739,6 +7775,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setDaReversals(daReversals);
 		fulfillmentProfile.setToReversals(toReversals);
 		fulfillmentProfile.setTransactionCurrency("PHP");
+
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
 		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
@@ -7760,7 +7801,11 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setDedicatedAccountUnitType(dedicatedAccountUnitType);
 		fulfillmentProfile.setTransactionCurrency("PHP");
 		
+		Rule rule = new Rule();
+		rule.setName("R1");
 
+		fulfillmentProfile.setCriteria(rule);
+		
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
 
@@ -7778,7 +7823,11 @@ public class BusinessConfigurationTool {
 		resource.setConsumptionUnitName("PHP");
 
 		FlexiRechargeProfile fulfillmentProfile = new FlexiRechargeProfile(name);
-		
+
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);		
 
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 		profileRegistry.createProfile(fulfillmentProfile);
@@ -7801,6 +7850,11 @@ public class BusinessConfigurationTool {
 		
 		SubscribePackageItemProfile fulfillmentProfile = new SubscribePackageItemProfile(name);
 		fulfillmentProfile.setServiceClassAction("SetOriginal");
+
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
 		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
@@ -7821,6 +7875,11 @@ public class BusinessConfigurationTool {
 		
 		SubscribePackageItemProfile fulfillmentProfile = new SubscribePackageItemProfile(name);
 		fulfillmentProfile.setServiceClassAction("SetOriginal");
+
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
 		
 		List<PamInformation> pamList = new ArrayList<PamInformation>();
 		PamInformation pamInfo =  new PamInformation();
@@ -7864,6 +7923,10 @@ public class BusinessConfigurationTool {
 		
 		fulfillmentProfile.setServiceOfferings(serviceOfferings);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
 
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
@@ -7895,6 +7958,10 @@ public class BusinessConfigurationTool {
 
 		fulfillmentProfile.setServiceOfferings(serviceOfferings);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
 
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
@@ -7924,8 +7991,10 @@ public class BusinessConfigurationTool {
 		fulfillmentProfile.setTransactionAmount("0");
 		fulfillmentProfile.setTransactionCurrency(CurrencyCode.PHP);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
 
-		
+		fulfillmentProfile.setCriteria(rule);		
 
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
@@ -7946,6 +8015,11 @@ public class BusinessConfigurationTool {
 
 		UnsubscribePackageItemProfile fulfillmentProfile = new UnsubscribePackageItemProfile(name);
 		fulfillmentProfile.setServiceClassAction("SetOriginal");
+
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
 		
 		List<ServiceOffering> offerings = new ArrayList<ServiceOffering>();
 		int soId = 1;
@@ -7978,9 +8052,14 @@ public class BusinessConfigurationTool {
 		resource.setConsumable(false);
 		resource.setEnforcedMaxQuota(-1L);
 		resource.setEnforcedMinQuota(-1L);
-
+		
 		EntireReadSubscriberProfile fulfillmentProfile = new EntireReadSubscriberProfile(name);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 
@@ -8000,6 +8079,11 @@ public class BusinessConfigurationTool {
 
 		EntireReadSubscriberProfile fulfillmentProfile = new EntireReadSubscriberProfile(name);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 
@@ -8019,6 +8103,11 @@ public class BusinessConfigurationTool {
 
 		PartialReadSubscriberProfile fulfillmentProfile = new PartialReadSubscriberProfile(name);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 
@@ -8038,6 +8127,11 @@ public class BusinessConfigurationTool {
 
 		ReadBalancesProfile fulfillmentProfile = new ReadBalancesProfile(name);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 
@@ -8057,6 +8151,11 @@ public class BusinessConfigurationTool {
 
 		ReadSubscriberProfile fulfillmentProfile = new ReadSubscriberProfile(name);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 
@@ -8076,6 +8175,11 @@ public class BusinessConfigurationTool {
 
 		DeleteSubscriberProfile fulfillmentProfile = new DeleteSubscriberProfile(name);
 
+		Rule rule = new Rule();
+		rule.setName("R1");
+
+		fulfillmentProfile.setCriteria(rule);
+		
 		profileRegistry.createProfile(fulfillmentProfile);
 		resource.addFulfillmentProfile(fulfillmentProfile.getName());
 
